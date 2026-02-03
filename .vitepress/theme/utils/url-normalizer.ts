@@ -40,7 +40,7 @@ export function normalizeGraphQLUrl(code: string): string {
  * Normalize storage/asset URLs (usually served from same domain as REST API)
  */
 export function normalizeStorageUrl(code: string, apiUrl: string = REST_API_URL): string {
-  if (!code) return code
+  if (!code || !apiUrl) return code
   
   // Extract base domain from API URL
   const baseDomain = apiUrl.replace(/\/api.*$/, '')

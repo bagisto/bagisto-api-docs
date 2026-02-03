@@ -14,10 +14,12 @@ export default {
     initGoogleTranslate() {
       if (!window.googleTranslateElementInit) {
         window.googleTranslateElementInit = () => {
-          new window.google.translate.TranslateElement(
-            { layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false },
-            'google_translate_element'
-          );
+          if (window.google?.translate?.TranslateElement) {
+            new window.google.translate.TranslateElement(
+              { layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false },
+              'google_translate_element'
+            );
+          }
         };
       }
 

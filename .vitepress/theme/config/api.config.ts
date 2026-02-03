@@ -6,11 +6,10 @@
  */
 
 // REST API Base URL
-// REST API Base URL
-export const REST_API_URL = import.meta.env.VITE_REST_API_URL
+export const REST_API_URL = import.meta.env.VITE_REST_API_URL || 'https://api-demo.bagisto.com'
 
 // GraphQL API Base URL
-export const GRAPHQL_API_URL = import.meta.env.VITE_GRAPHQL_API_URL
+export const GRAPHQL_API_URL = import.meta.env.VITE_GRAPHQL_API_URL || 'https://api-demo.bagisto.com'
 
 // GraphQL Endpoint
 export const GRAPHQL_ENDPOINT = `${GRAPHQL_API_URL}/api/graphql`
