@@ -22,7 +22,7 @@ Before submitting your pull request, please ensure:
 - **Use kebab-case filenames** - Name files using lowercase with hyphens (e.g., `create-custom-theme.md`)
 - **VitePress standards** - Use VitePress containers (`::: info`, `::: tip`, `::: warning`) for better presentation
 - **Code examples** - Include practical, working code examples when applicable
-- **Clear structure** - Use proper headings, lists, and sections for readability
+- **Clear structure** - Use proper headings, lists, and sections for readability 
 
 ### Content Standards
 
