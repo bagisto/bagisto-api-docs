@@ -1,0 +1,15 @@
+{
+  "devDependencies": {
+    "markdown-it-container": "^4.0.0",
+    "vitepress": "^1.6.4"
+  },
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
+  },
+  "dependencies": {
+    "file": "^0.2.2",
+    "fs": "^0.0.1-security"
+  }
+}
