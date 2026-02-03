@@ -1,10 +1,10 @@
-# Bagisto Documentation
+# Bagisto API Documentation
 
-You can find the online version of the Bagisto documentation at [https://api-docs.bagisto.com](https://api-docs.bagisto.com).
+You can find the online version of the Bagisto API documentation at [https://api-docs.bagisto.com](https://api-docs.bagisto.com).
 
 ## Contribution Guide
 
-We welcome contributions to improve the Bagisto documentation! Follow these steps to get started:
+We welcome contributions to improve the Bagisto API documentation! Follow these steps to get started:
 
 ### Getting Started
 
