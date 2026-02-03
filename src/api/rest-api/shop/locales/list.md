@@ -87,6 +87,8 @@ examples:
               name
               direction
               logoPath
+              createdAt
+              updatedAt
               logoUrl
             }
           }
@@ -114,7 +116,9 @@ examples:
                   "code": "en",
                   "name": "English",
                   "direction": "ltr",
-                  "logoPath": "/locales/en-logo.png", 
+                  "logoPath": "/locales/en-logo.png",
+                  "createdAt": "2024-01-15T10:30:00Z",
+                  "updatedAt": "2024-01-20T14:22:00Z",
                   "logoUrl": "https://example.com/storage/locales/en-logo.png"
                 }
               },
@@ -126,7 +130,9 @@ examples:
                   "code": "ar",
                   "name": "Arabic",
                   "direction": "rtl",
-                  "logoPath": "/locales/ar-logo.png", 
+                  "logoPath": "/locales/ar-logo.png",
+                  "createdAt": "2024-01-15T10:35:00Z",
+                  "updatedAt": "2024-01-20T14:25:00Z",
                   "logoUrl": "https://example.com/storage/locales/ar-logo.png"
                 }
               },
@@ -138,7 +144,9 @@ examples:
                   "code": "fr",
                   "name": "French",
                   "direction": "ltr",
-                  "logoPath": "/locales/fr-logo.png", 
+                  "logoPath": "/locales/fr-logo.png",
+                  "createdAt": "2024-01-15T10:40:00Z",
+                  "updatedAt": "2024-01-20T14:30:00Z",
                   "logoUrl": "https://example.com/storage/locales/fr-logo.png"
                 }
               }
@@ -287,7 +295,9 @@ The query supports cursor-based pagination and allows you to fetch all locales w
 | `name` | `String!` | Display name of the locale (e.g., "English", "Arabic") |
 | `direction` | `String!` | Text direction: "ltr" (left-to-right) or "rtl" (right-to-left) |
 | `logoPath` | `String` | File path to the locale logo |
-| `logoUrl` | `String` | Full URL to the locale logo image | 
+| `logoUrl` | `String` | Full URL to the locale logo image |
+| `createdAt` | `String!` | Creation timestamp (ISO 8601 format) |
+| `updatedAt` | `String!` | Last update timestamp (ISO 8601 format) |
 
 ## Common Use Cases
 
@@ -338,7 +348,9 @@ query GetLocalesWithDetails {
         name
         direction
         logoPath
-        logoUrl 
+        logoUrl
+        createdAt
+        updatedAt
       }
     }
     pageInfo {

@@ -18,7 +18,6 @@ examples:
               status
               createdAt
               updatedAt
-              productId
             }
             cursor
           }
@@ -48,8 +47,7 @@ examples:
                   "comment": "This jacket is incredibly warm and comfortable. I love wearing it on cold days or when I'm going for a hike. It's also very stylish and looks great with a pair of jeans or chinos.",
                   "status": 0,
                   "createdAt": "2023-11-16T12:23:20+05:30",
-                  "updatedAt": "2023-12-01T10:44:45+05:30",
-                  "productId": 357
+                  "updatedAt": "2023-12-01T10:44:45+05:30"
                 },
                 "cursor": "MA=="
               },
@@ -63,8 +61,7 @@ examples:
                   "comment": "I can't believe how affordable this jacket is for the quality. It's well-made and looks great. I've already gotten so many compliments on it.",
                   "status": 0,
                   "createdAt": "2023-11-16T12:30:54+05:30",
-                  "updatedAt": "2023-11-16T12:31:09+05:30",
-                  "productId": 357
+                  "updatedAt": "2023-11-16T12:31:09+05:30"
                 },
                 "cursor": "MQ=="
               },
@@ -78,8 +75,7 @@ examples:
                   "comment": "Great quality and very comfortable. Highly recommend for anyone looking for a warm jacket.",
                   "status": 0,
                   "createdAt": "2023-11-18T08:15:30+05:30",
-                  "updatedAt": "2023-11-18T08:15:30+05:30",
-                  "productId": 357
+                  "updatedAt": "2023-11-18T08:15:30+05:30"
                 },
                 "cursor": "Mg=="
               }
@@ -103,256 +99,254 @@ examples:
         cause: Rating value is out of valid range
         solution: Use rating between 1 and 5
 
-  - id: get-product-reviews-filtered
-    title: Get Product Reviews - Filtered by Product
-    description: Retrieve product reviews filtered by product ID with optional status and rating filters.
-    query: |
-      query productReviews($productId: Int, $status: Int, $rating: Int, $first: Int, $after: String) {
-        productReviews(productId: $productId, status: $status, rating: $rating, first: $first, after: $after) {
-          edges {
-            node {
-              id
-              _id
-              name
-              title
-              rating
-              comment
-              status
-              createdAt
-              updatedAt
-              productId
-            }
-            cursor
-          }
-          pageInfo {
-            hasNextPage
-            endCursor
-            startCursor
-            hasPreviousPage
-          }
-          totalCount
-        }
-      }
-    variables: |
-      {
-        "productId": 357,
-        "status": 0,
-        "rating": 5,
-        "first": 10
-      }
-    response: |
-      {
-        "data": {
-          "productReviews": {
-            "edges": [
-              {
-                "node": {
-                  "id": "/api/shop/reviews/1",
-                  "_id": 1,
-                  "name": "Tom Smith",
-                  "title": "Incredible Product!",
-                  "rating": 5,
-                  "comment": "This jacket is incredibly warm and comfortable. I love wearing it on cold days or when I'm going for a hike. It's also very stylish and looks great with a pair of jeans or chinos.",
-                  "status": 0,
-                  "createdAt": "2023-11-16T12:23:20+05:30",
-                  "updatedAt": "2023-12-01T10:44:45+05:30",
-                  "productId": 357
-                },
-                "cursor": "MA=="
-              },
-              {
-                "node": {
-                  "id": "/api/shop/reviews/2",
-                  "_id": 2,
-                  "name": "Thomas Freeman",
-                  "title": "High Quality & Affordable",
-                  "rating": 5,
-                  "comment": "I can't believe how affordable this jacket is for the quality. It's well-made and looks great. I've already gotten so many compliments on it.",
-                  "status": 0,
-                  "createdAt": "2023-11-16T12:30:54+05:30",
-                  "updatedAt": "2023-11-16T12:31:09+05:30",
-                  "productId": 357
-                },
-                "cursor": "MQ=="
-              },
-              {
-                "node": {
-                  "id": "/api/shop/reviews/8",
-                  "_id": 8,
-                  "name": "Sarah Johnson",
-                  "title": "Excellent Value",
-                  "rating": 5,
-                  "comment": "Outstanding quality for the price. Very satisfied with my purchase. Would buy again!",
-                  "status": 0,
-                  "createdAt": "2023-12-02T14:45:20+05:30",
-                  "updatedAt": "2023-12-02T14:45:20+05:30",
-                  "productId": 357
-                },
-                "cursor": "Mw=="
-              }
-            ],
-            "pageInfo": {
-              "hasNextPage": false,
-              "endCursor": "Mw==",
-              "startCursor": "MA==",
-              "hasPreviousPage": false
-            },
-            "totalCount": 3
-          }
-        }
-      }
-    commonErrors:
-      - error: invalid-pagination
-        cause: Invalid pagination arguments or exceeding maximum limit
-        solution: Use valid first/after or last/before combinations with max value 100
-      - error: invalid-product-id
-        cause: Product ID is not a valid integer
-        solution: Use a valid numeric product ID
-      - error: invalid-rating
-        cause: Rating value is out of valid range
-        solution: Use rating between 1 and 5
-      - error: invalid-status
-        cause: Status value is not valid
-        solution: Use status 0 (pending), 1 (approved), or 2 (rejected)
+  # - id: get-product-reviews-filtered
+  #   title: Get Product Reviews - Filtered by Product
+  #   description: Retrieve product reviews filtered by product ID with optional status and rating filters.
+  #   query: |
+  #     query productReviews($productId: Int, $status: Int, $rating: Int, $first: Int, $after: String) {
+  #       productReviews(productId: $productId, status: $status, rating: $rating, first: $first, after: $after) {
+  #         edges {
+  #           node {
+  #             id
+  #             _id
+  #             name
+  #             title
+  #             rating
+  #             comment
+  #             status
+  #             createdAt
+  #             updatedAt
+  #             productId
+  #           }
+  #           cursor
+  #         }
+  #         pageInfo {
+  #           hasNextPage
+  #           endCursor
+  #           startCursor
+  #           hasPreviousPage
+  #         }
+  #         totalCount
+  #       }
+  #     }
+  #   variables: |
+  #     {
+  #       "productId": 357,
+  #       "status": 0,
+  #       "rating": 5,
+  #       "first": 10
+  #     }
+  #   response: |
+  #     {
+  #       "data": {
+  #         "productReviews": {
+  #           "edges": [
+  #             {
+  #               "node": {
+  #                 "id": "/api/shop/reviews/1",
+  #                 "_id": 1,
+  #                 "name": "Tom Smith",
+  #                 "title": "Incredible Product!",
+  #                 "rating": 5,
+  #                 "comment": "This jacket is incredibly warm and comfortable. I love wearing it on cold days or when I'm going for a hike. It's also very stylish and looks great with a pair of jeans or chinos.",
+  #                 "status": 0,
+  #                 "createdAt": "2023-11-16T12:23:20+05:30",
+  #                 "updatedAt": "2023-12-01T10:44:45+05:30", 
+  #               },
+  #               "cursor": "MA=="
+  #             },
+  #             {
+  #               "node": {
+  #                 "id": "/api/shop/reviews/2",
+  #                 "_id": 2,
+  #                 "name": "Thomas Freeman",
+  #                 "title": "High Quality & Affordable",
+  #                 "rating": 5,
+  #                 "comment": "I can't believe how affordable this jacket is for the quality. It's well-made and looks great. I've already gotten so many compliments on it.",
+  #                 "status": 0,
+  #                 "createdAt": "2023-11-16T12:30:54+05:30",
+  #                 "updatedAt": "2023-11-16T12:31:09+05:30", 
+  #               },
+  #               "cursor": "MQ=="
+  #             },
+  #             {
+  #               "node": {
+  #                 "id": "/api/shop/reviews/8",
+  #                 "_id": 8,
+  #                 "name": "Sarah Johnson",
+  #                 "title": "Excellent Value",
+  #                 "rating": 5,
+  #                 "comment": "Outstanding quality for the price. Very satisfied with my purchase. Would buy again!",
+  #                 "status": 0,
+  #                 "createdAt": "2023-12-02T14:45:20+05:30",
+  #                 "updatedAt": "2023-12-02T14:45:20+05:30",
+  #                 "productId": 357
+  #               },
+  #               "cursor": "Mw=="
+  #             }
+  #           ],
+  #           "pageInfo": {
+  #             "hasNextPage": false,
+  #             "endCursor": "Mw==",
+  #             "startCursor": "MA==",
+  #             "hasPreviousPage": false
+  #           },
+  #           "totalCount": 3
+  #         }
+  #       }
+  #     }
+  #   commonErrors:
+  #     - error: invalid-pagination
+  #       cause: Invalid pagination arguments or exceeding maximum limit
+  #       solution: Use valid first/after or last/before combinations with max value 100
+  #     - error: invalid-product-id
+  #       cause: Product ID is not a valid integer
+  #       solution: Use a valid numeric product ID
+  #     - error: invalid-rating
+  #       cause: Rating value is out of valid range
+  #       solution: Use rating between 1 and 5
+  #     - error: invalid-status
+  #       cause: Status value is not valid
+  #       solution: Use status 0 (pending), 1 (approved), or 2 (rejected)
 
-  - id: get-product-reviews-complete
-    title: Get Product Reviews - Complete Details
-    description: Retrieve all product reviews with complete pagination information and all filters applied.
-    query: |
-      query productReviews($productId: Int, $status: Int, $rating: Int, $first: Int, $after: String, $last: Int, $before: String) {
-        productReviews(productId: $productId, status: $status, rating: $rating, first: $first, after: $after, last: $last, before: $before) {
-          edges {
-            node {
-              id
-              _id
-              name
-              title
-              rating
-              comment
-              status
-              createdAt
-              updatedAt
-              productId
-            }
-            cursor
-          }
-          pageInfo {
-            endCursor
-            startCursor
-            hasNextPage
-            hasPreviousPage
-          }
-          totalCount
-        }
-      }
-    variables: |
-      {
-        "first": 5
-      }
-    response: |
-      {
-        "data": {
-          "productReviews": {
-            "edges": [
-              {
-                "node": {
-                  "id": "/api/shop/reviews/1",
-                  "_id": 1,
-                  "name": "Tom Smith",
-                  "title": "Incredible Product!",
-                  "rating": 5,
-                  "comment": "This jacket is incredibly warm and comfortable. I love wearing it on cold days or when I'm going for a hike. It's also very stylish and looks great with a pair of jeans or chinos.",
-                  "status": 0,
-                  "createdAt": "2023-11-16T12:23:20+05:30",
-                  "updatedAt": "2023-12-01T10:44:45+05:30",
-                  "productId": 357
-                },
-                "cursor": "MA=="
-              },
-              {
-                "node": {
-                  "id": "/api/shop/reviews/2",
-                  "_id": 2,
-                  "name": "Thomas Freeman",
-                  "title": "High Quality & Affordable",
-                  "rating": 5,
-                  "comment": "I can't believe how affordable this jacket is for the quality. It's well-made and looks great. I've already gotten so many compliments on it.",
-                  "status": 0,
-                  "createdAt": "2023-11-16T12:30:54+05:30",
-                  "updatedAt": "2023-11-16T12:31:09+05:30",
-                  "productId": 357
-                },
-                "cursor": "MQ=="
-              },
-              {
-                "node": {
-                  "id": "/api/shop/reviews/3",
-                  "_id": 3,
-                  "name": "Emma Wilson",
-                  "title": "Perfect Winter Essential",
-                  "rating": 4,
-                  "comment": "Great quality and very comfortable. Highly recommend for anyone looking for a warm jacket.",
-                  "status": 0,
-                  "createdAt": "2023-11-18T08:15:30+05:30",
-                  "updatedAt": "2023-11-18T08:15:30+05:30",
-                  "productId": 357
-                },
-                "cursor": "Mg=="
-              },
-              {
-                "node": {
-                  "id": "/api/shop/reviews/4",
-                  "_id": 4,
-                  "name": "James Brown",
-                  "title": "Good Value",
-                  "rating": 4,
-                  "comment": "Nice jacket, good quality. Would recommend to friends and family.",
-                  "status": 0,
-                  "createdAt": "2023-11-20T16:30:15+05:30",
-                  "updatedAt": "2023-11-20T16:30:15+05:30",
-                  "productId": 357
-                },
-                "cursor": "Mw=="
-              },
-              {
-                "node": {
-                  "id": "/api/shop/reviews/5",
-                  "_id": 5,
-                  "name": "Lisa Anderson",
-                  "title": "Excellent Quality",
-                  "rating": 5,
-                  "comment": "Best jacket I've ever owned. Highly recommended for anyone looking for quality and style.",
-                  "status": 0,
-                  "createdAt": "2023-11-22T09:45:22+05:30",
-                  "updatedAt": "2023-11-22T09:45:22+05:30",
-                  "productId": 357
-                },
-                "cursor": "NA=="
-              }
-            ],
-            "pageInfo": {
-              "endCursor": "NA==",
-              "startCursor": "MA==",
-              "hasNextPage": true,
-              "hasPreviousPage": false
-            },
-            "totalCount": 45
-          }
-        }
-      }
-    commonErrors:
-      - error: invalid-pagination
-        cause: Invalid pagination arguments or exceeding maximum limit
-        solution: Use valid first/after or last/before combinations with max value 100
-      - error: invalid-product-id
-        cause: Product ID is not a valid integer
-        solution: Use a valid numeric product ID
-      - error: invalid-rating
-        cause: Rating value is out of valid range
-        solution: Use rating between 1 and 5
-      - error: invalid-status
-        cause: Status value is not valid
-        solution: Use status 0 (pending), 1 (approved), or 2 (rejected)
+  # - id: get-product-reviews-complete
+  #   title: Get Product Reviews - Complete Details
+  #   description: Retrieve all product reviews with complete pagination information and all filters applied.
+  #   query: |
+  #     query productReviews($productId: Int, $status: Int, $rating: Int, $first: Int, $after: String, $last: Int, $before: String) {
+  #       productReviews(productId: $productId, status: $status, rating: $rating, first: $first, after: $after, last: $last, before: $before) {
+  #         edges {
+  #           node {
+  #             id
+  #             _id
+  #             name
+  #             title
+  #             rating
+  #             comment
+  #             status
+  #             createdAt
+  #             updatedAt
+  #             productId
+  #           }
+  #           cursor
+  #         }
+  #         pageInfo {
+  #           endCursor
+  #           startCursor
+  #           hasNextPage
+  #           hasPreviousPage
+  #         }
+  #         totalCount
+  #       }
+  #     }
+  #   variables: |
+  #     {
+  #       "first": 5
+  #     }
+  #   response: |
+  #     {
+  #       "data": {
+  #         "productReviews": {
+  #           "edges": [
+  #             {
+  #               "node": {
+  #                 "id": "/api/shop/reviews/1",
+  #                 "_id": 1,
+  #                 "name": "Tom Smith",
+  #                 "title": "Incredible Product!",
+  #                 "rating": 5,
+  #                 "comment": "This jacket is incredibly warm and comfortable. I love wearing it on cold days or when I'm going for a hike. It's also very stylish and looks great with a pair of jeans or chinos.",
+  #                 "status": 0,
+  #                 "createdAt": "2023-11-16T12:23:20+05:30",
+  #                 "updatedAt": "2023-12-01T10:44:45+05:30",
+  #                 "productId": 357
+  #               },
+  #               "cursor": "MA=="
+  #             },
+  #             {
+  #               "node": {
+  #                 "id": "/api/shop/reviews/2",
+  #                 "_id": 2,
+  #                 "name": "Thomas Freeman",
+  #                 "title": "High Quality & Affordable",
+  #                 "rating": 5,
+  #                 "comment": "I can't believe how affordable this jacket is for the quality. It's well-made and looks great. I've already gotten so many compliments on it.",
+  #                 "status": 0,
+  #                 "createdAt": "2023-11-16T12:30:54+05:30",
+  #                 "updatedAt": "2023-11-16T12:31:09+05:30",
+  #                 "productId": 357
+  #               },
+  #               "cursor": "MQ=="
+  #             },
+  #             {
+  #               "node": {
+  #                 "id": "/api/shop/reviews/3",
+  #                 "_id": 3,
+  #                 "name": "Emma Wilson",
+  #                 "title": "Perfect Winter Essential",
+  #                 "rating": 4,
+  #                 "comment": "Great quality and very comfortable. Highly recommend for anyone looking for a warm jacket.",
+  #                 "status": 0,
+  #                 "createdAt": "2023-11-18T08:15:30+05:30",
+  #                 "updatedAt": "2023-11-18T08:15:30+05:30",
+  #                 "productId": 357
+  #               },
+  #               "cursor": "Mg=="
+  #             },
+  #             {
+  #               "node": {
+  #                 "id": "/api/shop/reviews/4",
+  #                 "_id": 4,
+  #                 "name": "James Brown",
+  #                 "title": "Good Value",
+  #                 "rating": 4,
+  #                 "comment": "Nice jacket, good quality. Would recommend to friends and family.",
+  #                 "status": 0,
+  #                 "createdAt": "2023-11-20T16:30:15+05:30",
+  #                 "updatedAt": "2023-11-20T16:30:15+05:30",
+  #                 "productId": 357
+  #               },
+  #               "cursor": "Mw=="
+  #             },
+  #             {
+  #               "node": {
+  #                 "id": "/api/shop/reviews/5",
+  #                 "_id": 5,
+  #                 "name": "Lisa Anderson",
+  #                 "title": "Excellent Quality",
+  #                 "rating": 5,
+  #                 "comment": "Best jacket I've ever owned. Highly recommended for anyone looking for quality and style.",
+  #                 "status": 0,
+  #                 "createdAt": "2023-11-22T09:45:22+05:30",
+  #                 "updatedAt": "2023-11-22T09:45:22+05:30",
+  #                 "productId": 357
+  #               },
+  #               "cursor": "NA=="
+  #             }
+  #           ],
+  #           "pageInfo": {
+  #             "endCursor": "NA==",
+  #             "startCursor": "MA==",
+  #             "hasNextPage": true,
+  #             "hasPreviousPage": false
+  #           },
+  #           "totalCount": 45
+  #         }
+  #       }
+  #     }
+  #   commonErrors:
+  #     - error: invalid-pagination
+  #       cause: Invalid pagination arguments or exceeding maximum limit
+  #       solution: Use valid first/after or last/before combinations with max value 100
+  #     - error: invalid-product-id
+  #       cause: Product ID is not a valid integer
+  #       solution: Use a valid numeric product ID
+  #     - error: invalid-rating
+  #       cause: Rating value is out of valid range
+  #       solution: Use rating between 1 and 5
+  #     - error: invalid-status
+  #       cause: Status value is not valid
+  #       solution: Use status 0 (pending), 1 (approved), or 2 (rejected)
 
 ---
 
@@ -377,7 +371,6 @@ This query supports full pagination with cursor-based navigation and flexible fi
 
 | Argument | Type | Required | Description |
 |----------|------|----------|-------------|
-| `productId` | `Int` | ❌ No | Filter reviews by product ID. |
 | `status` | `Int` | ❌ No | Filter by review status (0 = pending, 1 = approved, 2 = rejected). |
 | `rating` | `Int` | ❌ No | Filter by rating value (1-5 stars). |
 | `first` | `Int` | ❌ No | Number of results to return (forward pagination). Max: 100. |
@@ -398,7 +391,6 @@ This query supports full pagination with cursor-based navigation and flexible fi
 | `status` | `Int!` | Review status (0 = pending, 1 = approved, 2 = rejected). |
 | `createdAt` | `DateTime!` | Review creation timestamp. |
 | `updatedAt` | `DateTime!` | Last update timestamp. |
-| `productId` | `Int!` | Associated product ID. |
 | `pageInfo` | `PageInfo!` | Pagination information. |
 | `pageInfo.hasNextPage` | `Boolean!` | Whether more pages exist forward. |
 | `pageInfo.hasPreviousPage` | `Boolean!` | Whether more pages exist backward. |

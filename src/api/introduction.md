@@ -4,6 +4,26 @@ Bagisto provides comprehensive API solutions to help developers integrate and ex
 
 ## Available API Types
 
+### GraphQL API  
+
+The Bagisto GraphQL API enables flexible, efficient data fetching with a single endpoint. Ideal for:
+
+- **Headless Commerce** - Power modern frontend frameworks
+- **Mobile Apps** - Reduce bandwidth with precise data queries
+- **Custom Storefronts** - Build unique shopping experiences
+- **Real-time Applications** - Efficient data synchronization
+
+**Key Features:**
+- Single endpoint for all operations
+- Flexible query structure - fetch exactly what you need
+- Real-time subscriptions support
+- Built on Platform API Laravel 
+- Type-safe schema with introspection
+
+::: tip Modern Development
+GraphQL is perfect for modern frontend frameworks like React, Vue, and React Native. Check out our [GraphQL API Guide](./graphql-api) to get started.
+:::
+
 ### REST API
 
 The Bagisto REST API follows RESTful principles and provides complete access to CRUD operations across all Bagisto features. Perfect for:
@@ -23,32 +43,12 @@ The Bagisto REST API follows RESTful principles and provides complete access to 
 New to REST APIs? Start with our [REST API Guide](./rest-api) for installation steps and examples.
 :::
 
-### GraphQL API  
-
-The Bagisto GraphQL API enables flexible, efficient data fetching with a single endpoint. Ideal for:
-
-- **Headless Commerce** - Power modern frontend frameworks
-- **Mobile Apps** - Reduce bandwidth with precise data queries
-- **Custom Storefronts** - Build unique shopping experiences
-- **Real-time Applications** - Efficient data synchronization
-
-**Key Features:**
-- Single endpoint for all operations
-- Flexible query structure - fetch exactly what you need
-- Real-time subscriptions support
-- Built on Laravel Lighthouse
-- Type-safe schema with introspection
-
-::: tip Modern Development
-GraphQL is perfect for modern frontend frameworks like React, Vue, and React Native. Check out our [GraphQL API Guide](./graphql-api) to get started.
-:::
-
 ## What's Next?
 
 Ready to start building? Choose your preferred API approach:
 
-- 🔗 [REST API Guide](./rest-api/introduction.html) - RESTful API for traditional integrations
 - ⚡ [GraphQL API Guide](./graphql-api/introduction.html) - Modern GraphQL for flexible queries
+- 🔗 [REST API Guide](./rest-api/introduction.html) - RESTful API for traditional integrations
 - 📚 [Installation](./setup) - Installation and setup
 - 🔐 [Authentication](./authentication) - Authentication methods
 - 📊 [Rate Limiting](./rate-limiting) - Understanding API rate limits

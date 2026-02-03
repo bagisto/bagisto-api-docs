@@ -450,7 +450,116 @@ examples:
 # Get Attributes
 
 Retrieve a paginated collection of all product attributes available in the system. This query includes attribute configurations, validation rules, option values with swatches, and translations for multiple locales.
- 
+
+## Query Structure
+
+```graphql
+query getAllAttributes {
+  attributes {
+    edges {
+      node {
+        id
+        _id
+        code
+        adminName
+        type
+        swatchType
+        validation
+        regex
+        position
+        isRequired
+        isUnique
+        isFilterable
+        isComparable
+        isConfigurable
+        isUserDefined
+        isVisibleOnFront
+        valuePerLocale
+        valuePerChannel
+        defaultValue
+        enableWysiwyg
+        createdAt
+        updatedAt
+        columnName
+        validations
+        options {
+          edges {
+            node {
+              id
+              _id
+              adminName
+              sortOrder
+              swatchValue
+              swatchValueUrl
+              translation {
+                id
+                _id
+                attributeOptionId
+                locale
+                label
+              }
+              translations {
+                edges {
+                  node {
+                    id
+                    _id
+                    attributeOptionId
+                    locale
+                    label
+                  }
+                }
+                pageInfo {
+                  endCursor
+                  startCursor
+                  hasNextPage
+                  hasPreviousPage
+                }
+                totalCount
+              }
+            }
+            cursor
+          }
+          pageInfo {
+            endCursor
+            startCursor
+            hasNextPage
+            hasPreviousPage
+          }
+          totalCount
+        }
+        translations {
+          edges {
+            node {
+              id
+              _id
+              attributeId
+              locale
+              name
+            }
+            cursor
+          }
+          pageInfo {
+            endCursor
+            startCursor
+            hasNextPage
+            hasPreviousPage
+          }
+          totalCount
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      endCursor
+      startCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    totalCount
+  }
+}
+```
+
 ## Arguments
 
 | Name | Type | Required | Description |
@@ -517,7 +626,571 @@ Retrieve a paginated collection of all product attributes available in the syste
 | `locale` | String | Locale code (e.g., "en", "ar") |
 | `name` | String | Attribute name in locale |
 | `label` | String | Option label in locale |
- 
+
+## Response Format
+
+The response follows cursor-based pagination with the following structure:
+
+```json
+{
+  "data": {
+    "attributes": {
+      "edges": [
+        {
+          "node": {
+            "id": "/api/shop/attributes/1",
+            "_id": 1,
+            "code": "sku",
+            "adminName": "SKU",
+            // ... attribute fields
+            "options": {
+              "edges": [],
+              "pageInfo": { /* pagination */ },
+              "totalCount": 0
+            },
+            "translations": {
+              "edges": [ /* translations */ ],
+              "pageInfo": { /* pagination */ },
+              "totalCount": 1
+            }
+          },
+          "cursor": "MA=="
+        }
+      ],
+      "pageInfo": {
+        "endCursor": "Mjk=",
+        "startCursor": "MA==",
+        "hasNextPage": true,
+        "hasPreviousPage": false
+      },
+      "totalCount": 38
+    }
+  }
+}
+```
+
+## Examples
+
+### Example 1: Fetch First 10 Attributes
+
+Retrieve the first 10 attributes with their options and translations:
+
+:::: code-group
+::: code-group-item Query
+
+```graphql
+query {
+  attributes(first: 10) {
+    edges {
+      node {
+        id
+        _id
+        code
+        adminName
+        type
+        position
+        isRequired
+        isConfigurable
+        options {
+          edges {
+            node {
+              adminName
+              swatchValue
+            }
+          }
+          totalCount
+        }
+        translations {
+          edges {
+            node {
+              locale
+              name
+            }
+          }
+          totalCount
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
+  }
+}
+```
+
+:::
+::: code-group-item Response
+
+```json
+{
+  "data": {
+    "attributes": {
+      "edges": [
+        {
+          "node": {
+            "id": "/api/shop/attributes/1",
+            "_id": 1,
+            "code": "sku",
+            "adminName": "SKU",
+            "type": "text",
+            "position": 1,
+            "isRequired": "1",
+            "isConfigurable": "0",
+            "options": {
+              "edges": [],
+              "totalCount": 0
+            },
+            "translations": {
+              "edges": [
+                {
+                  "node": {
+                    "locale": "en",
+                    "name": "SKU"
+                  }
+                }
+              ],
+              "totalCount": 1
+            }
+          },
+          "cursor": "MA=="
+        },
+        {
+          "node": {
+            "id": "/api/shop/attributes/2",
+            "_id": 2,
+            "code": "name",
+            "adminName": "Name",
+            "type": "text",
+            "position": 3,
+            "isRequired": "1",
+            "isConfigurable": "0",
+            "options": {
+              "edges": [],
+              "totalCount": 0
+            },
+            "translations": {
+              "edges": [
+                {
+                  "node": {
+                    "locale": "en",
+                    "name": "Name"
+                  }
+                }
+              ],
+              "totalCount": 1
+            }
+          },
+          "cursor": "MQ=="
+        },
+        {
+          "node": {
+            "id": "/api/shop/attributes/23",
+            "_id": 23,
+            "code": "color",
+            "adminName": "Color",
+            "type": "select",
+            "position": 26,
+            "isRequired": "0",
+            "isConfigurable": "1",
+            "options": {
+              "edges": [
+                {
+                  "node": {
+                    "adminName": "Red",
+                    "swatchValue": "#e10e0e"
+                  }
+                },
+                {
+                  "node": {
+                    "adminName": "Green",
+                    "swatchValue": "#155616"
+                  }
+                },
+                {
+                  "node": {
+                    "adminName": "Blue",
+                    "swatchValue": "#0000ff"
+                  }
+                }
+              ],
+              "totalCount": 12
+            },
+            "translations": {
+              "edges": [
+                {
+                  "node": {
+                    "locale": "en",
+                    "name": "Color"
+                  }
+                }
+              ],
+              "totalCount": 2
+            }
+          },
+          "cursor": "MjI="
+        }
+      ],
+      "pageInfo": {
+        "hasNextPage": true,
+        "endCursor": "MTM="
+      },
+      "totalCount": 38
+    }
+  }
+}
+```
+
+:::
+::::
+
+### Example 2: Fetch Configurable Attributes with Options
+
+Retrieve configurable attributes (used for product variations) with complete option details:
+
+:::: code-group
+::: code-group-item Query
+
+```graphql
+query {
+  attributes(first: 20) {
+    edges {
+      node {
+        id
+        _id
+        code
+        adminName
+        type
+        swatchType
+        isConfigurable
+        options {
+          edges {
+            node {
+              id
+              _id
+              adminName
+              sortOrder
+              swatchValue
+              swatchValueUrl
+              translation {
+                locale
+                label
+              }
+            }
+          }
+          totalCount
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
+  }
+}
+```
+
+:::
+::: code-group-item Response
+
+```json
+{
+  "data": {
+    "attributes": {
+      "edges": [
+        {
+          "node": {
+            "id": "/api/shop/attributes/23",
+            "_id": 23,
+            "code": "color",
+            "adminName": "Color",
+            "type": "select",
+            "swatchType": "color",
+            "isConfigurable": "1",
+            "options": {
+              "edges": [
+                {
+                  "node": {
+                    "id": "/api/shop/attribute-options/1",
+                    "_id": 1,
+                    "adminName": "Red",
+                    "sortOrder": 0,
+                    "swatchValue": "#e10e0e",
+                    "swatchValueUrl": null,
+                    "translation": {
+                      "locale": "en",
+                      "label": "Red"
+                    }
+                  }
+                },
+                {
+                  "node": {
+                    "id": "/api/shop/attribute-options/2",
+                    "_id": 2,
+                    "adminName": "Green",
+                    "sortOrder": 1,
+                    "swatchValue": "#155616",
+                    "swatchValueUrl": null,
+                    "translation": {
+                      "locale": "en",
+                      "label": "Green"
+                    }
+                  }
+                },
+                {
+                  "node": {
+                    "id": "/api/shop/attribute-options/3",
+                    "_id": 3,
+                    "adminName": "Yellow",
+                    "sortOrder": 2,
+                    "swatchValue": "#f6fa00",
+                    "swatchValueUrl": null,
+                    "translation": {
+                      "locale": "en",
+                      "label": "Yellow"
+                    }
+                  }
+                }
+              ],
+              "totalCount": 12
+            }
+          },
+          "cursor": "MjI="
+        },
+        {
+          "node": {
+            "id": "/api/shop/attributes/24",
+            "_id": 24,
+            "code": "size",
+            "adminName": "Size",
+            "type": "select",
+            "swatchType": "text",
+            "isConfigurable": "1",
+            "options": {
+              "edges": [
+                {
+                  "node": {
+                    "id": "/api/shop/attribute-options/6",
+                    "_id": 6,
+                    "adminName": "S",
+                    "sortOrder": 0,
+                    "swatchValue": "S",
+                    "swatchValueUrl": null,
+                    "translation": {
+                      "locale": "en",
+                      "label": "S"
+                    }
+                  }
+                },
+                {
+                  "node": {
+                    "id": "/api/shop/attribute-options/7",
+                    "_id": 7,
+                    "adminName": "M",
+                    "sortOrder": 1,
+                    "swatchValue": "M",
+                    "swatchValueUrl": null,
+                    "translation": {
+                      "locale": "en",
+                      "label": "M"
+                    }
+                  }
+                },
+                {
+                  "node": {
+                    "id": "/api/shop/attribute-options/8",
+                    "_id": 8,
+                    "adminName": "L",
+                    "sortOrder": 2,
+                    "swatchValue": "L",
+                    "swatchValueUrl": null,
+                    "translation": {
+                      "locale": "en",
+                      "label": "L"
+                    }
+                  }
+                }
+              ],
+              "totalCount": 6
+            }
+          },
+          "cursor": "MjM="
+        }
+      ],
+      "pageInfo": {
+        "hasNextPage": true,
+        "endCursor": "MjM="
+      },
+      "totalCount": 38
+    }
+  }
+}
+```
+
+:::
+::::
+
+### Example 3: Fetch Attributes with Multi-locale Translations
+
+Retrieve attributes with complete translation information across all locales:
+
+:::: code-group
+::: code-group-item Query
+
+```graphql
+query {
+  attributes(first: 5) {
+    edges {
+      node {
+        id
+        code
+        adminName
+        type
+        validations
+        translations {
+          edges {
+            node {
+              locale
+              name
+            }
+          }
+          totalCount
+        }
+        options {
+          edges {
+            node {
+              adminName
+              translations {
+                edges {
+                  node {
+                    locale
+                    label
+                  }
+                }
+                totalCount
+              }
+            }
+          }
+          totalCount
+        }
+      }
+    }
+    pageInfo {
+      totalCount
+      hasNextPage
+    }
+  }
+}
+```
+
+:::
+::: code-group-item Response
+
+```json
+{
+  "data": {
+    "attributes": {
+      "edges": [
+        {
+          "node": {
+            "id": "/api/shop/attributes/9",
+            "code": "short_description",
+            "adminName": "Short Description",
+            "type": "textarea",
+            "validations": "{ required: true }",
+            "translations": {
+              "edges": [
+                {
+                  "node": {
+                    "locale": "ar",
+                    "name": ""
+                  }
+                },
+                {
+                  "node": {
+                    "locale": "en",
+                    "name": "Short Description"
+                  }
+                }
+              ],
+              "totalCount": 2
+            },
+            "options": {
+              "edges": [],
+              "totalCount": 0
+            }
+          }
+        },
+        {
+          "node": {
+            "id": "/api/shop/attributes/23",
+            "code": "color",
+            "adminName": "Color",
+            "type": "select",
+            "validations": "{  }",
+            "translations": {
+              "edges": [
+                {
+                  "node": {
+                    "locale": "ar",
+                    "name": ""
+                  }
+                },
+                {
+                  "node": {
+                    "locale": "en",
+                    "name": "Color"
+                  }
+                }
+              ],
+              "totalCount": 2
+            },
+            "options": {
+              "edges": [
+                {
+                  "node": {
+                    "adminName": "Red",
+                    "translations": {
+                      "edges": [
+                        {
+                          "node": {
+                            "locale": "ar",
+                            "label": ""
+                          }
+                        },
+                        {
+                          "node": {
+                            "locale": "en",
+                            "label": "Red"
+                          }
+                        }
+                      ],
+                      "totalCount": 2
+                    }
+                  }
+                }
+              ],
+              "totalCount": 12
+            }
+          }
+        }
+      ],
+      "pageInfo": {
+        "totalCount": 38,
+        "hasNextPage": true
+      }
+    }
+  }
+}
+```
+
+:::
+::::
+
 ## Pagination Details
 
 Attributes use cursor-based pagination for efficient data retrieval:

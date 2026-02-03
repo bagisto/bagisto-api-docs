@@ -5,24 +5,22 @@ examples:
     title: Verify Email Token
     description: Verify a customer's email using a verification token.
     query: |
-      mutation verifyToken($input: VerifyTokenInput!) {
-        verifyToken(input: $input) {
-          message
-          success
-        }
-      }
-    variables: |
-      {
-        "input": {
-          "token": "verification-token-from-email"
+      mutation createVerifyToken {
+        createVerifyToken(input: {}) {
+          verifyToken {
+            isValid
+            message
+          }
         }
       }
     response: |
       {
         "data": {
-          "verifyToken": {
-            "message": "Email verified successfully",
-            "success": true
+          "createVerifyToken": {
+            "verifyToken": {
+              "isValid": true,
+              "message": "Token is valid"
+            }
           }
         }
       }
@@ -30,25 +28,26 @@ examples:
 
 # Verify Customer Token
 
-Verify a customer's email address using a verification token.
+Verify a customer's token is valid or not.
 
-## Arguments
+## Request Headers
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `token` | String | ✅ Yes | Email verification token sent to customer |
-
+| `Authorization` | String | ✅ Yes | Customer login token use as Bearer Token |
+| `X-STOREFRONT-KEY` | String | ✅ Yes | Storefront API key for authentication |
+ 
 ## Response
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `message` | String | Success or error message |
-| `success` | Boolean | Verification success status |
+| `isValid` | Boolean | Verification success status |
 
 ## Use Cases
 
-- Email verification during registration
-- Email change verification
+- Check user login or not
+- Customer token is valid or not
 - Account activation
 
 ## Error Responses
@@ -56,15 +55,11 @@ Verify a customer's email address using a verification token.
 ```json
 {
   "errors": {
-    "token": ["The verification token is invalid or has expired."]
+    "token": ["Unauthenticated. Please login to perform this action"]
   }
 }
 ```
-
-## Token Expiration
-
-Verification tokens typically expire after a configurable period (usually 24-48 hours). If a token expires, the customer should request a new verification email.
-
+ 
 ## Related Documentation
 
 - [Customer Registration](/api/graphql/shop/mutations/customer-registration)

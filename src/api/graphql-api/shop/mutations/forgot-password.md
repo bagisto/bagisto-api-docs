@@ -5,17 +5,19 @@ examples:
     title: Forgot Password
     description: Request a password reset email for an account.
     query: |
-      mutation forgotPassword($input: ForgotPasswordInput!) {
-        forgotPassword(input: $input) {
-          message
-          success
+      mutation createForgotPassword($email: String!) {
+        createForgotPassword(input: {
+          email: $email
+        }) {
+          forgotPassword {
+            success
+            message
+          }
         }
       }
     variables: |
       {
-        "input": {
-          "email": "john.doe@example.com"
-        }
+        "email": "john.doe@example.com"
       }
     response: |
       {

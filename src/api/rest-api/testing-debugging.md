@@ -8,7 +8,7 @@ The documentation uses centralized API configuration. Update these URLs in `.vit
 
 ```typescript
 // REST API Base URL
-export const REST_API_URL = 'http://127.0.0.1:8001'
+export const REST_API_URL = 'http://127.0.0.1:8000'
 
 // GraphQL API Base URL
 export const GRAPHQL_API_URL = 'http://127.0.0.1:8000'
@@ -62,7 +62,7 @@ http://your-domain.com/api/docs.html
 If GraphQL is enabled on the same instance:
 
 ```
-http://your-domain.com/graphql
+http://your-domain.com/api/graphql
 ```
 
 **Note:** GraphQL and REST APIs are complementary - use GraphQL for complex queries and mutations, REST APIs for simple CRUD operations.
@@ -74,14 +74,14 @@ The most reliable method for API testing and CI/CD pipelines.
 ### Basic GET Request
 
 ```bash
-curl -X GET 'http://127.0.0.1:8001/api/shop/locales/1' \
+curl -X GET 'http://127.0.0.1:8000/api/shop/locales/1' \
   -H 'Accept: application/json'
 ```
 
 ### GET with Authentication
 
 ```bash
-curl -X GET 'http://127.0.0.1:8001/api/customer_profiles' \
+curl -X GET 'http://127.0.0.1:8000/api/customer_profiles' \
   -H 'Accept: application/json' \
   -H 'Authorization: Bearer YOUR_ACCESS_TOKEN'
 ```
@@ -89,7 +89,7 @@ curl -X GET 'http://127.0.0.1:8001/api/customer_profiles' \
 ### POST Request with Body
 
 ```bash
-curl -X POST 'http://127.0.0.1:8001/api/shop/customers/login' \
+curl -X POST 'http://127.0.0.1:8000/api/shop/customers/login' \
   -H 'Content-Type: application/json' \
   -d '{
     "email": "customer@example.com",
@@ -100,7 +100,7 @@ curl -X POST 'http://127.0.0.1:8001/api/shop/customers/login' \
 ### With Custom Headers
 
 ```bash
-curl -X POST 'http://127.0.0.1:8001/api/shop/add-product-in-cart' \
+curl -X POST 'http://127.0.0.1:8000/api/shop/add-product-in-cart' \
   -H 'Content-Type: application/json' \
   -H 'X-Cart-Token: YOUR_CART_TOKEN' \
   -H 'Accept-Language: en_US' \
@@ -114,7 +114,7 @@ curl -X POST 'http://127.0.0.1:8001/api/shop/add-product-in-cart' \
 
 ```bash
 # Login and extract token
-TOKEN=$(curl -s -X POST 'http://127.0.0.1:8001/api/shop/customers/login' \
+TOKEN=$(curl -s -X POST 'http://127.0.0.1:8000/api/shop/customers/login' \
   -H 'Content-Type: application/json' \
   -d '{
     "email": "customer@example.com",
@@ -124,7 +124,7 @@ TOKEN=$(curl -s -X POST 'http://127.0.0.1:8001/api/shop/customers/login' \
 echo "Token: $TOKEN"
 
 # Use token in subsequent request
-curl -X GET 'http://127.0.0.1:8001/api/customer_profiles' \
+curl -X GET 'http://127.0.0.1:8000/api/customer_profiles' \
   -H 'Authorization: Bearer '$TOKEN \
   -H 'Accept: application/json'
 ```
@@ -133,7 +133,7 @@ curl -X GET 'http://127.0.0.1:8001/api/customer_profiles' \
 
 ```bash
 # Show response headers along with body
-curl -i -X GET 'http://127.0.0.1:8001/api/shop/products' \
+curl -i -X GET 'http://127.0.0.1:8000/api/shop/products' \
   -H 'Accept: application/json'
 ```
 
@@ -141,7 +141,7 @@ curl -i -X GET 'http://127.0.0.1:8001/api/shop/products' \
 
 ```bash
 # Install jq: apt-get install jq (Linux) or brew install jq (Mac)
-curl -s -X GET 'http://127.0.0.1:8001/api/shop/products' \
+curl -s -X GET 'http://127.0.0.1:8000/api/shop/products' \
   -H 'Accept: application/json' | jq
 ```
 
@@ -162,7 +162,7 @@ curl -s -X GET 'http://127.0.0.1:8001/api/shop/products' \
    - Click "Create"
    - Add variables:
      ```
-     base_url: http://127.0.0.1:8001
+     base_url: http://127.0.0.1:8000
      access_token: YOUR_TOKEN_HERE
      cart_token: YOUR_CART_TOKEN_HERE
      ```
@@ -187,7 +187,7 @@ Similar to Postman with a cleaner interface:
 1. **Create New Request:**
    - Click "+" button
    - Select HTTP method (GET, POST, etc.)
-   - Enter URL: `http://127.0.0.1:8001/api/shop/locales/1`
+   - Enter URL: `http://127.0.0.1:8000/api/shop/locales/1`
 
 2. **Add Headers:**
    - Click "Header" tab
@@ -211,7 +211,7 @@ Use browser console or Node.js to test:
 
 ```javascript
 // Simple GET request
-fetch('http://127.0.0.1:8001/api/shop/locales/1', {
+fetch('http://127.0.0.1:8000/api/shop/locales/1', {
   method: 'GET',
   headers: {
     'Accept': 'application/json'
@@ -227,7 +227,7 @@ fetch('http://127.0.0.1:8001/api/shop/locales/1', {
 ```javascript
 const token = 'YOUR_ACCESS_TOKEN';
 
-fetch('http://127.0.0.1:8001/api/customer_profiles', {
+fetch('http://127.0.0.1:8000/api/customer_profiles', {
   method: 'GET',
   headers: {
     'Accept': 'application/json',
@@ -252,7 +252,7 @@ const payload = {
   password: 'password123'
 };
 
-fetch('http://127.0.0.1:8001/api/shop/customers/login', {
+fetch('http://127.0.0.1:8000/api/shop/customers/login', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -299,7 +299,7 @@ async function testAPI(url, options = {}) {
 }
 
 // Usage
-testAPI('http://127.0.0.1:8001/api/shop/products')
+testAPI('http://127.0.0.1:8000/api/shop/products')
   .then(data => console.log(data));
 ```
 
@@ -339,18 +339,18 @@ When an API request fails, check these items:
 ### ✅ Authentication Issues
 ```bash
 # Verify token is valid
-curl -X GET 'http://127.0.0.1:8001/api/customer_profiles' \
+curl -X GET 'http://127.0.0.1:8000/api/customer_profiles' \
   -H 'Authorization: Bearer YOUR_TOKEN'
 
 # Check token expiration
-curl -X POST 'http://127.0.0.1:8001/api/shop/refresh-token' \
+curl -X POST 'http://127.0.0.1:8000/api/shop/refresh-token' \
   -H 'Authorization: Bearer YOUR_TOKEN'
 ```
 
 ### ✅ CORS Issues
 ```bash
 # Check if CORS headers are present
-curl -i -X OPTIONS 'http://127.0.0.1:8001/api/shop/products' \
+curl -i -X OPTIONS 'http://127.0.0.1:8000/api/shop/products' \
   -H 'Origin: http://localhost:3000'
 
 # Response should include:
@@ -361,7 +361,7 @@ curl -i -X OPTIONS 'http://127.0.0.1:8001/api/shop/products' \
 ### ✅ Content-Type Issues
 ```bash
 # Always include Content-Type for POST/PATCH
-curl -X POST 'http://127.0.0.1:8001/api/shop/customers/login' \
+curl -X POST 'http://127.0.0.1:8000/api/shop/customers/login' \
   -H 'Content-Type: application/json' \
   -d '{"email":"user@example.com","password":"pass"}'
 ```
@@ -372,7 +372,7 @@ curl -X POST 'http://127.0.0.1:8001/api/shop/customers/login' \
 echo '{"email":"user@example.com","password":"pass"}' | jq .
 
 # Check for missing required fields
-curl -X POST 'http://127.0.0.1:8001/api/shop/customers' \
+curl -X POST 'http://127.0.0.1:8000/api/shop/customers' \
   -H 'Content-Type: application/json' \
   -d '{"email":"user@example.com"}' # Missing password
 ```
@@ -380,7 +380,7 @@ curl -X POST 'http://127.0.0.1:8001/api/shop/customers' \
 ### ✅ Rate Limiting
 ```bash
 # Check rate limit headers
-curl -i -X GET 'http://127.0.0.1:8001/api/shop/products' \
+curl -i -X GET 'http://127.0.0.1:8000/api/shop/products' \
   -H 'Accept: application/json'
 
 # Response headers:
@@ -394,7 +394,7 @@ curl -i -X GET 'http://127.0.0.1:8001/api/shop/products' \
 ### ✅ Timeout Issues
 ```bash
 # Increase timeout for slow requests
-curl --max-time 30 -X GET 'http://127.0.0.1:8001/api/shop/products?itemsPerPage=1000'
+curl --max-time 30 -X GET 'http://127.0.0.1:8000/api/shop/products?itemsPerPage=1000'
 
 # Node.js timeout
 fetch(url, { signal: AbortSignal.timeout(5000) })
@@ -481,10 +481,10 @@ fetch(url, { signal: AbortSignal.timeout(5000) })
 **Testing both:**
 ```bash
 # REST - Get single locale
-curl -X GET 'http://127.0.0.1:8001/api/shop/locales/1'
+curl -X GET 'http://127.0.0.1:8000/api/shop/locales/1'
 
 # GraphQL - Query with flexibility
-curl -X POST 'http://127.0.0.1:8001/graphql' \
+curl -X POST 'http://127.0.0.1:8000/graphql' \
   -H 'Content-Type: application/json' \
   -d '{"query":"{ locale(id:1) { id code name direction } }"}'
 ```
@@ -495,7 +495,7 @@ curl -X POST 'http://127.0.0.1:8001/graphql' \
 
 ```bash
 # Measure endpoint response time
-time curl -s -X GET 'http://127.0.0.1:8001/api/shop/products?page=1' \
+time curl -s -X GET 'http://127.0.0.1:8000/api/shop/products?page=1' \
   -H 'Accept: application/json' | jq . > /dev/null
 
 # Output: real 0m0.234s (234ms)
@@ -507,7 +507,7 @@ time curl -s -X GET 'http://127.0.0.1:8001/api/shop/products?page=1' \
 # Install: apt-get install apache2-utils
 
 # Test endpoint with 100 requests, 10 concurrent
-ab -n 100 -c 10 'http://127.0.0.1:8001/api/shop/products'
+ab -n 100 -c 10 'http://127.0.0.1:8000/api/shop/products'
 ```
 
 ### Load Testing with wrk
@@ -516,14 +516,14 @@ ab -n 100 -c 10 'http://127.0.0.1:8001/api/shop/products'
 # Install: apt-get install wrk or brew install wrk
 
 # Test with 4 threads, 100 connections, 30 second duration
-wrk -t4 -c100 -d30s 'http://127.0.0.1:8001/api/shop/products'
+wrk -t4 -c100 -d30s 'http://127.0.0.1:8000/api/shop/products'
 ```
 
 ## Automated Testing with Jest
 
 ```javascript
 describe('REST API - Locales', () => {
-  const baseURL = 'http://127.0.0.1:8001';
+  const baseURL = 'http://127.0.0.1:8000';
 
   test('GET single locale', async () => {
     const response = await fetch(`${baseURL}/api/shop/locales/1`);

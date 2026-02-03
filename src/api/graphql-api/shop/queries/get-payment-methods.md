@@ -5,55 +5,33 @@ examples:
     title: Get Payment Methods
     description: Retrieve available payment methods for checkout.
     query: |
-      query getPaymentMethods {
-        paymentMethods {
-          edges {
-            node {
-              id
-              code
-              title
-              description
-              isActive
-            }
-          }
+      query checkoutPaymentMethods {
+        collectionPaymentMethods(token: "") {
+          id
+          _id
+          method
+          title
+          description
+          icon
+          id
+          isAllowed
+          
         }
       }
-    variables: |
-      {}
     response: |
       {
         "data": {
-          "paymentMethods": {
-            "edges": [
-              {
-                "node": {
-                  "id": "1",
-                  "code": "paypal",
-                  "title": "PayPal",
-                  "description": "Pay safely with PayPal",
-                  "isActive": true
+            "collectionPaymentMethods": [
+                {
+                    "id": "/api/.well-known/genid/0b8f9e6495ca9fce8943",
+                    "_id": "moneytransfer",
+                    "method": "moneytransfer",
+                    "title": "Money Transfer",
+                    "description": "Money Transfer",
+                    "icon": "https://api-demo.bagisto.com/themes/shop/default/build/assets/money-transfer-BNjtOcYo.png",
+                    "isAllowed": null
                 }
-              },
-              {
-                "node": {
-                  "id": "2",
-                  "code": "stripe",
-                  "title": "Stripe",
-                  "description": "Credit card payment via Stripe",
-                  "isActive": true
-                }
-              },
-              {
-                "node": {
-                  "id": "3",
-                  "code": "cash_on_delivery",
-                  "title": "Cash on Delivery",
-                  "description": "Pay when you receive your order",
-                  "isActive": true
-                }
-              }
             ]
-          }
         }
       }
 ---
@@ -62,29 +40,45 @@ examples:
 
 Retrieve available payment methods for checkout.
 
-## Arguments
 
-This query has no required arguments.
+## Query Parameters
 
-## Response
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `token` | String | No | **Deprecated** - Keep empty. Use Authorization header instead |
+
+## Authentication
+
+This query supports both authenticated customers and guest users:
+
+- **Authenticated customers**: Provide a valid customer authentication token in the `Authorization` header. Obtain this token via the [Customer Login API](/api/graphql-api/shop/mutations/customer-login).
+- **Guest users**: Provide a valid customer authentication token in the `Authorization` header.
+
+```
+Authorization: Bearer <accessToken>
+```
+
+## Response Fields
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | String | Payment method ID |
-| `code` | String | Payment method code (for setting) |
+| `id` | String | API resource identifier |
+| `_id` | String | Payment method identifier |
+| `method` | String | Payment method code (for setting) |
 | `title` | String | Display name |
 | `description` | String | Method description |
-| `isActive` | Boolean | Is method enabled |
+| `icon` | String | Payment method icon URL |
+| `isAllowed` | Boolean \| null | Whether method is allowed for current cart |
 
 ## Common Methods
 
-| Code | Title | Description |
-|------|-------|-------------|
+| Method | Title | Description |
+|--------|-------|-------------|
+| `moneytransfer` | Money Transfer | Direct money transfer payment |
 | `paypal` | PayPal | PayPal online payment |
 | `stripe` | Stripe | Credit/debit card via Stripe |
 | `cash_on_delivery` | Cash on Delivery | Pay when item is delivered |
 | `bank_transfer` | Bank Transfer | Manual bank transfer |
-| `credit_card` | Credit Card | Direct credit card payment |
 
 ## Method Availability
 

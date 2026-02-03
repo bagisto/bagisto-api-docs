@@ -5,19 +5,11 @@ examples:
     title: Update Customer Profile
     description: Update the authenticated customer's profile information.
     query: |
-      mutation updateCustomerProfile($input: UpdateCustomerProfileInput!) {
-        updateCustomerProfile(input: $input) {
-          customer {
+      mutation updateCustomerProfile($input: createCustomerProfileUpdateInput!) {  
+        createCustomerProfileUpdate(input: $input) {
+          customerProfileUpdate {
             id
-            firstName
-            lastName
-            email
-            dateOfBirth
-            gender
-            updatedAt
           }
-          message
-          success
         }
       }
     variables: |
@@ -35,15 +27,7 @@ examples:
           "updateCustomerProfile": {
             "customer": {
               "id": "1",
-              "firstName": "Jane",
-              "lastName": "Doe",
-              "email": "john.doe@example.com",
-              "dateOfBirth": "1990-01-15",
-              "gender": "female",
-              "updatedAt": "2024-01-15T11:45:00Z"
             },
-            "message": "Customer profile updated successfully",
-            "success": true
           }
         }
       }

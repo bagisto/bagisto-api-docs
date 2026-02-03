@@ -5,24 +5,30 @@ examples:
     title: Customer Login
     description: Authenticate a customer with email and password.
     query: |
-      mutation customerLogin($input: createCustomerLoginInput!) {
-        createCustomerLogin(input: $input) {
+      mutation createCustomerLogin(
+        $email: String!
+        $password: String!
+      ) {
+        createCustomerLogin(
+          input: {
+            email: $email
+            password: $password
+          }
+        ) {
           customerLogin {
             id
             _id
-            apiToken
+            apiToken      
             token
-            message
             success
+            message
           }
         }
       }
     variables: |
       {
-        "input": {
           "email": "john.doe@example.com",
           "password": "SecurePass@123"
-        }
       }
     response: |
       {
@@ -31,10 +37,10 @@ examples:
             "customerLogin": {
               "id": "1",
               "_id": 1,
-              "apiToken": "k0qai81TSMEKjzvjTfVozwu1cJiZFocQWa0TSDyHzULF5Wml4fTPpbRUg400BAMMZcqKucoGWkOD30F4",
-              "token": "1|uBBNWI06iuca83vMidTSaNTvjrxqM9Si9EJB0iPo5ccb21c1",
-              "message": "You have logged in successfully",
-              "success": true
+              "apiToken": "OOxDk2s06JCndg5FHb8WbfF6ZR8jGq23168m9gm37J9Cmz4xah8B8AFK0Cp95x...",
+              "token": "1|xy56RHXcttcDnimTHVEGIeyxzMKAWX6MyICCsZTA7dc...",
+              "success": true,
+              "message": "You have logged in successfully"
             }
           }
         }
@@ -56,76 +62,32 @@ Authenticate a customer account with email and password.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | String | API customer resource ID |
-| `_id` | Integer | Customer database ID |
-| `apiToken` | String | API authentication token |
-| `token` | String | Customer session token |
+| `createCustomerLogin` | Customer | The authenticated customer login object |
+| `token` | String | JWT token for API authentication |
 | `message` | String | Success or error message |
 | `success` | Boolean | Login success status |
 
 ## Token Usage
 
-Once logged in, use the `apiToken` or `token` in the `Authorization` header for authenticated requests:
+Once logged in, use the `token` in the `Authorization` header for authenticated requests:
 
 ```
 Authorization: Bearer <token>
 ```
+e.g.
+```
+"Authorization": "Bearer 220|KZhQuUwUzb6Z7j....."
+```
 
 ## Error Responses
 
-**Invalid Email or Password (200):**
 ```json
 {
-  "data": {
-    "createCustomerLogin": {
-      "customerLogin": {
-        "id": "0",
-        "_id": 0,
-        "apiToken": "",
-        "token": "",
-        "message": "Invalid email or password",
-        "success": false
-      }
-    }
+  "errors": {
+    "email": ["Invalid email or password."]
   }
 }
 ```
-
-**Account Suspended (200):**
-```json
-{
-  "data": {
-    "createCustomerLogin": {
-      "customerLogin": {
-        "id": "0",
-        "_id": 0,
-        "apiToken": "",
-        "token": "",
-        "message": "Your account has been suspended",
-        "success": false
-      }
-    }
-  }
-}
-```
-
-**Missing Fields (400):**
-```json
-{
-  "errors": [
-    {
-      "message": "The email field is required."
-    }
-  ]
-}
-```
-
-## Token Details
-
-- `apiToken`: Long-lived API authentication token
-- `token`: Session token for immediate use
-- Both tokens can be used in the `Authorization: Bearer` header
-- Tokens expire after a configurable period (typically 24 hours)
 
 ## Related Documentation
 

@@ -5,24 +5,18 @@ examples:
     title: Delete Customer Account
     description: Permanently delete the authenticated customer's account.
     query: |
-      mutation deleteCustomerProfile($input: DeleteCustomerProfileInput!) {
-        deleteCustomerProfile(input: $input) {
-          message
-          success
-        }
-      }
-    variables: |
-      {
-        "input": {
-          "password": "SecurePassword123!"
-        }
+      mutation deleteCustomerProfile {
+        createCustomerProfileDelete(input: {}) {
+          customerProfileDelete {
+            id
+          }
+        } 
       }
     response: |
       {
         "data": {
-          "deleteCustomerProfile": {
-            "message": "Customer account deleted successfully",
-            "success": true
+          "createCustomerProfileDelete": {
+            "customerProfileDelete": null
           }
         }
       }
@@ -40,18 +34,6 @@ Permanently delete the authenticated customer's account and all associated data.
 Authorization: Bearer <accessToken>
 ```
 
-## Arguments
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `password` | String | ✅ Yes | Customer's password for verification |
-
-## Response
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `message` | String | Success or error message |
-| `success` | Boolean | Deletion success status |
 
 ## Important Notes
 
@@ -69,8 +51,7 @@ When a customer account is deleted:
 ```json
 {
   "errors": {
-    "password": ["The provided password is incorrect."],
-    "authentication": ["Unauthorized: Invalid or expired token"]
+    "message": "Invalid or expired token",
   }
 }
 ```

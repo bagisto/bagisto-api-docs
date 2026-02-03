@@ -5,52 +5,41 @@ examples:
     title: Get Shipping Methods
     description: Retrieve available shipping methods for checkout.
     query: |
-      query getShippingMethods($cartId: String!) {
-        shippingMethods(cartId: $cartId) {
-          edges {
-            node {
-              id
-              code
-              title
-              description
-              price
-              basePrice
-            }
-          }
+      query checkoutShippingRates {
+        collectionShippingRates(token: "") {
+          _id
+          id
+          code
+          description
+          method
+          price
+          label
         }
-      }
-    variables: |
-      {
-        "cartId": "cart-123"
       }
     response: |
       {
-        "data": {
-          "shippingMethods": {
-            "edges": [
-              {
-                "node": {
-                  "id": "1",
-                  "code": "flatrate_flatrate",
-                  "title": "Flat Rate",
-                  "description": "Fixed shipping cost",
-                  "price": 10.00,
-                  "basePrice": 10.00
-                }
-              },
-              {
-                "node": {
-                  "id": "2",
-                  "code": "free_shipping",
-                  "title": "Free Shipping",
-                  "description": "Free shipping for orders",
-                  "price": 0.00,
-                  "basePrice": 0.00
-                }
-              }
-            ]
+          "data": {
+              "collectionShippingRates": [
+                  {
+                      "_id": "flatrate_flatrate_flatrate",
+                      "id": "/api/.well-known/genid/f14f85f51f8e3efd572e",
+                      "code": "flatrate",
+                      "description": "Flat Rate Shipping",
+                      "method": "flatrate_flatrate",
+                      "price": 20,
+                      "label": "Flat Rate"
+                  },
+                  {
+                      "_id": "free_free_free",
+                      "id": "/api/.well-known/genid/f14f85f51f8e3efd572e",
+                      "code": "free",
+                      "description": "Free Shipping",
+                      "method": "free_free",
+                      "price": 0,
+                      "label": "Free Shipping"
+                  }
+              ]
           }
-        }
       }
 ---
 
@@ -58,22 +47,34 @@ examples:
 
 Retrieve available shipping methods for a cart during checkout.
 
-## Arguments
+## Query Parameters
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `cartId` | String | ✅ Yes | Cart ID |
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `token` | String | No | **Deprecated** - Keep empty. Use Authorization header instead |
 
-## Response
+## Authentication
+
+This query supports both authenticated customers and guest users:
+
+- **Authenticated customers**: Provide a valid customer authentication token in the `Authorization` header. Obtain this token via the [Customer Login API](/api/graphql-api/shop/mutations/customer-login).
+- **Guest users**: Provide a valid customer authentication token in the `Authorization` header.
+
+```
+Authorization: Bearer <accessToken>
+```
+
+## Response Fields
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | String | Shipping method ID |
-| `code` | String | Shipping method code (for setting) |
-| `title` | String | Display name |
-| `description` | String | Method description |
-| `price` | Float | Shipping cost |
-| `basePrice` | Float | Base price before discounts |
+| `_id` | String | Internal shipping method identifier |
+| `id` | String | API resource identifier |
+| `code` | String | Shipping method code (used for selection) |
+| `description` | String | Human-readable method description |
+| `method` | String | Shipping method identifier |
+| `price` | Float | Shipping cost amount |
+| `label` | String | Display label for the shipping method |
 
 ## Prerequisites
 
@@ -86,11 +87,10 @@ Retrieve available shipping methods for a cart during checkout.
 
 ## Common Methods
 
-| Code | Title | Description |
-|------|-------|-------------|
-| `flatrate_flatrate` | Flat Rate | Fixed shipping cost |
-| `free_shipping` | Free Shipping | No shipping charge |
-| `table_rates` | Table Rates | Dynamic rates based on cart |
+| Code | Method | Label | Price | Description |
+|------|--------|-------|-------|-------------|
+| `flatrate` | `flatrate_flatrate` | Flat Rate | 20 | Fixed shipping cost |
+| `free` | `free_free` | Free Shipping | 0 | No shipping charge |
 
 ## Use Cases
 

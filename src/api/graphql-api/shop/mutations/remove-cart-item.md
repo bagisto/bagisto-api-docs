@@ -5,26 +5,41 @@ examples:
     title: Remove Item from Cart
     description: Remove a specific item from the shopping cart.
     query: |
-      mutation removeCartItem($cart_id: String!, $item_id: ID!) {
-        removeCartItem(input: {cart_id: $cart_id, item_id: $item_id}) {
-          cart {
+      mutation removeItem(
+          $cartItemId: Int!
+      ) {
+        createRemoveCartItem(
+          input: { cartItemId: $cartItemId}
+        ) {
+          removeCartItem {
             id
+            _id
+            cartToken
             items {
-              id
-              product {
-                id
-                name
+              totalCount
+              edges {
+                node {
+                  id
+                  cartId
+                  productId
+                  name
+                  sku
+                  quantity
+                  price
+                  basePrice
+                  total
+                  baseTotal
+                  productUrlKey
+                  canChangeQty
+                }
               }
-              quantity
             }
           }
-          message
         }
       }
     variables: |
       {
-        "cart_id": "eyJpdiI6IjhWM...",
-        "item_id": "1"
+          "cartItemId": 54
       }
     response: |
       {
@@ -62,12 +77,21 @@ The `removeCartItem` mutation deletes a product from a customer's shopping cart.
 
 This mutation removes the line item completely, updates inventory, and recalculates cart totals, discounts, and taxes.
 
+## Authentication
+
+This mutation supports both authenticated customers and guest users:
+
+- **Authenticated customers**: Provide a valid customer authentication token in the `Authorization` header. Obtain this token via the [Customer Login API](/api/graphql-api/shop/mutations/customer-login).
+- **Guest users**: Provide the `cartToken` obtained from the [Create Cart mutation](/api/graphql-api/shop/mutations/create-cart).
+
+```
+Authorization: Bearer <accessToken>
+```
 ## Arguments
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `cart_id` | `String!` | Cart token identifying which cart to modify. |
-| `item_id` | `ID!` | The cart line item ID to remove (from cart items). |
+| `cartItemId` | `String!` | Cart Item id. |
 
 ## Possible Returns
 

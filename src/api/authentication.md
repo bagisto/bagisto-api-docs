@@ -6,9 +6,9 @@ Bagisto provides multiple authentication methods to secure your API requests. Ch
 
 | Your Use Case | Authentication Method | API Type | Read More |
 |---|---|---|---|
-| **Public data** (products, categories) | `X-STOREFRONT-KEY` header | Shop API | [Public APIs](#1-public-apis-storefront) |
-| **Customer operations** (cart, orders, profile) | `X-STOREFRONT-KEY` + Bearer token | Shop API | [Customer APIs](#2-customer-apis) |
-| **Admin operations** (manage products, inventory) | Bearer token (admin) | Admin API | [Admin APIs](#3-admin-apis) |
+| **Public data** (products, categories) | `X-STOREFRONT-KEY` header | Shop API | [Public APIs](#_1-public-apis-storefront) |
+| **Customer operations** (cart, orders, profile) | `X-STOREFRONT-KEY` + Bearer token | Shop API | [Customer APIs](#_2-customer-apis) |
+| **Admin operations** (manage products, inventory) | Bearer token (admin) | Admin API | [Admin APIs](#_3-admin-apis) |
 
 ## Authentication Architecture
 
@@ -65,7 +65,7 @@ curl -X GET "https://your-domain.com/api/shop/products" \
 **3. Or a GraphQL request:**
 
 ```bash
-curl -X POST "https://your-domain.com/graphql" \
+curl -X POST "https://your-domain.com/api/graphql" \
   -H "Content-Type: application/json" \
   -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
   -d '{

@@ -22,7 +22,7 @@ examples:
       }
     variables: |
       {
-        "countryId": 1
+        "countryId": 16
       }
     response: |
       {
@@ -31,36 +31,36 @@ examples:
             "edges": [
               {
                 "node": {
-                  "id": "/api/shop/country-states/1",
-                  "_id": 1,
-                  "code": "AL",
-                  "defaultName": "Alabama",
-                  "countryId": 1,
-                  "countryCode": "US"
+                  "id": "/api/shop/country-states/95",
+                  "_id": 95,
+                  "code": "WI",
+                  "defaultName": "Wien",
+                  "countryId": "16",
+                  "countryCode": "AT"
                 }
               },
               {
                 "node": {
-                  "id": "/api/shop/country-states/2",
-                  "_id": 2,
-                  "code": "AK",
-                  "defaultName": "Alaska",
-                  "countryId": 1,
-                  "countryCode": "US"
+                  "id": "/api/shop/country-states/96",
+                  "_id": 96,
+                  "code": "NO",
+                  "defaultName": "Niederösterreich",
+                  "countryId": "16",
+                  "countryCode": "AT"
                 }
               },
               {
                 "node": {
-                  "id": "/api/shop/country-states/3",
-                  "_id": 3,
-                  "code": "AZ",
-                  "defaultName": "Arizona",
-                  "countryId": 1,
-                  "countryCode": "US"
+                  "id": "/api/shop/country-states/97",
+                  "_id": 97,
+                  "code": "OO",
+                  "defaultName": "Oberösterreich",
+                  "countryId": "16",
+                  "countryCode": "AT"
                 }
               }
             ],
-            "totalCount": 50
+            "totalCount": 9
           }
         }
       }
@@ -103,7 +103,7 @@ examples:
       }
     variables: |
       {
-        "countryId": 1
+        "countryId": 16
       }
     response: |
       {
@@ -116,7 +116,7 @@ examples:
                   "_id": 1,
                   "code": "AL",
                   "defaultName": "Alabama",
-                  "countryId": 1,
+                  "countryId": 16,
                   "countryCode": "US",
                   "translations": {
                     "edges": [
@@ -152,7 +152,7 @@ examples:
                   "_id": 2,
                   "code": "AK",
                   "defaultName": "Alaska",
-                  "countryId": 1,
+                  "countryId": 16,
                   "countryCode": "US",
                   "translations": {
                     "edges": [
@@ -213,7 +213,7 @@ examples:
       }
     variables: |
       {
-        "countryId": 1,
+        "countryId": 16,
         "first": 10,
         "after": null
       }
@@ -228,7 +228,7 @@ examples:
                   "_id": 1,
                   "code": "AL",
                   "defaultName": "Alabama",
-                  "countryId": 1,
+                  "countryId": 16,
                   "countryCode": "US"
                 },
                 "cursor": "MA=="
@@ -239,7 +239,7 @@ examples:
                   "_id": 2,
                   "code": "AK",
                   "defaultName": "Alaska",
-                  "countryId": 1,
+                  "countryId": 16,
                   "countryCode": "US"
                 },
                 "cursor": "MQ=="

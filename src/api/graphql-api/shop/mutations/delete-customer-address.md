@@ -5,24 +5,26 @@ examples:
     title: Delete Customer Address
     description: Delete a customer address.
     query: |
-      mutation deleteCustomerAddress($input: DeleteCustomerAddressInput!) {
-        deleteCustomerAddress(input: $input) {
-          message
-          success
+      mutation deleteCustomerAddress($input: createDeleteCustomerAddressInput!) {
+        createDeleteCustomerAddress(input: $input) {
+          deleteCustomerAddress {
+            id
+          }
         }
       }
     variables: |
       {
         "input": {
-          "id": "5"
+          "addressId": 2858
         }
       }
     response: |
       {
         "data": {
-          "deleteCustomerAddress": {
-            "message": "Address deleted successfully",
-            "success": true
+          "createDeleteCustomerAddress": {
+            "deleteCustomerAddress": {
+              "id": "2858"
+            }
           }
         }
       }
@@ -44,14 +46,13 @@ Authorization: Bearer <accessToken>
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `id` | String | ✅ Yes | Address ID to delete |
+| `addressId` | String | ✅ Yes | Address ID to delete |
 
 ## Response
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `message` | String | Success or error message |
-| `success` | Boolean | Deletion success status |
+| `createDeleteCustomerAddress` | String | Return deleted customer address object |
 
 ## Important Notes
 
@@ -64,8 +65,7 @@ Authorization: Bearer <accessToken>
 ```json
 {
   "errors": {
-    "id": ["Address not found."],
-    "address": ["Cannot delete the default address."]
+    "message": "Address not found or does not belong to this customer",
   }
 }
 ```

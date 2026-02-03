@@ -5,49 +5,188 @@ examples:
     title: Update Cart Item Quantity
     description: Modify the quantity of an item in the shopping cart.
     query: |
-      mutation updateCartItem($cart_id: String!, $item_id: ID!, $quantity: Int!) {
-        updateCartItem(input: {cart_id: $cart_id, item_id: $item_id, quantity: $quantity}) {
-          cart {
-            id
-            items {
-              id
-              product {
-                id
-                name
-              }
-              quantity
-              price
-            }
+      mutation createUpdateCartItem(
+          $cartItemId: Int!
+          $quantity: Int!
+      ) {
+        createUpdateCartItem(
+          input: {
+            cartItemId: $cartItemId
+            quantity: $quantity
           }
-          message
+        ) {
+          updateCartItem {
+            id
+            _id      
+            cartToken
+            customerId
+            channelId
+            subtotal
+            baseSubtotal
+            discountAmount
+            baseDiscountAmount
+            taxAmount
+            baseTaxAmount
+            shippingAmount
+            baseShippingAmount
+            grandTotal
+            baseGrandTotal
+            formattedSubtotal
+            formattedDiscountAmount
+            formattedTaxAmount
+            formattedShippingAmount
+            formattedGrandTotal
+            couponCode
+            items {
+              totalCount
+              pageInfo {
+                startCursor
+                endCursor
+                hasNextPage
+                hasPreviousPage
+              }
+              edges {
+                cursor
+                node {
+                  id
+                  cartId
+                  productId
+                  name
+                  sku
+                  quantity
+                  price
+                  basePrice
+                  total
+                  baseTotal
+                  discountAmount
+                  baseDiscountAmount
+                  taxAmount
+                  baseTaxAmount
+                  type
+                  formattedPrice
+                  formattedTotal
+                  priceInclTax
+                  basePriceInclTax
+                  formattedPriceInclTax
+                  totalInclTax
+                  baseTotalInclTax
+                  formattedTotalInclTax
+                  productUrlKey
+                  canChangeQty
+                }
+              }
+            }
+            success
+            message
+            sessionToken
+            isGuest
+            itemsQty
+            itemsCount
+            haveStockableItems
+            paymentMethod
+            paymentMethodTitle
+            subTotalInclTax
+            baseSubTotalInclTax
+            formattedSubTotalInclTax
+            taxTotal
+            formattedTaxTotal
+            shippingAmountInclTax
+            baseShippingAmountInclTax
+            formattedShippingAmountInclTax
+          }
         }
       }
     variables: |
       {
-        "cart_id": "eyJpdiI6IjhWM...",
-        "item_id": "1",
-        "quantity": 5
+          "cartItemId": 3,
+          "quantity": 1
       }
     response: |
       {
         "data": {
-          "updateCartItem": {
-            "cart": {
-              "id": "1",
-              "items": [
-                {
-                  "id": "1",
-                  "product": {
-                    "id": "1",
-                    "name": "Product Name"
-                  },
-                  "quantity": 5,
-                  "price": 99.99
+            "createUpdateCartItem": {
+                "updateCartItem": {
+                    "id": "4484",
+                    "_id": 4484,
+                    "cartToken": "4484",
+                    "customerId": 122,
+                    "channelId": 1,
+                    "subtotal": 500,
+                    "baseSubtotal": 500,
+                    "discountAmount": 0,
+                    "baseDiscountAmount": 0,
+                    "taxAmount": 0,
+                    "baseTaxAmount": 0,
+                    "shippingAmount": 0,
+                    "baseShippingAmount": 0,
+                    "grandTotal": 500,
+                    "baseGrandTotal": 500,
+                    "formattedSubtotal": "$500.00",
+                    "formattedDiscountAmount": "$0.00",
+                    "formattedTaxAmount": "$0.00",
+                    "formattedShippingAmount": "$0.00",
+                    "formattedGrandTotal": "$500.00",
+                    "couponCode": null,
+                    "items": {
+                        "totalCount": 1,
+                        "pageInfo": {
+                            "startCursor": "MA==",
+                            "endCursor": "MA==",
+                            "hasNextPage": false,
+                            "hasPreviousPage": false
+                        },
+                        "edges": [
+                            {
+                                "cursor": "MA==",
+                                "node": {
+                                    "id": "5648",
+                                    "cartId": 4484,
+                                    "productId": 2394,
+                                    "name": "Verdant Luxe 2-Seater Velvet Sofa Green",
+                                    "sku": "sku-234235345346-variant-2",
+                                    "quantity": 1,
+                                    "price": 500,
+                                    "basePrice": 500,
+                                    "total": 500,
+                                    "baseTotal": 500,
+                                    "discountAmount": 0,
+                                    "baseDiscountAmount": 0,
+                                    "taxAmount": 0,
+                                    "baseTaxAmount": 0,
+                                    "type": "simple",
+                                    "formattedPrice": "$500.00",
+                                    "formattedTotal": "$500.00",
+                                    "priceInclTax": 500,
+                                    "basePriceInclTax": 500,
+                                    "formattedPriceInclTax": "$500.00",
+                                    "totalInclTax": 500,
+                                    "baseTotalInclTax": 500,
+                                    "formattedTotalInclTax": "$500.00",
+                                    "productUrlKey": "sku-234235345346-variant-2",
+                                    "canChangeQty": true
+                                }
+                            }
+                        ]
+                    },
+                    "success": null,
+                    "message": null,
+                    "sessionToken": null,
+                    "isGuest": false,
+                    "itemsQty": 1,
+                    "itemsCount": 1,
+                    "haveStockableItems": true,
+                    "paymentMethod": null,
+                    "paymentMethodTitle": null,
+                    "subTotalInclTax": 500,
+                    "baseSubTotalInclTax": 500,
+                    "formattedSubTotalInclTax": "$500.00",
+                    "taxTotal": 0,
+                    "formattedTaxTotal": "$0.00",
+                    "shippingAmountInclTax": 0,
+                    "baseShippingAmountInclTax": 0,
+                    "formattedShippingAmountInclTax": "$0.00"
                 }
-              ]
-            },
-            "message": "Item quantity updated successfully"
-          }
+            }
         }
       }
     commonErrors:
@@ -74,28 +213,24 @@ The `updateCartItem` mutation modifies the quantity or options of an existing ca
 
 This mutation validates the new quantity against available inventory and updates cart totals including any applicable discounts and taxes.
 
-## Arguments
+## Authentication
 
-| Argument | Type | Description |
-|----------|------|-------------|
-| `cart_id` | `String!` | Cart token identifying which cart to update. |
-| `item_id` | `ID!` | The cart line item ID to update (from cart items list). |
-| `quantity` | `Int` | New quantity. Use 0 to effectively remove item. Min: 1. |
-| `options` | `[CartItemOption!]` | Updated product options if changing variants/options. |
+This mutation supports both authenticated customers and guest users:
 
+- **Authenticated customers**: Provide a valid customer authentication token in the `Authorization` header. Obtain this token via the [Customer Login API](/api/graphql-api/shop/mutations/customer-login).
+- **Guest users**: Provide the `cartToken` obtained from the [Create Cart mutation](/api/graphql-api/shop/mutations/create-cart).
+
+```
+Authorization: Bearer <accessToken>
+```
+ 
 ## Possible Returns
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `cart` | `Cart!` | Updated cart with modified item. |
-| `cartItem` | `CartItem!` | The updated cart line item. |
-| `cartItem.id` | `String!` | Cart item identifier. |
-| `cartItem.product` | `Product!` | Product information. |
-| `cartItem.quantity` | `Int!` | Updated quantity. |
-| `cartItem.lineTotal` | `Float!` | Recalculated line total. |
+| `createUpdateCartItem` | `Cart!` | Updated cart with modified item. |
+| `updateCartItem` | `CartItem!` | The updated cart. |
 | `message` | `String!` | Success or error message. |
 | `success` | `Boolean!` | Indicates successful update. |
-| `cart.subTotal` | `Float!` | Updated cart subtotal. |
-| `cart.total` | `Float!` | Updated cart grand total. |
 | `errors` | `[ErrorMessage!]` | Validation errors if quantity unavailable. |
 

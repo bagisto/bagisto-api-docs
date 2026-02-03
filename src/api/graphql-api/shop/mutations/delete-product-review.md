@@ -15,7 +15,7 @@ examples:
     variables: |
       {
         "input": {
-          "id": "/api/admin/reviews/93"
+          "id": "/api/shop/reviews/93"
         }
       }
     response: |
@@ -23,7 +23,7 @@ examples:
         "data": {
           "deleteProductReview": {
             "productReview": {
-              "id": "/api/admin/reviews/93"
+              "id": "/api/shop/reviews/93"
             }
           }
         }
@@ -31,10 +31,10 @@ examples:
     commonErrors:
       - error: id-required
         cause: Review ID parameter is missing
-        solution: Provide the review ID in IRI format (e.g., "/api/admin/reviews/93")
+        solution: Provide the review ID in IRI format (e.g., "/api/shop/reviews/93")
       - error: invalid-id-format
-        cause: Invalid ID format. Expected IRI format like "/api/admin/reviews/93"
-        solution: Use IRI format ID (/api/admin/reviews/{id}) for review deletion
+        cause: Invalid ID format. Expected IRI format like "/api/shop/reviews/93"
+        solution: Use IRI format ID (/api/shop/reviews/{id}) for review deletion
       - error: not-found
         cause: Review with given ID does not exist
         solution: Verify the review ID is correct and the review exists
@@ -54,7 +54,7 @@ examples:
     variables: |
       {
         "input": {
-          "id": "/api/admin/reviews/92",
+          "id": "/api/shop/reviews/60",
           "clientMutationId": "delete-review-mutation-001"
         }
       }
@@ -63,7 +63,7 @@ examples:
         "data": {
           "deleteProductReview": {
             "productReview": {
-              "id": "/api/admin/reviews/92"
+              "id": "/api/shop/reviews/60"
             },
             "clientMutationId": "delete-review-mutation-001"
           }
@@ -72,10 +72,10 @@ examples:
     commonErrors:
       - error: id-required
         cause: Review ID parameter is missing
-        solution: Provide the review ID in IRI format (e.g., "/api/admin/reviews/93")
+        solution: Provide the review ID in IRI format (e.g., "/api/shop/reviews/93")
       - error: invalid-id-format
-        cause: Invalid ID format. Expected IRI format like "/api/admin/reviews/93"
-        solution: Use IRI format ID (/api/admin/reviews/{id}) for review deletion
+        cause: Invalid ID format. Expected IRI format like "/api/shop/reviews/93"
+        solution: Use IRI format ID (/api/shop/reviews/{id}) for review deletion
       - error: not-found
         cause: Review with given ID does not exist
         solution: Verify the review ID is correct and the review exists
@@ -105,7 +105,7 @@ This mutation requires the review ID in IRI format and is a permanent operation 
 
 | Argument | Type | Required | Description |
 |----------|------|----------|-------------|
-| `id` | `ID!` | ✅ Yes | Review ID in IRI format (e.g., `/api/admin/reviews/93`). Required for identifying which review to delete. |
+| `id` | `ID!` | ✅ Yes | Review ID in IRI format (e.g., `/api/shop/reviews/93`). Required for identifying which review to delete. |
 | `clientMutationId` | `String` | ❌ No | Optional client mutation tracking ID for audit trail. |
 
 ## Input Fields Details
@@ -113,9 +113,9 @@ This mutation requires the review ID in IRI format and is a permanent operation 
 ### id
 - **Type**: ID (IRI Format)
 - **Required**: Yes
-- **Format**: `/api/admin/reviews/{id}` or `/api/shop/reviews/{id}`
+- **Format**: `/api/shop/reviews/{id}` or `/api/shop/reviews/{id}`
 - **Description**: Unique identifier for the review being deleted.
-- **Example**: `/api/admin/reviews/93`
+- **Example**: `/api/shop/reviews/93`
 - **Note**: Only IRI format is supported; numeric IDs are not accepted.
 - **Important**: This operation is permanent and cannot be reversed.
 
@@ -138,9 +138,9 @@ This mutation requires the review ID in IRI format and is a permanent operation 
 
 ### Valid ID Format (IRI)
 ```
-/api/admin/reviews/93
-/api/shop/reviews/92
-/api/admin/reviews/100
+/api/shop/reviews/93
+/api/shop/reviews/60
+/api/shop/reviews/100
 ```
 
 ### Invalid Formats (Not Supported)
@@ -253,7 +253,7 @@ When review deletion fails due to database constraints or triggers.
 
 ```
 Event: Product Review Deleted
-Review ID: /api/admin/reviews/93
+Review ID: /api/shop/reviews/93
 Mutation ID: delete-review-mutation-001
 User: admin@example.com
 Timestamp: 2025-12-26T20:15:30+05:30

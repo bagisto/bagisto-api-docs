@@ -5,58 +5,64 @@ examples:
     title: Create Customer Address
     description: Create a new address for the authenticated customer.
     query: |
-      mutation createCustomerAddress($input: CreateCustomerAddressInput!) {
-        createCustomerAddress(input: $input) {
-          address {
+      mutation createCustomerAddress($input: createAddUpdateCustomerAddressInput!) {
+        createAddUpdateCustomerAddress(input: $input) {
+          addUpdateCustomerAddress{
             id
             firstName
-            lastName
-            address
+            lastName      
             city
             state
-            country
-            zipCode
+            country 
             phone
-            isDefault
-            createdAt
+            addressId
+            email
+            phone
+            address1
+            address2
+            postcode
+            useForShipping
+            defaultAddress
           }
-          message
-          success
         }
       }
     variables: |
       {
-        "input": {
+        "input": {  
           "firstName": "John",
           "lastName": "Doe",
-          "address": "123 Main Street",
+          "email": "hello@example.com",
+          "phone": "+918888888888",
+          "address1": "123 Main Street",
+          "address2": "NY",
+          "postcode": "10001",
           "city": "New York",
           "state": "NY",
           "country": "US",
-          "zipCode": "10001",
           "phone": "+1-555-0100",
-          "isDefault": false
+          "useForShipping": true
         }
       }
     response: |
       {
         "data": {
-          "createCustomerAddress": {
-            "address": {
-              "id": "5",
+          "createAddUpdateCustomerAddress": {
+            "addUpdateCustomerAddress": {
+              "id": "2851",
               "firstName": "John",
               "lastName": "Doe",
-              "address": "123 Main Street",
               "city": "New York",
               "state": "NY",
               "country": "US",
-              "zipCode": "10001",
               "phone": "+1-555-0100",
-              "isDefault": false,
-              "createdAt": "2024-01-15T12:00:00Z"
-            },
-            "message": "Address created successfully",
-            "success": true
+              "addressId": 2851,
+              "email": "hello@example.com",
+              "address1": "123 Main Street",
+              "address2": "NY",
+              "postcode": "10001",
+              "useForShipping": true,
+              "defaultAddress": false
+            }
           }
         }
       }
@@ -80,19 +86,19 @@ Authorization: Bearer <accessToken>
 |------|------|----------|-------------|
 | `firstName` | String | ✅ Yes | First name |
 | `lastName` | String | ✅ Yes | Last name |
-| `address` | String | ✅ Yes | Street address |
+| `address1` | String | ✅ Yes | Street address |
 | `city` | String | ✅ Yes | City |
 | `state` | String | ✅ Yes | State/Province |
 | `country` | String | ✅ Yes | Country code (ISO 3166-1 alpha-2) |
 | `zipCode` | String | ✅ Yes | Postal/Zip code |
-| `phone` | String | ❌ No | Phone number |
+| `postcode` | String | ❌ No | Phone number |
 | `isDefault` | Boolean | ❌ No | Set as default address |
 
 ## Response
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `address` | Address | Created address object |
+| `customerAddressToken` | Address | Created address object |
 | `message` | String | Success or error message |
 | `success` | Boolean | Creation success status |
 
@@ -103,18 +109,7 @@ Authorization: Bearer <accessToken>
 - Valid country code must be provided
 - Zip code format depends on country
 - Phone number should be in valid format
-
-## Error Responses
-
-```json
-{
-  "errors": {
-    "address": ["The address field is required."],
-    "country": ["Invalid country code."]
-  }
-}
-```
-
+ 
 ## Related Documentation
 
 - [Get Customer Addresses](/api/graphql/shop/queries/get-customer-addresses)

@@ -54,25 +54,27 @@ curl -X POST https://your-domain.com/api/graphql \
 # 1. Create cart token
 mutation {
   createCartToken(input: {}) {
-    cartToken
+    cartToken {
+      id
+      cartToken
+    }
   }
 }
 
 # 2. Add product to guest cart
 mutation {
   addProductsToCart(input: {
-    cartId: "your-cart-id"
-    items: [
-      { productId: "1", quantity: 2 }
-    ]
+    productId: 50
+    quantity: 1
   }) {
-    cart {
+    addProductInCart {
       id
       items {
         edges {
           node {
             id
-            product { name price }
+            name
+            sku
           }
         }
       }
@@ -82,25 +84,12 @@ mutation {
 
 # 3. Proceed to checkout
 mutation {
-  createGuestOrder(input: {
-    cartId: "your-cart-id"
-    billingAddress: {
-      firstName: "John"
-      lastName: "Doe"
-      email: "john@example.com"
-      address: "123 Main St"
-      city: "New York"
-      country: "US"
-      state: "NY"
-      zipCode: "10001"
-      phoneNumber: "2125551234"
-    }
-    shippingMethod: "flatrate_flatrate"
-    paymentMethod: "paypal"
-  }) {
-    order {
-      id
-      incrementId
+  mutation createCheckoutOrder {
+    createCheckoutOrder(input:{}) {
+      checkoutOrder {
+        id
+        orderId      
+      }
     }
   }
 }
@@ -115,20 +104,42 @@ For registered users, provide a secure login/logout flow.
 ```graphql
 mutation {
   createCustomer(input: {
-    firstName: "John"
-    lastName: "Doe"
-    email: "john@example.com"
-    password: "SecurePassword123!"
-    passwordConfirmation: "SecurePassword123!"
+    firstName: "John",
+    lastName: "Doe",
+    gender: "Male",
+    dateOfBirth: "01/15/1990",
+    phone: "555-0123",
+    status: "1",
+    isVerified: "1",
+    isSuspended: "0",
+    email: "john.doe@example.com",
+    password: "SecurePass@123",
+    confirmPassword: "SecurePass@123",
+    subscribedToNewsLetter: true
   }) {
     customer {
       id
-      firstName
+      _id
+      apiToken
+      channelId
+      customerGroupId
+      dateOfBirth
       email
-      createdAt
+      gender
+      isSuspended
+      isVerified
+      name
+      firstName
+      lastName
+      rememberToken
+      subscribedToNewsLetter
+      status
+      token
+      phone
     }
   }
 }
+
 ```
 
 **Response:**
@@ -151,16 +162,18 @@ mutation {
 
 ```graphql
 mutation {
-  createLogin(input: {
-    email: "john@example.com"
-    password: "SecurePassword123!"
-  }) {
-    accessToken
-    customer {
+  createCustomerLogin(
+    input: {
+      email: "john@example.com"
+      password: "SecurePassword123!"
+    }
+  ) {
+    customerLogin {
       id
-      firstName
-      lastName
-      email
+      _id     
+      token
+      success
+      message
     }
   }
 }
@@ -169,17 +182,18 @@ mutation {
 **Response:**
 ```json
 {
-  "data": {
-    "createLogin": {
-      "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-      "customer": {
-        "id": "1",
-        "firstName": "John",
-        "lastName": "Doe",
-        "email": "john@example.com"
-      }
+    "data": {
+        "createCustomerLogin": {
+            "customerLogin": {
+                "id": "1",
+                "_id": 1,
+                "apiToken": "OOxDk2s06JCndg5FHb8WbfF6ZR8jGq231...",
+                "token": "1|xy56RHXcttcDnimTHVEGIeyxzMKAWX6MyICCsZTA7dc...",
+                "success": true,
+                "message": "You have logged in successfully"
+            }
+        }
     }
-  }
 }
 ```
 

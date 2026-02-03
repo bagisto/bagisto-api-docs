@@ -17,7 +17,7 @@ examples:
       }
     variables: |
       {
-        "id": "1"
+        "id": "16"
       }
     response: |
       {
@@ -128,18 +128,18 @@ examples:
       }
     variables: |
       {
-        "id": "/api/shop/country-states/750"
+        "id": "/api/shop/country-states/16"
       }
     response: |
       {
         "data": {
           "countryState": {
-            "id": "/api/shop/country-states/750",
-            "_id": 750,
-            "code": "AD",
-            "defaultName": "Abu Dhabi",
-            "countryId": 106,
-            "countryCode": "AE"
+            "id": "/api/shop/country-states/16",
+            "_id": 16,
+            "code": "DC",
+            "defaultName": "District of Columbia",
+            "countryId": "244",
+            "countryCode": "US"
           }
         }
       }

@@ -5,8 +5,8 @@ examples:
     title: Get Attribute Options - Basic
     description: Retrieve basic attribute options with pagination.
     query: |
-      query getAttributeOptions($attributeId: Int!, $first: Int) {
-        attributeOptions(attributeId: $attributeId, first: $first) {
+      query getAttributeOptions($first: Int) {
+        attributeOptions(first: $first) {
           edges {
             node {
               id
@@ -24,7 +24,6 @@ examples:
       }
     variables: |
       {
-        "attributeId": 23,
         "first": 10
       }
     response: |
@@ -34,7 +33,7 @@ examples:
             "edges": [
               {
                 "node": {
-                  "id": "/api/shop/attribute-options/1",
+                  "id": "/api/admin/attribute_options/1",
                   "_id": 1,
                   "adminName": "Red",
                   "sortOrder": 0,
@@ -58,20 +57,12 @@ examples:
           }
         }
       }
-    commonErrors:
-      - error: MISSING_ATTRIBUTE_ID
-        cause: attributeId parameter is required but not provided
-        solution: Provide a valid attributeId parameter
-      - error: INVALID_ATTRIBUTE_ID
-        cause: Attribute ID is not a valid integer
-        solution: Ensure attributeId is a numeric value
-
   - id: get-attribute-options-with-translations
     title: Get Attribute Options with Translations
     description: Retrieve attribute options with all available translations for multi-language support.
     query: |
-      query getAttributeOptionsWithTranslations($attributeId: Int!, $first: Int) {
-        attributeOptions(attributeId: $attributeId, first: $first) {
+      query getAttributeOptionsWithTranslations($first: Int) {
+        attributeOptions(first: $first) {
           edges {
             node {
               id
@@ -91,7 +82,6 @@ examples:
       }
     variables: |
       {
-        "attributeId": 23,
         "first": 5
       }
     response: |
@@ -101,7 +91,7 @@ examples:
             "edges": [
               {
                 "node": {
-                  "id": "/api/shop/attribute-options/1",
+                  "id": "/api/admin/attribute_options/1",
                   "adminName": "Red",
                   "sortOrder": 0,
                   "translations": {
@@ -141,8 +131,8 @@ examples:
     title: Get Attribute Options with Swatches
     description: Retrieve attribute options with color or image swatch information.
     query: |
-      query getSwatchOptions($attributeId: Int!, $first: Int) {
-        attributeOptions(attributeId: $attributeId, first: $first) {
+      query getSwatchOptions($first: Int) {
+        attributeOptions(first: $first) {
           edges {
             node {
               id
@@ -159,7 +149,6 @@ examples:
       }
     variables: |
       {
-        "attributeId": 24,
         "first": 20
       }
     response: |
@@ -169,7 +158,7 @@ examples:
             "edges": [
               {
                 "node": {
-                  "id": "/api/shop/attribute-options/10",
+                  "id": "/api/admin/attribute_options/10",
                   "adminName": "Pattern1",
                   "swatchValue": null,
                   "swatchValueUrl": "https://example.com/swatches/pattern1.png",
@@ -181,7 +170,7 @@ examples:
               },
               {
                 "node": {
-                  "id": "/api/shop/attribute-options/11",
+                  "id": "/api/admin/attribute_options/11",
                   "adminName": "Pattern2",
                   "swatchValue": null,
                   "swatchValueUrl": "https://example.com/swatches/pattern2.png",
@@ -200,134 +189,6 @@ examples:
         cause: Swatch image URL is invalid
         solution: Verify the swatch image exists and URL is correct
 
-  - id: get-options-by-attribute-id
-    title: Get Options By Attribute ID
-    description: Retrieve all attribute options for a specific attribute with complete details including translations and swatches.
-    query: |
-      query getAttributeOptionsByAttributeID ($id: Int!) {
-        attributeOptions(attributeId: $id) {
-          edges {
-            node {
-              id
-              _id
-              attributeId
-              adminName
-              sortOrder
-              swatchValue
-              swatchValueUrl
-              translation {
-                id
-                _id
-                attributeOptionId
-                locale
-                label
-              }
-              translations {
-                edges {
-                  node {
-                    id
-                    _id
-                    attributeOptionId
-                    locale
-                    label
-                  }
-                }
-                pageInfo {
-                  endCursor
-                  startCursor
-                  hasNextPage
-                  hasPreviousPage
-                }
-                totalCount
-              }
-            }
-            cursor
-          }
-          pageInfo {
-            endCursor
-            startCursor
-            hasNextPage
-            hasPreviousPage
-          }
-          totalCount
-        }
-      }
-    variables: |
-      {
-        "id": 23
-      }
-    response: |
-      {
-        "data": {
-          "attributeOptions": {
-            "edges": [
-              {
-                "node": {
-                  "id": "/api/shop/attribute-options/1",
-                  "_id": 1,
-                  "attributeId": 23,
-                  "adminName": "Red",
-                  "sortOrder": 0,
-                  "swatchValue": "#e10e0e",
-                  "swatchValueUrl": null,
-                  "translation": {
-                    "id": "/api/shop/attribute-option-translations/1",
-                    "_id": 1,
-                    "attributeOptionId": 1,
-                    "locale": "en",
-                    "label": "Red"
-                  },
-                  "translations": {
-                    "edges": [
-                      {
-                        "node": {
-                          "id": "/api/shop/attribute-option-translations/1",
-                          "_id": 1,
-                          "attributeOptionId": 1,
-                          "locale": "en",
-                          "label": "Red"
-                        }
-                      },
-                      {
-                        "node": {
-                          "id": "/api/shop/attribute-option-translations/2",
-                          "_id": 2,
-                          "attributeOptionId": 1,
-                          "locale": "ar",
-                          "label": "أحمر"
-                        }
-                      }
-                    ],
-                    "pageInfo": {
-                      "endCursor": "MQ==",
-                      "startCursor": "MA==",
-                      "hasNextPage": false,
-                      "hasPreviousPage": false
-                    },
-                    "totalCount": 2
-                  }
-                },
-                "cursor": "MA=="
-              }
-            ],
-            "pageInfo": {
-              "endCursor": "MQ==",
-              "startCursor": "MA==",
-              "hasNextPage": false,
-              "hasPreviousPage": false
-            },
-            "totalCount": 5
-          }
-        }
-      }
-    commonErrors:
-      - error: INVALID_ATTRIBUTE_ID
-        cause: Provided attribute ID is invalid
-        solution: Ensure the attribute ID is a valid integer
-      - error: ATTRIBUTE_NOT_FOUND
-        cause: Attribute with given ID does not exist
-        solution: Verify the attribute ID exists in the system
-
   - id: get-attribute-option-by-id
     title: Get Single Attribute Option Detail by Option ID
     description: Retrieve complete details of a single attribute option including all translations and swatch information.
@@ -336,7 +197,6 @@ examples:
         attributeOption (id: $id) {
           id
           _id
-          attributeId
           adminName
           sortOrder
           swatchValue
@@ -370,13 +230,13 @@ examples:
       }
     variables: |
       {
-        "id": "/api/shop/attribute-options/1"
+        "id": "/api/admin/attribute_options/1"
       }
     response: |
       {
         "data": {
           "attributeOption": {
-            "id": "/api/shop/attribute-options/1",
+            "id": "/api/admin/attribute_options/1",
             "_id": 1,
             "attributeId": 23,
             "adminName": "Red",
@@ -444,12 +304,10 @@ examples:
     description: Paginate through large sets of attribute options using cursors.
     query: |
       query getAttributeOptionsPaginated(
-        $attributeId: Int!
         $first: Int
         $after: String
       ) {
         attributeOptions(
-          attributeId: $attributeId
           first: $first
           after: $after
         ) {
@@ -471,7 +329,6 @@ examples:
       }
     variables: |
       {
-        "attributeId": 23,
         "first": 10,
         "after": null
       }
@@ -482,7 +339,7 @@ examples:
             "edges": [
               {
                 "node": {
-                  "id": "/api/shop/attribute-options/1",
+                  "id": "/api/admin/attribute_options/1",
                   "adminName": "Red",
                   "sortOrder": 0
                 },
@@ -515,11 +372,11 @@ examples:
     title: Get Attribute Options via Attribute
     description: Retrieve attribute options as a nested resource within an attribute query.
     query: |
-      query getAttribute($attributeId: String!, $first: Int) {
-        attribute(id: $attributeId) {
+      query getAttribute($id: ID!, $first: Int) {
+        attribute(id: $id) {
           id
           code
-          name
+          adminName    
           options(first: $first) {
             edges {
               node {
@@ -541,9 +398,10 @@ examples:
           }
         }
       }
+
     variables: |
       {
-        "attributeId": "/api/shop/attributes/23",
+        "id": "/api/shop/attributes/23",
         "first": 10
       }
     response: |
@@ -552,19 +410,19 @@ examples:
           "attribute": {
             "id": "/api/shop/attributes/23",
             "code": "color",
-            "name": "Color",
+            "adminName": "Color",
             "options": {
               "edges": [
                 {
                   "node": {
-                    "id": "/api/shop/attribute-options/1",
+                    "id": "/api/admin/attribute_options/1",
                     "adminName": "Red",
                     "sortOrder": 0,
                     "swatchValue": "#e10e0e",
                     "translation": {
                       "locale": "en",
                       "label": "Red"
-                    }
+                  }
                   },
                   "cursor": "MA=="
                 },
@@ -599,8 +457,8 @@ examples:
     title: Get Color Options for Display
     description: Get color attribute options optimized for product display with minimal fields.
     query: |
-      query getColorOptions($attributeId: Int!) {
-        attributeOptions(attributeId: $attributeId, first: 50) {
+      query getColorOptions {
+        attributeOptions(first: 50) {
           edges {
             node {
               adminName
@@ -614,7 +472,7 @@ examples:
       }
     variables: |
       {
-        "attributeId": 23
+        
       }
     response: |
       {
@@ -676,7 +534,6 @@ The query supports cursor-based pagination and optional translation fetching, ma
 
 | Argument | Type | Required | Description |
 |----------|------|----------|-------------|
-| `attributeId` | `Int!` | ✅ Yes | The numeric ID of the attribute. Required to specify which attribute's options to retrieve. |
 | `first` | `Int` | ❌ No | Number of options to retrieve from the start (forward pagination). Max: 100. |
 | `after` | `String` | ❌ No | Cursor to start after for forward pagination. |
 | `last` | `Int` | ❌ No | Number of options to retrieve from the end (backward pagination). Max: 100. |
@@ -722,8 +579,8 @@ The query supports cursor-based pagination and optional translation fetching, ma
 ### Display Color Picker in Product Page
 
 ```graphql
-query ColorPicker($attributeId: Int!) {
-  attributeOptions(attributeId: $attributeId, first: 50) {
+query ColorPicker {
+  attributeOptions(first: 50) {
     edges {
       node {
         adminName
@@ -738,8 +595,8 @@ query ColorPicker($attributeId: Int!) {
 ### Build Size Selector with Sorting
 
 ```graphql
-query SizeSelector($attributeId: Int!) {
-  attributeOptions(attributeId: $attributeId, first: 100) {
+query SizeSelector {
+  attributeOptions(first: 100) {
     edges {
       node {
         adminName
@@ -754,8 +611,8 @@ query SizeSelector($attributeId: Int!) {
 ### Multi-language Attribute Support
 
 ```graphql
-query MultiLanguageOptions($attributeId: Int!) {
-  attributeOptions(attributeId: $attributeId, first: 20) {
+query MultiLanguageOptions {
+  attributeOptions(first: 20) {
     edges {
       node {
         adminName
@@ -817,11 +674,10 @@ query MultiLanguageOptions($attributeId: Int!) {
 
 ## Best Practices
 
-1. **Always Include Required attributeId** - This parameter is mandatory
-2. **Use Appropriate Pagination Size** - Request 10-50 options per page
-3. **Cache Results** - Attribute options change infrequently, cache them
-4. **Request Translations When Needed** - Only fetch translations if supporting multiple languages
-5. **Optimize Field Selection** - Request only fields your UI actually needs
+1. **Use Appropriate Pagination Size** - Request 10-50 options per page
+2. **Cache Results** - Attribute options change infrequently, cache them
+3. **Request Translations When Needed** - Only fetch translations if supporting multiple languages
+4. **Optimize Field Selection** - Request only fields your UI actually needs
 
 ## Related Resources
 

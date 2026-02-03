@@ -30,7 +30,7 @@ Bagisto Backend
    import { createHttpLink } from '@apollo/client';
 
    const httpLink = createHttpLink({
-     uri: 'https://your-domain.com/graphql',
+     uri: 'https://your-domain.com/api/graphql',
      credentials: 'include',
    });
 
@@ -157,7 +157,7 @@ const authLink = setContext(async (_, { headers }) => {
 });
 
 const httpLink = createHttpLink({
-  uri: 'https://your-domain.com/graphql',
+  uri: 'https://your-domain.com/api/graphql',
 });
 
 const client = new ApolloClient({

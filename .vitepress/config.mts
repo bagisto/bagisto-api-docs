@@ -64,10 +64,6 @@ export default defineConfig(({ command, mode }) => {
   // Load env variables
   const env = loadEnv(mode, process.cwd(), '')
 
-  // Use GitHub Secrets for API URLs if available, otherwise use local env
-  const restApiUrl = process.env.VITE_REST_API_URL || env.VITE_REST_API_URL || ''
-  const graphqlApiUrl = process.env.VITE_GRAPHQL_API_URL || env.VITE_GRAPHQL_API_URL || ''
-
   return {
   ignoreDeadLinks: true,
   lang: 'en-US',
@@ -79,8 +75,8 @@ export default defineConfig(({ command, mode }) => {
       host: '0.0.0.0'
     },
     define: {
-      'import.meta.env.VITE_REST_API_URL': JSON.stringify(restApiUrl),
-      'import.meta.env.VITE_GRAPHQL_API_URL': JSON.stringify(graphqlApiUrl)
+      'import.meta.env.VITE_REST_API_URL': JSON.stringify(env.VITE_REST_API_URL),
+      'import.meta.env.VITE_GRAPHQL_API_URL': JSON.stringify(env.VITE_GRAPHQL_API_URL)
     }
   },
 

@@ -5,58 +5,65 @@ examples:
     title: Update Customer Address
     description: Update an existing customer address.
     query: |
-      mutation updateCustomerAddress($input: UpdateCustomerAddressInput!) {
-        updateCustomerAddress(input: $input) {
-          address {
+      mutation updateCustomerAddress($input: createAddUpdateCustomerAddressInput!) {
+        createAddUpdateCustomerAddress(input: $input) {
+          addUpdateCustomerAddress{
             id
             firstName
-            lastName
-            address
+            lastName      
             city
             state
-            country
-            zipCode
+            country 
             phone
-            isDefault
-            updatedAt
+            addressId
+            email
+            phone
+            address1
+            address2
+            postcode
+            useForShipping
+            defaultAddress
           }
-          message
-          success
         }
       }
     variables: |
       {
-        "input": {
-          "id": "5",
-          "firstName": "Jane",
+        "input": {  
+          "addressId": 2851,
+          "firstName": "John",
           "lastName": "Doe",
-          "address": "456 Oak Avenue",
-          "city": "Los Angeles",
-          "state": "CA",
+          "email": "hello@example.com",
+          "phone": "+918888888888",
+          "address1": "123 Main Street",
+          "address2": "NY",
+          "postcode": "10001",
+          "city": "New York",
+          "state": "NY",
           "country": "US",
-          "zipCode": "90001",
-          "phone": "+1-555-0102"
+          "phone": "+1-555-0100",
+          "useForShipping": true
         }
       }
     response: |
       {
         "data": {
-          "updateCustomerAddress": {
-            "address": {
-              "id": "5",
-              "firstName": "Jane",
+          "createAddUpdateCustomerAddress": {
+            "addUpdateCustomerAddress": {
+              "id": "2851",
+              "firstName": "John",
               "lastName": "Doe",
-              "address": "456 Oak Avenue",
-              "city": "Los Angeles",
-              "state": "CA",
+              "city": "New York",
+              "state": "NY",
               "country": "US",
-              "zipCode": "90001",
-              "phone": "+1-555-0102",
-              "isDefault": false,
-              "updatedAt": "2024-01-15T13:00:00Z"
-            },
-            "message": "Address updated successfully",
-            "success": true
+              "phone": "+1-555-0100",
+              "addressId": 2851,
+              "email": "hello@example.com",
+              "address1": "123 Main Street",
+              "address2": "NY",
+              "postcode": "10001",
+              "useForShipping": true,
+              "defaultAddress": false
+            }
           }
         }
       }
@@ -78,24 +85,21 @@ Authorization: Bearer <accessToken>
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `id` | String | ✅ Yes | Address ID to update |
+| `addressId` | String | ✅ Yes | Address ID to update |
 | `firstName` | String | ❌ No | First name |
 | `lastName` | String | ❌ No | Last name |
-| `address` | String | ❌ No | Street address |
+| `address1` | String | ❌ No | Street address |
 | `city` | String | ❌ No | City |
 | `state` | String | ❌ No | State/Province |
 | `country` | String | ❌ No | Country code |
-| `zipCode` | String | ❌ No | Postal/Zip code |
+| `postcode` | String | ❌ No | Postal/Zip code |
 | `phone` | String | ❌ No | Phone number |
-| `isDefault` | Boolean | ❌ No | Set as default address |
 
 ## Response
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `address` | Address | Updated address object |
-| `message` | String | Success or error message |
-| `success` | Boolean | Update success status |
+| `createAddUpdateCustomerAddress` | Address | Updated address object |
 
 ## Validation Rules
 
@@ -109,8 +113,7 @@ Authorization: Bearer <accessToken>
 ```json
 {
   "errors": {
-    "id": ["Address not found."],
-    "country": ["Invalid country code."]
+    "message": ["Address not found or does not belong to this customer."],
   }
 }
 ```

@@ -18,7 +18,7 @@ GraphQL is a query language and runtime that allows clients to request exactly t
 
 Bagisto's GraphQL API is built on **API Platform for Laravel**, a powerful framework that provides robust GraphQL support out of the box. This architecture enables a modern, type-safe API layer with minimal configuration.
 
-Bagisto's GraphQL API is built using the **Platforma API Laravel plugin** with **Bagisto's GraphQL plugin**, providing two distinct API layers:
+Bagisto's GraphQL API is built using the **Platforma API Laravel plugin** with **Bagisto's BagistoApi plugin**, providing two distinct API layers:
 
 ### 🛍️ Shop API (Frontend)
 The public-facing API for customer-facing operations:
@@ -45,7 +45,7 @@ Two ways to explore the API:
 
 **Interactive GraphQL Playground:**
 ```
-https://your-domain.com/api/graphql
+https://your-domain.com/api/graphiql
 ```
 
 ## API Endpoints
@@ -62,32 +62,39 @@ Perfect for unauthenticated users:
 ```graphql
 mutation {
   createCartToken(input: {}) {
-    cartToken
-  }
-}
-```
-
-Use the `cartToken` in subsequent requests via the `X-Cart-Token` header.
-
-### Customer Authentication
-
-```graphql
-mutation {
-  createLogin(input: {
-    email: "customer@example.com"
-    password: "password123"
-  }) {
-    accessToken
-    customer {
+    cartToken {
       id
-      firstName
-      email
+      cartToken
     }
   }
 }
 ```
 
-Use the `accessToken` in the `Authorization: Bearer TOKEN` header.
+Use the `cartToken` in the `Authorization: Bearer TOKEN` header along with the `X-STOREFRONT-KEY` .
+
+### Customer Authentication
+
+```graphql
+mutation {
+  createCustomerLogin(
+    input: {
+      email: "customer@example.com"
+      password: "password123"
+    }
+  ) {
+    customerLogin {
+      id
+      _id
+      apiToken      
+      token
+      success
+      message
+    }
+  }
+}
+```
+
+Use the `accessToken` in the `Authorization: Bearer TOKEN` header along with the `X-STOREFRONT-KEY` .
 
 ### Token Verification
 
@@ -115,63 +122,7 @@ curl -X POST https://your-domain.com/api/graphql \
     "query": "query { products(first: 10) { edges { node { id name } } } }"
   }'
 ```
-
-### Using JavaScript/Fetch
-
-```javascript
-const query = `
-  query {
-    products(first: 10) {
-      edges {
-        node {
-          id
-          name
-          price
-        }
-      }
-    }
-  }
-`;
-
-const response = await fetch('https://your-domain.com/api/graphql', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({ query })
-});
-
-const data = await response.json();
-console.log(data);
-```
-
-### Using Python
-
-```python
-import requests
-
-query = """
-  query {
-    products(first: 10) {
-      edges {
-        node {
-          id
-          name
-          price
-        }
-      }
-    }
-  }
-"""
-
-response = requests.post(
-    'https://your-domain.com/api/graphql',
-    json={'query': query}
-)
-
-data = response.json()
-print(data)
-```
+ 
 
 ## Response Format
 
@@ -218,9 +169,8 @@ All GraphQL responses follow a consistent format:
 | Header | Purpose | Example |
 |--------|---------|---------|
 | `Authorization` | Authentication token | `Bearer eyJhbGc...` |
-| `X-Cart-Token` | Guest cart token | `550e8400-e29b...` |
-| `Content-Type` | Request format | `application/json` |
-| `Accept-Language` | Locale/Language | `en_US` or `fr_FR` |
+| `X-STOREFRONT-KEY` | For Public Data | `pk_storefront_oJv4u-e29b...` |
+| `Content-Type` | Request format | `application/json` | 
 
 <!-- ## Rate Limiting
 

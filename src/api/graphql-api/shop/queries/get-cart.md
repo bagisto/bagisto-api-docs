@@ -5,47 +5,177 @@ examples:
     title: Get Cart Details
     description: Retrieve the current shopping cart with all items.
     query: |
-      query getCart($cartId: String!) {
-        cart(id: $cartId) {
-          id
-          total
-          itemsCount
-          items {
+      mutation readCart {
+        createReadCart(input: {}) {
+          readCart {
             id
-            product {
-              id
-              name
-              sku
+            _id
+            grandTotal
+            discountAmount
+            cartToken
+            customerId
+            channelId
+            subtotal
+            baseSubtotal
+            discountAmount
+            baseDiscountAmount
+            taxAmount
+            baseTaxAmount
+            shippingAmount
+            baseShippingAmount
+            grandTotal
+            baseGrandTotal
+            formattedSubtotal
+            formattedDiscountAmount
+            formattedTaxAmount
+            formattedShippingAmount
+            formattedGrandTotal
+            couponCode
+            items {
+              totalCount
+              pageInfo {
+                startCursor
+                endCursor
+                hasNextPage
+                hasPreviousPage
+              }
+              edges {
+                cursor
+                node {
+                  id
+                  cartId
+                  productId
+                  name
+                  sku
+                  quantity
+                  price
+                  basePrice
+                  total
+                  baseTotal
+                  discountAmount
+                  baseDiscountAmount
+                  taxAmount
+                  baseTaxAmount
+                  type
+                  formattedPrice
+                  formattedTotal
+                  priceInclTax
+                  basePriceInclTax
+                  formattedPriceInclTax
+                  totalInclTax
+                  baseTotalInclTax
+                  formattedTotalInclTax
+                  productUrlKey
+                  canChangeQty
+                }
+              }
             }
-            quantity
-            price
+            success
+            message
+            sessionToken
+            isGuest
+            itemsQty
+            itemsCount
+            haveStockableItems
+            paymentMethod
+            paymentMethodTitle
+            subTotalInclTax
+            baseSubTotalInclTax
+            formattedSubTotalInclTax
+            taxTotal
+            formattedTaxTotal
+            shippingAmountInclTax
+            baseShippingAmountInclTax
+            formattedShippingAmountInclTax
           }
         }
-      }
-    variables: |
-      {
-        "cartId": "eyJpdiI6IjhWM..."
       }
     response: |
       {
         "data": {
-          "cart": {
-            "id": "1",
-            "total": 299.97,
-            "itemsCount": 2,
-            "items": [
-              {
-                "id": "1",
-                "product": {
-                  "id": "1",
-                  "name": "Product Name",
-                  "sku": "PROD-001"
-                },
-                "quantity": 1,
-                "price": 99.99
-              }
-            ]
-          }
+            "createReadCart": {
+                "readCart": {
+                    "id": "4484",
+                    "_id": 4484,
+                    "grandTotal": 4500,
+                    "discountAmount": 0,
+                    "cartToken": "4484",
+                    "customerId": 122,
+                    "channelId": 1,
+                    "subtotal": 4500,
+                    "baseSubtotal": 4500,
+                    "baseDiscountAmount": 0,
+                    "taxAmount": 0,
+                    "baseTaxAmount": 0,
+                    "shippingAmount": 0,
+                    "baseShippingAmount": 0,
+                    "baseGrandTotal": 4500,
+                    "formattedSubtotal": "$4,500.00",
+                    "formattedDiscountAmount": "$0.00",
+                    "formattedTaxAmount": "$0.00",
+                    "formattedShippingAmount": "$0.00",
+                    "formattedGrandTotal": "$4,500.00",
+                    "couponCode": null,
+                    "items": {
+                        "totalCount": 1,
+                        "pageInfo": {
+                            "startCursor": "MA==",
+                            "endCursor": "MA==",
+                            "hasNextPage": false,
+                            "hasPreviousPage": false
+                        },
+                        "edges": [
+                            {
+                                "cursor": "MA==",
+                                "node": {
+                                    "id": "5648",
+                                    "cartId": 4484,
+                                    "productId": 2394,
+                                    "name": "Verdant Luxe 2-Seater Velvet Sofa Green",
+                                    "sku": "sku-234235345346-variant-2",
+                                    "quantity": 9,
+                                    "price": 500,
+                                    "basePrice": 500,
+                                    "total": 4500,
+                                    "baseTotal": 4500,
+                                    "discountAmount": 0,
+                                    "baseDiscountAmount": 0,
+                                    "taxAmount": 0,
+                                    "baseTaxAmount": 0,
+                                    "type": "simple",
+                                    "formattedPrice": "$500.00",
+                                    "formattedTotal": "$4,500.00",
+                                    "priceInclTax": 500,
+                                    "basePriceInclTax": 500,
+                                    "formattedPriceInclTax": "$500.00",
+                                    "totalInclTax": 4500,
+                                    "baseTotalInclTax": 4500,
+                                    "formattedTotalInclTax": "$4,500.00",
+                                    "productUrlKey": "sku-234235345346-variant-2",
+                                    "canChangeQty": true
+                                }
+                            }
+                        ]
+                    },
+                    "success": null,
+                    "message": null,
+                    "sessionToken": null,
+                    "isGuest": false,
+                    "itemsQty": 9,
+                    "itemsCount": 1,
+                    "haveStockableItems": true,
+                    "paymentMethod": null,
+                    "paymentMethodTitle": null,
+                    "subTotalInclTax": 4500,
+                    "baseSubTotalInclTax": 4500,
+                    "formattedSubTotalInclTax": "$4,500.00",
+                    "taxTotal": 0,
+                    "formattedTaxTotal": "$0.00",
+                    "shippingAmountInclTax": 0,
+                    "baseShippingAmountInclTax": 0,
+                    "formattedShippingAmountInclTax": "$0.00"
+                }
+            }
         }
       }
     commonErrors:
@@ -71,16 +201,7 @@ The `getCart` query retrieves the contents and summary information for a custome
 - Sync cart data with external inventory systems
 
 This query returns complete cart information including all items, quantities, prices, and applicable discounts/taxes needed for checkout and order processing.
-
-## Arguments
-
-| Argument | Type | Description |
-|----------|------|-------------|
-| `id` | `String!` | The cart ID or token obtained from `createCart` mutation. |
-| `include_discounts` | `Boolean` | Include applied discount information. Default: `true` |
-| `include_taxes` | `Boolean` | Include calculated tax information. Default: `true` |
-| `include_shipping` | `Boolean` | Include available shipping methods and costs. Default: `false` |
-
+ 
 ## Possible Returns
 
 | Field | Type | Description |

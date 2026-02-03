@@ -6,7 +6,7 @@ examples:
     description: Retrieve the authenticated customer's profile information.
     query: |
       query getCustomerProfile {
-        customer {
+        readCustomerProfile(id: "") {
           id
           firstName
           lastName
@@ -14,8 +14,10 @@ examples:
           dateOfBirth
           gender
           phone
-          createdAt
-          updatedAt
+          status
+          subscribedToNewsLetter
+          isVerified
+          image
         }
       }
     variables: |
@@ -23,16 +25,18 @@ examples:
     response: |
       {
         "data": {
-          "customer": {
-            "id": "1",
+          "readCustomerProfile": {
+            "id": "/api/shop/customer-profiles/122",
             "firstName": "John",
             "lastName": "Doe",
             "email": "john.doe@example.com",
             "dateOfBirth": "1990-01-15",
-            "gender": "male",
-            "phone": "+1-555-0100",
-            "createdAt": "2024-01-10T10:00:00Z",
-            "updatedAt": "2024-01-15T14:30:00Z"
+            "gender": "Male",
+            "phone": "555-0123",
+            "status": "1",
+            "subscribedToNewsLetter": true,
+            "isVerified": "1",
+            "image": null
           }
         }
       }
@@ -65,8 +69,6 @@ This query has no required arguments.
 | `dateOfBirth` | String | Date of birth (YYYY-MM-DD) |
 | `gender` | String | Gender (male/female/other) |
 | `phone` | String | Phone number |
-| `createdAt` | DateTime | Account creation date |
-| `updatedAt` | DateTime | Last update date |
 
 ## Use Cases
 
@@ -80,7 +82,7 @@ This query has no required arguments.
 ```json
 {
   "errors": {
-    "authentication": ["Unauthorized: Invalid or expired token"]
+    "authentication": ["Unauthenticated. Please login to perform this action"]
   }
 }
 ```

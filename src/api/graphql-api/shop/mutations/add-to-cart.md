@@ -5,47 +5,133 @@ examples:
     title: Add Simple Product to Cart
     description: Add a simple product with quantity to the shopping cart.
     query: |
-      mutation addProductToCart($cart_id: String!, $product_id: ID!, $quantity: Int!) {
-        addProductToCart(input: {cart_id: $cart_id, product_id: $product_id, quantity: $quantity}) {
-          cart {
-            id
-            items {
-              id
-              product {
-                id
-                name
-              }
-              quantity
-              price
-            }
+      mutation createAddProductInCart(
+          $productId: Int!
+          $quantity: Int!
+      ) {
+        createAddProductInCart(
+          input: {
+            productId: $productId
+            quantity: $quantity
           }
-          message
+        ) {
+          addProductInCart {
+            id
+            _id      
+            cartToken
+            customerId
+            channelId
+            subtotal
+            baseSubtotal
+            discountAmount
+            baseDiscountAmount
+            taxAmount
+            baseTaxAmount
+            shippingAmount
+            baseShippingAmount
+            grandTotal
+            baseGrandTotal
+            formattedSubtotal
+            formattedDiscountAmount
+            formattedTaxAmount
+            formattedShippingAmount
+            formattedGrandTotal
+            couponCode
+            items {
+              totalCount
+              pageInfo {
+                startCursor
+                endCursor
+                hasNextPage
+                hasPreviousPage
+              }
+              edges {
+                cursor
+                node {
+                  id
+                  cartId
+                  productId
+                  name
+                  sku
+                  quantity
+                  price
+                  basePrice
+                  total
+                  baseTotal
+                  discountAmount
+                  baseDiscountAmount
+                  taxAmount
+                  baseTaxAmount
+                  type
+                  formattedPrice
+                  formattedTotal
+                  priceInclTax
+                  basePriceInclTax
+                  formattedPriceInclTax
+                  totalInclTax
+                  baseTotalInclTax
+                  formattedTotalInclTax
+                  productUrlKey
+                  canChangeQty
+                }
+              }
+            }
+            success
+            message
+            sessionToken
+            isGuest
+            itemsQty
+            itemsCount
+            haveStockableItems
+            paymentMethod
+            paymentMethodTitle
+            subTotalInclTax
+            baseSubTotalInclTax
+            formattedSubTotalInclTax
+            taxTotal
+            formattedTaxTotal
+            shippingAmountInclTax
+            baseShippingAmountInclTax
+            formattedShippingAmountInclTax
+          }
         }
       }
     variables: |
       {
-        "cart_id": "eyJpdiI6IjhWM...",
-        "product_id": "1",
-        "quantity": 1
+          "productId": 1,
+          "quantity": 9
       }
     response: |
       {
         "data": {
-          "addProductToCart": {
-            "cart": {
+          "createAddProductInCart": {
+            "addProductInCart": {
               "id": "1",
+              "cartToken": "1",
               "items": [
-                {
-                  "id": "1",
-                  "product": {
-                    "id": "1",
-                    "name": "Product Name"
-                  },
-                  "quantity": 1,
-                  "price": 99.99
-                }
+                "totalCount": 1,
+                "edges": [
+                    {
+                      "cursor": "MA==",
+                      "node": {
+                          "id": "5648",
+                          "cartId": 4484,
+                          "productId": 2394,
+                          "name": "Verdant Luxe 2-Seater Velvet Sofa Green",
+                          "sku": "sku-234235345346-variant-2",
+                          "quantity": 9,
+                          "price": 500,
+                          "basePrice": 500,
+                          "total": 4500,
+                          "baseTotal": 4500,
+                          "discountAmount": 0,
+                          "baseDiscountAmount": 0,
+                      }
+                    }
+                ]
               ]
             },
+            "success": true,
             "message": "Product added to cart successfully"
           }
         }
@@ -73,6 +159,18 @@ The `addProductToCart` mutation adds a product to a customer's shopping cart. Us
 - Track product additions for analytics
 
 This mutation validates product availability, applies applicable pricing rules, and updates the cart total. It handles both simple products and configurable products with variants.
+
+
+## Authentication
+
+This mutation supports both authenticated customers and guest users:
+
+- **Authenticated customers**: Provide a valid customer authentication token in the `Authorization` header. Obtain this token via the [Customer Login API](/api/graphql-api/shop/mutations/customer-login).
+- **Guest users**: Provide the `cartToken` obtained from the [Create Cart mutation](/api/graphql-api/shop/mutations/create-cart).
+
+```
+Authorization: Bearer <accessToken>
+```
 
 ## Arguments
 

@@ -6,11 +6,8 @@ Get the Bagisto API up and running in just a few minutes. Choose the installatio
 
 Before installing, ensure you have:
 
-- **Bagisto v2.0 or higher** installed
-- **PHP 8.2+**
+- **Bagisto v2.0 or higher** ([Bagisto Installation Guide](https://devdocs.bagisto.com/getting-started/installation))
 - **Composer 2.0+**
-- **Laravel 11.x**
-- **MySQL 8.0+**
 
 ## Installation Methods
 
@@ -23,22 +20,15 @@ The fastest way to get started:
 composer require bagisto/bagisto-api
 
 # 2. Run the installer
-php artisan bagisto-api:install
+php artisan bagisto-api-platform:install
 
-# 3. Run database migrations
-php artisan migrate
-
-# 4. Clear and rebuild caches
-php artisan optimize:clear
-php artisan optimize
-
-# 5. Create your first API key
-php artisan bagisto-api:generate-key --name="Default Store"
 ```
-
 Your APIs are now ready! Access them at:
-- **REST API Docs**: `https://your-domain.com/api/docs`
-- **GraphQL Playground**: `https://your-domain.com/graphql`
+
+- **API Documentation**: 
+`https://your-domain.com/api`
+<br>
+ (e.g., [https://api-demo.bagisto.com/api](https://api-demo.bagisto.com/api))
  
 ### Method 2: Manual Installation
 
@@ -47,7 +37,7 @@ Use this method if you need more control over the setup.
 #### Step 1: Download and Extract
 
 1. Download the BagistoApi package from [GitHub](https://github.com/bagisto/bagisto-api)
-2. Extract it to: `packages/Webkul/BagistApi/`
+2. Extract it to: `packages/Webkul/BagistoApi/`
 
 #### Step 2: Register Service Provider
 
@@ -58,7 +48,7 @@ Edit `bootstrap/providers.php`:
 
 return [
     // ...existing providers...
-    Webkul\BagistApi\Providers\BagistApiServiceProvider::class,
+    Webkul\BagistoApi\Providers\BagistoApiServiceProvider::class,
     // ...rest of providers...
 ];
 ```
@@ -71,7 +61,7 @@ Edit `composer.json` and update the `autoload` section:
 {
   "autoload": {
     "psr-4": {
-      "Webkul\\BagistApi\\": "packages/Webkul/BagistApi/src",
+      "Webkul\\BagistoApi\\": "packages/Webkul/BagistoApi/src"
     }
   }
 }
@@ -81,39 +71,41 @@ Edit `composer.json` and update the `autoload` section:
 
 ```bash
 # Install required packages
-composer require api-platform/laravel:^4.1
-composer require api-platform/graphql:^4.2
+composer require api-platform/laravel:v4.1.25
+composer require api-platform/graphql:v4.2.3
 ```
 
 #### Step 5: Run the installation
-php artisan bagisto-api:install
+```bash
+composer dump-autoload
+php artisan bagisto-api-platform:install
+```
 
-#### Step 6: Run database migrations
-php artisan migrate
-
-#### Step 7: Clear caches
-php artisan optimize:clear
-php artisan optimize
-
-#### Step 8: Create your first API key
-php artisan bagisto-api:generate-key --name="Default Store"
- 
+#### Step 9: Environment Setup (Update in the .env)
+```
+STOREFRONT_DEFAULT_RATE_LIMIT=100
+STOREFRONT_CACHE_TTL=60
+STOREFRONT_KEY_PREFIX=storefront_key_
+STOREFRONT_PLAYGROUND_KEY=pk_storefront_vxLIYv5PIp7jkujPNGLFQoDvIdsh2RMF 
+API_PLAYGROUND_AUTO_INJECT_STOREFRONT_KEY=true
+```
 
 ### Access Points
 
 Once verified, access the APIs at:
 
-- **REST API Documentation**: `https://your-domain.com/api`
-- **REST API (Shop)**: `https://your-domain.com/api/shop/*`
-- **REST API (Admin)**: `https://your-domain.com/api/admin/*`
-- **GraphQL Endpoint**: `https://your-domain.com/graphql`
-- **GraphQL Playground**: `https://your-domain.com/graphqli`
+- **API Documentation**: [https://your-domain.com/api](https://api-demo.bagisto.com/api)
+- **REST API (Shop)**:  [https://your-domain.com/api/shop](https://api-demo.bagisto.com/api/shop)
+- **REST API (Admin)**: [https://your-domain.com/api/admin](https://api-demo.bagisto.com/api/admin)
+- **GraphQL Endpoint**: `https://your-domain.com/api/graphql`
+- **GraphQL Playground**: [https://your-domain.com/api/graphiql](https://api-demo.bagisto.com/api/graphiql)
+
 
 ## Troubleshooting
 
 ### Provider Not Found
 
-**Error**: `Class 'Webkul\BagistApi\Providers\BagistApiServiceProvider' not found`
+**Error**: `Class 'Webkul\BagistoApi\Providers\BagistoApiServiceProvider' not found`
 
 **Solution**:
 ```bash

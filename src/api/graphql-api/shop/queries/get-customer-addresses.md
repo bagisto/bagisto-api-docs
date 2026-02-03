@@ -6,21 +6,29 @@ examples:
     description: Retrieve all saved addresses for the authenticated customer.
     query: |
       query getCustomerAddresses($first: Int, $after: String) {
-        customerAddresses(first: $first, after: $after) {
+        getCustomerAddresses(first: $first, after: $after) {
           edges {
             node {
               id
+              _id
+              addressType
+              companyName
+              name
               firstName
               lastName
+              email
               address
               city
               state
               country
-              zipCode
+              postcode
               phone
-              isDefault
-              addressType
+              vatId
+              defaultAddress
+              useForShipping
+              additional
               createdAt
+              updatedAt
             }
           }
           pageInfo {
@@ -31,33 +39,41 @@ examples:
       }
     variables: |
       {
-        "first": 10
+        "first": 1
       }
     response: |
       {
         "data": {
-          "customerAddresses": {
+          "getCustomerAddresses": {
             "edges": [
               {
                 "node": {
-                  "id": "1",
+                  "id": "/api/shop/customer-addresses/2829",
+                  "_id": 2829,
+                  "addressType": "customer",
+                  "companyName": "ABC Retail Solutions",
+                  "name": "John Doe",
                   "firstName": "John",
                   "lastName": "Doe",
-                  "address": "123 Main Street",
-                  "city": "New York",
-                  "state": "NY",
+                  "email": "john.doe@example.com",
+                  "address": "123 Maple Street, Apt 4B",
+                  "city": "Springfield",
+                  "state": "IL",
                   "country": "US",
-                  "zipCode": "10001",
-                  "phone": "+1-555-0100",
-                  "isDefault": true,
-                  "addressType": "billing",
-                  "createdAt": "2024-01-10T10:00:00Z"
+                  "postcode": "62704",
+                  "phone": "+15551234567",
+                  "vatId": "",
+                  "defaultAddress": true,
+                  "useForShipping": false,
+                  "additional": null,
+                  "createdAt": "2026-01-28T18:47:54+05:30",
+                  "updatedAt": "2026-01-28T18:47:54+05:30"
                 }
               }
             ],
             "pageInfo": {
-              "hasNextPage": false,
-              "endCursor": "cursor-value"
+              "hasNextPage": true,
+              "endCursor": "MA=="
             }
           }
         }

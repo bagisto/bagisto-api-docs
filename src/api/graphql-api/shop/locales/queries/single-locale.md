@@ -52,9 +52,7 @@ examples:
           code
           name
           direction
-          logoPath
-          createdAt
-          updatedAt
+          logoPath 
         }
       }
     variables: |
@@ -70,9 +68,7 @@ examples:
             "code": "en",
             "name": "English",
             "direction": "ltr",
-            "logoPath": "locales/en.png",
-            "createdAt": null,
-            "updatedAt": null
+            "logoPath": "locales/en.png"
           }
         }
       }
@@ -96,8 +92,6 @@ examples:
           name
           direction
           logoPath
-          createdAt
-          updatedAt
         }
       }
     variables: |
@@ -113,9 +107,7 @@ examples:
             "code": "en",
             "name": "English",
             "direction": "ltr",
-            "logoPath": "locales/en.png",
-            "createdAt": null,
-            "updatedAt": null
+            "logoPath": "locales/en.png"
           }
         }
       }
@@ -136,8 +128,6 @@ examples:
           name
           direction
           logoPath
-          createdAt
-          updatedAt
         }
       }
     variables: |
@@ -153,9 +143,7 @@ examples:
             "code": "ar",
             "name": "Arabic",
             "direction": "rtl",
-            "logoPath": "locales/ar.png",
-            "createdAt": null,
-            "updatedAt": null
+            "logoPath": "locales/ar.png"
           }
         }
       }
@@ -202,8 +190,6 @@ The query allows you to fetch a specific locale with all its properties and rela
 | `name` | `String!` | Display name of the locale (e.g., "English", "Arabic") |
 | `direction` | `String!` | Text direction: "ltr" (left-to-right) or "rtl" (right-to-left) |
 | `logoPath` | `String` | File path to the locale logo (e.g., "locales/en.png") |
-| `createdAt` | `String` | Creation timestamp (ISO 8601 format) or null if not available |
-| `updatedAt` | `String` | Last update timestamp (ISO 8601 format) or null if not available |
 
 ## Common Use Cases
 
@@ -239,8 +225,6 @@ query GetLocaleDetails($id: ID!) {
     name
     direction
     logoPath
-    createdAt
-    updatedAt
   }
 }
 ```

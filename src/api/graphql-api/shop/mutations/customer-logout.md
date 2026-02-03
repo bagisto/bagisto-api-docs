@@ -5,21 +5,26 @@ examples:
     title: Customer Logout
     description: Logout a customer and invalidate their authentication tokens.
     query: |
-      mutation customerLogout {
-        customerLogout {
-          message
-          success
+      mutation createLogout  {
+        createLogout(input: { }) {
+          logout {
+            success
+            message
+          }
         }
       }
+
     variables: |
       {}
     response: |
       {
         "data": {
-          "customerLogout": {
-            "message": "Customer logged out successfully",
-            "success": true
-          }
+            "createLogout": {
+                "logout": {
+                    "success": true,
+                    "message": "Logged out successfully"
+                }
+            }
         }
       }
 ---

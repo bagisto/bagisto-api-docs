@@ -5,49 +5,34 @@ examples:
     title: Apply Coupon Code to Cart
     description: Apply a valid coupon code to reduce cart total.
     query: |
-      mutation applyCoupon($cartId: String!, $couponCode: String!) {
-        applyCoupon(input: {cartId: $cartId, couponCode: $couponCode}) {
-          cart {
-            id
-            subTotal
+      mutation createApplyCoupon (
+          $couponCode: String!
+      ) {
+        createApplyCoupon(input: {
+          couponCode: $couponCode
+        }) {
+          applyCoupon {
+            id            
             discountAmount
-            total
-            appliedCoupons {
-              code
-              description
-              discountAmount
-            }
+            grandTotal
           }
-          message
-          success
         }
       }
     variables: |
       {
-        "cartId": "eyJpdiI6IjhWM...",
-        "couponCode": "SAVE20"
+          "couponCode": "SAVE10"
       }
     response: |
       {
-        "data": {
-          "applyCoupon": {
-            "cart": {
-              "id": "1",
-              "subTotal": 100.00,
-              "discountAmount": 20.00,
-              "total": 80.00,
-              "appliedCoupons": [
-                {
-                  "code": "SAVE20",
-                  "description": "20% off your order",
-                  "discountAmount": 20.00
-                }
-              ]
-            },
-            "message": "Coupon applied successfully",
-            "success": true
+          "data": {
+              "createApplyCoupon": {
+                  "applyCoupon": {
+                      "id": "4813", 
+                      "discountAmount": 0,
+                      "grandTotal": 100
+                  }
+              }
           }
-        }
       }
     commonErrors:
       - error: INVALID_COUPON
@@ -76,22 +61,30 @@ The `applyCoupon` mutation applies a promotional coupon code to a shopping cart.
 
 This mutation validates coupon code, checks eligibility conditions, and recalculates cart totals with applied discount.
 
+## Authentication
+
+This mutation supports both authenticated customers and guest users:
+
+- **Authenticated customers**: Provide a valid customer authentication token in the `Authorization` header. Obtain this token via the [Customer Login API](/api/graphql-api/shop/mutations/customer-login).
+- **Guest users**: Provide the `cartToken` obtained from the [Create Cart mutation](/api/graphql-api/shop/mutations/create-cart).
+
+```
+Authorization: Bearer <accessToken>
+```
+
 ## Arguments
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `cartId` | `String!` | Cart token identifying which cart to apply coupon to. |
 | `couponCode` | `String!` | Promotional coupon code to apply. |
 
 ## Possible Returns
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `cart` | `Cart!` | Updated cart with coupon applied. |
-| `cart.appliedCoupons` | `[CouponCode!]` | Array of active coupon codes on cart. |
-| `cart.discountAmount` | `Float` | Total discount from all applied coupons. |
-| `cart.total` | `Float!` | Recalculated cart total with discount. |
-| `message` | `String!` | Success or error message. |
-| `success` | `Boolean!` | Indicates successful coupon application. |
+| `applyCoupon` | `Coupon!` | Return coupon and cart related values. |
+| `applyCoupon.id` | `String` | id of the cart. |
+| `applyCoupon.discountAmount` | `Float` | Total discount from all applied coupons. |
+| `applyCoupon.grandTotal` | `Float!` | Recalculated cart total with discount. | 
 | `errors` | `[ErrorMessage!]` | Validation errors if application failed. |
 

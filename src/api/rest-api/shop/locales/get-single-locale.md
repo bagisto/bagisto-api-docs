@@ -15,7 +15,7 @@ examples:
         "name": "English",
         "direction": "ltr",
         "logoPath": "locales/JuC6oD40TWtf6R2S08kQ95cecRqUKd3UctVivnSt.png",
-        "logoUrl": "http://127.0.0.1:8001/storage/locales/JuC6oD40TWtf6R2S08kQ95cecRqUKd3UctVivnSt.png"
+        "logoUrl": "http://127.0.0.1:8000/storage/locales/JuC6oD40TWtf6R2S08kQ95cecRqUKd3UctVivnSt.png"
       }
     commonErrors:
       - error: 404 Not Found

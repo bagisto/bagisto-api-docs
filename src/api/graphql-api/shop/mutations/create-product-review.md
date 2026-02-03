@@ -23,7 +23,7 @@ examples:
     variables: |
       {
         "input": {
-          "productId": 357,
+          "productId": 2511,
           "title": "Excellent quality and very stylish",
           "comment": "Very impressed with the EleganceKnits cardigan sweatercoat. The fabric feels premium and soft, the fitting is perfect, and the collar design adds a classy look. Suitable for office wear as well as casual outings. Lightweight yet warm. Highly recommended.",
           "rating": 5,
@@ -84,7 +84,7 @@ examples:
     variables: |
       {
         "input": {
-          "productId": 357,
+          "productId": 2511,
           "title": "Great Product with Photos",
           "comment": "Here's the product with photos attached. The quality is excellent as you can see from the images.",
           "rating": 5,
@@ -151,7 +151,7 @@ examples:
     variables: |
       {
         "input": {
-          "productId": 357,
+          "productId": 2511,
           "title": "Professional Review with Attachments",
           "comment": "This is a detailed product review with multiple attachments including product photos and a video demonstration. The product quality exceeded my expectations.",
           "rating": 5,
@@ -196,7 +196,7 @@ examples:
         cause: Rating is outside valid range
         solution: Use rating value between 1 and 5
       - error: missing-required-field
-        cause: Required field is missing (productId, title, comment, rating, name)
+        cause: Required field is missing (title, comment, rating, name)
         solution: Provide all required input fields
 
 ---
@@ -221,7 +221,6 @@ This mutation supports Base64-encoded image and video attachments for rich media
 
 | Argument | Type | Required | Description |
 |----------|------|----------|-------------|
-| `productId` | `Int!` | ✅ Yes | The ID of the product being reviewed. |
 | `title` | `String!` | ✅ Yes | Review title/headline. |
 | `comment` | `String!` | ✅ Yes | Review comment/text. |
 | `rating` | `Int!` | ✅ Yes | Star rating (1-5). |
@@ -237,7 +236,7 @@ This mutation supports Base64-encoded image and video attachments for rich media
 - **Type**: Integer (32-bit signed)
 - **Required**: Yes
 - **Description**: The product ID being reviewed. Must exist in the system.
-- **Example**: `357`
+- **Example**: `2511`
 
 ### title
 - **Type**: String
@@ -385,7 +384,7 @@ When product ID doesn't exist or is in invalid format.
 When Base64 encoding is malformed or MIME type is unsupported.
 
 ### Missing Required Fields
-When any required field (productId, title, comment, rating, name) is missing.
+When any required field (title, comment, rating, name) is missing.
 
 ## Related Resources
 
