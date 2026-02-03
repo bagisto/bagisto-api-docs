@@ -597,7 +597,7 @@ static const String baseUrl = ‘....’;
 ```
 
 :::tip Note
-Add the value of the complete URL ending with the GraphQL API endpoint. E.g - https://example.com/graphql 
+Add the value of the complete URL ending with the GraphQL API endpoint. E.g - https://example.com/api/graphql 
 :::
 
 ### For Theme
@@ -17231,7 +17231,7 @@ This command will:
 Access the interactive GraphQL playground:
 
 ```
-http://your-domain.com/graphiql
+http://your-domain.com/api/graphiql
 ```
 
 ### Direct API Endpoint
@@ -17239,14 +17239,14 @@ http://your-domain.com/graphiql
 For programmatic access or tools like Postman:
 
 ```
-http://your-domain.com/graphql
+http://your-domain.com/api/graphql
 ```
 
 ## 🔗 Next Steps
 
 Ready to build with GraphQL? Here are your next steps:
 
-- 🎮 [**Try the Live Demo**](https://demo.bagisto.com/mobikul-common/graphiql)
+- 🎮 [**Try the Live Demo**](https://api-demo.bagisto.com/api/graphiql)
 
 ::: tip Need Traditional REST?
 If you prefer traditional REST endpoints, check out our [REST API](./rest-api) documentation.
