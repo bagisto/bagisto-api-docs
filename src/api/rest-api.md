@@ -8,8 +8,8 @@ The Bagisto REST API provides a comprehensive RESTful interface to access all co
 
 Explore our interactive API documentation and test endpoints in real-time:
 
-- 🔧 [**Admin API Demo**](https://demo.bagisto.com/bagisto-api-demo-common/api/admin/documentation#/) - Manage products, orders, customers, and more
-- 🛍️ [**Shop API Demo**](https://demo.bagisto.com/bagisto-api-demo-common/api/shop/documentation#/) - Customer-facing shopping functionality
+- 🔧 [**Admin API Demo**](https://api-demo.bagisto.com/api/admin/) - Manage products, orders, customers, and more
+- 🛍️ [**Shop API Demo**](https://api-demo.bagisto.com/api/shop/) - Customer-facing shopping functionality
 
 ::: tip Try It Now
 Both demos include interactive testing tools where you can send real requests and see responses immediately.
@@ -121,7 +121,7 @@ $response = Http::withToken($token)->post("/api/v1/admin/catalog/products/{$prod
 
 ## 🔗 Next Steps
 
-- 📚 Explore the [interactive documentation](https://demo.bagisto.com/bagisto-api-demo-common/api/admin/documentation#/)
+- 📚 Explore the [interactive documentation](https://api-demo.bagisto.com/api)
 
 ::: tip Need GraphQL?
 For modern frontend development with flexible queries, consider our [GraphQL API](./graphql-api) instead.

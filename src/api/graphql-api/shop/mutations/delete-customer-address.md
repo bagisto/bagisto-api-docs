@@ -36,7 +36,7 @@ Delete a customer address.
 
 ## Authentication
 
- This query requires a valid customer authentication token in the `Authorization` header. Use the [Customer Login API](/api/graphql/shop/mutations/customer-login) to retrieve the token.
+ This query requires a valid customer authentication token in the `Authorization` header. Use the [Customer Login API](/api/graphql-api/shop/mutations/customer-login) to retrieve the token.
 
 ```
 Authorization: Bearer <accessToken>
@@ -72,6 +72,6 @@ Authorization: Bearer <accessToken>
 
 ## Related Documentation
 
-- [Create Customer Address](/api/graphql/shop/mutations/create-customer-address)
-- [Update Customer Address](/api/graphql/shop/mutations/update-customer-address)
-- [Get Customer Addresses](/api/graphql/shop/queries/get-customer-addresses)
+- [Create Customer Address](/api/graphql-api/shop/mutations/create-customer-address)
+- [Update Customer Address](/api/graphql-api/shop/mutations/update-customer-address)
+- [Get Customer Addresses](/api/graphql-api/shop/queries/get-customer-addresses)

@@ -6,21 +6,21 @@
 - **List Products** - `GET /graphql` with `query GetProducts`
 - **Search Products** - Filter with search parameter
 - **Get Product Details** - By ID, SKU, or URL
-- [Full Products Documentation](/api/graphql/shop/products)
+- [Full Products Documentation](/api/graphql-api/shop/products)
 
 ### Cart Operations
 - **Create Cart** - Guest or authenticated
 - **Add to Cart** - With variant selection
 - **Update Quantity** - Modify cart items
 - **Apply Coupon** - Discount codes
-- [Full Cart Documentation](/api/graphql/shop/cart)
+- [Full Cart Documentation](/api/graphql-api/shop/cart)
 
 ### Customers
 - **Register** - New customer account
 - **Login** - Authenticate with email/password
 - **Manage Profile** - Update customer info
 - **Manage Addresses** - Add/update shipping addresses
-- [Full Customer Documentation](/api/graphql/shop/customers)
+- [Full Customer Documentation](/api/graphql-api/shop/customers)
 
 ### Checkout Flow
 1. Add items to cart
@@ -29,18 +29,18 @@
 4. Select shipping method
 5. Choose payment method
 6. Create order
-- [Full Checkout Documentation](/api/graphql/shop/checkout)
+- [Full Checkout Documentation](/api/graphql-api/shop/checkout)
 
 ### Orders & Tracking
 - **Get My Orders** - List customer orders
 - **Order Details** - Complete order info
 - **Track Shipment** - Real-time tracking
-- [Full Orders Documentation](/api/graphql/shop/orders)
+- [Full Orders Documentation](/api/graphql-api/shop/orders)
 
 ### Reviews
 - **Get Reviews** - List product reviews
 - **Submit Review** - Create review with rating
-- [Full Reviews Documentation](/api/graphql/shop/reviews)
+- [Full Reviews Documentation](/api/graphql-api/shop/reviews)
 
 ---
 
@@ -52,7 +52,7 @@
 - **Delete Product** - Remove products
 - **Bulk Operations** - Update multiple products
 - **Manage Images** - Add/remove product images
-- [Full Products Documentation](/api/graphql/admin/products)
+- [Full Products Documentation](/api/graphql-api/admin/products)
 
 ### Order Management
 - **List Orders** - With filters and pagination
@@ -61,7 +61,7 @@
 - **Create Invoice** - Generate invoices
 - **Create Refund** - Process refunds
 - **Add Comments** - Track order notes
-- [Full Orders Documentation](/api/graphql/admin/orders)
+- [Full Orders Documentation](/api/graphql-api/admin/orders)
 
 ### Inventory Management
 - **Update Stock** - Warehouse inventory levels
@@ -69,14 +69,14 @@
 - **Transfer Stock** - Move between warehouses
 - **Warehouse Management** - Create/update warehouses
 - **Inventory History** - Track changes
-- [Full Inventory Documentation](/api/graphql/admin/inventory)
+- [Full Inventory Documentation](/api/graphql-api/admin/inventory)
 
 ### Promotions & Discounts
 - **Create Coupons** - Discount codes
 - **Cart Rules** - Condition-based discounts
 - **Assign Products** - Coupon product scope
 - **Track Usage** - Coupon analytics
-- [Full Promotions Documentation](/api/graphql/admin/promotions)
+- [Full Promotions Documentation](/api/graphql-api/admin/promotions)
 
 ### Attributes & Categories
 - **Create Attributes** - Product attributes with options
@@ -84,8 +84,8 @@
 - **Attribute Sets** - Group related attributes
 - **Category Management** - Create/update categories
 - **Assign Products** - Link to categories
-- [Full Attributes Documentation](/api/graphql/admin/attributes)
-- [Full Categories Documentation](/api/graphql/admin/categories)
+- [Full Attributes Documentation](/api/graphql-api/admin/attributes)
+- [Full Categories Documentation](/api/graphql-api/admin/categories)
 
 ### Analytics & Reports
 - **Sales Reports** - Revenue, orders, refunds
@@ -94,7 +94,7 @@
 - **Inventory Reports** - Stock analysis
 - **Export Data** - CSV/JSON exports
 - **Scheduled Reports** - Automated delivery
-- [Full Reports Documentation](/api/graphql/admin/reports)
+- [Full Reports Documentation](/api/graphql-api/admin/reports)
 
 ---
 
@@ -219,14 +219,14 @@ query {
 
 ## Useful Resources
 
-- [GraphQL Playground Guide](/api/graphql/playground) - Interactive testing
-- [Integration Guides](/api/graphql/integrations) - Language examples
-- [Best Practices](/api/graphql/best-practices) - Production tips
-- [Full API Overview](/api/graphql/index) - All resources
+- [GraphQL Playground Guide](/api/graphql-api/playground) - Interactive testing
+- [Integration Guides](/api/graphql-api/integrations) - Language examples
+- [Best Practices](/api/graphql-api/best-practices) - Production tips
+- [Full API Overview](/api/graphql-api/index) - All resources
 
 ---
 
 **Need Help?**
-- Check [Best Practices](/api/graphql/best-practices) for common issues
-- Review [Integration Guides](/api/graphql/integrations) for code examples
+- Check [Best Practices](/api/graphql-api/best-practices) for common issues
+- Review [Integration Guides](/api/graphql-api/integrations) for code examples
 - Visit [Bagisto Forums](https://forums.bagisto.com/) for community support

@@ -565,8 +565,6 @@ This JSON schema can be used with:
 
 ## Resources
 
-- 🌐 [Swagger UI](http://demo.bagisto.com/api/docs)
-- 📖 [OpenAPI Schema](http://demo.bagisto.com/api/docs.json)
-- 🔗 [Postman Collection](https://postman.bagisto.com/bagisto-api.json)
+- 🌐 [Swagger UI](http://api-demo.bagisto.com/api)
 - 💬 [Community Forum](https://forums.bagisto.com)
 - 🐛 [Report Issues](https://github.com/bagisto/bagisto/issues)

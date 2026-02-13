@@ -628,6 +628,6 @@ Use the complete details example to fetch logos and favicons for channel-specifi
 
 ## Related Resources
 
-- [Get Channel](/api/graphql/shop/queries/get-channel) - Get single channel by ID
-- [Pagination Guide](/api/graphql/pagination) - Cursor pagination documentation
-- [Shop API Overview](/api/graphql/shop-api) - Overview of Shop API resources
+- [Get Channel](/api/graphql-api/shop/queries/get-channel) - Get single channel by ID
+- [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation
+- [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources

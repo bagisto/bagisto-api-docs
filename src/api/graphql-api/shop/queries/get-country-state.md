@@ -322,7 +322,7 @@ State codes vary by country:
 
 ## Related Resources
 
-- [Countries](/api/graphql/shop/queries/get-countries) - Get all countries
-- [Country](/api/graphql/shop/queries/get-country) - Get single country with states
-- [Country States](/api/graphql/shop/queries/get-country-states) - Get all states for a country
-- [Shop API Overview](/api/graphql/shop-api) - Overview of Shop API resources
+- [Countries](/api/graphql-api/shop/queries/get-countries) - Get all countries
+- [Country](/api/graphql-api/shop/queries/get-country) - Get single country with states
+- [Country States](/api/graphql-api/shop/queries/get-country-states) - Get all states for a country
+- [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources

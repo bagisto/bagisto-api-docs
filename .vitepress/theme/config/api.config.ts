@@ -18,7 +18,7 @@ export const GRAPHQL_ENDPOINT = `${GRAPHQL_API_URL}/api/graphql`
 export const REST_API_DOCS = `${REST_API_URL}/api/docs`
 
 // GraphQL Playground
-export const GRAPHQL_PLAYGROUND = `${GRAPHQL_API_URL}/graphql`
+export const GRAPHQL_PLAYGROUND = `${GRAPHQL_API_URL}/api/graphiql`
 
 // Exported configuration object for convenience
 export const API_CONFIG = {

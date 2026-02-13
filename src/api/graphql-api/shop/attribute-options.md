@@ -734,7 +734,7 @@ query GetMultiLanguageOptions($attributeId: Int!) {
 
 ## Related Resources
 
-- [Products API](/api/graphql/shop/products) - Product information and management
-- [Categories API](/api/graphql/shop/categories) - Product categories
-- [Pagination Guide](/api/graphql/pagination) - Cursor pagination documentation
-- [Shop API Overview](/api/graphql/shop-api) - Overview of Shop API
+- [Products API](/api/graphql-api/shop/products) - Product information and management
+- [Categories API](/api/graphql-api/shop/categories) - Product categories
+- [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation
+- [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API

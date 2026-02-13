@@ -81,6 +81,6 @@ Authorization: Bearer <accessToken>
 
 ## Related Documentation
 
-- [Apply Coupon](/api/graphql/shop/mutations/apply-coupon)
-- [Get Cart](/api/graphql/shop/queries/get-cart)
-- [Create Cart](/api/graphql/shop/mutations/create-cart)
+- [Apply Coupon](/api/graphql-api/shop/mutations/apply-coupon)
+- [Get Cart](/api/graphql-api/shop/queries/get-cart)
+- [Create Cart](/api/graphql-api/shop/mutations/create-cart)

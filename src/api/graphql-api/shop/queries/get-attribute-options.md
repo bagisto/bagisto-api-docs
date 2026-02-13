@@ -681,7 +681,7 @@ query MultiLanguageOptions {
 
 ## Related Resources
 
-- [Pagination Guide](/api/graphql/pagination) - Cursor pagination documentation
-- [Attribute Options API](/api/graphql/shop/attribute-options) - Detailed API documentation
-- [Products API](/api/graphql/shop/queries/get-products) - Related product queries
-- [Shop API Overview](/api/graphql/shop-api) - Overview of Shop API resources
+- [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation
+- [Attribute Options API](/api/graphql-api/shop/attribute-options) - Detailed API documentation
+- [Products API](/api/graphql-api/shop/queries/get-products) - Related product queries
+- [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources

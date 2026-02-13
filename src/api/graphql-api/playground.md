@@ -12,7 +12,7 @@ Visit one of these URLs:
 
 🌐 **Live Demo:**
 ```
-https://demo.bagisto.com/api/graphiql
+https://api-demo.bagisto.com/api/graphiql
 ```
 
 **Local Development:**
@@ -72,7 +72,7 @@ query GetProducts {
 ```
 
 **Test it:**
-1. Open https://demo.bagisto.com/api/graphiql
+1. Open https://api-demo.bagisto.com/api/graphiql
 2. Paste the query above
 3. Click **Play** button (▶)
 4. See results on the right
@@ -645,14 +645,6 @@ Download the full Postman collection with pre-built requests:
 3. Set environment variables
 4. Execute pre-built requests
 
-### Apollo Sandbox
-
-Alternative GraphQL playground (similar interface to GraphiQL):
-
-```
-https://demo.bagisto.com/api/sandbox
-```
-
 ## Real-World Examples
 
 ### Complete Checkout Flow
@@ -722,13 +714,13 @@ mutation {
 ---
 
 **Get Started:**
-1. 🌐 Open [GraphiQL Playground](https://demo.bagisto.com/api/graphiql)
+1. 🌐 Open [GraphiQL Playground](https://api-demo.bagisto.com/api/graphiql)
 2. 📋 Try one of the queries above
 3. 💡 Explore the schema using Docs
 4. 🚀 Build your application!
 
 **Need Help?**
-- 📚 [Authentication Guide](/api/graphql/authentication)
-- 🛍️ [Shop API Reference](/api/graphql/shop-api)
-- 💻 [Integration Guides](/api/graphql/integrations)
+- 📚 [Authentication Guide](/api/graphql-api/authentication)
+- 🛍️ [Shop API Reference](/api/graphql-api/shop-api)
+- 💻 [Integration Guides](/api/graphql-api/integrations)
 - 💬 [Community Forum](https://forums.bagisto.com)

@@ -237,17 +237,17 @@ When review deletion fails due to database constraints or triggers.
 ## Related Operations
 
 **Before Deleting:**
-- [Get Product Review](/api/graphql/shop/queries/get-product-review) - Fetch review details
-- [Get Product Reviews](/api/graphql/shop/queries/get-product-reviews) - View all reviews
+- [Get Product Review](/api/graphql-api/shop/queries/get-product-review) - Fetch review details
+- [Get Product Reviews](/api/graphql-api/shop/queries/get-product-reviews) - View all reviews
 
 **Review Management:**
-- [Create Product Review](/api/graphql/shop/mutations/create-product-review) - Create new reviews
-- [Update Product Review](/api/graphql/shop/mutations/update-product-review) - Modify existing reviews
+- [Create Product Review](/api/graphql-api/shop/mutations/create-product-review) - Create new reviews
+- [Update Product Review](/api/graphql-api/shop/mutations/update-product-review) - Modify existing reviews
 
 **Related Resources:**
-- [Get Product](/api/graphql/shop/queries/get-product) - Query product details
-- [Mutations Guide](/api/graphql/shop/mutations) - Overview of shop mutations
-- [Shop API Overview](/api/graphql/shop-api) - Overview of Shop API resources
+- [Get Product](/api/graphql-api/shop/queries/get-product) - Query product details
+- [Mutations Guide](/api/graphql-api/shop/mutations) - Overview of shop mutations
+- [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources
 
 ## Audit Trail Example
 

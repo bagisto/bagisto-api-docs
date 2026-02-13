@@ -8,19 +8,19 @@ Choose your next step:
 
 | Documentation | Description |
 |---|---|
-| 📖 [Introduction](/api/graphql/introduction) | Get started with GraphQL basics and API overview |
-| 🔐 [Authentication](/api/graphql/authentication) | Learn all authentication methods and token management |
-| 🛍️ [Shop API](/api/graphql/shop-api) | Customer-facing e-commerce operations reference |
-| 👨‍💼 [Admin API](/api/graphql/admin-api) | Administrative operations and management reference |
-| 🎮 [Playground Guide](/api/graphql/playground) | Interactive testing with sample queries |
-| 💻 [Integration Guides](/api/graphql/integrations) | Code examples for multiple programming languages |
-| 💡 [Best Practices](/api/graphql/best-practices) | Performance, security, and testing best practices |
+| 📖 [Introduction](/api/graphql-api/introduction) | Get started with GraphQL basics and API overview |
+| 🔐 [Authentication](/api/graphql-api/authentication) | Learn all authentication methods and token management |
+| 🛍️ [Shop API](/api/graphql-api/shop-api) | Customer-facing e-commerce operations reference |
+| 👨‍💼 [Admin API](/api/graphql-api/admin-api) | Administrative operations and management reference |
+| 🎮 [Playground Guide](/api/graphql-api/playground) | Interactive testing with sample queries |
+| 💻 [Integration Guides](/api/graphql-api/integrations) | Code examples for multiple programming languages |
+| 💡 [Best Practices](/api/graphql-api/best-practices) | Performance, security, and testing best practices |
 
 ## 🌐 Live Playground
 
 Test queries instantly without any setup:
 
-🎮 **[GraphQL Playground](https://demo.bagisto.com/api/graphiql)** - Interactive query builder with schema explorer
+🎮 **[GraphQL Playground](https://api-demo.bagisto.com/api/graphiql)** - Interactive query builder with schema explorer
 
 ## Key Features
 
@@ -61,40 +61,40 @@ Test queries instantly without any setup:
 ### 1. Choose Your Path
 
 **For Building Customer-Facing Apps:**
-- Start with [Shop API Reference](/api/graphql/shop-api)
-- Learn [Authentication Methods](/api/graphql/authentication)
+- Start with [Shop API Reference](/api/graphql-api/shop-api)
+- Learn [Authentication Methods](/api/graphql-api/authentication)
 
 **For Admin Dashboards:**
-- Start with [Admin API Reference](/api/graphql/admin-api)
-- Review [Permission Requirements](/api/graphql/admin-api#permission--role-management)
+- Start with [Admin API Reference](/api/graphql-api/admin-api)
+- Review [Permission Requirements](/api/graphql-api/admin-api#permission--role-management)
 
 **For Your Programming Language:**
-- Find your language in [Integration Guides](/api/graphql/integrations)
+- Find your language in [Integration Guides](/api/graphql-api/integrations)
 - Copy-paste code examples and adapt
 
 ### 2. Test in Playground
 
-- Visit [GraphQL Playground](https://demo.bagisto.com/api/graphiql)
-- Try [Sample Queries](/api/graphql/playground#quick-start-queries)
-- Explore the [Schema](/api/graphql/playground#schema-explorer)
+- Visit [GraphQL Playground](https://api-demo.bagisto.com/api/graphiql)
+- Try [Sample Queries](/api/graphql-api/playground#quick-start-queries)
+- Explore the [Schema](/api/graphql-api/playground#schema-explorer)
 
 ### 3. Implement in Your App
 
-- Follow the [Authentication Guide](/api/graphql/authentication)
-- Use examples from [Integration Guides](/api/graphql/integrations)
-- Apply [Best Practices](/api/graphql/best-practices)
+- Follow the [Authentication Guide](/api/graphql-api/authentication)
+- Use examples from [Integration Guides](/api/graphql-api/integrations)
+- Apply [Best Practices](/api/graphql-api/best-practices)
 
 ## Documentation Structure
 
 ### Core Documentation
-1. **[Introduction](/api/graphql/introduction)** - GraphQL fundamentals, setup, and endpoints
-2. **[Authentication](/api/graphql/authentication)** - All auth methods (guest, customer, admin)
-3. **[Shop API](/api/graphql/shop-api)** - Complete Shop API with all queries and mutations
+1. **[Introduction](/api/graphql-api/introduction)** - GraphQL fundamentals, setup, and endpoints
+2. **[Authentication](/api/graphql-api/authentication)** - All auth methods (guest, customer, admin)
+3. **[Shop API](/api/graphql-api/shop-api)** - Complete Shop API with all queries and mutations
 
 ### Advanced Documentation
-4. **[Admin API](/api/graphql/admin-api)** - Admin operations for management tasks
-5. **[Playground Guide](/api/graphql/playground)** - Interactive testing with sample queries
-6. **[Integration Guides](/api/graphql/integrations)** - Code examples for:
+4. **[Admin API](/api/graphql-api/admin-api)** - Admin operations for management tasks
+5. **[Playground Guide](/api/graphql-api/playground)** - Interactive testing with sample queries
+6. **[Integration Guides](/api/graphql-api/integrations)** - Code examples for:
    - JavaScript / Node.js / React / Next.js
    - Python / Django
    - PHP / Laravel
@@ -103,40 +103,40 @@ Test queries instantly without any setup:
    - Java
 
 ### Best Practices
-7. **[Best Practices](/api/graphql/best-practices)** - Performance optimization, security, testing, debugging
+7. **[Best Practices](/api/graphql-api/best-practices)** - Performance optimization, security, testing, debugging
 
 ## Common Use Cases
 
 ### Building a Headless Storefront
 ```
-1. Get Products → [Shop API - Products](/api/graphql/shop-api#products)
-2. Manage Cart → [Shop API - Shopping Cart](/api/graphql/shop-api#shopping-cart)
-3. Checkout → [Shop API - Checkout](/api/graphql/shop-api#checkout)
-4. Learn Auth → [Authentication Guide](/api/graphql/authentication)
+1. Get Products → [Shop API - Products](/api/graphql-api/shop-api#products)
+2. Manage Cart → [Shop API - Shopping Cart](/api/graphql-api/shop-api#shopping-cart)
+3. Checkout → [Shop API - Checkout](/api/graphql-api/shop-api#checkout)
+4. Learn Auth → [Authentication Guide](/api/graphql-api/authentication)
 ```
 
 ### Building a Mobile App
 ```
-1. Learn Guest Auth → [Authentication - Guest](/api/graphql/authentication#1-guest-checkout-authentication)
-2. Browse Products → [Shop API - Products](/api/graphql/shop-api#products)
-3. Integrate Language → [Integration Guides](/api/graphql/integrations)
-4. Apply Best Practices → [Best Practices](/api/graphql/best-practices)
+1. Learn Guest Auth → [Authentication - Guest](/api/graphql-api/authentication#1-guest-checkout-authentication)
+2. Browse Products → [Shop API - Products](/api/graphql-api/shop-api#products)
+3. Integrate Language → [Integration Guides](/api/graphql-api/integrations)
+4. Apply Best Practices → [Best Practices](/api/graphql-api/best-practices)
 ```
 
 ### Building an Admin Dashboard
 ```
-1. Admin Login → [Authentication - Admin](/api/graphql/authentication#3-admin-authentication)
-2. Manage Data → [Admin API Reference](/api/graphql/admin-api)
-3. Optimize Performance → [Best Practices - Performance](/api/graphql/best-practices#performance-optimization)
-4. Implement Testing → [Best Practices - Testing](/api/graphql/best-practices#testing)
+1. Admin Login → [Authentication - Admin](/api/graphql-api/authentication#3-admin-authentication)
+2. Manage Data → [Admin API Reference](/api/graphql-api/admin-api)
+3. Optimize Performance → [Best Practices - Performance](/api/graphql-api/best-practices#performance-optimization)
+4. Implement Testing → [Best Practices - Testing](/api/graphql-api/best-practices#testing)
 ```
 
 ### Building a Third-Party Integration
 ```
-1. Choose Auth Method → [Authentication Guide](/api/graphql/authentication)
-2. Decide Shop or Admin → [Shop API](/api/graphql/shop-api) or [Admin API](/api/graphql/admin-api)
-3. Select Language → [Integration Guides](/api/graphql/integrations)
-4. Handle Errors → [Best Practices - Error Handling](/api/graphql/best-practices#error-handling)
+1. Choose Auth Method → [Authentication Guide](/api/graphql-api/authentication)
+2. Decide Shop or Admin → [Shop API](/api/graphql-api/shop-api) or [Admin API](/api/graphql-api/admin-api)
+3. Select Language → [Integration Guides](/api/graphql-api/integrations)
+4. Handle Errors → [Best Practices - Error Handling](/api/graphql-api/best-practices#error-handling)
 ```
 
 ## API Endpoints
@@ -164,7 +164,7 @@ query {
 }
 ```
 
-[See more Shop API queries →](/api/graphql/shop-api#products)
+[See more Shop API queries →](/api/graphql-api/shop-api#products)
 
 ### Customer Login
 ```graphql
@@ -178,7 +178,7 @@ mutation {
 }
 ```
 
-[See more Auth examples →](/api/graphql/authentication#2-customer-authentication)
+[See more Auth examples →](/api/graphql-api/authentication#2-customer-authentication)
 
 ### Create Order
 ```graphql
@@ -197,14 +197,14 @@ mutation {
 }
 ```
 
-[See complete checkout flow →](/api/graphql/shop-api#checkout)
+[See complete checkout flow →](/api/graphql-api/shop-api#checkout)
 
 ## Getting Help
 
 | Resource | Purpose |
 |----------|---------|
-| 🎮 [Live Playground](https://demo.bagisto.com/api/graphiql) | Test queries instantly |
-| 📚 [Documentation](/api/graphql/introduction) | Comprehensive guides |
+| 🎮 [Live Playground](https://api-demo.bagisto.com/api/graphiql) | Test queries instantly |
+| 📚 [Documentation](/api/graphql-api/introduction) | Comprehensive guides |
 | 💬 [Community Forum](https://forums.bagisto.com) | Ask questions |
 | 🐛 [Issue Tracker](https://github.com/bagisto/bagisto/issues) | Report bugs |
 | 📧 [Contact Support](https://bagisto.com/en/contacts/) | Enterprise support |
@@ -213,8 +213,8 @@ mutation {
 
 **Start Building Today!**
 
-👉 **New to GraphQL?** Start with [Introduction](/api/graphql/introduction)
+👉 **New to GraphQL?** Start with [Introduction](/api/graphql-api/introduction)
 
-👉 **Ready to code?** Choose your language in [Integration Guides](/api/graphql/integrations)
+👉 **Ready to code?** Choose your language in [Integration Guides](/api/graphql-api/integrations)
 
-👉 **Want to test?** Visit [GraphQL Playground](https://demo.bagisto.com/api/graphiql)
+👉 **Want to test?** Visit [GraphQL Playground](https://api-demo.bagisto.com/api/graphiql)

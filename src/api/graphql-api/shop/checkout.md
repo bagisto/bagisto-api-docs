@@ -209,6 +209,6 @@ mutation CreateGuestOrder($input: CreateGuestOrderInput!) {
 ```
 
 ## Related Resources
-- [Cart](/api/graphql/shop/cart)
-- [Orders](/api/graphql/shop/orders)
-- [Customers](/api/graphql/shop/customers)
+- [Cart](/api/graphql-api/shop/cart)
+- [Orders](/api/graphql-api/shop/orders)
+- [Customers](/api/graphql-api/shop/customers)

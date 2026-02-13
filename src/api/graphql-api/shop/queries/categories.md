@@ -558,9 +558,9 @@ Use the "With Cursor Pagination" example for handling large category lists.
 
 ## Related Resources
 
-- [Tree Categories](/api/graphql/shop/queries/tree-categories) - Hierarchical category tree for navigation
-- [Get Products](/api/graphql/shop/queries/get-products) - Query products within a category
-- [Pagination Guide](/api/graphql/pagination) - Cursor pagination documentation
-- [Shop API Overview](/api/graphql/shop-api) - Overview of Shop API resources
+- [Tree Categories](/api/graphql-api/shop/queries/tree-categories) - Hierarchical category tree for navigation
+- [Get Products](/api/graphql-api/shop/queries/get-products) - Query products within a category
+- [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation
+- [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources
 
 

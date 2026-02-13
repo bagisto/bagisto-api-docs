@@ -379,6 +379,6 @@ curl -X POST "https://your-domain.com/api/shop/customer/login" \
 
 ## Related Documentation
 
-- [API Key Management Guide](./api-keys.md) — How to generate and manage API keys
+- [API Key Management Guide](./storefront-api-key-management-guide.md) — How to generate and manage API keys
 - [REST API Guide](./rest-api/rest-api.md) — REST API endpoints
 - [GraphQL API Guide](./graphql-api/graphql-api.md) — GraphQL queries and mutations 

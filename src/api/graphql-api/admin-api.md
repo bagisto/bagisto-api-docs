@@ -1389,6 +1389,6 @@ mutation {
 - Monitor rate limits and implement backoff strategies
 
 **📚 Related Documentation:**
-- 🔐 [Authentication](/api/graphql/authentication)
-- 🛍️ [Shop API](/api/graphql/shop-api)
-- 💡 [Best Practices](/api/graphql/best-practices)
+- 🔐 [Authentication](/api/graphql-api/authentication)
+- 🛍️ [Shop API](/api/graphql-api/shop-api)
+- 💡 [Best Practices](/api/graphql-api/best-practices)

@@ -594,7 +594,7 @@ query GetCategoriesWithTranslations {
 
 ## Related Resources
 
-- [Get Single Category](/api/graphql/shop/queries/get-category) - Retrieve a single category by ID
-- [Get Categories](/api/graphql/shop/queries/categories) - List all categories with pagination
-- [Pagination Guide](/api/graphql/pagination) - Cursor pagination documentation
-- [Shop API Overview](/api/graphql/shop-api) - Overview of Shop API resources
+- [Get Single Category](/api/graphql-api/shop/queries/get-category) - Retrieve a single category by ID
+- [Get Categories](/api/graphql-api/shop/queries/categories) - List all categories with pagination
+- [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation
+- [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources

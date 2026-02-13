@@ -1368,6 +1368,6 @@ query {
 - Load high-resolution product images only when needed
 
 **📚 Related Documentation:**
-- 🔐 [Authentication](/api/graphql/authentication)
-- 💻 [Integration Guides](/api/graphql/integrations)
-- 🎯 [Best Practices](/api/graphql/best-practices)
+- 🔐 [Authentication](/api/graphql-api/authentication)
+- 💻 [Integration Guides](/api/graphql-api/integrations)
+- 🎯 [Best Practices](/api/graphql-api/best-practices)

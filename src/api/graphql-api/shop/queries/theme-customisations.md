@@ -552,8 +552,8 @@ Use the "Basic" example with pagination arguments to load customizations progres
 
 ## Related Resources
 
-- [Get Category](/api/graphql/shop/queries/get-category) - Query individual category details
-- [Get Categories](/api/graphql/shop/queries/categories) - Query paginated categories
-- [Get Products](/api/graphql/shop/queries/get-products) - Query products for carousels
-- [Pagination Guide](/api/graphql/pagination) - Cursor pagination documentation
-- [Shop API Overview](/api/graphql/shop-api) - Overview of Shop API resources
+- [Get Category](/api/graphql-api/shop/queries/get-category) - Query individual category details
+- [Get Categories](/api/graphql-api/shop/queries/categories) - Query paginated categories
+- [Get Products](/api/graphql-api/shop/queries/get-products) - Query products for carousels
+- [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation
+- [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources

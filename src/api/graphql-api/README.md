@@ -18,13 +18,13 @@ This comprehensive documentation covers all Bagisto GraphQL API endpoints for bo
 ## � Documentation Structure
 
 ### Core Guides
-- **[index.md](/api/graphql/)** - Complete API overview and resource index
-- **[introduction.md](/api/graphql/introduction)** - GraphQL fundamentals and setup
-- **[authentication.md](/api/graphql/authentication)** - All authentication methods
-- **[playground.md](/api/graphql/playground)** - Interactive testing guide
-- **[integrations.md](/api/graphql/integrations)** - 40+ code examples (7 languages)
-- **[best-practices.md](/api/graphql/best-practices)** - Production deployment guide
-- **[quick-reference.md](/api/graphql/quick-reference)** - Fast lookup guide
+- **[index.md](/api/graphql-api/)** - Complete API overview and resource index
+- **[introduction.md](/api/graphql-api/introduction)** - GraphQL fundamentals and setup
+- **[authentication.md](/api/graphql-api/authentication)** - All authentication methods
+- **[playground.md](/api/graphql-api/playground)** - Interactive testing guide
+- **[integrations.md](/api/graphql-api/integrations)** - 40+ code examples (7 languages)
+- **[best-practices.md](/api/graphql-api/best-practices)** - Production deployment guide
+- **[quick-reference.md](/api/graphql-api/quick-reference)** - Fast lookup guide
 
 ### Shop API Resources (7 Resource Pages)
 
@@ -52,34 +52,34 @@ This comprehensive documentation covers all Bagisto GraphQL API endpoints for bo
 | **Reports** | `/admin/reports.md` | 11+ | Sales, product, customer, and inventory analytics |
 
 ### Supporting Files
-- **[shop-api.md](/api/graphql/shop-api)** - Shop API overview (legacy link)
-- **[admin-api.md](/api/graphql/admin-api)** - Admin API overview (legacy link)
+- **[shop-api.md](/api/graphql-api/shop-api)** - Shop API overview (legacy link)
+- **[admin-api.md](/api/graphql-api/admin-api)** - Admin API overview (legacy link)
 
 ## 🚀 Quick Start
 
 ### 1. **Start Here**
-- [API Overview](/api/graphql/) - Complete resource index
-- [Introduction](/api/graphql/introduction) - GraphQL basics
+- [API Overview](/api/graphql-api/) - Complete resource index
+- [Introduction](/api/graphql-api/introduction) - GraphQL basics
 
 ### 2. **Choose Your Path**
 
 **Building a Customer App/Storefront?**
-- Start: [Shop Products](/api/graphql/shop/products)
-- Then: [Shop Cart](/api/graphql/shop/cart)
-- Then: [Shop Checkout](/api/graphql/shop/checkout)
+- Start: [Shop Products](/api/graphql-api/shop/products)
+- Then: [Shop Cart](/api/graphql-api/shop/cart)
+- Then: [Shop Checkout](/api/graphql-api/shop/checkout)
 
 **Building Admin Tools?**
-- Start: [Admin Products](/api/graphql/admin/products)
-- Then: [Admin Orders](/api/graphql/admin/orders)
-- Then: [Admin Reports](/api/graphql/admin/reports)
+- Start: [Admin Products](/api/graphql-api/admin/products)
+- Then: [Admin Orders](/api/graphql-api/admin/orders)
+- Then: [Admin Reports](/api/graphql-api/admin/reports)
 
 **Integrating with External System?**
-- Setup: [Authentication](/api/graphql/authentication)
-- Code: [Integration Guides](/api/graphql/integrations)
-- Optimize: [Best Practices](/api/graphql/best-practices)
+- Setup: [Authentication](/api/graphql-api/authentication)
+- Code: [Integration Guides](/api/graphql-api/integrations)
+- Optimize: [Best Practices](/api/graphql-api/best-practices)
 
 ### 3. **Test Your First Query**
-- Open [Interactive Playground](/api/graphql/playground)
+- Open [Interactive Playground](/api/graphql-api/playground)
 - Copy a sample query from any resource page
 - Execute and see results instantly
 
@@ -136,91 +136,91 @@ This comprehensive documentation covers all Bagisto GraphQL API endpoints for bo
 ## 🔗 Direct Links to All Resources
 
 ### Shop API
-- [Products](/api/graphql/shop/products) - Browse and search
-- [Categories](/api/graphql/shop/categories) - Navigation
-- [Cart](/api/graphql/shop/cart) - Shopping management
-- [Customers](/api/graphql/shop/customers) - Accounts
-- [Orders](/api/graphql/shop/orders) - Tracking
-- [Checkout](/api/graphql/shop/checkout) - Purchase flow
-- [Reviews](/api/graphql/shop/reviews) - Feedback
+- [Products](/api/graphql-api/shop/products) - Browse and search
+- [Categories](/api/graphql-api/shop/categories) - Navigation
+- [Cart](/api/graphql-api/shop/cart) - Shopping management
+- [Customers](/api/graphql-api/shop/customers) - Accounts
+- [Orders](/api/graphql-api/shop/orders) - Tracking
+- [Checkout](/api/graphql-api/shop/checkout) - Purchase flow
+- [Reviews](/api/graphql-api/shop/reviews) - Feedback
 
 ### Admin API
-- [Products](/api/graphql/admin/products) - Management
-- [Categories](/api/graphql/admin/categories) - Organization
-- [Orders](/api/graphql/admin/orders) - Fulfillment
-- [Customers](/api/graphql/admin/customers) - Administration
-- [Inventory](/api/graphql/admin/inventory) - Stock
-- [Promotions](/api/graphql/admin/promotions) - Discounts
-- [Attributes](/api/graphql/admin/attributes) - Configuration
-- [Reports](/api/graphql/admin/reports) - Analytics
+- [Products](/api/graphql-api/admin/products) - Management
+- [Categories](/api/graphql-api/admin/categories) - Organization
+- [Orders](/api/graphql-api/admin/orders) - Fulfillment
+- [Customers](/api/graphql-api/admin/customers) - Administration
+- [Inventory](/api/graphql-api/admin/inventory) - Stock
+- [Promotions](/api/graphql-api/admin/promotions) - Discounts
+- [Attributes](/api/graphql-api/admin/attributes) - Configuration
+- [Reports](/api/graphql-api/admin/reports) - Analytics
 
 ### Guides
-- [Authentication](/api/graphql/authentication) - All auth methods
-- [Playground](/api/graphql/playground) - Interactive testing
-- [Integrations](/api/graphql/integrations) - Language examples
-- [Best Practices](/api/graphql/best-practices) - Production guide
-- [Quick Reference](/api/graphql/quick-reference) - Quick lookup
+- [Authentication](/api/graphql-api/authentication) - All auth methods
+- [Playground](/api/graphql-api/playground) - Interactive testing
+- [Integrations](/api/graphql-api/integrations) - Language examples
+- [Best Practices](/api/graphql-api/best-practices) - Production guide
+- [Quick Reference](/api/graphql-api/quick-reference) - Quick lookup
 
 ## 🎓 How to Use This Documentation
 
 ### For Beginners
-1. Read [Introduction](/api/graphql/introduction) - Understand GraphQL basics
-2. Setup [Authentication](/api/graphql/authentication) - Learn auth methods
-3. Try [Playground](/api/graphql/playground) - Test queries interactively
-4. Check [Quick Reference](/api/graphql/quick-reference) - Common patterns
+1. Read [Introduction](/api/graphql-api/introduction) - Understand GraphQL basics
+2. Setup [Authentication](/api/graphql-api/authentication) - Learn auth methods
+3. Try [Playground](/api/graphql-api/playground) - Test queries interactively
+4. Check [Quick Reference](/api/graphql-api/quick-reference) - Common patterns
 
 ### For Developers Building Apps
-1. Choose your [Language](/api/graphql/integrations) - Find code examples
-2. Review [Shop API](/api/graphql/shop/products) - Browse resources
-3. Test in [Playground](/api/graphql/playground) - Validate queries
-4. Implement & [Optimize](/api/graphql/best-practices) - Production readiness
+1. Choose your [Language](/api/graphql-api/integrations) - Find code examples
+2. Review [Shop API](/api/graphql-api/shop/products) - Browse resources
+3. Test in [Playground](/api/graphql-api/playground) - Validate queries
+4. Implement & [Optimize](/api/graphql-api/best-practices) - Production readiness
 
 ### For Admin/Management Systems
-1. Review [Authentication](/api/graphql/authentication) - Admin auth
-2. Check [Admin API](/api/graphql/admin/products) - Management tools
-3. Study [Reports](/api/graphql/admin/reports) - Analytics
-4. Apply [Best Practices](/api/graphql/best-practices) - Optimization
+1. Review [Authentication](/api/graphql-api/authentication) - Admin auth
+2. Check [Admin API](/api/graphql-api/admin/products) - Management tools
+3. Study [Reports](/api/graphql-api/admin/reports) - Analytics
+4. Apply [Best Practices](/api/graphql-api/best-practices) - Optimization
 
 ### For Integrations
-1. Setup [Authentication](/api/graphql/authentication) - Credentials
-2. Find [Integrations](/api/graphql/integrations) - Your language
-3. Choose [Resources](/api/graphql/) - What you need
-4. Implement & [Test](/api/graphql/best-practices#testing-strategies) - QA
+1. Setup [Authentication](/api/graphql-api/authentication) - Credentials
+2. Find [Integrations](/api/graphql-api/integrations) - Your language
+3. Choose [Resources](/api/graphql-api/) - What you need
+4. Implement & [Test](/api/graphql-api/best-practices#testing-strategies) - QA
 
 ## � Use Cases & Resources
 
 ### E-Commerce Storefront
 **Need:** Product catalog, shopping cart, checkout, customer accounts
-- [Shop Products](/api/graphql/shop/products)
-- [Shop Cart](/api/graphql/shop/cart)
-- [Shop Checkout](/api/graphql/shop/checkout)
-- [Shop Customers](/api/graphql/shop/customers)
+- [Shop Products](/api/graphql-api/shop/products)
+- [Shop Cart](/api/graphql-api/shop/cart)
+- [Shop Checkout](/api/graphql-api/shop/checkout)
+- [Shop Customers](/api/graphql-api/shop/customers)
 
 ### Mobile App
 **Need:** Product browsing, categories, cart, checkout, orders
-- [Shop Products](/api/graphql/shop/products)
-- [Shop Categories](/api/graphql/shop/categories)
-- [Shop Cart](/api/graphql/shop/cart)
-- [Shop Orders](/api/graphql/shop/orders)
+- [Shop Products](/api/graphql-api/shop/products)
+- [Shop Categories](/api/graphql-api/shop/categories)
+- [Shop Cart](/api/graphql-api/shop/cart)
+- [Shop Orders](/api/graphql-api/shop/orders)
 
 ### Admin Dashboard
 **Need:** Product management, order fulfillment, customer admin, analytics
-- [Admin Products](/api/graphql/admin/products)
-- [Admin Orders](/api/graphql/admin/orders)
-- [Admin Customers](/api/graphql/admin/customers)
-- [Admin Reports](/api/graphql/admin/reports)
+- [Admin Products](/api/graphql-api/admin/products)
+- [Admin Orders](/api/graphql-api/admin/orders)
+- [Admin Customers](/api/graphql-api/admin/customers)
+- [Admin Reports](/api/graphql-api/admin/reports)
 
 ### Inventory System
 **Need:** Stock management, warehouse operations, tracking
-- [Admin Inventory](/api/graphql/admin/inventory)
-- [Admin Products](/api/graphql/admin/products)
-- [Admin Reports](/api/graphql/admin/reports)
+- [Admin Inventory](/api/graphql-api/admin/inventory)
+- [Admin Products](/api/graphql-api/admin/products)
+- [Admin Reports](/api/graphql-api/admin/reports)
 
 ### Promotions Engine
 **Need:** Coupons, discounts, cart rules, promotion management
-- [Admin Promotions](/api/graphql/admin/promotions)
-- [Shop Cart](/api/graphql/shop/cart)
-- [Admin Reports](/api/graphql/admin/reports)
+- [Admin Promotions](/api/graphql-api/admin/promotions)
+- [Shop Cart](/api/graphql-api/shop/cart)
+- [Admin Reports](/api/graphql-api/admin/reports)
 - Community forum for discussions
 - Issue tracker for bug reports
 

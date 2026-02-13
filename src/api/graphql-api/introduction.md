@@ -220,16 +220,15 @@ Parameters:
 
 ## What's Next?
 
-- 📚 [Shop API Reference](/api/graphql/shop-api) - Complete shop operations guide
-- 🔑 [Admin API Reference](/api/graphql/admin-api) - Admin operations guide
-- 🔐 [Authentication Guide](/api/graphql/authentication) - Detailed auth methods
-- 🧪 [Integration Guides](/api/graphql/integrations) - Code examples for your stack
-- 💡 [Best Practices](/api/graphql/best-practices) - Performance and security tips
+- 📚 [Shop API Reference](/api/graphql-api/shop-api) - Complete shop operations guide
+- 🔑 [Admin API Reference](/api/graphql-api/admin-api) - Admin operations guide
+- 🔐 [Authentication Guide](/api/graphql-api/authentication) - Detailed auth methods
+- 🧪 [Integration Guides](/api/graphql-api/integrations) - Code examples for your stack
+- 💡 [Best Practices](/api/graphql-api/best-practices) - Performance and security tips
 
 ## Support & Resources
 
-- 🌐 [Interactive Playground](https://demo.bagisto.com/api/graphiql)
-- 📖 [Schema Documentation](https://demo.bagisto.com/api/graphiql)
+- 🌐 [Interactive Playground](https://api-demo.bagisto.com/api/graphiql)
 - 💬 [Community Forum](https://forums.bagisto.com)
 - 🐛 [Issue Tracker](https://github.com/bagisto/bagisto/issues)
 - 📧 [Contact Support](https://bagisto.com/en/contacts/)

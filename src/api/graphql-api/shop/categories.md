@@ -71,5 +71,5 @@ query GetCategoryProducts($categoryId: Int!, $first: Int!) {
 ```
 
 ## Related Resources
-- [Products](/api/graphql/shop/products)
-- [Cart](/api/graphql/shop/cart)
+- [Products](/api/graphql-api/shop/products)
+- [Cart](/api/graphql-api/shop/cart)

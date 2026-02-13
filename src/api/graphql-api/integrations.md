@@ -1077,6 +1077,6 @@ curl -X POST https://your-domain.com/api/graphql \
 **Ready to integrate?** Choose your language above and start building!
 
 📚 **Related Documentation:**
-- 🔐 [Authentication Guide](/api/graphql/authentication)
-- 🛍️ [Shop API Reference](/api/graphql/shop-api)
-- 👨‍💼 [Admin API Reference](/api/graphql/admin-api)
+- 🔐 [Authentication Guide](/api/graphql-api/authentication)
+- 🛍️ [Shop API Reference](/api/graphql-api/shop-api)
+- 👨‍💼 [Admin API Reference](/api/graphql-api/admin-api)

@@ -301,7 +301,7 @@ query ValidateLocale($id: ID!) {
 
 ## Related Resources
 
-- [Get Locales](/api/graphql/shop/queries/get-locales) - Retrieve all locales with pagination
-- [Pagination Guide](/api/graphql/pagination) - Cursor pagination documentation
-- [Shop API Overview](/api/graphql/shop-api) - Overview of Shop API resources
-- [Authentication Guide](/api/graphql/authentication) - Authentication and authorization
+- [Get Locales](/api/graphql-api/shop/queries/get-locales) - Retrieve all locales with pagination
+- [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation
+- [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources
+- [Authentication Guide](/api/graphql-api/authentication) - Authentication and authorization

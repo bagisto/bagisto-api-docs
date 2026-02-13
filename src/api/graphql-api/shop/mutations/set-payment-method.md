@@ -122,6 +122,6 @@ Authorization: Bearer <accessToken>
 
 ## Related Documentation
 
-- [Get Payment Methods](/api/graphql/shop/queries/get-payment-methods)
-- [Set Billing Address](/api/graphql/shop/mutations/set-billing-address)
-- [Place Order](/api/graphql/shop/mutations/place-order)
+- [Get Payment Methods](/api/graphql-api/shop/queries/get-payment-methods)
+- [Set Billing Address](/api/graphql-api/shop/mutations/set-billing-address)
+- [Place Order](/api/graphql-api/shop/mutations/place-order)
