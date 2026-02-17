@@ -48,7 +48,7 @@ Retrieve the authenticated customer's profile information.
 
 ## Authentication
 
- This query requires a valid customer authentication token in the `Authorization` header. Use the [Customer Login API](/api/graphql/shop/mutations/customer-login) to retrieve the token.
+ This query requires a valid customer authentication token in the `Authorization` header. Use the [Customer Login API](/api/graphql-api/shop/mutations/customer-login) to retrieve the token.
 
 ```
 Authorization: Bearer <accessToken>
@@ -89,6 +89,6 @@ This query has no required arguments.
 
 ## Related Documentation
 
-- [Update Customer Profile](/api/graphql/shop/mutations/update-customer-profile)
-- [Get Customer Orders](/api/graphql/shop/queries/get-customer-orders)
-- [Get Customer Addresses](/api/graphql/shop/queries/get-customer-addresses)
+- [Update Customer Profile](/api/graphql-api/shop/mutations/update-customer-profile)
+- [Get Customer Orders](/api/graphql-api/shop/queries/get-customer-orders)
+- [Get Customer Addresses](/api/graphql-api/shop/queries/get-customer-addresses)

@@ -78,9 +78,9 @@ After requesting password reset:
 1. Customer receives email with reset link
 2. Customer clicks the link
 3. Customer enters new password
-4. Customer uses [Reset Password](/api/graphql/shop/mutations/reset-password) mutation to confirm
+4. Customer uses [Reset Password](/api/graphql-api/shop/mutations/reset-password) mutation to confirm
 
 ## Related Documentation
 
-- [Reset Password](/api/graphql/shop/mutations/reset-password)
-- [Customer Login](/api/graphql/shop/mutations/customer-login)
+- [Reset Password](/api/graphql-api/shop/mutations/reset-password)
+- [Customer Login](/api/graphql-api/shop/mutations/customer-login)

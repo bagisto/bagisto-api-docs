@@ -388,8 +388,8 @@ When any required field (title, comment, rating, name) is missing.
 
 ## Related Resources
 
-- [Get Product Reviews](/api/graphql/shop/queries/get-product-reviews) - Query product reviews
-- [Get Product Review](/api/graphql/shop/queries/get-product-review) - Query single review details
-- [Get Product](/api/graphql/shop/queries/get-product) - Query product details
-- [Mutations Guide](/api/graphql/shop/mutations) - Overview of shop mutations
-- [Shop API Overview](/api/graphql/shop-api) - Overview of Shop API resources
+- [Get Product Reviews](/api/graphql-api/shop/queries/get-product-reviews) - Query product reviews
+- [Get Product Review](/api/graphql-api/shop/queries/get-product-review) - Query single review details
+- [Get Product](/api/graphql-api/shop/queries/get-product) - Query product details
+- [Mutations Guide](/api/graphql-api/shop/mutations) - Overview of shop mutations
+- [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources

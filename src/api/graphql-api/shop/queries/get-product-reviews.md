@@ -435,8 +435,8 @@ Use pagination to fetch all reviews for a product and calculate statistics.
 
 ## Related Resources
 
-- [Get Single Product Review](/api/graphql/shop/queries/get-product-review) - Query individual review details
-- [Create Product Review](/api/graphql/shop/mutations/create-product-review) - Submit new product review
-- [Get Product](/api/graphql/shop/queries/get-product) - Query product details
-- [Pagination Guide](/api/graphql/pagination) - Cursor pagination documentation
-- [Shop API Overview](/api/graphql/shop-api) - Overview of Shop API resources
+- [Get Single Product Review](/api/graphql-api/shop/queries/get-product-review) - Query individual review details
+- [Create Product Review](/api/graphql-api/shop/mutations/create-product-review) - Submit new product review
+- [Get Product](/api/graphql-api/shop/queries/get-product) - Query product details
+- [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation
+- [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources

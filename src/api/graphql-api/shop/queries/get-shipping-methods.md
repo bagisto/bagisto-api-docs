@@ -112,6 +112,6 @@ Authorization: Bearer <accessToken>
 
 ## Related Documentation
 
-- [Get Cart](/api/graphql/shop/queries/get-cart)
-- [Set Shipping Address](/api/graphql/shop/mutations/set-shipping-address)
-- [Set Shipping Method](/api/graphql/shop/mutations/set-shipping-method)
+- [Get Cart](/api/graphql-api/shop/queries/get-cart)
+- [Set Shipping Address](/api/graphql-api/shop/mutations/set-shipping-address)
+- [Set Shipping Method](/api/graphql-api/shop/mutations/set-shipping-method)

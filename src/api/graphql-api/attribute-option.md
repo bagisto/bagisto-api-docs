@@ -875,13 +875,13 @@ A: This is a known limitation with API Platform's relationship pagination. Use `
 
 ## Related Topics
 
-- [Pagination Guide](/api/graphql/pagination) - Comprehensive cursor pagination documentation
-- [Authentication](/api/graphql/authentication) - Secure your API requests
-- [Best Practices](/api/graphql/best-practices) - API performance and security guidelines
+- [Pagination Guide](/api/graphql-api/pagination) - Comprehensive cursor pagination documentation
+- [Authentication](/api/graphql-api/authentication) - Secure your API requests
+- [Best Practices](/api/graphql-api/best-practices) - API performance and security guidelines
 - [GraphQL Overview](/api/graphql) - GraphQL API introduction
 
 ---
 
 **Next Steps:**
-- 📚 [Shop API Reference](/api/graphql/shop-api) - Customer-facing attribute operations
-- 🔑 [Admin API Reference](/api/graphql/admin-api) - Administrative attribute management
+- 📚 [Shop API Reference](/api/graphql-api/shop-api) - Customer-facing attribute operations
+- 🔑 [Admin API Reference](/api/graphql-api/admin-api) - Administrative attribute management

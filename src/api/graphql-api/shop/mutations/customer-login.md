@@ -91,6 +91,6 @@ e.g.
 
 ## Related Documentation
 
-- [Customer Registration](/api/graphql/shop/mutations/customer-registration)
-- [Customer Logout](/api/graphql/shop/mutations/customer-logout)
-- [Authentication Guide](/api/graphql/authentication)
+- [Customer Registration](/api/graphql-api/shop/mutations/customer-registration)
+- [Customer Logout](/api/graphql-api/shop/mutations/customer-logout)
+- [Authentication Guide](/api/graphql-api/authentication)

@@ -107,6 +107,6 @@ Available payment methods depend on:
 
 ## Related Documentation
 
-- [Set Payment Method](/api/graphql/shop/mutations/set-payment-method)
-- [Place Order](/api/graphql/shop/mutations/place-order)
-- [Checkout Flow](/api/graphql/shop/checkout)
+- [Set Payment Method](/api/graphql-api/shop/mutations/set-payment-method)
+- [Place Order](/api/graphql-api/shop/mutations/place-order)
+- [Checkout Flow](/api/graphql-api/shop/checkout)

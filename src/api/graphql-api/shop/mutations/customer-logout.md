@@ -35,7 +35,7 @@ Logout a customer and invalidate their authentication tokens.
 
 ## Authentication
 
- This query requires a valid customer authentication token in the `Authorization` header. Use the [Customer Login API](/api/graphql/shop/mutations/customer-login) to retrieve the token.
+ This query requires a valid customer authentication token in the `Authorization` header. Use the [Customer Login API](/api/graphql-api/shop/mutations/customer-login) to retrieve the token.
 
 ```
 Authorization: Bearer <accessToken>
@@ -67,5 +67,5 @@ Authorization: Bearer <accessToken>
 
 ## Related Documentation
 
-- [Customer Login](/api/graphql/shop/mutations/customer-login)
-- [Authentication Guide](/api/graphql/authentication)
+- [Customer Login](/api/graphql-api/shop/mutations/customer-login)
+- [Authentication Guide](/api/graphql-api/authentication)

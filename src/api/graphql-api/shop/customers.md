@@ -215,6 +215,6 @@ mutation Logout {
 ```
 
 ## Related Resources
-- [Orders](/api/graphql/shop/orders)
-- [Cart](/api/graphql/shop/cart)
-- [Addresses](/api/graphql/shop/customers#add-address)
+- [Orders](/api/graphql-api/shop/orders)
+- [Cart](/api/graphql-api/shop/cart)
+- [Addresses](/api/graphql-api/shop/customers#add-address)

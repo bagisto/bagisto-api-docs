@@ -102,7 +102,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { GRAPHQL_ENDPOINT } from '../config/api.config'
+import { GRAPHQL_PLAYGROUND } from '../config/api.config'
 import { normalizeGraphQLUrl, normalizeStorageUrl } from '../utils/url-normalizer'
 
 interface Example {
@@ -354,7 +354,7 @@ const runGraphiQL = () => {
   const encodedQuery = encodeURIComponent(query)
   const encodedVariables = encodeURIComponent(variables || '{}')
   
-  const graphiQLUrl = `${GRAPHQL_ENDPOINT}?query=${encodedQuery}&variables=${encodedVariables}`
+  const graphiQLUrl = `${GRAPHQL_PLAYGROUND}?query=${encodedQuery}&variables=${encodedVariables}`
   
   window.open(graphiQLUrl, '_blank')
 }

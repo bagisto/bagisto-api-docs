@@ -129,6 +129,6 @@ query TrackOrder($incrementId: String!) {
 ```
 
 ## Related Resources
-- [Customers](/api/graphql/shop/customers)
-- [Cart](/api/graphql/shop/cart)
-- [Checkout](/api/graphql/shop/checkout)
+- [Customers](/api/graphql-api/shop/customers)
+- [Cart](/api/graphql-api/shop/cart)
+- [Checkout](/api/graphql-api/shop/checkout)

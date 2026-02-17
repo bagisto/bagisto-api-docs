@@ -632,6 +632,6 @@ query {
 ---
 
 **Next Steps:**
-- 📚 [Shop API Reference](/api/graphql/shop-api) - Use authentication in shop operations
-- 🔑 [Admin API Reference](/api/graphql/admin-api) - Admin authentication flows
-- 💡 [Best Practices](/api/graphql/best-practices) - Advanced security topics
+- 📚 [Shop API Reference](/api/graphql-api/shop-api) - Use authentication in shop operations
+- 🔑 [Admin API Reference](/api/graphql-api/admin-api) - Admin authentication flows
+- 💡 [Best Practices](/api/graphql-api/best-practices) - Advanced security topics

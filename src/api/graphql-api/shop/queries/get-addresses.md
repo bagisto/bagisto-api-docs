@@ -135,7 +135,7 @@ Uses cursor-based pagination:
 
 ## Related Documentation
 
-- [Create Customer Address](/api/graphql/shop/mutations/create-customer-address)
-- [Update Customer Address](/api/graphql/shop/mutations/update-customer-address)
-- [Set Shipping Address](/api/graphql/shop/mutations/set-shipping-address)
-- [Set Billing Address](/api/graphql/shop/mutations/set-billing-address)
+- [Create Customer Address](/api/graphql-api/shop/mutations/create-customer-address)
+- [Update Customer Address](/api/graphql-api/shop/mutations/update-customer-address)
+- [Set Shipping Address](/api/graphql-api/shop/mutations/set-shipping-address)
+- [Set Billing Address](/api/graphql-api/shop/mutations/set-billing-address)

@@ -449,7 +449,7 @@ query GetRTLLocales {
 
 ## Related Resources
 
-- [Pagination Guide](/api/graphql/pagination) - Cursor pagination documentation
-- [Shop API Overview](/api/graphql/shop-api) - Overview of Shop API resources
-- [Authentication Guide](/api/graphql/authentication) - Authentication and authorization
-- [Channels API](/api/graphql/shop/queries/get-channels) - Store channel information
+- [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation
+- [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources
+- [Authentication Guide](/api/graphql-api/authentication) - Authentication and authorization
+- [Channels API](/api/graphql-api/shop/queries/get-channels) - Store channel information

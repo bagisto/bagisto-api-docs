@@ -252,7 +252,7 @@ export default defineConfig(({ command, mode }) => {
                             collapsed: false,
                             items: [
                               { text: 'Get Customer Profile', link: '/api/graphql-api/shop/queries/get-customer-profile' },
-                              { text: 'Get Customer Orders', link: '/api/graphql-api/shop/queries/get-customer-orders' },
+                              // { text: 'Get Customer Orders', link: '/api/graphql-api/shop/queries/get-customer-orders' },
                               { text: 'Get Customer Addresses', link: '/api/graphql-api/shop/queries/get-customer-addresses'},
 
                             ]   
@@ -269,7 +269,6 @@ export default defineConfig(({ command, mode }) => {
                               { text: 'Update Customer Profile', link: '/api/graphql-api/shop/mutations/update-customer-profile' },
                               { text: 'Delete Customer Profile', link: '/api/graphql-api/shop/mutations/delete-customer-profile' },
                               { text: 'Forgot Password', link: '/api/graphql-api/shop/mutations/forgot-password' },
-                              { text: 'Reset Password', link: '/api/graphql-api/shop/mutations/reset-password' },
                               { text: 'Create Customer Address', link: '/api/graphql-api/shop/mutations/create-customer-address' },
                               { text: 'Update Customer Address', link: '/api/graphql-api/shop/mutations/update-customer-address' },
                               { text: 'Delete Customer Address', link: '/api/graphql-api/shop/mutations/delete-customer-address' },

@@ -89,5 +89,5 @@ mutation CreateReview($input: CreateReviewInput!) {
 ```
 
 ## Related Resources
-- [Products](/api/graphql/shop/products)
-- [Orders](/api/graphql/shop/orders)
+- [Products](/api/graphql-api/shop/products)
+- [Orders](/api/graphql-api/shop/orders)

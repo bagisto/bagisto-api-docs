@@ -164,4 +164,4 @@ Authorization: Bearer <accessToken>
 
 ## Related Documentation
  
-- [Checkout Flow](/api/graphql/shop/checkout)
+- [Checkout Flow](/api/graphql-api/shop/checkout)

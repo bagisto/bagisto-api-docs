@@ -28,7 +28,7 @@ Permanently delete the authenticated customer's account and all associated data.
 
 ## Authentication
 
- This query requires a valid customer authentication token in the `Authorization` header. Use the [Customer Login API](/api/graphql/shop/mutations/customer-login) to retrieve the token.
+ This query requires a valid customer authentication token in the `Authorization` header. Use the [Customer Login API](/api/graphql-api/shop/mutations/customer-login) to retrieve the token.
 
 ```
 Authorization: Bearer <accessToken>
@@ -58,5 +58,5 @@ When a customer account is deleted:
 
 ## Related Documentation
 
-- [Update Customer Profile](/api/graphql/shop/mutations/update-customer-profile)
-- [Customer Logout](/api/graphql/shop/mutations/customer-logout)
+- [Update Customer Profile](/api/graphql-api/shop/mutations/update-customer-profile)
+- [Customer Logout](/api/graphql-api/shop/mutations/customer-logout)

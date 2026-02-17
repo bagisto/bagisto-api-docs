@@ -945,8 +945,8 @@ query GetMultiLanguageAttribute($id: String!) {
 
 ## Related Resources
 
-- [Pagination Guide](/api/graphql/pagination) - Cursor pagination documentation
-- [Attribute Collection](/api/graphql/shop/queries/get-attributes) - Query multiple attributes
-- [Attribute Options API](/api/graphql/shop/queries/get-attribute-options) - Detailed option queries
-- [Attributes API](/api/graphql/shop/attribute-options) - Full attributes documentation
-- [Shop API Overview](/api/graphql/shop-api) - Overview of Shop API resources
+- [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation
+- [Attribute Collection](/api/graphql-api/shop/queries/get-attributes) - Query multiple attributes
+- [Attribute Options API](/api/graphql-api/shop/queries/get-attribute-options) - Detailed option queries
+- [Attributes API](/api/graphql-api/shop/attribute-options) - Full attributes documentation
+- [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources

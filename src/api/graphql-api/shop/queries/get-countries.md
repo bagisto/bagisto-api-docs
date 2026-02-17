@@ -663,7 +663,7 @@ Some countries may have states configured, while others may not:
 
 ## Related Resources
 
-- [Get Country](/api/graphql/shop/queries/get-country) - Get single country by code
-- [Country States](/api/graphql/shop/queries/get-country-states) - Get states for specific country
-- [Pagination Guide](/api/graphql/pagination) - Cursor pagination documentation
-- [Shop API Overview](/api/graphql/shop-api) - Overview of Shop API resources
+- [Get Country](/api/graphql-api/shop/queries/get-country) - Get single country by code
+- [Country States](/api/graphql-api/shop/queries/get-country-states) - Get states for specific country
+- [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation
+- [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources

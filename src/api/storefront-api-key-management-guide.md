@@ -118,7 +118,7 @@ php artisan bagisto-api:generate-key {--name=} {--rate-limit=100} {--no-activati
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `--name` | string | required | Descriptive name for your key (e.g., "Mobile App", "Third Party") |
-| `--rate-limit` | integer \| string | 100 | Requests per minute. Leave empty for unlimited (up to 5000 max). Default: 100 requests/minute |
+| `--rate-limit` | integer \| string | 100 | Requests per minute. Set null for unlimited (up to 5000 max). Default: 100 requests/minute |
 | `--no-activation` | flag | false | Create key in inactive state (activate later) |
 
 > **📌 Rate Limit Note:** The maximum allowed rate limit is **5,000 requests/minute**. If you request a higher limit, it will be capped at 5,000. For unlimited access within this ceiling, leave `--rate-limit` empty.
@@ -133,7 +133,7 @@ php artisan bagisto-api:generate-key --name="Mobile App"
 php artisan bagisto-api:generate-key --name="Partner API" --rate-limit=500
 
 # Unlimited rate limit (up to 5000 max)
-php artisan bagisto-api:generate-key --name="Premium Integration" --rate-limit=
+php artisan bagisto-api:generate-key --name="Premium Integration" --rate-limit=null
 
 # Create inactive key (for later activation)
 php artisan bagisto-api:generate-key --name="Staging Environment" --no-activation
@@ -144,7 +144,6 @@ php artisan bagisto-api:generate-key --name="Development" --rate-limit=200
 php artisan bagisto-api:generate-key --name="High-Volume Partner" --rate-limit=5000
 
 # Unlimited request
-php artisan bagisto-api:generate-key --name="Partner API" --rate-limit=
 php artisan bagisto-api:generate-key --name="Partner API" --rate-limit=null
 ```
 
@@ -439,7 +438,7 @@ php artisan bagisto-api:key:manage status --key="Your Key Name"
 
 2. **Or use an unlimited key (if appropriate):**
    ```bash
-   php artisan bagisto-api:generate-key --name="Premium Integration" --rate-limit=
+   php artisan bagisto-api:generate-key --name="Premium Integration" --rate-limit=null
    ```
 
 **Better Solution:**
@@ -561,7 +560,7 @@ php artisan bagisto-api:generate-key --name="My App"
 php artisan bagisto-api:generate-key --name="High-Volume App" --rate-limit=250
 
 # Unlimited access (no per-minute restriction)
-php artisan bagisto-api:generate-key --name="Premium Partner" --rate-limit=
+php artisan bagisto-api:generate-key --name="Premium Partner" --rate-limit=null
 
 # Max allowed: 5000 requests/minute (will cap anything higher)
 php artisan bagisto-api:generate-key --name="Max Throughput" --rate-limit=10000
@@ -629,7 +628,7 @@ curl -X GET 'https://your-domain.com/api/shop/products' \
 
 4. **Use unlimited keys** — For trusted integrations
    ```bash
-   php artisan bagisto-api:generate-key --name="Internal Service" --rate-limit=
+   php artisan bagisto-api:generate-key --name="Internal Service" --rate-limit=null
    ```
 
 ### Rate Limiting Best Practices
@@ -654,5 +653,4 @@ curl -X GET 'https://your-domain.com/api/shop/products' \
 - 🔗 [REST API Guide](./rest-api/introduction.html) - Explore REST API endpoints
 - ⚡ [GraphQL API Guide](./graphql-api/introduction.html) - Discover GraphQL capabilities
 - 🚀 [Integration Guides](./integrations) - Real-world integration examples
-- 🛠️ [API Key Security](./security) - Advanced security practices for API keys
 - 📈 [Rate Limit Headers](./rate-limiting#headers) - Understanding rate limit response headers

@@ -705,7 +705,7 @@ type Product {
 - Keep documentation up-to-date
 
 **📚 Related Documentation:**
-- 🔐 [Authentication](/api/graphql/authentication)
-- 🛍️ [Shop API](/api/graphql/shop-api)
-- 👨‍💼 [Admin API](/api/graphql/admin-api)
-- 💻 [Integration Guides](/api/graphql/integrations)
+- 🔐 [Authentication](/api/graphql-api/authentication)
+- 🛍️ [Shop API](/api/graphql-api/shop-api)
+- 👨‍💼 [Admin API](/api/graphql-api/admin-api)
+- 💻 [Integration Guides](/api/graphql-api/integrations)

@@ -39,7 +39,7 @@ Update the authenticated customer's profile information.
 
 ## Authentication
 
-This query requires a valid customer authentication token in the `Authorization` header. Use the [Customer Login API](/api/graphql/shop/mutations/customer-login) to retrieve the token.
+This query requires a valid customer authentication token in the `Authorization` header. Use the [Customer Login API](/api/graphql-api/shop/mutations/customer-login) to retrieve the token.
 
 ```
 Authorization: Bearer <accessToken>
@@ -84,5 +84,5 @@ Authorization: Bearer <accessToken>
 
 ## Related Documentation
 
-- [Get Customer Profile](/api/graphql/shop/queries/get-customer-profile)
-- [Delete Customer Profile](/api/graphql/shop/mutations/delete-customer-profile)
+- [Get Customer Profile](/api/graphql-api/shop/queries/get-customer-profile)
+- [Delete Customer Profile](/api/graphql-api/shop/mutations/delete-customer-profile)

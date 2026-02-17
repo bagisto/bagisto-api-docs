@@ -98,7 +98,7 @@ This mutation returns a unique cart token that identifies the cart session. This
 
 ## Authentication
 
- This query requires a valid customer authentication token in the `Authorization` header. Use the [Customer Login API](/api/graphql/shop/mutations/customer-login) to retrieve the token.
+ This query requires a valid customer authentication token in the `Authorization` header. Use the [Customer Login API](/api/graphql-api/shop/mutations/customer-login) to retrieve the token.
 
  For guest users, no authentication is required. The mutation returns a unique cart token that must be used as the `Authorization` header in subsequent cart operations.
 

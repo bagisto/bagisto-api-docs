@@ -121,6 +121,6 @@ Register a new customer account with Bagisto.
 
 ## Related Documentation
 
-- [Customer Login](/api/graphql/shop/mutations/customer-login)
-- [Update Customer Profile](/api/graphql/shop/mutations/update-customer-profile)
-- [Authentication Guide](/api/graphql/authentication)
+- [Customer Login](/api/graphql-api/shop/mutations/customer-login)
+- [Update Customer Profile](/api/graphql-api/shop/mutations/update-customer-profile)
+- [Authentication Guide](/api/graphql-api/authentication)

@@ -62,5 +62,5 @@ Verify a customer's token is valid or not.
  
 ## Related Documentation
 
-- [Customer Registration](/api/graphql/shop/mutations/customer-registration)
-- [Authentication Guide](/api/graphql/authentication)
+- [Customer Registration](/api/graphql-api/shop/mutations/customer-registration)
+- [Authentication Guide](/api/graphql-api/authentication)

@@ -700,8 +700,8 @@ Use the "With All Children" example to show subcategories.
 
 ## Related Resources
 
-- [Categories](/api/graphql/shop/queries/categories) - Get all categories with pagination
-- [Tree Categories](/api/graphql/shop/queries/tree-categories) - Get hierarchical category tree
-- [Get Products](/api/graphql/shop/queries/get-products) - Query products within a category
-- [Pagination Guide](/api/graphql/pagination) - Cursor pagination documentation
-- [Shop API Overview](/api/graphql/shop-api) - Overview of Shop API resources
+- [Categories](/api/graphql-api/shop/queries/categories) - Get all categories with pagination
+- [Tree Categories](/api/graphql-api/shop/queries/tree-categories) - Get hierarchical category tree
+- [Get Products](/api/graphql-api/shop/queries/get-products) - Query products within a category
+- [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation
+- [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources

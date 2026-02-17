@@ -441,6 +441,6 @@ query getProducts($filter: String!) {
 ---
 
 **Related Resources:**
-- [Categories](/api/graphql/shop/categories)
-- [Reviews](/api/graphql/shop/reviews)
-- [Cart](/api/graphql/shop/cart)
+- [Categories](/api/graphql-api/shop/categories)
+- [Reviews](/api/graphql-api/shop/reviews)
+- [Cart](/api/graphql-api/shop/cart)

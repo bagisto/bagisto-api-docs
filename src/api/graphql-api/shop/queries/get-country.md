@@ -446,8 +446,8 @@ Use the "Complete Details" example for a comprehensive country information displ
 
 ## Related Resources
 
-- [Countries](/api/graphql/shop/queries/get-countries) - Get all countries with pagination
-- [Country States](/api/graphql/shop/queries/get-country-states) - Get states for a country
-- [Country State](/api/graphql/shop/queries/get-country-state) - Get single state by ID
-- [Pagination Guide](/api/graphql/pagination) - Cursor pagination documentation
-- [Shop API Overview](/api/graphql/shop-api) - Overview of Shop API resources
+- [Countries](/api/graphql-api/shop/queries/get-countries) - Get all countries with pagination
+- [Country States](/api/graphql-api/shop/queries/get-country-states) - Get states for a country
+- [Country State](/api/graphql-api/shop/queries/get-country-state) - Get single state by ID
+- [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation
+- [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources
