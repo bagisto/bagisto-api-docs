@@ -328,6 +328,54 @@ export default defineConfig(({ command, mode }) => {
                             ]
                           }
                         ]
+                      },
+                      {
+                        text: 'Wishlist',
+                        collapsed: true,
+                        items: [
+                          {
+                            text: 'Queries',
+                            collapsed: false,
+                            items: [
+                              { text: 'Get Wishlists', link: '/api/graphql-api/shop/queries/get-wishlists' },
+                              { text: 'Get Wishlist Item', link: '/api/graphql-api/shop/queries/get-wishlist' },
+                            ]
+                          },
+                          {
+                            text: 'Mutations',
+                            collapsed: false,
+                            items: [
+                              { text: 'Create Wishlist', link: '/api/graphql-api/shop/mutations/create-wishlist' },
+                              { text: 'Toggle Wishlist', link: '/api/graphql-api/shop/mutations/toggle-wishlist' },
+                              { text: 'Delete Wishlist', link: '/api/graphql-api/shop/mutations/delete-wishlist' },
+                              { text: 'Move to Cart', link: '/api/graphql-api/shop/mutations/move-wishlist-to-cart' },
+                              { text: 'Delete All Wishlists', link: '/api/graphql-api/shop/mutations/delete-all-wishlists' },
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        text: 'Compare',
+                        collapsed: true,
+                        items: [
+                          {
+                            text: 'Queries',
+                            collapsed: false,
+                            items: [
+                              { text: 'Get Compare Items', link: '/api/graphql-api/shop/queries/get-compare-items' },
+                              { text: 'Get Compare Item', link: '/api/graphql-api/shop/queries/get-compare-item' },
+                            ]
+                          },
+                          {
+                            text: 'Mutations',
+                            collapsed: false,
+                            items: [
+                              { text: 'Create Compare Item', link: '/api/graphql-api/shop/mutations/create-compare-item' },
+                              { text: 'Delete Compare Item', link: '/api/graphql-api/shop/mutations/delete-compare-item' },
+                              { text: 'Delete All Compare Items', link: '/api/graphql-api/shop/mutations/delete-all-compare-items' },
+                            ]
+                          }
+                        ]
                       },                              
                 ]
               },
