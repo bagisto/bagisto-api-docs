@@ -252,9 +252,13 @@ export default defineConfig(({ command, mode }) => {
                             collapsed: false,
                             items: [
                               { text: 'Get Customer Profile', link: '/api/graphql-api/shop/queries/get-customer-profile' },
-                              // { text: 'Get Customer Orders', link: '/api/graphql-api/shop/queries/get-customer-orders' },
-                              { text: 'Get Customer Addresses', link: '/api/graphql-api/shop/queries/get-customer-addresses'},
-
+                              { text: 'Get Customer Orders', link: '/api/graphql-api/shop/queries/get-customer-orders' },
+                              { text: 'Get Customer Order', link: '/api/graphql-api/shop/queries/get-customer-order' },
+                              { text: 'Get Customer Invoices', link: '/api/graphql-api/shop/queries/get-customer-invoices' },
+                              { text: 'Get Customer Invoice', link: '/api/graphql-api/shop/queries/get-customer-invoice' },
+                              { text: 'Get Downloadable Products', link: '/api/graphql-api/shop/queries/get-customer-downloadable-products' },
+                              { text: 'Get Downloadable Product', link: '/api/graphql-api/shop/queries/get-customer-downloadable-product' },
+                              { text: 'Get Customer Addresses', link: '/api/graphql-api/shop/queries/get-customer-addresses' },
                             ]   
 
                           },
@@ -272,7 +276,8 @@ export default defineConfig(({ command, mode }) => {
                               { text: 'Create Customer Address', link: '/api/graphql-api/shop/mutations/create-customer-address' },
                               { text: 'Update Customer Address', link: '/api/graphql-api/shop/mutations/update-customer-address' },
                               { text: 'Delete Customer Address', link: '/api/graphql-api/shop/mutations/delete-customer-address' },
-
+                              { text: 'Get Customer Reviews', link: '/api/graphql-api/shop/queries/get-customer-reviews' },
+                              { text: 'Get Customer Review', link: '/api/graphql-api/shop/queries/get-customer-review' },
                             ]
                           }
                         ]
@@ -373,20 +378,6 @@ export default defineConfig(({ command, mode }) => {
                               { text: 'Create Compare Item', link: '/api/graphql-api/shop/mutations/create-compare-item' },
                               { text: 'Delete Compare Item', link: '/api/graphql-api/shop/mutations/delete-compare-item' },
                               { text: 'Delete All Compare Items', link: '/api/graphql-api/shop/mutations/delete-all-compare-items' },
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        text: 'Customer Review',
-                        collapsed: true,
-                        items: [
-                          {
-                            text: 'Queries',
-                            collapsed: false,
-                            items: [
-                              { text: 'Get Customer Reviews', link: '/api/graphql-api/shop/queries/get-customer-reviews' },
-                              { text: 'Get Customer Review', link: '/api/graphql-api/shop/queries/get-customer-review' },
                             ]
                           }
                         ]
@@ -503,7 +494,13 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Get Profile', link: '/api/rest-api/shop/customers/get-customer-profile' },
                           { text: 'Update Profile', link: '/api/rest-api/shop/customers/update-customer-profile' },
                           { text: 'Delete Profile', link: '/api/rest-api/shop/customers/delete-customer-profile' },
-                          { text: 'Get Orders', link: '/api/rest-api/shop/customers/get-customer-orders' },
+                          { text: 'Get Orders', link: '/api/rest-api/shop/customer-orders/get-customer-orders' },
+                          { text: 'Get Order', link: '/api/rest-api/shop/customer-orders/get-customer-order' },
+                          { text: 'Get Invoices', link: '/api/rest-api/shop/customer-invoices/get-customer-invoices' },
+                          { text: 'Get Invoice', link: '/api/rest-api/shop/customer-invoices/get-customer-invoice' },
+                          { text: 'Download Invoice PDF', link: '/api/rest-api/shop/customer-invoices/download-customer-invoice-pdf' },
+                          { text: 'Get Downloadable Products', link: '/api/rest-api/shop/customer-downloadable-products/get-customer-downloadable-products' },
+                          { text: 'Get Downloadable Product', link: '/api/rest-api/shop/customer-downloadable-products/get-customer-downloadable-product' },
                           { text: 'Get Customer Reviews', link: '/api/rest-api/shop/customer-reviews/get-customer-reviews' },
                           { text: 'Get Customer Review', link: '/api/rest-api/shop/customer-reviews/get-customer-review' },
                     ]

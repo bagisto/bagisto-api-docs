@@ -6,7 +6,7 @@ examples:
     description: Retrieve available shipping methods for checkout.
     query: |
       query checkoutShippingRates {
-        collectionShippingRates(token: "") {
+        collectionShippingRates {
           _id
           id
           code
@@ -46,12 +46,6 @@ examples:
 # Get Shipping Methods
 
 Retrieve available shipping methods for a cart during checkout.
-
-## Query Parameters
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `token` | String | No | **Deprecated** - Keep empty. Use Authorization header instead |
 
 ## Authentication
 

@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: get-checkout-addresses
     title: Get Checkout Addresses
-    description: Retrieve available addresses for checkout.
+    description: Retrieve the guest / authenticated customer's saved checkout addresses to select as shipping or billing address during checkout.
     request: |
       GET /api/shop/checkout/addresses
       Content-Type: application/json
@@ -42,7 +42,7 @@ examples:
 
 # Get Checkout Addresses
 
-Retrieve customer's saved addresses for use in checkout (shipping and billing).
+Retrieve guest / the authenticated customer's checkout saved addresses so they can select one as their shipping or billing address during checkout. This endpoint returns previously saved addresses — it does not create new ones.
 
 ## Endpoint
 
@@ -94,3 +94,9 @@ GET /api/shop/checkout/addresses
 - [Set Shipping Address](/api/rest-api/shop/checkout/set-shipping-address)
 - [Set Billing Address](/api/rest-api/shop/checkout/set-billing-address)
 - [Get Shipping Methods](/api/rest-api/shop/checkout/get-shipping-methods)
+
+::: tip Fetching Customer Addresses
+To retrieve the full list of a customer's saved addresses (outside of checkout), use the dedicated customer address queries:
+- **GraphQL:** [Get Customer Addresses](/api/graphql-api/shop/queries/get-customer-addresses)
+- **REST:** [Get Customer Addresses](/api/rest-api/shop/customers/get-customer-addresses)
+:::
