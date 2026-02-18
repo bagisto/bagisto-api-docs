@@ -376,6 +376,20 @@ export default defineConfig(({ command, mode }) => {
                             ]
                           }
                         ]
+                      },
+                      {
+                        text: 'Customer Review',
+                        collapsed: true,
+                        items: [
+                          {
+                            text: 'Queries',
+                            collapsed: false,
+                            items: [
+                              { text: 'Get Customer Reviews', link: '/api/graphql-api/shop/queries/get-customer-reviews' },
+                              { text: 'Get Customer Review', link: '/api/graphql-api/shop/queries/get-customer-review' },
+                            ]
+                          }
+                        ]
                       },                              
                 ]
               },
@@ -490,6 +504,8 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Update Profile', link: '/api/rest-api/shop/customers/update-customer-profile' },
                           { text: 'Delete Profile', link: '/api/rest-api/shop/customers/delete-customer-profile' },
                           { text: 'Get Orders', link: '/api/rest-api/shop/customers/get-customer-orders' },
+                          { text: 'Get Customer Reviews', link: '/api/rest-api/shop/customer-reviews/get-customer-reviews' },
+                          { text: 'Get Customer Review', link: '/api/rest-api/shop/customer-reviews/get-customer-review' },
                     ]
                   },
                   {
