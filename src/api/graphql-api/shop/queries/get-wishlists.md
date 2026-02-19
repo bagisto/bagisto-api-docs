@@ -19,6 +19,7 @@ examples:
                 sku
                 type
                 description
+                baseImageUrl
               }
               customer {
                 id
@@ -65,7 +66,8 @@ examples:
                     "price": "99.99",
                     "sku": "PROD-001",
                     "type": "simple",
-                    "description": "A sample product description"
+                    "description": "A sample product description",
+                    "baseImageUrl": "https://example.com/storage/product/1/sample-product.jpg"
                   },
                   "customer": {
                     "id": "/api/shop/customers/1",
@@ -112,6 +114,7 @@ examples:
               product {
                 id
                 name
+                baseImageUrl
               }
               createdAt
             }
@@ -187,7 +190,7 @@ Authorization: Bearer <accessToken>
 | `edges.node` | `Wishlist!` | The wishlist item object. |
 | `edges.node.id` | `ID!` | IRI identifier (e.g. `/api/shop/wishlists/69`). |
 | `edges.node._id` | `Int!` | Numeric identifier. |
-| `edges.node.product` | `Product!` | Associated product with id, name, sku, price, type, description. |
+| `edges.node.product` | `Product!` | Associated product with id, name, sku, price, type, description, baseImageUrl. |
 | `edges.node.customer` | `Customer!` | Associated customer with id, email. |
 | `edges.node.channel` | `Channel!` | Associated channel with id, code, translation. |
 | `edges.node.createdAt` | `String` | Timestamp when the item was added. |

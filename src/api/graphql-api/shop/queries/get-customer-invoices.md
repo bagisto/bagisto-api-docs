@@ -1,6 +1,110 @@
 ---
 outline: false
 examples:
+  - id: get-customer-invoices-by-order-with-items
+    title: Get Customer Invoices by Order ID with Items
+    description: Retrieve invoices for a specific order with detailed invoice line items.
+    query: |
+      query customerInvoices {
+        customerInvoices(first: 1, orderId: 6) {
+          edges {
+            node {
+              orderCurrencyCode        
+              grandTotal
+              downloadUrl
+              items {
+                edges {
+                  node {
+                    id
+                    _id
+                    sku              
+                    parentId
+                    name
+                    price
+                    qty              
+                    total
+                    basePrice
+                    description
+                    baseTotal
+                    taxAmount
+                    baseTaxAmount
+                    discountPercent
+                    discountAmount
+                    baseDiscountAmount
+                    priceInclTax
+                    basePriceInclTax
+                    totalInclTax
+                    baseTotalInclTax
+                    productId
+                    productType
+                    orderItemId
+                    invoiceId
+                    createdAt
+                    updatedAt
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    variables: |
+      {}
+    response: |
+      {
+        "data": {
+          "customerInvoices": {
+            "edges": [
+              {
+                "node": {
+                  "orderCurrencyCode": "USD",
+                  "grandTotal": 150.00,
+                  "downloadUrl": "/customer/invoices/download/1",
+                  "items": {
+                    "edges": [
+                      {
+                        "node": {
+                          "id": "/api/shop/invoice-items/1",
+                          "_id": 1,
+                          "sku": "PROD-001",
+                          "parentId": null,
+                          "name": "Sample Product",
+                          "price": 100.00,
+                          "qty": 1,
+                          "total": 100.00,
+                          "basePrice": 100.00,
+                          "description": "Product description",
+                          "baseTotal": 100.00,
+                          "taxAmount": 10.00,
+                          "baseTaxAmount": 10.00,
+                          "discountPercent": 0.00,
+                          "discountAmount": 0.00,
+                          "baseDiscountAmount": 0.00,
+                          "priceInclTax": 110.00,
+                          "basePriceInclTax": 110.00,
+                          "totalInclTax": 110.00,
+                          "baseTotalInclTax": 110.00,
+                          "productId": 1,
+                          "productType": "simple",
+                          "orderItemId": 1,
+                          "invoiceId": 1,
+                          "createdAt": "2025-02-10T10:30:00+00:00",
+                          "updatedAt": "2025-02-10T10:30:00+00:00"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    commonErrors:
+      - error: invalid-order-id
+        cause: Order ID does not exist or does not belong to the customer
+        solution: Verify the order ID belongs to the authenticated customer
+
   - id: get-customer-invoices-basic
     title: Get All Customer Invoices
     description: Retrieve a paginated list of invoices for the authenticated customer using cursor-based pagination.
@@ -26,6 +130,7 @@ examples:
               baseDiscountAmount
               baseCurrencyCode
               orderCurrencyCode
+              downloadUrl
               createdAt
               updatedAt
             }
@@ -65,6 +170,7 @@ examples:
                   "baseDiscountAmount": 0.00,
                   "baseCurrencyCode": "USD",
                   "orderCurrencyCode": "USD",
+                  "downloadUrl": "/customer/invoices/download/2",
                   "createdAt": "2025-02-10T14:00:00+00:00",
                   "updatedAt": "2025-02-10T14:00:00+00:00"
                 }
@@ -88,6 +194,7 @@ examples:
                   "baseDiscountAmount": 0.00,
                   "baseCurrencyCode": "USD",
                   "orderCurrencyCode": "USD",
+                  "downloadUrl": "/customer/invoices/download/1",
                   "createdAt": "2025-02-10T10:30:00+00:00",
                   "updatedAt": "2025-02-10T10:30:00+00:00"
                 }
@@ -123,6 +230,7 @@ examples:
               incrementId
               state
               grandTotal
+              downloadUrl
               createdAt
             }
           }
@@ -144,6 +252,7 @@ examples:
                   "incrementId": "INV-001",
                   "state": "paid",
                   "grandTotal": 110.00,
+                  "downloadUrl": "/customer/invoices/download/1",
                   "createdAt": "2025-02-10T10:30:00+00:00"
                 }
               }
@@ -169,6 +278,7 @@ examples:
               incrementId
               state
               grandTotal
+              downloadUrl
               createdAt
             }
           }
@@ -188,6 +298,7 @@ examples:
                   "incrementId": "INV-001",
                   "state": "paid",
                   "grandTotal": 110.00,
+                  "downloadUrl": "/customer/invoices/download/1",
                   "createdAt": "2025-02-10T10:30:00+00:00"
                 }
               }
@@ -214,6 +325,7 @@ examples:
               incrementId
               state
               grandTotal
+              downloadUrl
               createdAt
             }
           }
@@ -238,6 +350,7 @@ examples:
                   "incrementId": "INV-001",
                   "state": "paid",
                   "grandTotal": 110.00,
+                  "downloadUrl": "/customer/invoices/download/1",
                   "createdAt": "2025-02-10T10:30:00+00:00"
                 }
               }
@@ -254,7 +367,6 @@ examples:
       - error: INVALID_CURSOR
         cause: The cursor value is invalid or expired
         solution: Use a valid cursor from a previous response's pageInfo
-
 ---
 
 # Get Customer Invoices

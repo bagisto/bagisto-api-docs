@@ -7,7 +7,6 @@ examples:
     query: |
       query GetCustomerInvoice {
         customerInvoice(id: "/api/shop/customer-invoices/1") {
-          _id
           incrementId
           state
           totalQty
@@ -32,6 +31,19 @@ examples:
           reminders
           createdAt
           updatedAt
+          downloadUrl
+          items {
+            edges {
+              node {
+                id
+                sku
+                name
+                qty
+                price
+                total
+              }
+            }
+          }
         }
       }
     variables: |
@@ -40,7 +52,6 @@ examples:
       {
         "data": {
           "customerInvoice": {
-            "_id": 1,
             "incrementId": "INV-001",
             "state": "paid",
             "totalQty": 2,
@@ -64,7 +75,22 @@ examples:
             "emailSent": true,
             "reminders": 0,
             "createdAt": "2025-02-10T10:30:00+00:00",
-            "updatedAt": "2025-02-10T10:30:00+00:00"
+            "updatedAt": "2025-02-10T10:30:00+00:00",
+            "downloadUrl": "http://localhost:8000/api/shop/customer-invoices/1/pdf",
+            "items": {
+              "edges": [
+                {
+                  "node": {
+                    "id": "/api/shop/invoice-items/1",
+                    "sku": "PROD-001",
+                    "name": "Sample Product",
+                    "qty": 2,
+                    "price": 50.00,
+                    "total": 100.00
+                  }
+                }
+              ]
+            }
           }
         }
       }
@@ -143,6 +169,7 @@ X-STOREFRONT-KEY: <storefrontKey>
 | `nextReminderAt` | `DateTime` | Next reminder scheduled date. |
 | `createdAt` | `DateTime!` | Invoice creation timestamp. |
 | `updatedAt` | `DateTime!` | Invoice last update timestamp. |
+| `downloadUrl` | `String` | URL to download the invoice as PDF. |
 
 ## Error Handling
 

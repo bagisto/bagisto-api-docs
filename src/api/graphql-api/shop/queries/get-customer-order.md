@@ -6,8 +6,7 @@ examples:
     description: Retrieve details of a specific customer order by its IRI identifier.
     query: |
       query GetCustomerOrder {
-        customerOrder(id: "/api/shop/customer-orders/1") {
-          _id
+        customerOrder(id: "/api/shop/customer-orders/1") { 
           incrementId
           status
           channelName
@@ -34,6 +33,50 @@ examples:
           baseCurrencyCode
           channelCurrencyCode
           orderCurrencyCode
+          items {
+            edges {
+              node {
+                id
+                sku
+                name
+                qtyOrdered
+                qtyShipped
+                qtyInvoiced
+                qtyCanceled
+                qtyRefunded
+              }
+            }
+          }
+          addresses {
+            edges {
+              node {
+                id
+                _id
+                addressType
+                parentAddressId
+                customerId
+                cartId
+                orderId
+                name
+                firstName
+                lastName
+                companyName
+                address
+                city
+                state
+                country
+                postcode
+                useForShipping
+                email
+                phone
+                gender
+                vatId
+                defaultAddress
+                createdAt
+                updatedAt
+              }
+            }
+          }
           createdAt
           updatedAt
         }
@@ -43,8 +86,7 @@ examples:
     response: |
       {
         "data": {
-          "customerOrder": {
-            "_id": 1,
+          "customerOrder": { 
             "incrementId": "1",
             "status": "pending",
             "channelName": "Default",
@@ -71,6 +113,54 @@ examples:
             "baseCurrencyCode": "USD",
             "channelCurrencyCode": "USD",
             "orderCurrencyCode": "USD",
+            "items": {
+              "edges": [
+                {
+                  "node": {
+                    "id": "/api/shop/order-items/1",
+                    "sku": "PROD-001",
+                    "name": "Sample Product",
+                    "qtyOrdered": 2,
+                    "qtyShipped": 0,
+                    "qtyInvoiced": 2,
+                    "qtyCanceled": 0,
+                    "qtyRefunded": 0
+                  }
+                }
+              ]
+            },
+            "addresses": {
+              "edges": [
+                {
+                  "node": {
+                    "id": "/api/shop/customer-addresses/1",
+                    "_id": "1",
+                    "addressType": "billing",
+                    "parentAddressId": null,
+                    "customerId": "1",
+                    "cartId": null,
+                    "orderId": "5",
+                    "name": "John Doe",
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "companyName": "Acme Corp",
+                    "address": "123 Main St",
+                    "city": "New York",
+                    "state": "NY",
+                    "country": "US",
+                    "postcode": "10001",
+                    "useForShipping": true,
+                    "email": "john@example.com",
+                    "phone": "+1234567890",
+                    "gender": "male",
+                    "vatId": null,
+                    "defaultAddress": true,
+                    "createdAt": "2025-01-10T08:15:00+00:00",
+                    "updatedAt": "2025-01-15T10:30:00+00:00"
+                  }
+                }
+              ]
+            },
             "createdAt": "2025-01-15T10:30:00+00:00",
             "updatedAt": "2025-01-15T10:30:00+00:00"
           }
@@ -86,6 +176,109 @@ examples:
       - error: MISSING_ID
         cause: Order ID not provided
         solution: Provide a valid order IRI identifier
+
+  - id: get-customer-order-with-shipments
+    title: Get Customer Order with Shipments
+    description: Retrieve customer order details including shipment information and tracking details.
+    query: |
+      query getCustomerOrder {
+        customerOrder(id: "/api/shop/customer-orders/3") {
+          _id
+          incrementId
+          status
+          shipments {
+            edges {
+              node {
+                _id
+                status
+                totalQty
+                totalWeight
+                carrierCode
+                carrierTitle
+                trackNumber
+                emailSent
+                shippingNumber 
+                createdAt
+                items {
+                  edges {
+                    node {
+                      _id
+                      sku
+                      name
+                      qty
+                      weight
+                    }
+                  }
+                }
+              }
+            }
+            pageInfo {
+              endCursor
+              startCursor
+              hasNextPage
+              hasPreviousPage
+            }
+            totalCount
+          }
+        }
+      }
+    variables: |
+      {}
+    response: |
+      {
+        "data": {
+          "customerOrder": {
+            "_id": 3,
+            "incrementId": "3",
+            "status": "shipped",
+            "shipments": {
+              "edges": [
+                {
+                  "node": {
+                    "_id": 1,
+                    "status": "shipped",
+                    "totalQty": 2,
+                    "totalWeight": 5.5,
+                    "carrierCode": "fedex",
+                    "carrierTitle": "FedEx",
+                    "trackNumber": "794698949845",
+                    "emailSent": true,
+                    "shippingNumber": "SH-001",
+                    "createdAt": "2025-01-20T14:30:00+00:00",
+                    "items": {
+                      "edges": [
+                        {
+                          "node": {
+                            "_id": 1,
+                            "sku": "PROD-001",
+                            "name": "Sample Product",
+                            "qty": 2,
+                            "weight": 5.5
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "MQ==",
+                "startCursor": "MQ==",
+                "hasNextPage": false,
+                "hasPreviousPage": false
+              },
+              "totalCount": 1
+            }
+          }
+        }
+      }
+    commonErrors:
+      - error: UNAUTHENTICATED
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+      - error: NOT_FOUND
+        cause: Order with specified ID does not exist or does not belong to the customer
+        solution: Verify the order ID and ensure it belongs to the authenticated customer
 
 ---
 
@@ -121,8 +314,7 @@ X-STOREFRONT-KEY: <storefrontKey>
 ## Possible Returns
 
 | Field | Type | Description |
-|-------|------|-------------|
-| `_id` | `Int!` | Numeric order ID. |
+|-------|------|-------------| 
 | `incrementId` | `String!` | Human-readable order number. |
 | `status` | `String!` | Order status: `pending`, `processing`, `completed`, `canceled`, `closed`, `fraud`. |
 | `channelName` | `String!` | Channel the order was placed on. |
@@ -153,6 +345,38 @@ X-STOREFRONT-KEY: <storefrontKey>
 | `baseCurrencyCode` | `String!` | Base currency code. |
 | `channelCurrencyCode` | `String` | Channel currency code. |
 | `orderCurrencyCode` | `String!` | Order currency code. |
+| `items` | `OrderItemConnection` | Paginated list of order line items. |
+| `items.edges.node.id` | `ID!` | IRI identifier of the order item. |
+| `items.edges.node.sku` | `String!` | Product SKU. |
+| `items.edges.node.name` | `String!` | Product name at time of order. |
+| `items.edges.node.qtyOrdered` | `Int!` | Quantity ordered. |
+| `items.edges.node.qtyShipped` | `Int!` | Quantity shipped. |
+| `items.edges.node.qtyInvoiced` | `Int!` | Quantity invoiced. |
+| `items.edges.node.qtyCanceled` | `Int!` | Quantity canceled. |
+| `items.edges.node.qtyRefunded` | `Int!` | Quantity refunded. |
+| `addresses` | `OrderAddressConnection` | Paginated list of order addresses. |
+| `addresses.edges.node.id` | `ID!` | IRI identifier of the address. |
+| `addresses.edges.node._id` | `ID!` | Internal address identifier. |
+| `addresses.edges.node.addressType` | `String!` | Address type: `billing` or `shipping`. |
+| `addresses.edges.node.parentAddressId` | `ID` | Parent address ID if applicable. |
+| `addresses.edges.node.customerId` | `ID` | Associated customer ID. |
+| `addresses.edges.node.cartId` | `ID` | Associated cart ID if applicable. |
+| `addresses.edges.node.orderId` | `ID` | Associated order ID. |
+| `addresses.edges.node.name` | `String` | Full name for the address. |
+| `addresses.edges.node.firstName` | `String!` | First name. |
+| `addresses.edges.node.lastName` | `String!` | Last name. |
+| `addresses.edges.node.companyName` | `String` | Company name. |
+| `addresses.edges.node.address` | `String!` | Street address. |
+| `addresses.edges.node.city` | `String!` | City name. |
+| `addresses.edges.node.state` | `String` | State/Province code. |
+| `addresses.edges.node.country` | `String!` | Country code. |
+| `addresses.edges.node.postcode` | `String` | Postal code. |
+| `addresses.edges.node.useForShipping` | `Boolean` | Whether address is used for shipping. |
+| `addresses.edges.node.email` | `String` | Email address. |
+| `addresses.edges.node.phone` | `String` | Phone number. |
+| `addresses.edges.node.gender` | `String` | Gender. |
+| `addresses.edges.node.vatId` | `String` | VAT ID for the address. |
+| `addresses.edges.node.defaultAddress` | `Boolean` | Whether this is the default address. |
 | `createdAt` | `DateTime!` | Order creation timestamp. |
 | `updatedAt` | `DateTime!` | Order last update timestamp. |
 

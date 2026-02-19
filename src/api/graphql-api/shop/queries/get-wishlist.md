@@ -13,6 +13,7 @@ examples:
             id
             name
             price
+            baseImageUrl
           }
           customer {
             id
@@ -39,7 +40,8 @@ examples:
             "product": {
               "id": "/api/shop/products/1",
               "name": "Sample Product",
-              "price": "99.99"
+              "price": "99.99",
+              "baseImageUrl": "https://example.com/storage/product/1/sample-product.jpg"
             },
             "customer": {
               "id": "/api/shop/customers/1",

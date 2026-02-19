@@ -256,6 +256,7 @@ export default defineConfig(({ command, mode }) => {
                               { text: 'Get Customer Order', link: '/api/graphql-api/shop/queries/get-customer-order' },
                               { text: 'Get Customer Invoices', link: '/api/graphql-api/shop/queries/get-customer-invoices' },
                               { text: 'Get Customer Invoice', link: '/api/graphql-api/shop/queries/get-customer-invoice' },
+                              { text: 'Download Invoice', link: '/api/graphql-api/shop/queries/download-invoice' },
                               { text: 'Get Downloadable Products', link: '/api/graphql-api/shop/queries/get-customer-downloadable-products' },
                               { text: 'Get Downloadable Product', link: '/api/graphql-api/shop/queries/get-customer-downloadable-product' },
                               { text: 'Get Customer Addresses', link: '/api/graphql-api/shop/queries/get-customer-addresses' },
