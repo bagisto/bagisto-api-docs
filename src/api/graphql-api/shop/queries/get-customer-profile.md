@@ -6,7 +6,7 @@ examples:
     description: Retrieve the authenticated customer's profile information.
     query: |
       query getCustomerProfile {
-        readCustomerProfile(id: "") {
+        readCustomerProfile {
           id
           firstName
           lastName
