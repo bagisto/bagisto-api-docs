@@ -254,6 +254,8 @@ export default defineConfig(({ command, mode }) => {
                               { text: 'Get Customer Profile', link: '/api/graphql-api/shop/queries/get-customer-profile' },
                               { text: 'Get Customer Orders', link: '/api/graphql-api/shop/queries/get-customer-orders' },
                               { text: 'Get Customer Order', link: '/api/graphql-api/shop/queries/get-customer-order' },
+                              { text: 'Get Customer Order Shipments', link: '/api/graphql-api/shop/queries/get-customer-order-shipments' },
+                              { text: 'Get Customer Order Shipment', link: '/api/graphql-api/shop/queries/get-customer-order-shipment' },
                               { text: 'Get Customer Invoices', link: '/api/graphql-api/shop/queries/get-customer-invoices' },
                               { text: 'Get Customer Invoice', link: '/api/graphql-api/shop/queries/get-customer-invoice' },
                               { text: 'Download Invoice', link: '/api/graphql-api/shop/queries/download-invoice' },
@@ -277,6 +279,8 @@ export default defineConfig(({ command, mode }) => {
                               { text: 'Create Customer Address', link: '/api/graphql-api/shop/mutations/create-customer-address' },
                               { text: 'Update Customer Address', link: '/api/graphql-api/shop/mutations/update-customer-address' },
                               { text: 'Delete Customer Address', link: '/api/graphql-api/shop/mutations/delete-customer-address' },
+                              { text: 'Cancel Customer Order', link: '/api/graphql-api/shop/mutations/cancel-customer-order' },
+                              { text: 'Reorder Customer Order', link: '/api/graphql-api/shop/mutations/reorder-customer-order' },
                               { text: 'Get Customer Reviews', link: '/api/graphql-api/shop/queries/get-customer-reviews' },
                               { text: 'Get Customer Review', link: '/api/graphql-api/shop/queries/get-customer-review' },
                             ]
