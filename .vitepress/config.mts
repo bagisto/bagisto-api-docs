@@ -262,6 +262,8 @@ export default defineConfig(({ command, mode }) => {
                               { text: 'Get Downloadable Products', link: '/api/graphql-api/shop/queries/get-customer-downloadable-products' },
                               { text: 'Get Downloadable Product', link: '/api/graphql-api/shop/queries/get-customer-downloadable-product' },
                               { text: 'Get Customer Addresses', link: '/api/graphql-api/shop/queries/get-customer-addresses' },
+                              { text: 'Get Customer Reviews', link: '/api/graphql-api/shop/queries/get-customer-reviews' },
+                              { text: 'Get Customer Review', link: '/api/graphql-api/shop/queries/get-customer-review' },
                             ]   
 
                           },
@@ -281,8 +283,6 @@ export default defineConfig(({ command, mode }) => {
                               { text: 'Delete Customer Address', link: '/api/graphql-api/shop/mutations/delete-customer-address' },
                               { text: 'Cancel Customer Order', link: '/api/graphql-api/shop/mutations/cancel-customer-order' },
                               { text: 'Reorder Customer Order', link: '/api/graphql-api/shop/mutations/reorder-customer-order' },
-                              { text: 'Get Customer Reviews', link: '/api/graphql-api/shop/queries/get-customer-reviews' },
-                              { text: 'Get Customer Review', link: '/api/graphql-api/shop/queries/get-customer-review' },
                             ]
                           }
                         ]
