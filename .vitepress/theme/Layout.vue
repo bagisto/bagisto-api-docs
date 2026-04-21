@@ -42,6 +42,9 @@ const isClient = ref(false)
 */
 const isGraphQL = computed(() => {
   if (pageExamples.value.length === 0) return false
+  // Allow pages to explicitly set apiType: rest in frontmatter
+  // to use the REST panel (cURL-first tabs, no GraphQL tab)
+  if (route.data?.frontmatter?.apiType === 'rest') return false
   const firstExample = pageExamples.value[0]
   return 'query' in firstExample
 })

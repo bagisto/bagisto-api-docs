@@ -185,7 +185,7 @@ const parseCurl = (curlCmd: string) => {
 
 // Auto-generate Node.js code from cURL
 const generateNodeCode = (): string => {
-  const curl = selectedExample.value?.curl || selectedExample.value?.request || ''
+  const curl = selectedExample.value?.curl || selectedExample.value?.request || selectedExample.value?.query || ''
   if (!curl) return ''
 
   const { url, method, headers, body } = parseCurl(curl)
@@ -211,7 +211,7 @@ const generateNodeCode = (): string => {
 
 // Auto-generate React code from cURL
 const generateReactCode = (): string => {
-  const curl = selectedExample.value?.curl || selectedExample.value?.request || ''
+  const curl = selectedExample.value?.curl || selectedExample.value?.request || selectedExample.value?.query || ''
   if (!curl) return ''
 
   const { url, method, headers, body } = parseCurl(curl)
@@ -246,7 +246,7 @@ const generateReactCode = (): string => {
 
 // Auto-generate PHP code from cURL
 const generatePhpCode = (): string => {
-  const curl = selectedExample.value?.curl || selectedExample.value?.request || ''
+  const curl = selectedExample.value?.curl || selectedExample.value?.request || selectedExample.value?.query || ''
   if (!curl) return ''
 
   const { url, method, headers, body } = parseCurl(curl)
@@ -282,12 +282,12 @@ const getLanguageCode = (): string => {
   if (!selectedExample.value) return ''
   
   let lang = 'bash'
-  let code = selectedExample.value.curl || selectedExample.value.request || ''
-  
+  let code = selectedExample.value.curl || selectedExample.value.request || selectedExample.value.query || ''
+
   switch (activeLanguageTab.value) {
     case 'curl':
       lang = 'bash'
-      code = selectedExample.value.curl || selectedExample.value.request || ''
+      code = selectedExample.value.curl || selectedExample.value.request || selectedExample.value.query || ''
       break
     case 'node':
       lang = 'javascript'
@@ -337,7 +337,7 @@ const copyCode = (tabType: 'request' | 'headers' | 'response') => {
   if (tabType === 'request') {
     switch (activeLanguageTab.value) {
       case 'curl':
-        codeText = selectedExample.value.curl || selectedExample.value.request || ''
+        codeText = selectedExample.value.curl || selectedExample.value.request || selectedExample.value.query || ''
         break
       case 'node':
         codeText = selectedExample.value.node || ''
@@ -349,7 +349,7 @@ const copyCode = (tabType: 'request' | 'headers' | 'response') => {
         codeText = selectedExample.value.php || ''
         break
       default:
-        codeText = selectedExample.value.request || selectedExample.value.curl || ''
+        codeText = selectedExample.value.request || selectedExample.value.curl || selectedExample.value.query || ''
     }
   } else if (tabType === 'headers') {
     codeText = selectedExample.value.headers
@@ -383,8 +383,8 @@ const fallbackCopy = (text: string) => {
 const openSwagger = () => {
   if (!selectedExample.value) return
   
-  const curl = selectedExample.value.curl || selectedExample.value.request || ''
-  
+  const curl = selectedExample.value.curl || selectedExample.value.request || selectedExample.value.query || ''
+
   // Extract URL from curl command - match http:// or https:// URLs
   const urlMatch = curl.match(/https?:\/\/[^\s'"]+/)
   if (urlMatch) {

@@ -12,12 +12,15 @@ examples:
       {
         "firstName": "John",
         "lastName": "Doe",
-        "email": "john@example.com",
-        "password": "Password123!",
-        "confirmPassword": "Password123!",
-        "phone": "1234567890",
         "gender": "Male",
-        "dateOfBirth": "1990-01-15",
+        "dateOfBirth": "01/15/1990",
+        "phone": "5550123",
+        "status": "1",
+        "isVerified": "1",
+        "isSuspended": "0",
+        "email": "john.doe@example.com",
+        "password": "SecurePass@123",
+        "confirmPassword": "SecurePass@123",
         "subscribedToNewsLetter": true
       }
     response: |

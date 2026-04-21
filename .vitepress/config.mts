@@ -191,6 +191,7 @@ export default defineConfig(({ command, mode }) => {
                               { text: 'Products', link: '/api/graphql-api/shop/queries/get-products' },
                               { text: 'Search Products', link: '/api/graphql-api/shop/queries/search-products' },
                               { text: 'Single Product', link: '/api/graphql-api/shop/queries/get-product' },
+                              { text: 'Booking Slots', link: '/api/graphql-api/shop/queries/get-booking-slots' },
                             ]
                           }
                         ]
@@ -247,6 +248,20 @@ export default defineConfig(({ command, mode }) => {
                           }
                         ]
                       },
+                      {
+                        text: 'Currency',
+                        collapsed: true,
+                        items: [
+                          {
+                            text: 'Queries',
+                            collapsed: false,
+                            items: [
+                              { text: 'Currencies', link: '/api/graphql-api/shop/queries/get-currencies' },
+                              { text: 'Single Currency', link: '/api/graphql-api/shop/queries/get-currency' },
+                            ]
+                          }
+                        ]
+                      },
                       { 
                         text: 'Country',
                         collapsed: false,
@@ -275,6 +290,7 @@ export default defineConfig(({ command, mode }) => {
                               { text: 'Download Invoice', link: '/api/graphql-api/shop/queries/download-invoice' },
                               { text: 'Get Downloadable Products', link: '/api/graphql-api/shop/queries/get-customer-downloadable-products' },
                               { text: 'Get Downloadable Product', link: '/api/graphql-api/shop/queries/get-customer-downloadable-product' },
+                              { text: 'Download Downloadable Product', link: '/api/graphql-api/shop/queries/download-downloadable-product' },
                               { text: 'Get Customer Addresses', link: '/api/graphql-api/shop/queries/get-customer-addresses' },
                             ]   
 
@@ -321,6 +337,7 @@ export default defineConfig(({ command, mode }) => {
                               { text: 'AddToCart', link: '/api/graphql-api/shop/mutations/add-to-cart' },
                               { text: 'UpdateCartItem', link: '/api/graphql-api/shop/mutations/update-cart-item' },
                               { text: 'RemoveCartItem', link: '/api/graphql-api/shop/mutations/remove-cart-item' },
+                              { text: 'Merge Cart', link: '/api/graphql-api/shop/mutations/merge-cart' },
                               { text: 'ApplyCoupon', link: '/api/graphql-api/shop/mutations/apply-coupon' },
                               { text: 'RemoveCoupon', link: '/api/graphql-api/shop/mutations/remove-coupon' },
                             ]
@@ -344,8 +361,7 @@ export default defineConfig(({ command, mode }) => {
                             text: 'Mutations',
                             collapsed: false,
                             items: [
-                              { text: 'Set Shipping Address', link: '/api/graphql-api/shop/mutations/set-shipping-address' },
-                              { text: 'Set Billing Address', link: '/api/graphql-api/shop/mutations/set-billing-address' },
+                              { text: 'Set Checkout Address', link: '/api/graphql-api/shop/mutations/set-billing-address' },
                               { text: 'Set Shipping Method', link: '/api/graphql-api/shop/mutations/set-shipping-method' },
                               { text: 'Set Payment Method', link: '/api/graphql-api/shop/mutations/set-payment-method' },
                               { text: 'Place Order', link: '/api/graphql-api/shop/mutations/place-order' },
