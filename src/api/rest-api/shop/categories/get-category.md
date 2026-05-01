@@ -3,46 +3,82 @@ outline: false
 examples:
   - id: get-category
     title: Get Single Category
-    description: Retrieve detailed information for a specific category.
+    description: Retrieve a single category by ID with its inline translation, parent IRI, child categories, and filterable attributes.
     request: |
-      GET /api/shop/categories/1
-      Content-Type: application/json
-      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      curl -X GET "http://localhost/api/shop/categories/8" \
+        -H "Accept: application/json" \
+        -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     response: |
+      HTTP/1.1 200 OK
+
       {
-        "data": {
-          "id": 1,
+        "id": 8,
+        "position": 2,
+        "logoPath": "category/8/Vk59z6w128ExCrY3lwlSYWhVrYenucFhTuick0VD.webp",
+        "status": 1,
+        "displayMode": "products_and_description",
+        "_lft": 14,
+        "_rgt": 15,
+        "createdAt": "2024-04-19T19:06:12+05:30",
+        "updatedAt": "2026-01-03T00:53:45+05:30",
+        "url": "http://localhost/electronics",
+        "logoUrl": "http://localhost/storage/category/8/Vk59z6w128ExCrY3lwlSYWhVrYenucFhTuick0VD.webp",
+        "filterableAttributes": [
+          {
+            "id": 11,
+            "code": "price",
+            "type": "price",
+            "isFilterable": 1,
+            "options": []
+          },
+          {
+            "id": 23,
+            "code": "color",
+            "type": "select",
+            "isFilterable": 1,
+            "options": [
+              { "id": 1, "adminName": "Red", "sortOrder": 0 }
+            ]
+          }
+        ],
+        "translation": {
+          "id": 60,
+          "categoryId": 8,
           "name": "Electronics",
           "slug": "electronics",
-          "description": "Electronic products and devices",
-          "imageUrl": "https://example.com/electronics.jpg",
-          "productCount": 45,
-          "parentId": null,
-          "position": 1,
-          "createdAt": "2024-01-01T00:00:00Z",
-          "updatedAt": "2024-01-15T00:00:00Z",
-          "children": [
-            {
-              "id": 2,
-              "name": "Smartphones",
-              "slug": "smartphones"
-            }
-          ]
-        }
+          "urlPath": "electronics",
+          "description": "<p>Discover a wide range of cutting-edge electronics…</p>",
+          "metaTitle": "Electronics",
+          "metaDescription": "",
+          "metaKeywords": "electronics, electronics-keyboard",
+          "localeId": 1,
+          "locale": "en"
+        },
+        "translations": [
+          "/api/shop/category_translations/60",
+          "/api/shop/category_translations/209"
+        ],
+        "parent": "/api/shop/categories/1",
+        "children": []
       }
     commonErrors:
       - error: 404 Not Found
-        cause: Category with specified ID does not exist
-        solution: Verify the category ID and try again
+        cause: No category with the given `{id}` exists, or the category has `status=0`
+        solution: List active categories via `GET /api/shop/categories` to discover valid IDs.
       - error: 401 Unauthorized
-        cause: Invalid or missing X-STOREFRONT-KEY
-        solution: Provide valid X-STOREFRONT-KEY header
+        cause: Missing or invalid `X-STOREFRONT-KEY`
+        solution: Send a valid storefront API key.
+      - error: 403 Forbidden
+        cause: Storefront key inactive or rate-limited
+        solution: Activate the key or wait for the rate limit window to reset.
 
 ---
 
-# Get Category
+# Get Single Category
 
-Retrieve detailed information for a specific product category by ID.
+Retrieve a single category by ID. The response embeds the request-locale translation, the list of filterable attributes assigned to this category, and direct children — but uses an **IRI** for the parent and for non-default locale translations.
+
+> Disabled categories (`status=0`) return **404**, not a hidden record. Only active categories are reachable from the storefront.
 
 ## Endpoint
 
@@ -52,59 +88,45 @@ GET /api/shop/categories/{id}
 
 ## Request Headers
 
-| Header | Required | Description |
-|--------|----------|-------------|
-| `Content-Type` | Yes | application/json |
-| `X-STOREFRONT-KEY` | Yes | Your storefront API key |
+| Header             | Required | Description                              |
+|--------------------|----------|------------------------------------------|
+| `Accept`           | Yes      | `application/json`                       |
+| `X-STOREFRONT-KEY` | Yes      | Storefront API key (`pk_storefront_…`)   |
+| `X-Locale`         | No       | Override request locale                  |
+| `X-Channel`        | No       | Override channel scope                   |
 
 ## Path Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `id` | integer | Yes | Category ID |
+| Parameter | Type    | Required | Description                            |
+|-----------|---------|----------|----------------------------------------|
+| `id`      | integer | Yes      | Category primary key                   |
 
-## Query Parameters
+## Response
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `locale` | string | No | Language locale (default: en) |
-| `channel` | string | No | Channel identifier |
-| `includeChildren` | boolean | No | Include child categories (default: true) |
+`200 OK` — single category object with the same shape as items in [Get Categories](/api/rest-api/shop/categories/get-categories#category-object-fields).
 
-## Response Fields (200 OK)
+### Inline vs IRI fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | integer | Category ID |
-| `name` | string | Category name |
-| `slug` | string | URL-friendly category identifier |
-| `description` | string | Category description |
-| `imageUrl` | string | Category image URL |
-| `productCount` | integer | Number of products in category |
-| `parentId` | integer | Parent category ID (null if root) |
-| `position` | integer | Display order |
-| `createdAt` | string | Category creation date (ISO 8601) |
-| `updatedAt` | string | Last update date (ISO 8601) |
-| `children` | array | Child categories (if includeChildren=true) |
+| Field                  | Form                  | Notes                                                                                  |
+|------------------------|-----------------------|----------------------------------------------------------------------------------------|
+| `translation`          | inline object         | Localized name, slug, urlPath, description, meta-tags for the request locale          |
+| `translations`         | array of IRI strings  | Other locales — `GET /api/shop/category_translations/{id}` to dereference              |
+| `parent`               | IRI string \| null    | `GET <iri>` to fetch the parent category. `null` for root categories                  |
+| `children`             | inline array          | Direct child categories (one level deep). Empty `[]` for leaves                        |
+| `filterableAttributes` | inline array          | Full attribute objects with their options — same shape as `/api/shop/attributes/{id}` |
 
-## Child Category Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | integer | Child category ID |
-| `name` | string | Child category name |
-| `slug` | string | Child category slug |
-| `productCount` | integer | Products in child category |
+See [IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas) for how to dereference IRI fields.
 
 ## Use Cases
 
-- Display category details and metadata
-- Build category pages with product listings
-- Show category breadcrumbs
-- Fetch subcategories for navigation
+- Render a category landing page: name, description, hero image (`logoUrl`), faceted filters (`filterableAttributes`).
+- Build a sub-category strip from `children`.
+- Walk up to the parent for breadcrumbs by following the `parent` IRI.
+- Switch locales by following an entry in `translations[]` instead of re-issuing the request with a different `X-Locale` header.
 
 ## Related Resources
 
-- [Get Categories](/api/rest-api/shop/categories/get-categories)
-- [Get Category Tree](/api/rest-api/shop/categories/get-category-tree)
-- [Get Products](/api/rest-api/shop/products/get-products)
+- [Get Categories](/api/rest-api/shop/categories/get-categories) — flat collection, optional `?parent_id=N` filter
+- [Get Category Tree](/api/rest-api/shop/categories/get-category-tree) — hierarchical tree response
+- [Get Products](/api/rest-api/shop/products/get-products) — `?category_id=N` to scope products
+- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas)

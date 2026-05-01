@@ -468,6 +468,7 @@ export default defineConfig(({ command, mode }) => {
                     items: [
                           { text: 'Get Categories', link: '/api/rest-api/shop/categories/get-categories' },
                           { text: 'Get Category', link: '/api/rest-api/shop/categories/get-category' },
+                          { text: 'Get Category Tree', link: '/api/rest-api/shop/categories/get-category-tree' },
                     ]
                   },
                   {
@@ -505,6 +506,9 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Get Attributes', link: '/api/rest-api/shop/attributes/get-attributes' },
                           { text: 'Single Attribute', link: '/api/rest-api/shop/attributes/get-attribute' },
                           { text: 'Get Attribute Options', link: '/api/rest-api/shop/attributes/get-attribute-options' },
+                          { text: 'Single Attribute Option', link: '/api/rest-api/shop/attributes/get-attribute-option' },
+                          { text: 'Get Attribute Translations', link: '/api/rest-api/shop/attributes/get-attribute-translations' },
+                          { text: 'Single Attribute Translation', link: '/api/rest-api/shop/attributes/get-attribute-translation' },
                     ]
                   },
                   {
