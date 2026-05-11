@@ -1,8 +1,8 @@
 ---
 outline: false
 examples:
-  - id: get-attribute-options
-    title: Get Attribute Options
+  - id: list-attribute-options
+    title: List Attribute Options
     description: Retrieve a paginated, flat list of every attribute option in the system.
     request: |
       curl -X GET "http://localhost/api/shop/attribute-options?per_page=2" \
@@ -20,57 +20,77 @@ examples:
           "id": 1,
           "adminName": "Red",
           "sortOrder": 0,
-          "translation": {
-            "id": 1,
-            "attributeOptionId": 1,
-            "locale": "en",
-            "label": "Red"
-          },
+          "translation": { "id": 1, "attributeOptionId": 1, "locale": "en", "label": "Red" },
           "translations": [
             { "id": 1,  "attributeOptionId": 1, "locale": "en", "label": "Red" },
             { "id": 86, "attributeOptionId": 1, "locale": "de", "label": "" },
             { "id": 85, "attributeOptionId": 1, "locale": "es", "label": "" },
-            { "id": 82, "attributeOptionId": 1, "locale": "fr", "label": "" },
-            { "id": 87, "attributeOptionId": 1, "locale": "it", "label": "" },
-            { "id": 83, "attributeOptionId": 1, "locale": "nl", "label": "" },
-            { "id": 88, "attributeOptionId": 1, "locale": "ru", "label": "" },
-            { "id": 84, "attributeOptionId": 1, "locale": "tr", "label": "" }
+            { "id": 82, "attributeOptionId": 1, "locale": "fr", "label": "" }
           ]
         },
         {
           "id": 2,
           "adminName": "Green",
           "sortOrder": 0,
-          "translation": {
-            "id": 2,
-            "attributeOptionId": 2,
-            "locale": "en",
-            "label": "Green"
-          },
+          "translation": { "id": 2, "attributeOptionId": 2, "locale": "en", "label": "Green" },
           "translations": []
         }
       ]
     commonErrors:
       - error: 401 Unauthorized
         cause: Missing or invalid `X-STOREFRONT-KEY`
-        solution: Provide a valid storefront API key.
-      - error: 403 Forbidden
-        cause: Storefront key inactive or rate-limited
-        solution: Activate the key or wait for the rate limit to reset.
+        solution: Send a valid storefront API key.
+
+  - id: get-attribute-option
+    title: Get Single Attribute Option
+    description: Retrieve a single attribute option by ID.
+    request: |
+      curl -X GET "http://localhost/api/shop/attribute-options/1" \
+        -H "Accept: application/json" \
+        -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    response: |
+      HTTP/1.1 200 OK
+
+      {
+        "id": 1,
+        "adminName": "Red",
+        "sortOrder": 0,
+        "translation": { "id": 1, "attributeOptionId": 1, "locale": "en", "label": "Red" },
+        "translations": [
+          { "id": 1,  "attributeOptionId": 1, "locale": "en", "label": "Red" },
+          { "id": 86, "attributeOptionId": 1, "locale": "de", "label": "" },
+          { "id": 85, "attributeOptionId": 1, "locale": "es", "label": "" },
+          { "id": 82, "attributeOptionId": 1, "locale": "fr", "label": "" },
+          { "id": 87, "attributeOptionId": 1, "locale": "it", "label": "" },
+          { "id": 83, "attributeOptionId": 1, "locale": "nl", "label": "" },
+          { "id": 88, "attributeOptionId": 1, "locale": "ru", "label": "" },
+          { "id": 84, "attributeOptionId": 1, "locale": "tr", "label": "" }
+        ]
+      }
+    commonErrors:
+      - error: 404 Not Found
+        cause: No attribute option with the given `{id}` exists
+        solution: List options via `GET /api/shop/attribute-options` or fetch the parent attribute via `GET /api/shop/attributes/{id}`.
+      - error: 401 Unauthorized
+        cause: Missing or invalid `X-STOREFRONT-KEY`
+        solution: Send a valid storefront API key.
 
 ---
 
-# Get Attribute Options
+# Attribute Options
 
-Retrieve a paginated **flat list of every attribute option** across all attributes (color values, sizes, brands, etc.). Most clients should prefer fetching options inline via [`GET /api/shop/attributes/{id}`](/api/rest-api/shop/attributes/get-attribute), since that returns options scoped to a single attribute. Use this endpoint when you need the full option catalog or want to look up an option by ID without knowing its parent attribute.
+Attribute options are the selectable values for a `select` / `multiselect` attribute (color values, sizes, brands, etc.).
 
-## Endpoint
+> Most clients should prefer reading options inline via [`GET /api/shop/attributes/{id}`](/api/rest-api/shop/attributes/get-attributes) — that returns options scoped to a single attribute. Use these endpoints when you need the full option catalog or want to look up an option by ID without knowing its parent attribute.
+>
+> ⚠️ The URL is **flat**, not nested under an attribute: `/attribute-options`, NOT `/attributes/{id}/options`.
 
-```
-GET /api/shop/attribute-options
-```
+## Endpoints
 
-> ⚠️ **Note**: this endpoint is **flat**, not nested under an attribute. The URL is `/attribute-options`, NOT `/attributes/{id}/options`.
+| Method | Path                                  | Purpose                                    |
+|--------|---------------------------------------|--------------------------------------------|
+| GET    | `/api/shop/attribute-options`         | Paginated flat list of every option        |
+| GET    | `/api/shop/attribute-options/{id}`    | Single option by ID                        |
 
 ## Request Headers
 
@@ -79,18 +99,16 @@ GET /api/shop/attribute-options
 | `Accept`           | Yes      | `application/json`                       |
 | `X-STOREFRONT-KEY` | Yes      | Storefront API key (`pk_storefront_…`)   |
 
-## Query Parameters
+## Query Parameters (collection only)
 
 | Parameter   | Type    | Default | Description                                 |
 |-------------|---------|---------|---------------------------------------------|
 | `page`      | integer | 1       | Page number (1-based)                       |
 | `per_page`  | integer | 10      | Items per page. Max **50**.                 |
 
-## Response
+Pagination headers are emitted on the collection. See [Pagination](/api/rest-api/introduction#pagination).
 
-`200 OK` — JSON array of attribute-option objects. The response carries the same `X-Total-Count` / `X-Page` / `X-Per-Page` / `X-Total-Pages` headers as other paginated collections.
-
-### Attribute Option Object Fields
+## Attribute Option Object Fields
 
 | Field          | Type    | Description                                                                              |
 |----------------|---------|------------------------------------------------------------------------------------------|
@@ -98,18 +116,18 @@ GET /api/shop/attribute-options
 | `adminName`    | string  | Internal admin label                                                                     |
 | `sortOrder`    | integer | Display order within its parent attribute                                                |
 | `translation`  | object  | Current-locale translation: `{ id, attributeOptionId, locale, label }`                   |
-| `translations` | array   | All locale-specific labels, each with `{ id, attributeOptionId, locale, label }`         |
+| `translations` | array   | All locale-specific labels (each `{ id, attributeOptionId, locale, label }`). Empty `[]` if no other locales have stored labels. |
 
-> The parent attribute is **not** embedded in this response. To find which attribute an option belongs to, fetch the attribute itself or look the option up via [Get Single Attribute Option](/api/rest-api/shop/attributes/get-attribute-option).
+> The parent attribute is **not** embedded in this response. To find which attribute an option belongs to, fetch the attribute itself.
 
 ## Use Cases
 
 - Pre-load all option labels in every storefront locale for offline / SPA caching.
+- Resolve historical option IDs stored against orders or carts back to readable labels.
 - Build admin-style "find option by label" search.
-- Resolve historical option IDs stored against orders or carts.
+- Look up the localized label for a specific option in a non-default locale.
 
 ## Related Resources
 
-- [Get Single Attribute Option](/api/rest-api/shop/attributes/get-attribute-option)
-- [Get Single Attribute](/api/rest-api/shop/attributes/get-attribute) — preferred when you only need options for one attribute
-- [Get Attributes](/api/rest-api/shop/attributes/get-attributes)
+- [Attributes](/api/rest-api/shop/attributes/get-attributes) — preferred when you only need options for one attribute
+- [Attribute Translations](/api/rest-api/shop/attributes/get-attribute-translations)

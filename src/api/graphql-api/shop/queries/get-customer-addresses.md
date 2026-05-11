@@ -321,6 +321,73 @@ examples:
         }
       }
 
+  - id: get-customer-address-by-id
+    title: Get Customer Address by ID
+    description: Retrieve a single saved address by its ID for the authenticated customer.
+    query: |
+      query customerAddress($id: ID!) {
+        customerAddress(id: $id) {
+          id
+          _id
+          addressType
+          companyName
+          name
+          firstName
+          lastName
+          email
+          address
+          city
+          state
+          country
+          postcode
+          phone
+          vatId
+          defaultAddress
+          useForShipping
+          additional
+          createdAt
+          updatedAt
+        }
+      }
+    variables: |
+      {
+        "id": "777"
+      }
+    response: |
+      {
+        "data": {
+          "customerAddress": {
+            "id": "/api/shop/customer-addresses/777",
+            "_id": 777,
+            "addressType": "customer",
+            "companyName": "Webkul software limited company",
+            "name": "abhishek kumar",
+            "firstName": "abhishek",
+            "lastName": "kumar",
+            "email": "abhisheksinghsci123@gmail.com",
+            "address": "pavitra marriage home NH-2 road tundla firozabad",
+            "city": "34234",
+            "state": "Salta",
+            "country": "AR",
+            "postcode": "34234234",
+            "phone": "7906948573",
+            "vatId": null,
+            "defaultAddress": false,
+            "useForShipping": false,
+            "additional": null,
+            "createdAt": "2025-05-21T20:04:48+05:30",
+            "updatedAt": "2025-05-21T20:04:48+05:30"
+          }
+        }
+      }
+    commonErrors:
+      - error: Unauthenticated
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+      - error: Item not found
+        cause: Address ID does not exist or does not belong to the authenticated customer
+        solution: Verify the address ID and ensure it belongs to the logged-in customer
+
   - id: get-customer-addresses-with-company
     title: Addresses with Company & VAT Details
     description: Retrieve addresses including business-specific fields like company name and VAT ID.
@@ -554,6 +621,62 @@ When the customer has no saved addresses:
   ]
 }
 ```
+
+## Get a Single Customer Address
+
+To fetch one specific address by its ID, use the `customerAddress` query. This is the single-item counterpart to `getCustomerAddresses` and is useful for edit screens, address detail pages, or pre-filling a form.
+
+### Query
+
+```graphql
+query customerAddress($id: ID!) {
+  customerAddress(id: $id) {
+    id
+    _id
+    addressType
+    companyName
+    name
+    firstName
+    lastName
+    email
+    address
+    city
+    state
+    country
+    postcode
+    phone
+    vatId
+    defaultAddress
+    useForShipping
+    additional
+    createdAt
+    updatedAt
+  }
+}
+```
+
+### Variables
+
+```json
+{ "id": "777" }
+```
+
+The `id` accepts either a numeric address ID (`"777"`) or the full IRI (`"/api/shop/customer-addresses/777"`).
+
+### Arguments
+
+| Argument | Type | Required | Description |
+|----------|------|----------|-------------|
+| `id` | ID | ✅ Yes | The numeric ID or IRI of the address to fetch |
+
+### Response
+
+The response shape matches a single `node` from `getCustomerAddresses` (same fields, no `edges` / `pageInfo` / `totalCount` wrapper).
+
+### Error Responses
+
+- **Unauthenticated** — Missing or invalid Bearer token.
+- **Item not found** — The address does not exist or does not belong to the authenticated customer.
 
 ## Related Documentation
 

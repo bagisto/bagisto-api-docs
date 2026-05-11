@@ -10,28 +10,30 @@ examples:
           addUpdateCustomerAddress{
             id
             firstName
-            lastName      
+            lastName
+            companyName
+            vatId
             city
             state
-            country 
+            country
             phone
             addressId
             email
-            phone
             address1
             address2
             postcode
-            useForShipping
             defaultAddress
           }
         }
       }
     variables: |
       {
-        "input": {  
+        "input": {
           "addressId": 2851,
           "firstName": "John",
           "lastName": "Doe",
+          "companyName": "ANC Corporation",
+          "vatId": "GB123456789",
           "email": "hello@example.com",
           "phone": "+918888888888",
           "address1": "123 Main Street",
@@ -39,8 +41,7 @@ examples:
           "postcode": "10001",
           "city": "New York",
           "state": "NY",
-          "country": "US",
-          "useForShipping": true
+          "country": "US"
         }
       }
     response: |
@@ -51,6 +52,8 @@ examples:
               "id": "2851",
               "firstName": "John",
               "lastName": "Doe",
+              "companyName": "ANC Corporation",
+              "vatId": "GB123456789",
               "city": "New York",
               "state": "NY",
               "country": "US",
@@ -60,7 +63,6 @@ examples:
               "address1": "123 Main Street",
               "address2": "NY",
               "postcode": "10001",
-              "useForShipping": true,
               "defaultAddress": false
             }
           }
@@ -84,21 +86,26 @@ Authorization: Bearer <accessToken>
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `addressId` | String | ✅ Yes | Address ID to update |
+| `addressId` | Int | ✅ Yes | Address ID to update |
 | `firstName` | String | ❌ No | First name |
 | `lastName` | String | ❌ No | Last name |
-| `address1` | String | ❌ No | Street address |
+| `companyName` | String | ❌ No | Company name |
+| `vatId` | String | ❌ No | VAT identification number |
+| `email` | String | ❌ No | Email address |
+| `phone` | String | ❌ No | Phone number |
+| `address1` | String | ❌ No | Street address line 1 |
+| `address2` | String | ❌ No | Street address line 2 |
 | `city` | String | ❌ No | City |
 | `state` | String | ❌ No | State/Province |
 | `country` | String | ❌ No | Country code |
 | `postcode` | String | ❌ No | Postal/Zip code |
-| `phone` | String | ❌ No | Phone number |
+| `defaultAddress` | Boolean | ❌ No | Set as default address |
 
 ## Response
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `createAddUpdateCustomerAddress` | Address | Updated address object |
+| `addUpdateCustomerAddress` | Address | Updated address object |
 
 ## Validation Rules
 

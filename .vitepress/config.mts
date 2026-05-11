@@ -466,26 +466,27 @@ export default defineConfig(({ command, mode }) => {
                     text: 'Categories',
                     collapsed: false,
                     items: [
-                          { text: 'Get Categories', link: '/api/rest-api/shop/categories/get-categories' },
-                          { text: 'Get Category', link: '/api/rest-api/shop/categories/get-category' },
-                          { text: 'Get Category Tree', link: '/api/rest-api/shop/categories/get-category-tree' },
+                          { text: 'Categories', link: '/api/rest-api/shop/categories/get-categories' },
+                          { text: 'Category Tree', link: '/api/rest-api/shop/categories/get-category-tree' },
                     ]
                   },
                   {
                     text: 'Theme Customizations',
                     collapsed: false,
                     items: [
-                          { text: 'Get Theme Customizations', link: '/api/rest-api/shop/theme-customizations/get-theme-customizations' },
-                          { text: 'Get Theme Customization', link: '/api/rest-api/shop/theme-customizations/get-theme-customization' },
+                          { text: 'Theme Customizations', link: '/api/rest-api/shop/theme-customizations/get-theme-customizations' },
                     ]
                   },
                   {
                     text: 'Products',
                     collapsed: false,
                     items: [
-                          { text: 'Get Products', link: '/api/rest-api/shop/products/get-products' },
-                          { text: 'Get Product', link: '/api/rest-api/shop/products/get-product' },
-                          { text: 'Search Product', link: '/api/rest-api/shop/products/search-product' },
+                          { text: 'Products', link: '/api/rest-api/shop/products/get-products' },
+                          { text: 'Search Products', link: '/api/rest-api/shop/products/search-product' },
+                          { text: 'Single Product', link: '/api/rest-api/shop/products/get-product' },
+                          { text: 'Booking Slots', link: '/api/rest-api/shop/products/get-booking-slots' },
+                          { text: 'Product Sub-Resources', link: '/api/rest-api/shop/products/product-subresources' },
+                          { text: 'Product Type Sub-Resources', link: '/api/rest-api/shop/products/product-type-subresources' },
                     ]
                   },
                   {
@@ -503,30 +504,25 @@ export default defineConfig(({ command, mode }) => {
                     text: 'Attribute',
                     collapsed: false,
                     items: [
-                          { text: 'Get Attributes', link: '/api/rest-api/shop/attributes/get-attributes' },
-                          { text: 'Single Attribute', link: '/api/rest-api/shop/attributes/get-attribute' },
-                          { text: 'Get Attribute Options', link: '/api/rest-api/shop/attributes/get-attribute-options' },
-                          { text: 'Single Attribute Option', link: '/api/rest-api/shop/attributes/get-attribute-option' },
-                          { text: 'Get Attribute Translations', link: '/api/rest-api/shop/attributes/get-attribute-translations' },
-                          { text: 'Single Attribute Translation', link: '/api/rest-api/shop/attributes/get-attribute-translation' },
+                          { text: 'Attributes', link: '/api/rest-api/shop/attributes/get-attributes' },
+                          { text: 'Attribute Options', link: '/api/rest-api/shop/attributes/get-attribute-options' },
+                          { text: 'Attribute Translations', link: '/api/rest-api/shop/attributes/get-attribute-translations' },
                     ]
                   },
                   {
                     text: 'Channel',
                     collapsed: false,
                     items: [
-                          { text: 'Get Channels', link: '/api/rest-api/shop/channels/get-channels' },
-                          { text: 'Single Channel', link: '/api/rest-api/shop/channels/get-channel' },
+                          { text: 'Channels', link: '/api/rest-api/shop/channels/get-channels' },
+                          { text: 'Channel Translations', link: '/api/rest-api/shop/channels/get-channel-translations' },
                     ]
                   },
                   {
                     text: 'Country and State',
                     collapsed: false,
                     items: [
-                          { text: 'Get Countries', link: '/api/rest-api/shop/countries/get-countries' },
-                          { text: 'Single Country', link: '/api/rest-api/shop/countries/get-country' },
-                          { text: 'Get Country States', link: '/api/rest-api/shop/countries/get-country-states' },
-                          { text: 'Single Country State', link: '/api/rest-api/shop/countries/get-country-state' },
+                          { text: 'Countries', link: '/api/rest-api/shop/countries/get-countries' },
+                          { text: 'Country States', link: '/api/rest-api/shop/countries/get-country-states' },
                     ]
                   },
                   {
