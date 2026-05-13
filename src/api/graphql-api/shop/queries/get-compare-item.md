@@ -26,6 +26,13 @@ examples:
             guestCheckout
             locale
             channel
+            reviews {
+              edges {
+                node {
+                  rating
+                }
+              }
+            }
           }
           customer {
             id
@@ -64,7 +71,16 @@ examples:
               "formattedMaximumPrice": "$544.00",
               "guestCheckout": "1",
               "locale": null,
-              "channel": null
+              "channel": null,
+              "reviews": {
+                "edges": [
+                  {
+                    "node": {
+                      "rating": 4
+                    }
+                  }
+                ]
+              }
             },
             "customer": {
               "id": "/api/shop/customers/122",
@@ -120,6 +136,9 @@ Authorization: Bearer <accessToken>
 | `id` | `ID!` | IRI identifier (e.g. `/api/shop/compare-items/606`). |
 | `_id` | `Int!` | Numeric identifier. |
 | `product` | `Product!` | Associated product with id, name, sku, price, description, etc. |
+| `product.reviews` | `ReviewCollection!` | Customer reviews left on the product. |
+| `product.reviews.edges` | `[ReviewEdge!]!` | Review edges. |
+| `product.reviews.edges.node.rating` | `Int!` | Rating value given by the customer (1–5). |
 | `customer` | `Customer!` | Associated customer with id, email, firstName, lastName. |
 | `createdAt` | `String` | Timestamp when the item was added. |
 | `updatedAt` | `String` | Timestamp when the item was last updated. |

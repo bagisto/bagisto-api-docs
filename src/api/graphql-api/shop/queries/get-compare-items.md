@@ -29,6 +29,13 @@ examples:
                 guestCheckout
                 locale
                 channel
+                reviews {
+                  edges {
+                    node {
+                      rating
+                    }
+                  }
+                }
               }
               customer {
                 id
@@ -81,7 +88,16 @@ examples:
                     "formattedMaximumPrice": "$500.00",
                     "guestCheckout": "1",
                     "locale": null,
-                    "channel": null
+                    "channel": null,
+                    "reviews": {
+                      "edges": [
+                        {
+                          "node": {
+                            "rating": 5
+                          }
+                        }
+                      ]
+                    }
                   },
                   "customer": {
                     "id": "/api/shop/customers/122",
@@ -115,7 +131,10 @@ examples:
                     "formattedMaximumPrice": "$544.00",
                     "guestCheckout": "1",
                     "locale": null,
-                    "channel": null
+                    "channel": null,
+                    "reviews": {
+                      "edges": []
+                    }
                   },
                   "customer": {
                     "id": "/api/shop/customers/122",
@@ -240,6 +259,9 @@ Authorization: Bearer <accessToken>
 | `edges.node.id` | `ID!` | IRI identifier (e.g. `/api/shop/compare-items/606`). |
 | `edges.node._id` | `Int!` | Numeric identifier. |
 | `edges.node.product` | `Product!` | Associated product with id, name, sku, price, etc. |
+| `edges.node.product.reviews` | `ReviewCollection!` | Customer reviews left on the product. |
+| `edges.node.product.reviews.edges` | `[ReviewEdge!]!` | Review edges. |
+| `edges.node.product.reviews.edges.node.rating` | `Int!` | Rating value given by the customer (1–5). |
 | `edges.node.customer` | `Customer!` | Associated customer with id, email, firstName, lastName. |
 | `edges.node.createdAt` | `String` | Timestamp when the item was added. |
 | `edges.node.updatedAt` | `String` | Timestamp when the item was last updated. |
