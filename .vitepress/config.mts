@@ -444,6 +444,20 @@ export default defineConfig(({ command, mode }) => {
                       { text: 'Get Profile', link: '/api/graphql-api/admin/profile/get-profile' },
                       { text: 'Update Profile', link: '/api/graphql-api/admin/profile/update-profile' },
                     ]
+                  },
+                  {
+                    text: 'Sales',
+                    collapsed: true,
+                    items: [
+                      {
+                        text: 'Orders',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Orders', link: '/api/graphql-api/admin/sales/orders/list-orders' },
+                          { text: 'Order Detail', link: '/api/graphql-api/admin/sales/orders/order-detail' },
+                        ]
+                      }
+                    ]
                   }
                 ]
               },
@@ -601,6 +615,20 @@ export default defineConfig(({ command, mode }) => {
                     items: [
                       { text: 'Get Profile', link: '/api/rest-api/admin/profile/get-profile' },
                       { text: 'Update Profile', link: '/api/rest-api/admin/profile/update-profile' },
+                    ]
+                  },
+                  {
+                    text: 'Sales',
+                    collapsed: true,
+                    items: [
+                      {
+                        text: 'Orders',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Orders', link: '/api/rest-api/admin/sales/orders/list-orders' },
+                          { text: 'Order Detail', link: '/api/rest-api/admin/sales/orders/order-detail' },
+                        ]
+                      }
                     ]
                   }
                 ]
