@@ -436,7 +436,15 @@ export default defineConfig(({ command, mode }) => {
                 text: 'Admin API',
                 collapsed: false,
                 items: [
-                  { text: 'Coming Soon', link: '/api/graphql-api/admin-coming-soon' }
+                  { text: 'Authentication', link: '/api/graphql-api/admin/authentication' },
+                  {
+                    text: 'Admin Profile',
+                    collapsed: true,
+                    items: [
+                      { text: 'Get Profile', link: '/api/graphql-api/admin/profile/get-profile' },
+                      { text: 'Update Profile', link: '/api/graphql-api/admin/profile/update-profile' },
+                    ]
+                  }
                 ]
               },
               { text: 'Playground Guide', link: '/api/graphql-api/playground' },
@@ -586,7 +594,15 @@ export default defineConfig(({ command, mode }) => {
                 text: 'Admin API',
                 collapsed: false,
                 items: [
-                  { text: 'Coming Soon', link: '/api/rest-api/admin-coming-soon' }
+                  { text: 'Authentication', link: '/api/rest-api/admin/authentication' },
+                  {
+                    text: 'Admin Profile',
+                    collapsed: true,
+                    items: [
+                      { text: 'Get Profile', link: '/api/rest-api/admin/profile/get-profile' },
+                      { text: 'Update Profile', link: '/api/rest-api/admin/profile/update-profile' },
+                    ]
+                  }
                 ]
               },
               { text: 'Testing & Debugging', link: '/api/rest-api/testing-debugging' },
