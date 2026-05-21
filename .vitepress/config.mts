@@ -446,6 +446,30 @@ export default defineConfig(({ command, mode }) => {
                     ]
                   },
                   {
+                    text: 'Customers',
+                    collapsed: true,
+                    items: [
+                      { text: 'Addresses', link: '/api/graphql-api/admin/customers/addresses' },
+                      { text: 'Active Cart Items', link: '/api/graphql-api/admin/customers/active-cart-items' },
+                      { text: 'Wishlist Items', link: '/api/graphql-api/admin/customers/wishlist-items' },
+                      { text: 'Recent Order Items', link: '/api/graphql-api/admin/customers/recent-order-items' },
+                      { text: 'Create Draft Cart', link: '/api/graphql-api/admin/customers/create-draft-cart' },
+                    ]
+                  },
+                  {
+                    text: 'Catalog',
+                    collapsed: true,
+                    items: [
+                      {
+                        text: 'Products',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Products', link: '/api/graphql-api/admin/catalog/products/list' },
+                        ]
+                      }
+                    ]
+                  },
+                  {
                     text: 'Sales',
                     collapsed: true,
                     items: [
@@ -455,6 +479,25 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           { text: 'List Orders', link: '/api/graphql-api/admin/sales/orders/list-orders' },
                           { text: 'Order Detail', link: '/api/graphql-api/admin/sales/orders/order-detail' },
+                          { text: 'Reorder', link: '/api/graphql-api/admin/sales/orders/reorder' },
+                          { text: 'Place Order', link: '/api/graphql-api/admin/sales/orders/place-order' },
+                        ]
+                      },
+                      {
+                        text: 'Carts',
+                        collapsed: true,
+                        items: [
+                          { text: 'Get Cart', link: '/api/graphql-api/admin/sales/carts/get-cart' },
+                          { text: 'Add Item', link: '/api/graphql-api/admin/sales/carts/add-item' },
+                          { text: 'Update Items', link: '/api/graphql-api/admin/sales/carts/update-items' },
+                          { text: 'Remove Item', link: '/api/graphql-api/admin/sales/carts/remove-item' },
+                          { text: 'Save Address', link: '/api/graphql-api/admin/sales/carts/save-address' },
+                          { text: 'Apply Coupon', link: '/api/graphql-api/admin/sales/carts/apply-coupon' },
+                          { text: 'Remove Coupon', link: '/api/graphql-api/admin/sales/carts/remove-coupon' },
+                          { text: 'List Shipping Methods', link: '/api/graphql-api/admin/sales/carts/list-shipping-methods' },
+                          { text: 'Set Shipping Method', link: '/api/graphql-api/admin/sales/carts/set-shipping-method' },
+                          { text: 'List Payment Methods', link: '/api/graphql-api/admin/sales/carts/list-payment-methods' },
+                          { text: 'Set Payment Method', link: '/api/graphql-api/admin/sales/carts/set-payment-method' },
                         ]
                       }
                     ]
@@ -618,6 +661,30 @@ export default defineConfig(({ command, mode }) => {
                     ]
                   },
                   {
+                    text: 'Customers',
+                    collapsed: true,
+                    items: [
+                      { text: 'Addresses', link: '/api/rest-api/admin/customers/addresses' },
+                      { text: 'Active Cart Items', link: '/api/rest-api/admin/customers/active-cart-items' },
+                      { text: 'Wishlist Items', link: '/api/rest-api/admin/customers/wishlist-items' },
+                      { text: 'Recent Order Items', link: '/api/rest-api/admin/customers/recent-order-items' },
+                      { text: 'Create Draft Cart', link: '/api/rest-api/admin/customers/create-draft-cart' },
+                    ]
+                  },
+                  {
+                    text: 'Catalog',
+                    collapsed: true,
+                    items: [
+                      {
+                        text: 'Products',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Products', link: '/api/rest-api/admin/catalog/products/list' },
+                        ]
+                      }
+                    ]
+                  },
+                  {
                     text: 'Sales',
                     collapsed: true,
                     items: [
@@ -627,6 +694,25 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           { text: 'List Orders', link: '/api/rest-api/admin/sales/orders/list-orders' },
                           { text: 'Order Detail', link: '/api/rest-api/admin/sales/orders/order-detail' },
+                          { text: 'Reorder', link: '/api/rest-api/admin/sales/orders/reorder' },
+                          { text: 'Place Order', link: '/api/rest-api/admin/sales/orders/place-order' },
+                        ]
+                      },
+                      {
+                        text: 'Carts',
+                        collapsed: true,
+                        items: [
+                          { text: 'Get Cart', link: '/api/rest-api/admin/sales/carts/get-cart' },
+                          { text: 'Add Item', link: '/api/rest-api/admin/sales/carts/add-item' },
+                          { text: 'Update Items', link: '/api/rest-api/admin/sales/carts/update-items' },
+                          { text: 'Remove Item', link: '/api/rest-api/admin/sales/carts/remove-item' },
+                          { text: 'Save Address', link: '/api/rest-api/admin/sales/carts/save-address' },
+                          { text: 'Apply Coupon', link: '/api/rest-api/admin/sales/carts/apply-coupon' },
+                          { text: 'Remove Coupon', link: '/api/rest-api/admin/sales/carts/remove-coupon' },
+                          { text: 'List Shipping Methods', link: '/api/rest-api/admin/sales/carts/list-shipping-methods' },
+                          { text: 'Set Shipping Method', link: '/api/rest-api/admin/sales/carts/set-shipping-method' },
+                          { text: 'List Payment Methods', link: '/api/rest-api/admin/sales/carts/list-payment-methods' },
+                          { text: 'Set Payment Method', link: '/api/rest-api/admin/sales/carts/set-payment-method' },
                         ]
                       }
                     ]

@@ -1,0 +1,86 @@
+---
+outline: false
+apiType: rest
+examples:
+  - id: admin-place-order
+    title: Place Order
+    description: Finalise a fully prepared draft cart into a real order. Mirrors the monolith `admin.sales.orders.store` flow.
+    query: |
+      curl -X POST "https://your-domain.com/api/admin/orders/place/314" \
+        -H "X-Admin-Key: <your-admin-api-key>" \
+        -H "Authorization: Bearer <token>"
+    variables: |
+      {}
+    response: |
+      {
+        "orderId": 1284,
+        "incrementId": "1000001284",
+        "customerId": 7,
+        "grandTotal": 149.99,
+        "success": true,
+        "message": "Order placed successfully."
+      }
+    commonErrors:
+      - error: Conflict (409) — cart is empty
+        cause: No items added to the cart
+        solution: Add items via `POST /api/admin/carts/{id}/items`
+      - error: Conflict (409) — addresses required
+        cause: Billing and/or shipping address not saved
+        solution: Save addresses via `POST /api/admin/carts/{id}/addresses`
+      - error: Conflict (409) — shipping required
+        cause: No shipping method selected
+        solution: Select a shipping method via `POST /api/admin/carts/{id}/shipping-methods`
+      - error: Conflict (409) — payment required
+        cause: No payment method selected
+        solution: Select a payment method via `POST /api/admin/carts/{id}/payment-methods`
+      - error: Unprocessable Entity (422)
+        cause: Payment method is not in ['cashondelivery','moneytransfer']
+        solution: Select COD or money transfer. Other methods are blocked for admin-placed orders, mirroring Bagisto core.
+      - error: Forbidden (403)
+        cause: Cart is an active storefront cart
+        solution: Only draft carts can be finalised
+      - error: Not Found (404)
+        cause: Unknown cart ID
+        solution: Confirm the cart ID returned by Create-Cart / Reorder
+      - error: Unauthorized (401)
+        cause: Missing or invalid admin Bearer token
+        solution: Log in via /api/admin/login
+---
+
+# Place Order
+
+Finalises a fully prepared draft cart into a real order. Mirrors the Bagisto
+admin monolith `OrderController::store` step-by-step:
+
+```
+Cart::setCart -> Cart::collectTotals ->
+payment.method in ['cashondelivery','moneytransfer'] ->
+OrderResource::jsonSerialize -> OrderRepository::create -> Cart::removeCart
+```
+
+## Endpoint
+
+| Endpoint | Method |
+|----------|--------|
+| `/api/admin/orders/place/{cartId}` | POST |
+
+`{cartId}` is the draft cart id. The request body is empty — all payment,
+shipping, and address selections must already be saved on the cart.
+
+## Sequence enforcement
+
+This endpoint enforces the entire Create-Order sequence explicitly. Each
+missing step returns a distinct HTTP 409 with its own message, so the client
+can drive the user back to the right step instead of seeing a generic 500.
+
+| Step | Status | Message key |
+|------|--------|-------------|
+| Items present | 409 | `bagistoapi::app.admin.cart.place-order.empty-cart` |
+| Addresses saved | 409 | `bagistoapi::app.admin.cart.place-order.addresses-required` |
+| Shipping selected | 409 | `bagistoapi::app.admin.cart.place-order.shipping-required` |
+| Payment selected | 409 | `bagistoapi::app.admin.cart.place-order.payment-required` |
+| Payment in {cashondelivery, moneytransfer} | 422 | `bagistoapi::app.admin.cart.place-order.payment-method-unsupported` |
+
+The supported-payment restriction matches the Bagisto admin UI — other methods
+(Stripe, PayPal, …) cannot be admin-finalised through core's Create-Order
+screen either.
