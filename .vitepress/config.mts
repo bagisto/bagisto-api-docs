@@ -833,6 +833,173 @@ export default defineConfig(({ command, mode }) => {
                         ]
                       }
                     ]
+                  },
+                  {
+                    text: 'Dashboard',
+                    collapsed: true,
+                    items: [
+                      { text: 'Statistics', link: '/api/graphql-api/admin/dashboard/stats' },
+                    ]
+                  },
+                  {
+                    text: 'Reporting',
+                    collapsed: true,
+                    items: [
+                      { text: 'Overview', link: '/api/graphql-api/admin/reporting/overview' },
+                      { text: 'Sales', link: '/api/graphql-api/admin/reporting/sales' },
+                      { text: 'Customers', link: '/api/graphql-api/admin/reporting/customers' },
+                      { text: 'Products', link: '/api/graphql-api/admin/reporting/products' },
+                    ]
+                  },
+                  {
+                    text: 'Marketing',
+                    collapsed: true,
+                    items: [
+                      {
+                        text: 'Promotions',
+                        collapsed: true,
+                        items: [
+                          {
+                            text: 'Catalog Rules',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/graphql-api/admin/marketing/promotions/catalog-rules-list' },
+                              { text: 'Detail', link: '/api/graphql-api/admin/marketing/promotions/catalog-rules-detail' },
+                              { text: 'Create', link: '/api/graphql-api/admin/marketing/promotions/catalog-rules-create' },
+                              { text: 'Update', link: '/api/graphql-api/admin/marketing/promotions/catalog-rules-update' },
+                              { text: 'Delete', link: '/api/graphql-api/admin/marketing/promotions/catalog-rules-delete' },
+                              { text: 'Mass Delete', link: '/api/graphql-api/admin/marketing/promotions/catalog-rules-mass-delete' },
+                            ]
+                          },
+                          {
+                            text: 'Cart Rules',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/graphql-api/admin/marketing/promotions/cart-rules-list' },
+                              { text: 'Detail', link: '/api/graphql-api/admin/marketing/promotions/cart-rules-detail' },
+                              { text: 'Create', link: '/api/graphql-api/admin/marketing/promotions/cart-rules-create' },
+                              { text: 'Update', link: '/api/graphql-api/admin/marketing/promotions/cart-rules-update' },
+                              { text: 'Delete', link: '/api/graphql-api/admin/marketing/promotions/cart-rules-delete' },
+                              { text: 'Mass Delete', link: '/api/graphql-api/admin/marketing/promotions/cart-rules-mass-delete' },
+                            ]
+                          },
+                          {
+                            text: 'Cart Rule Coupons',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/graphql-api/admin/marketing/promotions/cart-rule-coupons-list' },
+                              { text: 'Create', link: '/api/graphql-api/admin/marketing/promotions/cart-rule-coupons-create' },
+                              { text: 'Bulk Generate', link: '/api/graphql-api/admin/marketing/promotions/cart-rule-coupons-generate' },
+                              { text: 'Delete', link: '/api/graphql-api/admin/marketing/promotions/cart-rule-coupons-delete' },
+                              { text: 'Mass Delete', link: '/api/graphql-api/admin/marketing/promotions/cart-rule-coupons-mass-delete' },
+                            ]
+                          },
+                        ]
+                      },
+                      {
+                        text: 'Communications',
+                        collapsed: true,
+                        items: [
+                          {
+                            text: 'Email Templates',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/graphql-api/admin/marketing/communications/templates-list' },
+                              { text: 'Detail', link: '/api/graphql-api/admin/marketing/communications/templates-detail' },
+                              { text: 'Create', link: '/api/graphql-api/admin/marketing/communications/templates-create' },
+                              { text: 'Update', link: '/api/graphql-api/admin/marketing/communications/templates-update' },
+                              { text: 'Delete', link: '/api/graphql-api/admin/marketing/communications/templates-delete' },
+                            ]
+                          },
+                          {
+                            text: 'Events',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/graphql-api/admin/marketing/communications/events-list' },
+                              { text: 'Detail', link: '/api/graphql-api/admin/marketing/communications/events-detail' },
+                              { text: 'Create', link: '/api/graphql-api/admin/marketing/communications/events-create' },
+                              { text: 'Update', link: '/api/graphql-api/admin/marketing/communications/events-update' },
+                              { text: 'Delete', link: '/api/graphql-api/admin/marketing/communications/events-delete' },
+                            ]
+                          },
+                          {
+                            text: 'Campaigns',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/graphql-api/admin/marketing/communications/campaigns-list' },
+                              { text: 'Detail', link: '/api/graphql-api/admin/marketing/communications/campaigns-detail' },
+                              { text: 'Create', link: '/api/graphql-api/admin/marketing/communications/campaigns-create' },
+                              { text: 'Update', link: '/api/graphql-api/admin/marketing/communications/campaigns-update' },
+                              { text: 'Delete', link: '/api/graphql-api/admin/marketing/communications/campaigns-delete' },
+                              { text: 'Send', link: '/api/graphql-api/admin/marketing/communications/campaigns-send' },
+                            ]
+                          },
+                          {
+                            text: 'Newsletter Subscribers',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/graphql-api/admin/marketing/communications/subscribers-list' },
+                              { text: 'Detail', link: '/api/graphql-api/admin/marketing/communications/subscribers-detail' },
+                              { text: 'Toggle Subscription', link: '/api/graphql-api/admin/marketing/communications/subscribers-toggle' },
+                              { text: 'Delete', link: '/api/graphql-api/admin/marketing/communications/subscribers-delete' },
+                            ]
+                          },
+                        ]
+                      },
+                      {
+                        text: 'Search SEO',
+                        collapsed: true,
+                        items: [
+                          {
+                            text: 'URL Rewrites',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/graphql-api/admin/marketing/search-seo/url-rewrites-list' },
+                              { text: 'Detail', link: '/api/graphql-api/admin/marketing/search-seo/url-rewrites-detail' },
+                              { text: 'Create', link: '/api/graphql-api/admin/marketing/search-seo/url-rewrites-create' },
+                              { text: 'Update', link: '/api/graphql-api/admin/marketing/search-seo/url-rewrites-update' },
+                              { text: 'Delete', link: '/api/graphql-api/admin/marketing/search-seo/url-rewrites-delete' },
+                              { text: 'Mass Delete', link: '/api/graphql-api/admin/marketing/search-seo/url-rewrites-mass-delete' },
+                            ]
+                          },
+                          {
+                            text: 'Search Terms',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/graphql-api/admin/marketing/search-seo/search-terms-list' },
+                              { text: 'Detail', link: '/api/graphql-api/admin/marketing/search-seo/search-terms-detail' },
+                              { text: 'Update', link: '/api/graphql-api/admin/marketing/search-seo/search-terms-update' },
+                              { text: 'Delete', link: '/api/graphql-api/admin/marketing/search-seo/search-terms-delete' },
+                              { text: 'Mass Delete', link: '/api/graphql-api/admin/marketing/search-seo/search-terms-mass-delete' },
+                            ]
+                          },
+                          {
+                            text: 'Search Synonyms',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/graphql-api/admin/marketing/search-seo/search-synonyms-list' },
+                              { text: 'Detail', link: '/api/graphql-api/admin/marketing/search-seo/search-synonyms-detail' },
+                              { text: 'Create', link: '/api/graphql-api/admin/marketing/search-seo/search-synonyms-create' },
+                              { text: 'Update', link: '/api/graphql-api/admin/marketing/search-seo/search-synonyms-update' },
+                              { text: 'Delete', link: '/api/graphql-api/admin/marketing/search-seo/search-synonyms-delete' },
+                              { text: 'Mass Delete', link: '/api/graphql-api/admin/marketing/search-seo/search-synonyms-mass-delete' },
+                            ]
+                          },
+                          {
+                            text: 'Sitemaps',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/graphql-api/admin/marketing/search-seo/sitemaps-list' },
+                              { text: 'Detail', link: '/api/graphql-api/admin/marketing/search-seo/sitemaps-detail' },
+                              { text: 'Create', link: '/api/graphql-api/admin/marketing/search-seo/sitemaps-create' },
+                              { text: 'Update', link: '/api/graphql-api/admin/marketing/search-seo/sitemaps-update' },
+                              { text: 'Delete', link: '/api/graphql-api/admin/marketing/search-seo/sitemaps-delete' },
+                              { text: 'Regenerate', link: '/api/graphql-api/admin/marketing/search-seo/sitemaps-generate' },
+                            ]
+                          },
+                        ]
+                      },
+                    ]
                   }
                 ]
               },
@@ -1380,6 +1547,173 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Cancel', link: '/api/rest-api/admin/settings/data-transfer-imports/cancel' },
                         ]
                       }
+                    ]
+                  },
+                  {
+                    text: 'Dashboard',
+                    collapsed: true,
+                    items: [
+                      { text: 'Statistics', link: '/api/rest-api/admin/dashboard/stats' },
+                    ]
+                  },
+                  {
+                    text: 'Reporting',
+                    collapsed: true,
+                    items: [
+                      { text: 'Overview', link: '/api/rest-api/admin/reporting/overview' },
+                      { text: 'Sales', link: '/api/rest-api/admin/reporting/sales' },
+                      { text: 'Customers', link: '/api/rest-api/admin/reporting/customers' },
+                      { text: 'Products', link: '/api/rest-api/admin/reporting/products' },
+                    ]
+                  },
+                  {
+                    text: 'Marketing',
+                    collapsed: true,
+                    items: [
+                      {
+                        text: 'Promotions',
+                        collapsed: true,
+                        items: [
+                          {
+                            text: 'Catalog Rules',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/rest-api/admin/marketing/promotions/catalog-rules-list' },
+                              { text: 'Detail', link: '/api/rest-api/admin/marketing/promotions/catalog-rules-detail' },
+                              { text: 'Create', link: '/api/rest-api/admin/marketing/promotions/catalog-rules-create' },
+                              { text: 'Update', link: '/api/rest-api/admin/marketing/promotions/catalog-rules-update' },
+                              { text: 'Delete', link: '/api/rest-api/admin/marketing/promotions/catalog-rules-delete' },
+                              { text: 'Mass Delete', link: '/api/rest-api/admin/marketing/promotions/catalog-rules-mass-delete' },
+                            ]
+                          },
+                          {
+                            text: 'Cart Rules',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/rest-api/admin/marketing/promotions/cart-rules-list' },
+                              { text: 'Detail', link: '/api/rest-api/admin/marketing/promotions/cart-rules-detail' },
+                              { text: 'Create', link: '/api/rest-api/admin/marketing/promotions/cart-rules-create' },
+                              { text: 'Update', link: '/api/rest-api/admin/marketing/promotions/cart-rules-update' },
+                              { text: 'Delete', link: '/api/rest-api/admin/marketing/promotions/cart-rules-delete' },
+                              { text: 'Mass Delete', link: '/api/rest-api/admin/marketing/promotions/cart-rules-mass-delete' },
+                            ]
+                          },
+                          {
+                            text: 'Cart Rule Coupons',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/rest-api/admin/marketing/promotions/cart-rule-coupons-list' },
+                              { text: 'Create', link: '/api/rest-api/admin/marketing/promotions/cart-rule-coupons-create' },
+                              { text: 'Bulk Generate', link: '/api/rest-api/admin/marketing/promotions/cart-rule-coupons-generate' },
+                              { text: 'Delete', link: '/api/rest-api/admin/marketing/promotions/cart-rule-coupons-delete' },
+                              { text: 'Mass Delete', link: '/api/rest-api/admin/marketing/promotions/cart-rule-coupons-mass-delete' },
+                            ]
+                          },
+                        ]
+                      },
+                      {
+                        text: 'Communications',
+                        collapsed: true,
+                        items: [
+                          {
+                            text: 'Email Templates',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/rest-api/admin/marketing/communications/templates-list' },
+                              { text: 'Detail', link: '/api/rest-api/admin/marketing/communications/templates-detail' },
+                              { text: 'Create', link: '/api/rest-api/admin/marketing/communications/templates-create' },
+                              { text: 'Update', link: '/api/rest-api/admin/marketing/communications/templates-update' },
+                              { text: 'Delete', link: '/api/rest-api/admin/marketing/communications/templates-delete' },
+                            ]
+                          },
+                          {
+                            text: 'Events',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/rest-api/admin/marketing/communications/events-list' },
+                              { text: 'Detail', link: '/api/rest-api/admin/marketing/communications/events-detail' },
+                              { text: 'Create', link: '/api/rest-api/admin/marketing/communications/events-create' },
+                              { text: 'Update', link: '/api/rest-api/admin/marketing/communications/events-update' },
+                              { text: 'Delete', link: '/api/rest-api/admin/marketing/communications/events-delete' },
+                            ]
+                          },
+                          {
+                            text: 'Campaigns',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/rest-api/admin/marketing/communications/campaigns-list' },
+                              { text: 'Detail', link: '/api/rest-api/admin/marketing/communications/campaigns-detail' },
+                              { text: 'Create', link: '/api/rest-api/admin/marketing/communications/campaigns-create' },
+                              { text: 'Update', link: '/api/rest-api/admin/marketing/communications/campaigns-update' },
+                              { text: 'Delete', link: '/api/rest-api/admin/marketing/communications/campaigns-delete' },
+                              { text: 'Send', link: '/api/rest-api/admin/marketing/communications/campaigns-send' },
+                            ]
+                          },
+                          {
+                            text: 'Newsletter Subscribers',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/rest-api/admin/marketing/communications/subscribers-list' },
+                              { text: 'Detail', link: '/api/rest-api/admin/marketing/communications/subscribers-detail' },
+                              { text: 'Toggle Subscription', link: '/api/rest-api/admin/marketing/communications/subscribers-toggle' },
+                              { text: 'Delete', link: '/api/rest-api/admin/marketing/communications/subscribers-delete' },
+                            ]
+                          },
+                        ]
+                      },
+                      {
+                        text: 'Search SEO',
+                        collapsed: true,
+                        items: [
+                          {
+                            text: 'URL Rewrites',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/rest-api/admin/marketing/search-seo/url-rewrites-list' },
+                              { text: 'Detail', link: '/api/rest-api/admin/marketing/search-seo/url-rewrites-detail' },
+                              { text: 'Create', link: '/api/rest-api/admin/marketing/search-seo/url-rewrites-create' },
+                              { text: 'Update', link: '/api/rest-api/admin/marketing/search-seo/url-rewrites-update' },
+                              { text: 'Delete', link: '/api/rest-api/admin/marketing/search-seo/url-rewrites-delete' },
+                              { text: 'Mass Delete', link: '/api/rest-api/admin/marketing/search-seo/url-rewrites-mass-delete' },
+                            ]
+                          },
+                          {
+                            text: 'Search Terms',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/rest-api/admin/marketing/search-seo/search-terms-list' },
+                              { text: 'Detail', link: '/api/rest-api/admin/marketing/search-seo/search-terms-detail' },
+                              { text: 'Update', link: '/api/rest-api/admin/marketing/search-seo/search-terms-update' },
+                              { text: 'Delete', link: '/api/rest-api/admin/marketing/search-seo/search-terms-delete' },
+                              { text: 'Mass Delete', link: '/api/rest-api/admin/marketing/search-seo/search-terms-mass-delete' },
+                            ]
+                          },
+                          {
+                            text: 'Search Synonyms',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/rest-api/admin/marketing/search-seo/search-synonyms-list' },
+                              { text: 'Detail', link: '/api/rest-api/admin/marketing/search-seo/search-synonyms-detail' },
+                              { text: 'Create', link: '/api/rest-api/admin/marketing/search-seo/search-synonyms-create' },
+                              { text: 'Update', link: '/api/rest-api/admin/marketing/search-seo/search-synonyms-update' },
+                              { text: 'Delete', link: '/api/rest-api/admin/marketing/search-seo/search-synonyms-delete' },
+                              { text: 'Mass Delete', link: '/api/rest-api/admin/marketing/search-seo/search-synonyms-mass-delete' },
+                            ]
+                          },
+                          {
+                            text: 'Sitemaps',
+                            collapsed: true,
+                            items: [
+                              { text: 'List', link: '/api/rest-api/admin/marketing/search-seo/sitemaps-list' },
+                              { text: 'Detail', link: '/api/rest-api/admin/marketing/search-seo/sitemaps-detail' },
+                              { text: 'Create', link: '/api/rest-api/admin/marketing/search-seo/sitemaps-create' },
+                              { text: 'Update', link: '/api/rest-api/admin/marketing/search-seo/sitemaps-update' },
+                              { text: 'Delete', link: '/api/rest-api/admin/marketing/search-seo/sitemaps-delete' },
+                              { text: 'Regenerate', link: '/api/rest-api/admin/marketing/search-seo/sitemaps-generate' },
+                            ]
+                          },
+                        ]
+                      },
                     ]
                   }
                 ]
