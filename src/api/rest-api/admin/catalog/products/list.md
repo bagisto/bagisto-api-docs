@@ -39,7 +39,8 @@ examples:
     commonErrors:
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Authenticate via `/api/admin/login` and pass the token as `Authorization: Bearer <token>`
+        solution: 'Authenticate via `/api/admin/login` and pass the token as `Authorization: Bearer <token>`'
+
 ---
 
 # List / Search Products (Admin)

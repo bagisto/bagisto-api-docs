@@ -28,7 +28,8 @@ examples:
         cause: The authenticated admin's role does not include `sales.orders.create`
         solution: Grant the role the `sales.orders.create` permission (or assign a role that has it)
       - error: Disabled in settings (422)
-        cause: `Configure → Sales → Order Settings → Reorder → Admin Reorder` is OFF
+        cause: '`Configure → Sales → Order Settings → Reorder → Admin Reorder` is OFF'
+
         solution: Re-enable Admin Reorder in the store settings
       - error: Not Found (404)
         cause: Unknown order ID

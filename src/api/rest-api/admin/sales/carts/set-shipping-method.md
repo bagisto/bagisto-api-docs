@@ -27,16 +27,20 @@ examples:
     commonErrors:
       - error: Conflict (409)
         cause: Addresses not yet saved on the cart
-        solution: Call `POST /api/admin/carts/{id}/addresses` first
+        solution: 'Call `POST /api/admin/carts/{id}/addresses` first'
+
       - error: Bad Request (400)
         cause: shippingMethod field missing
-        solution: Send `{ "shippingMethod": "<code>" }`
+        solution: 'Send `{ "shippingMethod": "<code>" }`'
+
       - error: Forbidden (403)
         cause: Cart is an active storefront cart
-        solution: Only draft carts (is_active = 0) can be modified
+        solution: 'Only draft carts (is_active = 0) can be modified'
+
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via /api/admin/login
+        solution: 'Log in via /api/admin/login'
+
 ---
 
 # Set Shipping Method

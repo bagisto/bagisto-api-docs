@@ -25,7 +25,8 @@ examples:
     commonErrors:
       - error: Bad Request (400)
         cause: qty missing or not an object
-        solution: Send qty as `{ "<cartItemId>": <newQty> }`
+        solution: 'Send qty as `{ "<cartItemId>": <newQty> }`'
+
 ---
 
 # Update Cart Item Quantities

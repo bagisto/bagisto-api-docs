@@ -27,16 +27,20 @@ examples:
     commonErrors:
       - error: Conflict (409)
         cause: Shipping method not yet selected
-        solution: Call `POST /api/admin/carts/{id}/shipping-methods` first
+        solution: 'Call `POST /api/admin/carts/{id}/shipping-methods` first'
+
       - error: Bad Request (400)
         cause: method field missing
-        solution: Send `{ "method": "cashondelivery" }`
+        solution: 'Send `{ "method": "cashondelivery" }`'
+
       - error: Forbidden (403)
         cause: Cart is an active storefront cart
-        solution: Only draft carts can be modified
+        solution: 'Only draft carts can be modified'
+
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via /api/admin/login
+        solution: 'Log in via /api/admin/login'
+
 ---
 
 # Set Payment Method

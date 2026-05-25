@@ -464,7 +464,80 @@ export default defineConfig(({ command, mode }) => {
                         text: 'Products',
                         collapsed: true,
                         items: [
-                          { text: 'List Products', link: '/api/graphql-api/admin/catalog/products/list' },
+                          { text: 'List Products (Picker)', link: '/api/graphql-api/admin/catalog/products/list' },
+                          { text: 'Catalog Products (Datagrid)', link: '/api/graphql-api/admin/catalog/products' },
+                          { text: 'Catalog Product Detail', link: '/api/graphql-api/admin/catalog/products/products-detail' },
+                          { text: 'Create Product', link: '/api/graphql-api/admin/catalog/products/create' },
+                          { text: 'Update Product', link: '/api/graphql-api/admin/catalog/products/update' },
+                          { text: 'Delete Product', link: '/api/graphql-api/admin/catalog/products/delete' },
+                          { text: 'Copy Product', link: '/api/graphql-api/admin/catalog/products/copy' },
+                          { text: 'Mass Delete Products', link: '/api/graphql-api/admin/catalog/products/mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/graphql-api/admin/catalog/products/mass-update-status' },
+                          { text: 'Upload Image (REST only)', link: '/api/graphql-api/admin/catalog/products/images-upload' },
+                          { text: 'Reorder Images', link: '/api/graphql-api/admin/catalog/products/images-reorder' },
+                          { text: 'Delete Image', link: '/api/graphql-api/admin/catalog/products/images-delete' },
+                          { text: 'List Inventories', link: '/api/graphql-api/admin/catalog/products/inventories-list' },
+                          { text: 'Update Inventories', link: '/api/graphql-api/admin/catalog/products/inventories-update' },
+                          { text: 'List Customer-Group Prices', link: '/api/graphql-api/admin/catalog/products/customer-group-prices-list' },
+                          { text: 'Add Customer-Group Price', link: '/api/graphql-api/admin/catalog/products/customer-group-prices-create' },
+                          { text: 'Update Customer-Group Price', link: '/api/graphql-api/admin/catalog/products/customer-group-prices-update' },
+                          { text: 'Delete Customer-Group Price', link: '/api/graphql-api/admin/catalog/products/customer-group-prices-delete' },
+                        ]
+                      },
+                      {
+                        text: 'Categories',
+                        collapsed: true,
+                        items: [
+                          { text: 'Categories Listing (Datagrid)', link: '/api/graphql-api/admin/catalog/categories/categories-listing' },
+                          { text: 'Categories Tree (Nested)', link: '/api/graphql-api/admin/catalog/categories/categories-tree' },
+                          { text: 'Category Detail', link: '/api/graphql-api/admin/catalog/categories/categories-detail' },
+                          { text: 'Create Category', link: '/api/graphql-api/admin/catalog/categories/categories-create' },
+                          { text: 'Update / Move Category', link: '/api/graphql-api/admin/catalog/categories/categories-update' },
+                          { text: 'Delete Category', link: '/api/graphql-api/admin/catalog/categories/categories-delete' },
+                          { text: 'Mass Delete Categories', link: '/api/graphql-api/admin/catalog/categories/categories-mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/graphql-api/admin/catalog/categories/categories-mass-update-status' },
+                        ]
+                      },
+                      {
+                        text: 'Attributes',
+                        collapsed: true,
+                        items: [
+                          { text: 'Attributes Listing (Datagrid)', link: '/api/graphql-api/admin/catalog/attributes/attributes-listing' },
+                          { text: 'Attribute Detail', link: '/api/graphql-api/admin/catalog/attributes/attributes-detail' },
+                          { text: 'Create Attribute', link: '/api/graphql-api/admin/catalog/attributes/attributes-create' },
+                          { text: 'Update Attribute', link: '/api/graphql-api/admin/catalog/attributes/attributes-update' },
+                          { text: 'Delete Attribute', link: '/api/graphql-api/admin/catalog/attributes/attributes-delete' },
+                          { text: 'Mass Delete Attributes', link: '/api/graphql-api/admin/catalog/attributes/attributes-mass-delete' },
+                          { text: 'Attribute Options (CRUD)', link: '/api/graphql-api/admin/catalog/attributes/attribute-options' },
+                        ]
+                      },
+                      {
+                        text: 'Attribute Families',
+                        collapsed: true,
+                        items: [
+                          { text: 'Families Listing (Datagrid)', link: '/api/graphql-api/admin/catalog/families/families-listing' },
+                          { text: 'Family Detail', link: '/api/graphql-api/admin/catalog/families/families-detail' },
+                          { text: 'Create Family', link: '/api/graphql-api/admin/catalog/families/families-create' },
+                          { text: 'Update Family', link: '/api/graphql-api/admin/catalog/families/families-update' },
+                          { text: 'Delete Family', link: '/api/graphql-api/admin/catalog/families/families-delete' },
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    text: 'CMS',
+                    collapsed: true,
+                    items: [
+                      {
+                        text: 'Pages',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Pages', link: '/api/graphql-api/admin/cms/pages-list' },
+                          { text: 'Page Detail', link: '/api/graphql-api/admin/cms/pages-detail' },
+                          { text: 'Create Page', link: '/api/graphql-api/admin/cms/pages-create' },
+                          { text: 'Update Page', link: '/api/graphql-api/admin/cms/pages-update' },
+                          { text: 'Delete Page', link: '/api/graphql-api/admin/cms/pages-delete' },
+                          { text: 'Mass Delete Pages', link: '/api/graphql-api/admin/cms/pages-mass-delete' },
                         ]
                       }
                     ]
@@ -481,6 +554,17 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Order Detail', link: '/api/graphql-api/admin/sales/orders/order-detail' },
                           { text: 'Reorder', link: '/api/graphql-api/admin/sales/orders/reorder' },
                           { text: 'Place Order', link: '/api/graphql-api/admin/sales/orders/place-order' },
+                          { text: 'Cancel Order', link: '/api/graphql-api/admin/sales/orders/cancel' },
+                          { text: 'Add Comment', link: '/api/graphql-api/admin/sales/orders/add-comment' },
+                          { text: 'List Comments', link: '/api/graphql-api/admin/sales/orders/list-comments' },
+                          { text: 'Create Invoice', link: '/api/graphql-api/admin/sales/orders/create-invoice' },
+                          { text: 'Get Invoice', link: '/api/graphql-api/admin/sales/orders/get-invoice' },
+                          { text: 'Print Invoice (PDF)', link: '/api/graphql-api/admin/sales/orders/print-invoice' },
+                          { text: 'Create Shipment', link: '/api/graphql-api/admin/sales/orders/create-shipment' },
+                          { text: 'Get Shipment', link: '/api/graphql-api/admin/sales/orders/get-shipment' },
+                          { text: 'Create Refund', link: '/api/graphql-api/admin/sales/orders/create-refund' },
+                          { text: 'Refund Preview', link: '/api/graphql-api/admin/sales/orders/refund-preview' },
+                          { text: 'Get Refund', link: '/api/graphql-api/admin/sales/orders/get-refund' },
                         ]
                       },
                       {
@@ -498,6 +582,254 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Set Shipping Method', link: '/api/graphql-api/admin/sales/carts/set-shipping-method' },
                           { text: 'List Payment Methods', link: '/api/graphql-api/admin/sales/carts/list-payment-methods' },
                           { text: 'Set Payment Method', link: '/api/graphql-api/admin/sales/carts/set-payment-method' },
+                        ]
+                      },
+                      {
+                        text: 'Invoices (Datagrid)',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Invoices', link: '/api/graphql-api/admin/sales/invoices/list' },
+                        ]
+                      },
+                      {
+                        text: 'Shipments (Datagrid)',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Shipments', link: '/api/graphql-api/admin/sales/shipments/list' },
+                        ]
+                      },
+                      {
+                        text: 'Refunds (Datagrid)',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Refunds', link: '/api/graphql-api/admin/sales/refunds/list' },
+                        ]
+                      },
+                      {
+                        text: 'Transactions',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Transactions', link: '/api/graphql-api/admin/sales/transactions/list' },
+                          { text: 'Transaction Detail', link: '/api/graphql-api/admin/sales/transactions/detail' },
+                        ]
+                      },
+                      {
+                        text: 'Bookings',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Bookings', link: '/api/graphql-api/admin/sales/bookings/list' },
+                          { text: 'Booking Detail', link: '/api/graphql-api/admin/sales/bookings/detail' },
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    text: 'Customers (Full CRUD)',
+                    collapsed: true,
+                    items: [
+                      {
+                        text: 'Customers',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Customers', link: '/api/graphql-api/admin/customers/main/list' },
+                          { text: 'Customer Detail', link: '/api/graphql-api/admin/customers/main/detail' },
+                          { text: 'Create Customer', link: '/api/graphql-api/admin/customers/main/create' },
+                          { text: 'Update Customer', link: '/api/graphql-api/admin/customers/main/update' },
+                          { text: 'Delete Customer', link: '/api/graphql-api/admin/customers/main/delete' },
+                          { text: 'Mass Delete', link: '/api/graphql-api/admin/customers/main/mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/graphql-api/admin/customers/main/mass-update-status' },
+                        ]
+                      },
+                      {
+                        text: 'Addresses (CRUD)',
+                        collapsed: true,
+                        items: [
+                          { text: 'Address Detail', link: '/api/graphql-api/admin/customers/addresses/detail' },
+                          { text: 'Create Address', link: '/api/graphql-api/admin/customers/addresses/create' },
+                          { text: 'Update Address', link: '/api/graphql-api/admin/customers/addresses/update' },
+                          { text: 'Delete Address', link: '/api/graphql-api/admin/customers/addresses/delete' },
+                        ]
+                      },
+                      {
+                        text: 'Notes',
+                        collapsed: true,
+                        items: [
+                          { text: 'Add Note', link: '/api/graphql-api/admin/customers/notes/create' },
+                        ]
+                      },
+                      {
+                        text: 'Impersonate',
+                        collapsed: true,
+                        items: [
+                          { text: 'Issue Impersonation Token', link: '/api/graphql-api/admin/customers/impersonate/create' },
+                        ]
+                      },
+                      {
+                        text: 'Customer Groups',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Groups', link: '/api/graphql-api/admin/customers/groups/list' },
+                          { text: 'Group Detail', link: '/api/graphql-api/admin/customers/groups/detail' },
+                          { text: 'Create Group', link: '/api/graphql-api/admin/customers/groups/create' },
+                          { text: 'Update Group', link: '/api/graphql-api/admin/customers/groups/update' },
+                          { text: 'Delete Group', link: '/api/graphql-api/admin/customers/groups/delete' },
+                          { text: 'Mass Delete', link: '/api/graphql-api/admin/customers/groups/mass-delete' },
+                        ]
+                      },
+                      {
+                        text: 'Reviews (Moderation)',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Reviews', link: '/api/graphql-api/admin/customers/reviews/list' },
+                          { text: 'Review Detail', link: '/api/graphql-api/admin/customers/reviews/detail' },
+                          { text: 'Update Status', link: '/api/graphql-api/admin/customers/reviews/update' },
+                          { text: 'Delete Review', link: '/api/graphql-api/admin/customers/reviews/delete' },
+                          { text: 'Mass Delete', link: '/api/graphql-api/admin/customers/reviews/mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/graphql-api/admin/customers/reviews/mass-update-status' },
+                        ]
+                      },
+                      {
+                        text: 'GDPR Requests',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Requests', link: '/api/graphql-api/admin/customers/gdpr/list' },
+                          { text: 'Request Detail', link: '/api/graphql-api/admin/customers/gdpr/detail' },
+                          { text: 'Update Request', link: '/api/graphql-api/admin/customers/gdpr/update' },
+                          { text: 'Delete Request', link: '/api/graphql-api/admin/customers/gdpr/delete' },
+                          { text: 'Process (Approve + Execute)', link: '/api/graphql-api/admin/customers/gdpr/process' },
+                          { text: 'Download Data Export', link: '/api/graphql-api/admin/customers/gdpr/download-data' },
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    text: 'Settings',
+                    collapsed: true,
+                    items: [
+                      {
+                        text: 'Locales',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/graphql-api/admin/settings/locales/list' },
+                          { text: 'Detail', link: '/api/graphql-api/admin/settings/locales/detail' },
+                          { text: 'Create', link: '/api/graphql-api/admin/settings/locales/create' },
+                          { text: 'Update', link: '/api/graphql-api/admin/settings/locales/update' },
+                          { text: 'Delete', link: '/api/graphql-api/admin/settings/locales/delete' },
+                          { text: 'Mass Delete', link: '/api/graphql-api/admin/settings/locales/mass-delete' },
+                        ]
+                      },
+                      {
+                        text: 'Currencies',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/graphql-api/admin/settings/currencies/list' },
+                          { text: 'Detail', link: '/api/graphql-api/admin/settings/currencies/detail' },
+                          { text: 'Create', link: '/api/graphql-api/admin/settings/currencies/create' },
+                          { text: 'Update', link: '/api/graphql-api/admin/settings/currencies/update' },
+                          { text: 'Delete', link: '/api/graphql-api/admin/settings/currencies/delete' },
+                          { text: 'Mass Delete', link: '/api/graphql-api/admin/settings/currencies/mass-delete' },
+                        ]
+                      },
+                      {
+                        text: 'Exchange Rates',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/graphql-api/admin/settings/exchange-rates/list' },
+                          { text: 'Detail', link: '/api/graphql-api/admin/settings/exchange-rates/detail' },
+                          { text: 'Create', link: '/api/graphql-api/admin/settings/exchange-rates/create' },
+                          { text: 'Update', link: '/api/graphql-api/admin/settings/exchange-rates/update' },
+                          { text: 'Delete', link: '/api/graphql-api/admin/settings/exchange-rates/delete' },
+                          { text: 'Mass Delete', link: '/api/graphql-api/admin/settings/exchange-rates/mass-delete' },
+                        ]
+                      },
+                      {
+                        text: 'Inventory Sources',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/graphql-api/admin/settings/inventory-sources/list' },
+                          { text: 'Detail', link: '/api/graphql-api/admin/settings/inventory-sources/detail' },
+                          { text: 'Create', link: '/api/graphql-api/admin/settings/inventory-sources/create' },
+                          { text: 'Update', link: '/api/graphql-api/admin/settings/inventory-sources/update' },
+                          { text: 'Delete', link: '/api/graphql-api/admin/settings/inventory-sources/delete' },
+                          { text: 'Mass Delete', link: '/api/graphql-api/admin/settings/inventory-sources/mass-delete' },
+                        ]
+                      },
+                      {
+                        text: 'Channels',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/graphql-api/admin/settings/channels/list' },
+                          { text: 'Detail', link: '/api/graphql-api/admin/settings/channels/detail' },
+                          { text: 'Create', link: '/api/graphql-api/admin/settings/channels/create' },
+                          { text: 'Update', link: '/api/graphql-api/admin/settings/channels/update' },
+                          { text: 'Delete', link: '/api/graphql-api/admin/settings/channels/delete' },
+                        ]
+                      },
+                      {
+                        text: 'Admin Users',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/graphql-api/admin/settings/users/list' },
+                          { text: 'Detail', link: '/api/graphql-api/admin/settings/users/detail' },
+                          { text: 'Create', link: '/api/graphql-api/admin/settings/users/create' },
+                          { text: 'Update', link: '/api/graphql-api/admin/settings/users/update' },
+                          { text: 'Delete', link: '/api/graphql-api/admin/settings/users/delete' },
+                        ]
+                      },
+                      {
+                        text: 'Roles',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/graphql-api/admin/settings/roles/list' },
+                          { text: 'Detail', link: '/api/graphql-api/admin/settings/roles/detail' },
+                          { text: 'Create', link: '/api/graphql-api/admin/settings/roles/create' },
+                          { text: 'Update', link: '/api/graphql-api/admin/settings/roles/update' },
+                          { text: 'Delete', link: '/api/graphql-api/admin/settings/roles/delete' },
+                        ]
+                      },
+                      {
+                        text: 'Themes',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/graphql-api/admin/settings/themes/list' },
+                          { text: 'Detail', link: '/api/graphql-api/admin/settings/themes/detail' },
+                          { text: 'Create', link: '/api/graphql-api/admin/settings/themes/create' },
+                          { text: 'Update', link: '/api/graphql-api/admin/settings/themes/update' },
+                          { text: 'Delete', link: '/api/graphql-api/admin/settings/themes/delete' },
+                          { text: 'Mass Delete', link: '/api/graphql-api/admin/settings/themes/mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/graphql-api/admin/settings/themes/mass-update-status' },
+                        ]
+                      },
+                      {
+                        text: 'Tax Categories',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/graphql-api/admin/settings/tax-categories/list' },
+                          { text: 'Detail', link: '/api/graphql-api/admin/settings/tax-categories/detail' },
+                          { text: 'Create', link: '/api/graphql-api/admin/settings/tax-categories/create' },
+                          { text: 'Update', link: '/api/graphql-api/admin/settings/tax-categories/update' },
+                          { text: 'Delete', link: '/api/graphql-api/admin/settings/tax-categories/delete' },
+                        ]
+                      },
+                      {
+                        text: 'Tax Rates',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/graphql-api/admin/settings/tax-rates/list' },
+                          { text: 'Detail', link: '/api/graphql-api/admin/settings/tax-rates/detail' },
+                          { text: 'Create', link: '/api/graphql-api/admin/settings/tax-rates/create' },
+                          { text: 'Update', link: '/api/graphql-api/admin/settings/tax-rates/update' },
+                          { text: 'Delete', link: '/api/graphql-api/admin/settings/tax-rates/delete' },
+                        ]
+                      },
+                      {
+                        text: 'Data Transfer Imports',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/graphql-api/admin/settings/data-transfer-imports/list' },
+                          { text: 'Detail', link: '/api/graphql-api/admin/settings/data-transfer-imports/detail' },
+                          { text: 'Delete', link: '/api/graphql-api/admin/settings/data-transfer-imports/delete' },
+                          { text: 'Cancel', link: '/api/graphql-api/admin/settings/data-transfer-imports/cancel' },
                         ]
                       }
                     ]
@@ -679,7 +1011,80 @@ export default defineConfig(({ command, mode }) => {
                         text: 'Products',
                         collapsed: true,
                         items: [
-                          { text: 'List Products', link: '/api/rest-api/admin/catalog/products/list' },
+                          { text: 'List Products (Picker)', link: '/api/rest-api/admin/catalog/products/list' },
+                          { text: 'Catalog Products (Datagrid)', link: '/api/rest-api/admin/catalog/products' },
+                          { text: 'Catalog Product Detail', link: '/api/rest-api/admin/catalog/products/products-detail' },
+                          { text: 'Create Product', link: '/api/rest-api/admin/catalog/products/create' },
+                          { text: 'Update Product', link: '/api/rest-api/admin/catalog/products/update' },
+                          { text: 'Delete Product', link: '/api/rest-api/admin/catalog/products/delete' },
+                          { text: 'Copy Product', link: '/api/rest-api/admin/catalog/products/copy' },
+                          { text: 'Mass Delete Products', link: '/api/rest-api/admin/catalog/products/mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/rest-api/admin/catalog/products/mass-update-status' },
+                          { text: 'Upload Image', link: '/api/rest-api/admin/catalog/products/images-upload' },
+                          { text: 'Reorder Images', link: '/api/rest-api/admin/catalog/products/images-reorder' },
+                          { text: 'Delete Image', link: '/api/rest-api/admin/catalog/products/images-delete' },
+                          { text: 'List Inventories', link: '/api/rest-api/admin/catalog/products/inventories-list' },
+                          { text: 'Update Inventories', link: '/api/rest-api/admin/catalog/products/inventories-update' },
+                          { text: 'List Customer-Group Prices', link: '/api/rest-api/admin/catalog/products/customer-group-prices-list' },
+                          { text: 'Add Customer-Group Price', link: '/api/rest-api/admin/catalog/products/customer-group-prices-create' },
+                          { text: 'Update Customer-Group Price', link: '/api/rest-api/admin/catalog/products/customer-group-prices-update' },
+                          { text: 'Delete Customer-Group Price', link: '/api/rest-api/admin/catalog/products/customer-group-prices-delete' },
+                        ]
+                      },
+                      {
+                        text: 'Categories',
+                        collapsed: true,
+                        items: [
+                          { text: 'Categories Listing (Datagrid)', link: '/api/rest-api/admin/catalog/categories/categories-listing' },
+                          { text: 'Categories Tree (Nested)', link: '/api/rest-api/admin/catalog/categories/categories-tree' },
+                          { text: 'Category Detail', link: '/api/rest-api/admin/catalog/categories/categories-detail' },
+                          { text: 'Create Category', link: '/api/rest-api/admin/catalog/categories/categories-create' },
+                          { text: 'Update / Move Category', link: '/api/rest-api/admin/catalog/categories/categories-update' },
+                          { text: 'Delete Category', link: '/api/rest-api/admin/catalog/categories/categories-delete' },
+                          { text: 'Mass Delete Categories', link: '/api/rest-api/admin/catalog/categories/categories-mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/rest-api/admin/catalog/categories/categories-mass-update-status' },
+                        ]
+                      },
+                      {
+                        text: 'Attributes',
+                        collapsed: true,
+                        items: [
+                          { text: 'Attributes Listing (Datagrid)', link: '/api/rest-api/admin/catalog/attributes/attributes-listing' },
+                          { text: 'Attribute Detail', link: '/api/rest-api/admin/catalog/attributes/attributes-detail' },
+                          { text: 'Create Attribute', link: '/api/rest-api/admin/catalog/attributes/attributes-create' },
+                          { text: 'Update Attribute', link: '/api/rest-api/admin/catalog/attributes/attributes-update' },
+                          { text: 'Delete Attribute', link: '/api/rest-api/admin/catalog/attributes/attributes-delete' },
+                          { text: 'Mass Delete Attributes', link: '/api/rest-api/admin/catalog/attributes/attributes-mass-delete' },
+                          { text: 'Attribute Options (CRUD)', link: '/api/rest-api/admin/catalog/attributes/attribute-options' },
+                        ]
+                      },
+                      {
+                        text: 'Attribute Families',
+                        collapsed: true,
+                        items: [
+                          { text: 'Families Listing (Datagrid)', link: '/api/rest-api/admin/catalog/families/families-listing' },
+                          { text: 'Family Detail', link: '/api/rest-api/admin/catalog/families/families-detail' },
+                          { text: 'Create Family', link: '/api/rest-api/admin/catalog/families/families-create' },
+                          { text: 'Update Family', link: '/api/rest-api/admin/catalog/families/families-update' },
+                          { text: 'Delete Family', link: '/api/rest-api/admin/catalog/families/families-delete' },
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    text: 'CMS',
+                    collapsed: true,
+                    items: [
+                      {
+                        text: 'Pages',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Pages', link: '/api/rest-api/admin/cms/pages-list' },
+                          { text: 'Page Detail', link: '/api/rest-api/admin/cms/pages-detail' },
+                          { text: 'Create Page', link: '/api/rest-api/admin/cms/pages-create' },
+                          { text: 'Update Page', link: '/api/rest-api/admin/cms/pages-update' },
+                          { text: 'Delete Page', link: '/api/rest-api/admin/cms/pages-delete' },
+                          { text: 'Mass Delete Pages', link: '/api/rest-api/admin/cms/pages-mass-delete' },
                         ]
                       }
                     ]
@@ -696,6 +1101,17 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Order Detail', link: '/api/rest-api/admin/sales/orders/order-detail' },
                           { text: 'Reorder', link: '/api/rest-api/admin/sales/orders/reorder' },
                           { text: 'Place Order', link: '/api/rest-api/admin/sales/orders/place-order' },
+                          { text: 'Cancel Order', link: '/api/rest-api/admin/sales/orders/cancel' },
+                          { text: 'Add Comment', link: '/api/rest-api/admin/sales/orders/add-comment' },
+                          { text: 'List Comments', link: '/api/rest-api/admin/sales/orders/list-comments' },
+                          { text: 'Create Invoice', link: '/api/rest-api/admin/sales/orders/create-invoice' },
+                          { text: 'Get Invoice', link: '/api/rest-api/admin/sales/orders/get-invoice' },
+                          { text: 'Print Invoice (PDF)', link: '/api/rest-api/admin/sales/orders/print-invoice' },
+                          { text: 'Create Shipment', link: '/api/rest-api/admin/sales/orders/create-shipment' },
+                          { text: 'Get Shipment', link: '/api/rest-api/admin/sales/orders/get-shipment' },
+                          { text: 'Create Refund', link: '/api/rest-api/admin/sales/orders/create-refund' },
+                          { text: 'Refund Preview', link: '/api/rest-api/admin/sales/orders/refund-preview' },
+                          { text: 'Get Refund', link: '/api/rest-api/admin/sales/orders/get-refund' },
                         ]
                       },
                       {
@@ -713,6 +1129,255 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Set Shipping Method', link: '/api/rest-api/admin/sales/carts/set-shipping-method' },
                           { text: 'List Payment Methods', link: '/api/rest-api/admin/sales/carts/list-payment-methods' },
                           { text: 'Set Payment Method', link: '/api/rest-api/admin/sales/carts/set-payment-method' },
+                        ]
+                      },
+                      {
+                        text: 'Invoices (Datagrid)',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Invoices', link: '/api/rest-api/admin/sales/invoices/list' },
+                        ]
+                      },
+                      {
+                        text: 'Shipments (Datagrid)',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Shipments', link: '/api/rest-api/admin/sales/shipments/list' },
+                        ]
+                      },
+                      {
+                        text: 'Refunds (Datagrid)',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Refunds', link: '/api/rest-api/admin/sales/refunds/list' },
+                        ]
+                      },
+                      {
+                        text: 'Transactions',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Transactions', link: '/api/rest-api/admin/sales/transactions/list' },
+                          { text: 'Transaction Detail', link: '/api/rest-api/admin/sales/transactions/detail' },
+                        ]
+                      },
+                      {
+                        text: 'Bookings',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Bookings', link: '/api/rest-api/admin/sales/bookings/list' },
+                          { text: 'Booking Detail', link: '/api/rest-api/admin/sales/bookings/detail' },
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    text: 'Customers (Full CRUD)',
+                    collapsed: true,
+                    items: [
+                      {
+                        text: 'Customers',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Customers', link: '/api/rest-api/admin/customers/main/list' },
+                          { text: 'Customer Detail', link: '/api/rest-api/admin/customers/main/detail' },
+                          { text: 'Create Customer', link: '/api/rest-api/admin/customers/main/create' },
+                          { text: 'Update Customer', link: '/api/rest-api/admin/customers/main/update' },
+                          { text: 'Delete Customer', link: '/api/rest-api/admin/customers/main/delete' },
+                          { text: 'Mass Delete', link: '/api/rest-api/admin/customers/main/mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/rest-api/admin/customers/main/mass-update-status' },
+                        ]
+                      },
+                      {
+                        text: 'Addresses (CRUD)',
+                        collapsed: true,
+                        items: [
+                          { text: 'Address Detail', link: '/api/rest-api/admin/customers/addresses/detail' },
+                          { text: 'Create Address', link: '/api/rest-api/admin/customers/addresses/create' },
+                          { text: 'Update Address', link: '/api/rest-api/admin/customers/addresses/update' },
+                          { text: 'Delete Address', link: '/api/rest-api/admin/customers/addresses/delete' },
+                        ]
+                      },
+                      {
+                        text: 'Notes',
+                        collapsed: true,
+                        items: [
+                          { text: 'Add Note', link: '/api/rest-api/admin/customers/notes/create' },
+                        ]
+                      },
+                      {
+                        text: 'Impersonate',
+                        collapsed: true,
+                        items: [
+                          { text: 'Issue Impersonation Token', link: '/api/rest-api/admin/customers/impersonate/create' },
+                        ]
+                      },
+                      {
+                        text: 'Customer Groups',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Groups', link: '/api/rest-api/admin/customers/groups/list' },
+                          { text: 'Group Detail', link: '/api/rest-api/admin/customers/groups/detail' },
+                          { text: 'Create Group', link: '/api/rest-api/admin/customers/groups/create' },
+                          { text: 'Update Group', link: '/api/rest-api/admin/customers/groups/update' },
+                          { text: 'Delete Group', link: '/api/rest-api/admin/customers/groups/delete' },
+                          { text: 'Mass Delete', link: '/api/rest-api/admin/customers/groups/mass-delete' },
+                        ]
+                      },
+                      {
+                        text: 'Reviews (Moderation)',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Reviews', link: '/api/rest-api/admin/customers/reviews/list' },
+                          { text: 'Review Detail', link: '/api/rest-api/admin/customers/reviews/detail' },
+                          { text: 'Update Status', link: '/api/rest-api/admin/customers/reviews/update' },
+                          { text: 'Delete Review', link: '/api/rest-api/admin/customers/reviews/delete' },
+                          { text: 'Mass Delete', link: '/api/rest-api/admin/customers/reviews/mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/rest-api/admin/customers/reviews/mass-update-status' },
+                        ]
+                      },
+                      {
+                        text: 'GDPR Requests',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Requests', link: '/api/rest-api/admin/customers/gdpr/list' },
+                          { text: 'Request Detail', link: '/api/rest-api/admin/customers/gdpr/detail' },
+                          { text: 'Update Request', link: '/api/rest-api/admin/customers/gdpr/update' },
+                          { text: 'Delete Request', link: '/api/rest-api/admin/customers/gdpr/delete' },
+                          { text: 'Process (Approve + Execute)', link: '/api/rest-api/admin/customers/gdpr/process' },
+                          { text: 'Download Data Export', link: '/api/rest-api/admin/customers/gdpr/download-data' },
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    text: 'Settings',
+                    collapsed: true,
+                    items: [
+                      {
+                        text: 'Locales',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/rest-api/admin/settings/locales/list' },
+                          { text: 'Detail', link: '/api/rest-api/admin/settings/locales/detail' },
+                          { text: 'Create', link: '/api/rest-api/admin/settings/locales/create' },
+                          { text: 'Update', link: '/api/rest-api/admin/settings/locales/update' },
+                          { text: 'Delete', link: '/api/rest-api/admin/settings/locales/delete' },
+                          { text: 'Mass Delete', link: '/api/rest-api/admin/settings/locales/mass-delete' },
+                        ]
+                      },
+                      {
+                        text: 'Currencies',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/rest-api/admin/settings/currencies/list' },
+                          { text: 'Detail', link: '/api/rest-api/admin/settings/currencies/detail' },
+                          { text: 'Create', link: '/api/rest-api/admin/settings/currencies/create' },
+                          { text: 'Update', link: '/api/rest-api/admin/settings/currencies/update' },
+                          { text: 'Delete', link: '/api/rest-api/admin/settings/currencies/delete' },
+                          { text: 'Mass Delete', link: '/api/rest-api/admin/settings/currencies/mass-delete' },
+                        ]
+                      },
+                      {
+                        text: 'Exchange Rates',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/rest-api/admin/settings/exchange-rates/list' },
+                          { text: 'Detail', link: '/api/rest-api/admin/settings/exchange-rates/detail' },
+                          { text: 'Create', link: '/api/rest-api/admin/settings/exchange-rates/create' },
+                          { text: 'Update', link: '/api/rest-api/admin/settings/exchange-rates/update' },
+                          { text: 'Delete', link: '/api/rest-api/admin/settings/exchange-rates/delete' },
+                          { text: 'Mass Delete', link: '/api/rest-api/admin/settings/exchange-rates/mass-delete' },
+                        ]
+                      },
+                      {
+                        text: 'Inventory Sources',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/rest-api/admin/settings/inventory-sources/list' },
+                          { text: 'Detail', link: '/api/rest-api/admin/settings/inventory-sources/detail' },
+                          { text: 'Create', link: '/api/rest-api/admin/settings/inventory-sources/create' },
+                          { text: 'Update', link: '/api/rest-api/admin/settings/inventory-sources/update' },
+                          { text: 'Delete', link: '/api/rest-api/admin/settings/inventory-sources/delete' },
+                          { text: 'Mass Delete', link: '/api/rest-api/admin/settings/inventory-sources/mass-delete' },
+                        ]
+                      },
+                      {
+                        text: 'Channels',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/rest-api/admin/settings/channels/list' },
+                          { text: 'Detail', link: '/api/rest-api/admin/settings/channels/detail' },
+                          { text: 'Create', link: '/api/rest-api/admin/settings/channels/create' },
+                          { text: 'Update', link: '/api/rest-api/admin/settings/channels/update' },
+                          { text: 'Delete', link: '/api/rest-api/admin/settings/channels/delete' },
+                        ]
+                      },
+                      {
+                        text: 'Admin Users',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/rest-api/admin/settings/users/list' },
+                          { text: 'Detail', link: '/api/rest-api/admin/settings/users/detail' },
+                          { text: 'Create', link: '/api/rest-api/admin/settings/users/create' },
+                          { text: 'Update', link: '/api/rest-api/admin/settings/users/update' },
+                          { text: 'Delete', link: '/api/rest-api/admin/settings/users/delete' },
+                        ]
+                      },
+                      {
+                        text: 'Roles',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/rest-api/admin/settings/roles/list' },
+                          { text: 'Detail', link: '/api/rest-api/admin/settings/roles/detail' },
+                          { text: 'Create', link: '/api/rest-api/admin/settings/roles/create' },
+                          { text: 'Update', link: '/api/rest-api/admin/settings/roles/update' },
+                          { text: 'Delete', link: '/api/rest-api/admin/settings/roles/delete' },
+                        ]
+                      },
+                      {
+                        text: 'Themes',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/rest-api/admin/settings/themes/list' },
+                          { text: 'Detail', link: '/api/rest-api/admin/settings/themes/detail' },
+                          { text: 'Create', link: '/api/rest-api/admin/settings/themes/create' },
+                          { text: 'Update', link: '/api/rest-api/admin/settings/themes/update' },
+                          { text: 'Delete', link: '/api/rest-api/admin/settings/themes/delete' },
+                          { text: 'Mass Delete', link: '/api/rest-api/admin/settings/themes/mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/rest-api/admin/settings/themes/mass-update-status' },
+                        ]
+                      },
+                      {
+                        text: 'Tax Categories',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/rest-api/admin/settings/tax-categories/list' },
+                          { text: 'Detail', link: '/api/rest-api/admin/settings/tax-categories/detail' },
+                          { text: 'Create', link: '/api/rest-api/admin/settings/tax-categories/create' },
+                          { text: 'Update', link: '/api/rest-api/admin/settings/tax-categories/update' },
+                          { text: 'Delete', link: '/api/rest-api/admin/settings/tax-categories/delete' },
+                        ]
+                      },
+                      {
+                        text: 'Tax Rates',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/rest-api/admin/settings/tax-rates/list' },
+                          { text: 'Detail', link: '/api/rest-api/admin/settings/tax-rates/detail' },
+                          { text: 'Create', link: '/api/rest-api/admin/settings/tax-rates/create' },
+                          { text: 'Update', link: '/api/rest-api/admin/settings/tax-rates/update' },
+                          { text: 'Delete', link: '/api/rest-api/admin/settings/tax-rates/delete' },
+                        ]
+                      },
+                      {
+                        text: 'Data Transfer Imports',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/rest-api/admin/settings/data-transfer-imports/list' },
+                          { text: 'Detail', link: '/api/rest-api/admin/settings/data-transfer-imports/detail' },
+                          { text: 'Create (deferred)', link: '/api/rest-api/admin/settings/data-transfer-imports/create' },
+                          { text: 'Delete', link: '/api/rest-api/admin/settings/data-transfer-imports/delete' },
+                          { text: 'Cancel', link: '/api/rest-api/admin/settings/data-transfer-imports/cancel' },
                         ]
                       }
                     ]
