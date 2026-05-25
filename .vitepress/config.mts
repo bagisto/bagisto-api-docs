@@ -1000,6 +1000,15 @@ export default defineConfig(({ command, mode }) => {
                         ]
                       },
                     ]
+                  },
+                  {
+                    text: 'Configuration',
+                    collapsed: true,
+                    items: [
+                      { text: 'Menu', link: '/api/graphql-api/admin/configuration/menu' },
+                      { text: 'Values', link: '/api/graphql-api/admin/configuration/values' },
+                      { text: 'Update', link: '/api/graphql-api/admin/configuration/update' },
+                    ]
                   }
                 ]
               },
@@ -1714,6 +1723,15 @@ export default defineConfig(({ command, mode }) => {
                           },
                         ]
                       },
+                    ]
+                  },
+                  {
+                    text: 'Configuration',
+                    collapsed: true,
+                    items: [
+                      { text: 'Menu', link: '/api/rest-api/admin/configuration/menu' },
+                      { text: 'Values', link: '/api/rest-api/admin/configuration/values' },
+                      { text: 'Update', link: '/api/rest-api/admin/configuration/update' },
                     ]
                   }
                 ]
