@@ -5,15 +5,16 @@ examples:
     title: Delete a Customer-Group Price
     description: Deletes a single tier-price row.
     query: |
-      mutation DeleteCGP($input: deleteAdminCatalogProductCustomerGroupPriceInput!, $productId: Int!) {
-        deleteAdminCatalogProductCustomerGroupPrice(input: $input, productId: $productId) {
-          adminCatalogProductCustomerGroupPrice { id }
+      mutation DeleteCGP($input: deleteAdminCatalogProductCustomerGroupPriceInput!) {
+        deleteAdminCatalogProductCustomerGroupPrice(input: $input) {
+          adminCatalogProductCustomerGroupPrice { id success message }
         }
       }
     variables: |
       {
-        "productId": 1,
-        "input": { "id": "/api/admin/catalog_product_customer_group_prices/12" }
+        "input": {
+          "id": "/api/admin/catalog/products/1/customer-group-prices/12"
+        }
       }
     response: |
       {

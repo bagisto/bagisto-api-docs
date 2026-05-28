@@ -24,3 +24,7 @@ Runs `Webkul\Sitemap\Jobs\ProcessSitemap` via `dispatchSync` — the response ca
 :::
 
 Permission: `marketing.search_seo.sitemaps.edit`.
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a sitemap that exists in your store — use the [`adminMarketingSitemaps`](./sitemaps-list.md) query to discover valid ids.
+:::

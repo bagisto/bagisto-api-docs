@@ -5,23 +5,20 @@ examples:
     title: List Order Comments
     description: Cursor-paginated list of an order's comments, newest first.
     query: |
-      query ListOrderComments($orderId: ID!) {
-        adminOrderComments(orderId: $orderId, first: 10) {
+      query ListOrderComments($first: Int) {
+        adminOrderComments(first: $first) {
           edges {
             node {
               id
-              comment
-              customerNotified
-              createdAt
             }
-            cursor
           }
           pageInfo { hasNextPage endCursor }
+          totalCount
         }
       }
     variables: |
       {
-        "orderId": 2392
+        "first": 10
       }
     response: |
       {

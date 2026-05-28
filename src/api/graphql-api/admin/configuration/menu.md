@@ -5,7 +5,7 @@ examples:
     title: Configuration Menu (schema)
     query: |
       query AdminConfigurationMenu($slug: String, $includeValues: Boolean, $channel: String, $locale: String) {
-        adminConfigurationMenu(slug: $slug, include_values: $includeValues, channel: $channel, locale: $locale) {
+        menuAdminConfigurationMenu(slug: $slug, includeValues: $includeValues, channel: $channel, locale: $locale) {
           slug
           tree
         }
@@ -13,7 +13,7 @@ examples:
     variables: |
       { "slug": "sales.order_settings", "includeValues": false }
     response: |
-      { "data": { "adminConfigurationMenu": { "slug": "sales.order_settings", "tree": [{ "key": "sales", "name": "Sales", "children": [{ "key": "sales.order_settings", "name": "Order Settings", "children": [{ "key": "sales.order_settings.reorder", "name": "Reorder", "fields": [{ "name": "admin", "code": "sales.order_settings.reorder.admin", "title": "Allow Reorder (Admin)", "type": "boolean", "default": "1", "channelBased": false, "localeBased": false, "validation": null, "options": null, "depends": null, "info": null }, { "name": "shop", "code": "sales.order_settings.reorder.shop", "title": "Allow Reorder (Storefront)", "type": "boolean", "default": "1", "channelBased": false, "localeBased": false, "validation": null, "options": null, "depends": null, "info": null }] }] }] }] } } }
+      { "data": { "menuAdminConfigurationMenu": { "slug": "sales.order_settings", "tree": [{ "key": "sales", "name": "Sales", "children": [{ "key": "sales.order_settings", "name": "Order Settings", "children": [{ "key": "sales.order_settings.reorder", "name": "Reorder", "fields": [{ "name": "admin", "code": "sales.order_settings.reorder.admin", "title": "Allow Reorder (Admin)", "type": "boolean", "default": "1", "channelBased": false, "localeBased": false, "validation": null, "options": null, "depends": null, "info": null }, { "name": "shop", "code": "sales.order_settings.reorder.shop", "title": "Allow Reorder (Storefront)", "type": "boolean", "default": "1", "channelBased": false, "localeBased": false, "validation": null, "options": null, "depends": null, "info": null }] }] }] }] } } }
 ---
 
 # Configuration Menu (GraphQL)

@@ -10,7 +10,7 @@ examples:
         }
       }
     variables: |
-      { "input": { "id": "/api/admin/marketing/subscribers/1", "is_subscribed": false } }
+      { "input": { "id": "/api/admin/marketing/subscribers/1", "isSubscribed": false } }
     response: |
       { "data": { "updateAdminMarketingSubscriber": { "adminMarketingSubscriber": { "id": "/api/admin/marketing/subscribers/1", "_id": 1, "isSubscribed": false } } } }
 ---

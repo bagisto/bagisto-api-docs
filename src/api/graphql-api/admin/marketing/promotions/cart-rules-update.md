@@ -10,7 +10,7 @@ examples:
         }
       }
     variables: |
-      { "input": { "id": "/api/admin/marketing/cart-rules/1", "name": "15% off summer", "discount_amount": 15 } }
+      { "input": { "id": "/api/admin/marketing/cart-rules/1", "name": "15% off summer", "discountAmount": 15 } }
     response: |
       { "data": { "updateAdminMarketingCartRule": { "adminMarketingCartRule": { "id": "/api/admin/marketing/cart-rules/1", "_id": 1, "name": "15% off summer", "discountAmount": 15 } } } }
 ---

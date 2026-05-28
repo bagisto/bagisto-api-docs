@@ -12,7 +12,7 @@ examples:
         $status: Int
         $rootId: Int
       ) {
-        adminCatalogCategoryTrees(
+        adminCategoryTrees(
           first: $first
           after: $after
           locale: $locale
@@ -51,7 +51,7 @@ examples:
     response: |
       {
         "data": {
-          "adminCatalogCategoryTrees": {
+          "adminCategoryTrees": {
             "edges": [
               {
                 "cursor": "MA==",

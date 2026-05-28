@@ -5,7 +5,7 @@ examples:
     title: Configuration Values
     query: |
       query AdminConfigurationValues($slug: String!, $channel: String, $locale: String) {
-        adminConfigurationValues(slug: $slug, channel: $channel, locale: $locale) {
+        valuesAdminConfigurationValues(slug: $slug, channel: $channel, locale: $locale) {
           slug
           channel
           locale
@@ -15,7 +15,7 @@ examples:
     variables: |
       { "slug": "sales.order_settings", "channel": "default", "locale": "en" }
     response: |
-      { "data": { "adminConfigurationValues": { "slug": "sales.order_settings", "channel": "default", "locale": "en", "values": { "sales.order_settings.reorder.admin": "1", "sales.order_settings.reorder.shop": "1", "sales.order_settings.minimum_order.enable": "0" } } } }
+      { "data": { "valuesAdminConfigurationValues": { "slug": "sales.order_settings", "channel": "default", "locale": "en", "values": { "sales.order_settings.reorder.admin": "1", "sales.order_settings.reorder.shop": "1", "sales.order_settings.minimum_order.enable": "0" } } } }
 ---
 
 # Configuration Values (GraphQL)

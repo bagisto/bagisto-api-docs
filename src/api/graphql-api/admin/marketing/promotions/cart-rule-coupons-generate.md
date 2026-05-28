@@ -10,7 +10,7 @@ examples:
         }
       }
     variables: |
-      { "input": { "cartRuleId": 1, "length": 10, "format": "alphanumeric", "prefix": "SAVE-", "suffix": "-2026", "coupon_qty": 5 } }
+      { "input": { "cartRuleId": 1, "length": 10, "format": "alphanumeric", "prefix": "SAVE-", "suffix": "-2026", "couponQty": 5 } }
     response: |
       { "data": { "createAdminMarketingCartRuleCouponGenerate": { "adminMarketingCartRuleCouponGenerate": { "cartRuleId": 1, "generated": 5, "success": true, "message": "Generated 5 coupons." } } } }
 ---

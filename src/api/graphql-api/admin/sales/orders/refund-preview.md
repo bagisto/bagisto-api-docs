@@ -9,14 +9,6 @@ examples:
         previewAdminRefund(input: $input) {
           adminRefund {
             id
-            subtotal
-            formattedSubtotal
-            tax
-            formattedTax
-            shipping
-            formattedShipping
-            grandTotal
-            formattedGrandTotal
           }
         }
       }

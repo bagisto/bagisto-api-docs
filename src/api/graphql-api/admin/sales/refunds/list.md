@@ -9,24 +9,22 @@ examples:
         adminRefunds(first: $first, after: $after) {
           edges {
             cursor
-            node { id _id orderId orderIncrementId state baseGrandTotal formattedBaseGrandTotal billedTo createdAt }
+            node {
+              id
+              _id
+            }
           }
           pageInfo { hasNextPage endCursor }
           totalCount
         }
       }
     variables: |
-      { "first": 10 }
-    response: |
       {
-        "data": {
-          "adminRefunds": {
-            "edges": [{ "cursor": "MA==", "node": { "id": "/api/admin/refunds/3", "_id": 3, "orderId": 8, "orderIncrementId": "00000000008", "state": "refunded", "baseGrandTotal": 49.5, "formattedBaseGrandTotal": "$49.50", "billedTo": "John Doe", "createdAt": "2026-05-20 14:00:00" } }],
-            "pageInfo": { "hasNextPage": false, "endCursor": "MA==" },
-            "totalCount": 1
-          }
-        }
+        "first": 10
       }
+    response: |
+      { "data": { "adminRefunds": { "edges": [ { "cursor": "MA==", "node": { "id": "/api/admin/refunds/1", "_id": 1 } } ], "pageInfo": { "hasNextPage": false, "endCursor": "MA==" }, "totalCount": 1 } } }
+
 ---
 
 # List Refunds (Datagrid)

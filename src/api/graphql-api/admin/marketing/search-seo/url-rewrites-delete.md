@@ -18,3 +18,7 @@ examples:
 # Delete URL Rewrite (GraphQL)
 
 Mutation: `deleteAdminMarketingUrlRewrite`.
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a URL rewrite that exists in your store — use the [`adminMarketingUrlRewrites`](./url-rewrites-list.md) query to discover valid ids.
+:::

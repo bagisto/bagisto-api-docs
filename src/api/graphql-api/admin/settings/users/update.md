@@ -14,3 +14,7 @@ examples:
 ---
 
 # Update Admin User (GraphQL)
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a user that exists in your store — use the [`adminSettingsUsers`](./list.md) query to discover valid ids.
+:::

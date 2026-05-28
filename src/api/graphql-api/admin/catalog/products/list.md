@@ -5,8 +5,8 @@ examples:
     title: List / Search Products (Admin)
     description: Paginated cursor-based product search for the admin Create-Order "Add Product" modal. Returns ALL statuses by default (admin sees disabled / draft products too). Booking products ARE listed but blocked when added to an admin draft cart.
     query: |
-      query AdminProducts($first: Int, $after: String, $query: String, $type: String) {
-        adminProducts(first: $first, after: $after, query: $query, type: $type) {
+      query AdminProducts($first: Int, $after: String, $type: String, $sku: String) {
+        adminProducts(first: $first, after: $after, type: $type, sku: $sku) {
           edges {
             cursor
             node {
@@ -22,14 +22,13 @@ examples:
               isSaleable
             }
           }
-          pageInfo { hasNextPage hasPreviousPage endCursor startCursor }
+          pageInfo { hasNextPage endCursor }
           totalCount
         }
       }
     variables: |
       {
         "first": 30,
-        "query": "watch",
         "type": "simple"
       }
     response: |

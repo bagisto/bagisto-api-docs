@@ -14,3 +14,7 @@ examples:
 ---
 
 # Delete Tax Rate (GraphQL)
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a tax rate that exists in your store — use the [`adminSettingsTaxRates`](./list.md) query to discover valid ids.
+:::

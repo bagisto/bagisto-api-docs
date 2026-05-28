@@ -16,20 +16,20 @@ examples:
           "id": "/api/admin/attribute_families/4",
           "code": "electronics",
           "name": "Electronics (updated)",
-          "attribute_groups": {
+          "attributeGroups": {
             "11": {
               "code": "general",
               "name": "General",
               "column": 1,
               "position": 1,
-              "custom_attributes": [ { "id": 1, "position": 1 } ]
+              "customAttributes": [ { "id": 1, "position": 1 } ]
             },
             "group_new_1": {
               "code": "pricing",
               "name": "Pricing",
               "column": 2,
               "position": 2,
-              "custom_attributes": [ { "id": 11, "position": 1 } ]
+              "customAttributes": [ { "id": 11, "position": 1 } ]
             }
           }
         }

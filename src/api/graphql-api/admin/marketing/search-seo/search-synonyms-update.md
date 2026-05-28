@@ -18,3 +18,7 @@ examples:
 # Update Search Synonym (GraphQL)
 
 Mutation: `updateAdminMarketingSearchSynonym`.
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a search synonym that exists in your store — use the [`adminMarketingSearchSynonyms`](./search-synonyms-list.md) query to discover valid ids.
+:::

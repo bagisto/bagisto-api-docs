@@ -8,7 +8,7 @@ examples:
         createAdminSettingsTaxRate(input: $input) { adminSettingsTaxRate { id _id identifier taxRate } }
       }
     variables: |
-      { "input": { "identifier": "us-il-7", "tax_rate": 7.25, "country": "US", "state": "IL", "is_zip": false, "zip_code": "62704" } }
+      { "input": { "identifier": "us-il-7", "taxRate": 7.25, "country": "US", "state": "IL", "isZip": false, "zipCode": "62704" } }
     response: |
       { "data": { "createAdminSettingsTaxRate": { "adminSettingsTaxRate": { "id": "/api/admin/settings/tax-rates/1", "_id": 1, "identifier": "us-il-7", "taxRate": 7.25 } } } }
 ---

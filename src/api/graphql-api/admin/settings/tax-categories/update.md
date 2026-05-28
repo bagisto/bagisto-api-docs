@@ -14,3 +14,7 @@ examples:
 ---
 
 # Update Tax Category (GraphQL)
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a tax category that exists in your store — use the [`adminSettingsTaxCategories`](./list.md) query to discover valid ids.
+:::

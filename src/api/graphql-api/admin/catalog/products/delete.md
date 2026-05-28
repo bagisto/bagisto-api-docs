@@ -28,6 +28,10 @@ examples:
 
 Equivalent to [`DELETE /api/admin/catalog/products/{id}`](/api/rest-api/admin/catalog/products/delete).
 
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a product that exists in your store — use the [`adminCatalogProducts`](./list.md) query to discover valid ids.
+:::
+
 ## Operation
 
 | Operation | Type |

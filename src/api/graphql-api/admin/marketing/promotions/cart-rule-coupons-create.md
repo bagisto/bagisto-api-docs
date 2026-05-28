@@ -10,7 +10,7 @@ examples:
         }
       }
     variables: |
-      { "input": { "cartRuleId": 1, "code": "WELCOME10", "usage_limit": 100, "usage_per_customer": 1, "expired_at": "2027-12-31" } }
+      { "input": { "cartRuleId": 1, "code": "WELCOME10", "usageLimit": 100, "usagePerCustomer": 1, "expiredAt": "2027-12-31" } }
     response: |
       { "data": { "createAdminMarketingCartRuleCoupon": { "adminMarketingCartRuleCoupon": { "id": "/api/admin/marketing/cart-rule-coupons/12", "_id": 12, "cartRuleId": 1, "code": "WELCOME10", "usageLimit": 100 } } } }
 ---

@@ -11,7 +11,12 @@ examples:
         }
       }
     variables: |
-      { "input": { "requestId": 1, "message": "Approved on customer request" } }
+      {
+        "input": {
+          "requestId": "1",
+          "message": "Approved on customer request"
+        }
+      }
     response: |
       { "data": { "createAdminCustomerGdprProcess": { "adminCustomerGdprProcess": { "requestId": 1, "customerId": 14, "type": "delete", "status": "approved", "customerDeleted": true, "processedAt": "2026-05-25 10:30:00", "message": "GDPR request approved and processed." } } } }
 ---

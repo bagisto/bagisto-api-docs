@@ -5,55 +5,13 @@ examples:
     title: Get All Orders
     description: Retrieve all orders from the admin panel with pagination.
     query: |
-      query getOrders($first: Int, $after: String) {
-        orders(first: $first, after: $after) {
-          edges {
-            node {
-              id
-              orderNumber
-              status
-              total
-              customerEmail
-              createdAt
-            }
-          }
-          pageInfo {
-            hasNextPage
-            endCursor
-          }
-        }
-      }
+      # This page documents a legacy Shop GraphQL stub; the actual Admin API
+      # query is `adminOrders`. See: ./sales/orders/list.md
     variables: |
-      {
-        "first": 10
-      }
+      {}
     response: |
-      {
-        "data": {
-          "orders": {
-            "edges": [
-              {
-                "node": {
-                  "id": "1",
-                  "orderNumber": "100001",
-                  "status": "pending",
-                  "total": 199.99,
-                  "customerEmail": "customer@example.com",
-                  "createdAt": "2025-01-01T12:00:00Z"
-                }
-              }
-            ],
-            "pageInfo": {
-              "hasNextPage": true,
-              "endCursor": "YXJyYXljb25uZWN0aW9uOjEw"
-            }
-          }
-        }
-      }
-    commonErrors:
-      - error: UNAUTHORIZED
-        cause: Admin authentication required
-        solution: Provide valid admin credentials
+      {}
+
 ---
 
 # Orders

@@ -39,6 +39,10 @@ emits a non-fatal `errors[]` entry; the mutation itself runs successfully.
 Verify the resulting state with a follow-up REST GET. For mutation payloads
 with full cart fields, use the REST endpoint.
 
+::: tip Prerequisites
+The example uses an illustrative cart id. Admin cart endpoints only operate on **draft carts** (`is_active=0`) — storefront carts are rejected by the admin cart guard. Create a draft cart first with the [`createAdminDraftCart`](../../customers/create-draft-cart.md) mutation and use the returned `cartId`.
+:::
+
 ## Operation
 
 | Operation | Type |

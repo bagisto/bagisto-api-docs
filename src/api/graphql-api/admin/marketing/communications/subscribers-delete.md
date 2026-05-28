@@ -18,3 +18,7 @@ examples:
 # Delete Subscription (GraphQL)
 
 Mutation: `deleteAdminMarketingSubscriber`.
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a subscriber that exists in your store — use the [`adminMarketingSubscribers`](./subscribers-list.md) query to discover valid ids.
+:::

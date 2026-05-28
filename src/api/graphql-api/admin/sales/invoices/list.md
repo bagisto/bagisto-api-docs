@@ -5,53 +5,26 @@ examples:
     title: List Invoices (Datagrid)
     description: Cursor-paginated invoices datagrid listing.
     query: |
-      query AdminInvoices($first: Int, $after: String, $state: String) {
-        adminInvoices(first: $first, after: $after, state: $state) {
+      query AdminInvoices($first: Int, $after: String) {
+        adminInvoices(first: $first, after: $after) {
           edges {
             cursor
             node {
               id
               _id
-              incrementId
-              orderId
-              orderIncrementId
-              state
-              baseGrandTotal
-              formattedBaseGrandTotal
-              createdAt
             }
           }
-          pageInfo { hasNextPage hasPreviousPage endCursor startCursor }
+          pageInfo { hasNextPage endCursor }
           totalCount
         }
       }
     variables: |
-      { "first": 10, "state": "paid" }
-    response: |
       {
-        "data": {
-          "adminInvoices": {
-            "edges": [
-              {
-                "cursor": "MA==",
-                "node": {
-                  "id": "/api/admin/invoices/12",
-                  "_id": 12,
-                  "incrementId": "12",
-                  "orderId": 8,
-                  "orderIncrementId": "00000000008",
-                  "state": "paid",
-                  "baseGrandTotal": 99.99,
-                  "formattedBaseGrandTotal": "$99.99",
-                  "createdAt": "2026-05-20 12:34:56"
-                }
-              }
-            ],
-            "pageInfo": { "hasNextPage": false, "hasPreviousPage": false, "endCursor": "MA==", "startCursor": "MA==" },
-            "totalCount": 1
-          }
-        }
+        "first": 10
       }
+    response: |
+      { "data": { "adminInvoices": { "edges": [ { "cursor": "MA==", "node": { "id": "/api/admin/invoices/1", "_id": 1 } } ], "pageInfo": { "hasNextPage": false, "endCursor": "MA==" }, "totalCount": 1 } } }
+
 ---
 
 # List Invoices (Datagrid)

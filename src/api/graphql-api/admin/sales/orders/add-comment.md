@@ -9,9 +9,6 @@ examples:
         createAdminOrderComment(input: $input) {
           adminOrderComment {
             id
-            comment
-            customerNotified
-            createdAt
           }
         }
       }

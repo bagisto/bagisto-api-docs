@@ -18,3 +18,7 @@ examples:
 # Update Email Template (GraphQL)
 
 Mutation: `updateAdminMarketingTemplate`.
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a email template that exists in your store — use the [`adminMarketingTemplates`](./templates-list.md) query to discover valid ids.
+:::

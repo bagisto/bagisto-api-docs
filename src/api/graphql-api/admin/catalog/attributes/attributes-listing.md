@@ -9,14 +9,14 @@ examples:
         $first: Int
         $after: String
         $type: String
-        $is_configurable: Int
+        $isConfigurable: Int
         $locale: String
       ) {
         adminCatalogAdminAttributes(
           first: $first
           after: $after
           type: $type
-          is_configurable: $is_configurable
+          isConfigurable: $isConfigurable
           locale: $locale
         ) {
           edges {
@@ -55,7 +55,7 @@ examples:
       {
         "first": 10,
         "type": "select",
-        "is_configurable": 1,
+        "isConfigurable": 1,
         "locale": "en"
       }
     response: |

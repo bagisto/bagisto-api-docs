@@ -14,7 +14,7 @@ examples:
       {
         "input": {
           "sku": "sp-001",
-          "attribute_family_id": 1,
+          "attributeFamilyId": 1,
           "type": "simple"
         }
       }

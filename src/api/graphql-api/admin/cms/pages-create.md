@@ -13,9 +13,9 @@ examples:
     variables: |
       {
         "input": {
-          "url_key": "about-us",
-          "page_title": "About Us",
-          "html_content": "<h1>About Us</h1>",
+          "urlKey": "about-us",
+          "pageTitle": "About Us",
+          "htmlContent": "<h1>About Us</h1>",
           "channels": [1]
         }
       }

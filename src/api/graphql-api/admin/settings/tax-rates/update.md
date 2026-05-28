@@ -8,7 +8,7 @@ examples:
         updateAdminSettingsTaxRate(input: $input) { adminSettingsTaxRate { id _id taxRate } }
       }
     variables: |
-      { "input": { "id": "/api/admin/settings/tax-rates/1", "tax_rate": 7.5 } }
+      { "input": { "id": "/api/admin/settings/tax-rates/1", "taxRate": 7.5 } }
     response: |
       { "data": { "updateAdminSettingsTaxRate": { "adminSettingsTaxRate": { "id": "/api/admin/settings/tax-rates/1", "_id": 1, "taxRate": 7.5 } } } }
 ---

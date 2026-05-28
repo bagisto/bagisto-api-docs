@@ -18,8 +18,8 @@ examples:
           "description": "Men's and women's apparel",
           "position": 1,
           "attributes": [11, 23],
-          "parent_id": 1,
-          "display_mode": "products_and_description",
+          "parentId": 1,
+          "displayMode": "products_and_description",
           "status": 1,
           "locale": "en"
         }

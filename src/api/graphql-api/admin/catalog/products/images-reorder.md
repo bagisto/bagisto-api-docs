@@ -13,10 +13,11 @@ examples:
     variables: |
       {
         "input": {
+          "id": "/api/admin/catalog/products/12/images/reorder",
           "productId": 12,
           "order": [
-            { "id": 47, "position": 2 },
-            { "id": 48, "position": 1 }
+            {"id": 47, "position": 2},
+            {"id": 48, "position": 1}
           ]
         }
       }

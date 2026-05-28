@@ -16,3 +16,7 @@ examples:
 # Update Channel (GraphQL)
 
 Use the `translations` map for locale-nested attributes. Top-level scalars broadcast to every locale.
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a channel that exists in your store — use the [`adminSettingsChannels`](./list.md) query to discover valid ids.
+:::

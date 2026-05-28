@@ -13,7 +13,7 @@ examples:
     variables: |
       {
         "productId": 1,
-        "input": { "qty": 10, "value_type": "discount", "value": 15.0, "customer_group_id": 2 }
+        "input": { "qty": 10, "valueType": "discount", "value": 15.0, "customerGroupId": 2 }
       }
     response: |
       {

@@ -29,6 +29,10 @@ examples:
 Deletes a category. Equivalent to
 [`DELETE /api/admin/catalog/categories/{id}`](/api/rest-api/admin/catalog/categories/categories-delete).
 
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a category that exists in your store — use the [`adminCatalogCategories`](./categories-listing.md) query to discover valid ids.
+:::
+
 ## Operation
 
 | Operation | Type | Purpose |

@@ -29,6 +29,10 @@ examples:
 Deletes a user-defined attribute. Equivalent to
 [`DELETE /api/admin/catalog/attributes/{id}`](/api/rest-api/admin/catalog/attributes/attributes-delete).
 
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a attribute that exists in your store — use the [`adminAttributes`](./attributes-listing.md) query to discover valid ids.
+:::
+
 ## Operation
 
 | Operation | Type | Purpose |

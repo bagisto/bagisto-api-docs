@@ -18,3 +18,7 @@ examples:
 # Delete Cart Rule Coupon (GraphQL)
 
 Mutation: `deleteAdminMarketingCartRuleCoupon`.
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a cart rule coupon that exists in your store — use the [`adminMarketingCartRuleCoupons`](./cart-rule-coupons-list.md) query to discover valid ids.
+:::

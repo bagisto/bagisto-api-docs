@@ -17,7 +17,7 @@ examples:
           "locale": "en",
           "position": 2,
           "attributes": [11, 23],
-          "parent_id": 1,
+          "parentId": 1,
           "status": 1,
           "en": {
             "slug": "apparel",

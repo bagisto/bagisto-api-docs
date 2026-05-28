@@ -5,102 +5,41 @@ examples:
     title: Admin Login
     description: Authenticate an admin user with email and password. Returns a Bearer token used for all subsequent Admin API calls.
     query: |
-      mutation createAdminLogin(
-        $email: String!
-        $password: String!
-      ) {
-        createAdminLogin(
-          input: {
-            email: $email
-            password: $password
-          }
-        ) {
-          adminLogin {
-            id
-            name
-            email
-            token
-            success
-            message
-          }
-        }
-      }
+      # This endpoint was removed in the 2026-05-27 admin-auth refactor.
+      # Admin clients now authenticate with a pre-issued Integration token
+      # (Admin → Settings → Integration in the panel).
+      # See ./profile/get-profile.md for the only surviving auth-related call.
     variables: |
-      {
-          "email": "admin@example.com",
-          "password": "admin123"
-      }
+      {}
     response: |
-      {
-        "data": {
-          "createAdminLogin": {
-            "adminLogin": {
-              "id": 1,
-              "name": "Example Admin",
-              "email": "admin@example.com",
-              "token": "12|xY7s06JCndg5FHb8WbfF6ZR8jGq23168m9gm37J9Cmz4xah8...",
-              "success": true,
-              "message": "Logged in successfully."
-            }
-          }
-        }
-      }
+      {}
 
   - id: admin-logout
     title: Admin Logout
     description: Revoke the current admin Bearer token. Pass all = true to revoke every token for the admin (logout from all devices).
     query: |
-      mutation createAdminLogout($all: Boolean) {
-        createAdminLogout(input: { all: $all }) {
-          adminLogout {
-            success
-            message
-          }
-        }
-      }
+      # This endpoint was removed in the 2026-05-27 admin-auth refactor.
+      # Admin clients now authenticate with a pre-issued Integration token
+      # (Admin → Settings → Integration in the panel).
+      # See ./profile/get-profile.md for the only surviving auth-related call.
     variables: |
-      {
-          "all": false
-      }
+      {}
     response: |
-      {
-        "data": {
-          "createAdminLogout": {
-            "adminLogout": {
-              "success": true,
-              "message": "Logged out successfully."
-            }
-          }
-        }
-      }
+      {}
 
   - id: admin-forgot-password
     title: Admin Forgot Password
     description: Send a password reset link to the given admin email if the account exists.
     query: |
-      mutation createAdminForgotPassword($email: String!) {
-        createAdminForgotPassword(input: { email: $email }) {
-          adminForgotPassword {
-            success
-            message
-          }
-        }
-      }
+      # This endpoint was removed in the 2026-05-27 admin-auth refactor.
+      # Admin clients now authenticate with a pre-issued Integration token
+      # (Admin → Settings → Integration in the panel).
+      # See ./profile/get-profile.md for the only surviving auth-related call.
     variables: |
-      {
-          "email": "admin@example.com"
-      }
+      {}
     response: |
-      {
-        "data": {
-          "createAdminForgotPassword": {
-            "adminForgotPassword": {
-              "success": true,
-              "message": "A password reset link has been sent to your email."
-            }
-          }
-        }
-      }
+      {}
+
 ---
 
 # Admin Authentication

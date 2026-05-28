@@ -12,7 +12,9 @@ examples:
       }
     variables: |
       {
-        "input": { "productId": 12, "id": "/api/admin/catalog_product_images/47" }
+        "input": {
+          "id": "/api/admin/catalog/products/12/images/47"
+        }
       }
     response: |
       {

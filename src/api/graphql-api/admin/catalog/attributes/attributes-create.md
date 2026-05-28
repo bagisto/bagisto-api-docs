@@ -14,12 +14,12 @@ examples:
       {
         "input": {
           "code": "material",
-          "admin_name": "Material",
+          "adminName": "Material",
           "type": "select",
-          "is_filterable": true,
+          "isFilterable": true,
           "translations": { "en": { "name": "Material" }, "fr": { "name": "Matière" } },
           "options": [
-            { "admin_name": "Cotton", "sort_order": 1, "translations": { "en": { "label": "Cotton" } } }
+            { "adminName": "Cotton", "sortOrder": 1, "translations": { "en": { "label": "Cotton" } } }
           ]
         }
       }

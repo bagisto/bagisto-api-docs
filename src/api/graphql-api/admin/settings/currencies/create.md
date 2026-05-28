@@ -16,3 +16,7 @@ examples:
 # Create Currency (GraphQL)
 
 Permission: `settings.currencies.create`.
+
+::: tip Prerequisites
+The example uses currency code `USD` — if that currency already exists in your store, the mutation returns *"The code has already been taken."* Either delete the existing currency first or use a different 3-letter ISO code.
+:::

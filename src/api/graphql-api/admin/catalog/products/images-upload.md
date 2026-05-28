@@ -5,13 +5,19 @@ examples:
     title: Upload a Product Image (REST only)
     description: GraphQL upload is NOT supported — binary file parts are not transportable over JSON GraphQL. Use the REST endpoint.
     query: |
-      # Use the REST endpoint:
-      curl -X POST "https://your-domain.com/api/admin/catalog/products/12/images" \
-        -H "Authorization: Bearer <token>" \
-        -F "image=@/path/to/photo.webp"
+      # Image upload is REST-only — binary uploads are not transportable
+      # over JSON GraphQL. Use the REST endpoint:
+      #
+      #   POST /api/admin/catalog/products/{productId}/images
+      #   Content-Type: multipart/form-data
+      #   Body:        image=<binary>; position=<optional int>
+      #
+      # Example curl:
+      #   curl -X POST "https://your-domain.com/api/admin/catalog/products/12/images" \
+      #        -H "Authorization: Bearer <token>" \
+      #        -F "image=@/path/to/photo.webp"
     variables: |
-      multipart/form-data:
-        image: <binary>
+      {}
     response: |
       <REST 201 — see REST docs>
 ---

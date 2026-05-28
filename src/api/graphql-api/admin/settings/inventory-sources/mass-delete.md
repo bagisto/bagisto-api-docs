@@ -5,7 +5,6 @@ examples:
     title: Mass Delete Inventory Sources
     query: |
       mutation MassDelete($input: createAdminSettingsInventorySourceMassDeleteInput!) {
-        createAdminSettingsInventorySourceMassDelete(input: $input) { adminSettingsInventorySourceMassDelete { deleted skipped message } }
       }
     variables: |
       { "input": { "indices": [3, 4] } }

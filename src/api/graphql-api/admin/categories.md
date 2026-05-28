@@ -5,53 +5,13 @@ examples:
     title: Get All Categories (Admin)
     description: Retrieve all categories from the admin panel.
     query: |
-      query getCategories($first: Int, $after: String) {
-        categories(first: $first, after: $after) {
-          edges {
-            node {
-              id
-              name
-              slug
-              description
-              status
-            }
-          }
-          pageInfo {
-            hasNextPage
-            endCursor
-          }
-        }
-      }
+      # This page documents a legacy Shop GraphQL stub; the actual Admin API
+      # query is `adminCategories`. See: ./catalog/categories/categories-listing.md
     variables: |
-      {
-        "first": 10
-      }
+      {}
     response: |
-      {
-        "data": {
-          "categories": {
-            "edges": [
-              {
-                "node": {
-                  "id": "1",
-                  "name": "Electronics",
-                  "slug": "electronics",
-                  "description": "Electronic products",
-                  "status": "active"
-                }
-              }
-            ],
-            "pageInfo": {
-              "hasNextPage": false,
-              "endCursor": null
-            }
-          }
-        }
-      }
-    commonErrors:
-      - error: UNAUTHORIZED
-        cause: Admin authentication required
-        solution: Provide valid admin credentials
+      {}
+
 ---
 
 # Categories

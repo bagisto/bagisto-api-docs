@@ -18,3 +18,7 @@ examples:
 # Delete Catalog Rule (GraphQL)
 
 Mutation: `deleteAdminMarketingCatalogRule`.
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a catalog rule that exists in your store — use the [`adminMarketingCatalogRules`](./catalog-rules-list.md) query to discover valid ids.
+:::

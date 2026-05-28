@@ -6,7 +6,7 @@ examples:
     description: Fetch a single category by ID including the full translations array (all locales present in the DB) and the list of filterable attribute IDs.
     query: |
       query AdminCatalogCategory($id: ID!) {
-        adminCatalogCategory(id: $id) {
+        adminCategory(id: $id) {
           id
           _id
           name
@@ -27,13 +27,13 @@ examples:
       }
     variables: |
       {
-        "id": "/api/admin/admin_categories/7"
+        "id": "/api/admin/categories/7"
       }
     response: |
       {
         "data": {
-          "adminCatalogCategory": {
-            "id": "/api/admin/admin_categories/7",
+          "adminCategory": {
+            "id": "/api/admin/categories/7",
             "_id": 7,
             "name": "Apparel",
             "slug": "apparel",

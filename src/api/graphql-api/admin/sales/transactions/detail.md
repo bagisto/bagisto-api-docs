@@ -7,7 +7,8 @@ examples:
     query: |
       query AdminTransaction($id: ID!) {
         adminTransaction(id: $id) {
-          id _id
+          id
+          _id
           transactionId
           invoiceId
           orderId
@@ -16,8 +17,7 @@ examples:
           type
           paymentMethod
           data
-          order { id incrementId status grandTotal orderCurrencyCode customerEmail }
-          createdAt
+          order
         }
       }
     variables: |

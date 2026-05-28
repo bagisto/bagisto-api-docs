@@ -15,9 +15,9 @@ examples:
         "input": {
           "id": "/api/admin/attributes/50",
           "code": "material",
-          "admin_name": "Material (updated)",
+          "adminName": "Material (updated)",
           "type": "select",
-          "is_filterable": true,
+          "isFilterable": true,
           "translations": { "en": { "name": "Material (updated)" } }
         }
       }

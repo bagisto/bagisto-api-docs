@@ -9,24 +9,22 @@ examples:
         adminShipments(first: $first, after: $after) {
           edges {
             cursor
-            node { id _id orderId orderIncrementId totalQty inventorySourceName shippedTo orderDate createdAt }
+            node {
+              id
+              _id
+            }
           }
           pageInfo { hasNextPage endCursor }
           totalCount
         }
       }
     variables: |
-      { "first": 10 }
-    response: |
       {
-        "data": {
-          "adminShipments": {
-            "edges": [{ "cursor": "MA==", "node": { "id": "/api/admin/shipments/7", "_id": 7, "orderId": 8, "orderIncrementId": "00000000008", "totalQty": 2, "inventorySourceName": "Default", "shippedTo": "John Doe", "orderDate": "2026-05-20 10:00:00", "createdAt": "2026-05-20 12:00:00" } }],
-            "pageInfo": { "hasNextPage": false, "endCursor": "MA==" },
-            "totalCount": 1
-          }
-        }
+        "first": 10
       }
+    response: |
+      { "data": { "adminShipments": { "edges": [ { "cursor": "MA==", "node": { "id": "/api/admin/shipments/1", "_id": 1 } } ], "pageInfo": { "hasNextPage": false, "endCursor": "MA==" }, "totalCount": 1 } } }
+
 ---
 
 # List Shipments (Datagrid)

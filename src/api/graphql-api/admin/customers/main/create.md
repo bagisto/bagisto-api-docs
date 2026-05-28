@@ -13,12 +13,12 @@ examples:
     variables: |
       {
         "input": {
-          "first_name": "Jane",
-          "last_name": "Doe",
+          "firstName": "Jane",
+          "lastName": "Doe",
           "email": "jane@example.com",
-          "customer_group_id": 2,
+          "customerGroupId": 2,
           "status": 1,
-          "send_password": true
+          "sendPassword": true
         }
       }
     response: |

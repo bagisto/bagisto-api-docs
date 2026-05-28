@@ -6,21 +6,25 @@ examples:
     description: Sources with qty=0 are kept but zeroed-out; sources NOT in the payload are left untouched.
     query: |
       mutation UpdateInventories($input: updateAdminCatalogProductInventoryInput!) {
-        updateAdminCatalogProductInventories(input: $input) {
+        updateAdminCatalogProductInventory(input: $input) {
           adminCatalogProductInventory { id sourceId qty }
         }
       }
     variables: |
       {
         "input": {
+          "id": "/api/admin/catalog/products/12/inventories",
           "productId": 12,
-          "inventories": { "1": 25, "2": 0 }
+          "inventories": {
+            "1": 25,
+            "2": 0
+          }
         }
       }
     response: |
       {
         "data": {
-          "updateAdminCatalogProductInventories": {
+          "updateAdminCatalogProductInventory": {
             "adminCatalogProductInventory": { "id": "/api/admin/catalog_product_inventories/14", "sourceId": 1, "qty": 25 }
           }
         }

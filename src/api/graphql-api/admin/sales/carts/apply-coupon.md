@@ -33,6 +33,10 @@ examples:
 GraphQL counterpart of `POST /api/admin/carts/{id}/coupon`. Mutation field is
 `applyCouponAdminCart`.
 
+::: tip Prerequisites
+The example uses an illustrative cart id. Admin cart endpoints only operate on **draft carts** (`is_active=0`) — storefront carts are rejected by the admin cart guard. Create a draft cart first with the [`createAdminDraftCart`](../../customers/create-draft-cart.md) mutation and use the returned `cartId`.
+:::
+
 ## Operation
 
 | Operation | Type |

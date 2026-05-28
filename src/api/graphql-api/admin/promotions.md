@@ -5,57 +5,13 @@ examples:
     title: Get All Promotions
     description: Retrieve all active promotions from the admin panel.
     query: |
-      query getPromotions($first: Int, $after: String) {
-        promotions(first: $first, after: $after) {
-          edges {
-            node {
-              id
-              name
-              description
-              status
-              startDate
-              endDate
-              discountPercentage
-            }
-          }
-          pageInfo {
-            hasNextPage
-            endCursor
-          }
-        }
-      }
+      # This page documents a legacy Shop GraphQL stub; the actual Admin API
+      # query is `adminMarketingCartRules`. See: ./marketing/promotions/cart-rules-list.md
     variables: |
-      {
-        "first": 10
-      }
+      {}
     response: |
-      {
-        "data": {
-          "promotions": {
-            "edges": [
-              {
-                "node": {
-                  "id": "1",
-                  "name": "Summer Sale",
-                  "description": "20% off on all products",
-                  "status": "active",
-                  "startDate": "2025-06-01",
-                  "endDate": "2025-08-31",
-                  "discountPercentage": 20
-                }
-              }
-            ],
-            "pageInfo": {
-              "hasNextPage": false,
-              "endCursor": null
-            }
-          }
-        }
-      }
-    commonErrors:
-      - error: UNAUTHORIZED
-        cause: Admin authentication required
-        solution: Provide valid admin credentials
+      {}
+
 ---
 
 # Promotions

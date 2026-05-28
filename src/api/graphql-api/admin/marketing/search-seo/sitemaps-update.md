@@ -10,7 +10,7 @@ examples:
         }
       }
     variables: |
-      { "input": { "id": "/api/admin/marketing/sitemaps/4", "file_name": "sitemap-v2.xml" } }
+      { "input": { "id": "/api/admin/marketing/sitemaps/4", "fileName": "sitemap-v2.xml" } }
     response: |
       { "data": { "updateAdminMarketingSitemap": { "adminMarketingSitemap": { "id": "/api/admin/marketing/sitemaps/4", "_id": 4, "fileName": "sitemap-v2.xml", "path": "/" } } } }
 ---

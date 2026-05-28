@@ -14,3 +14,7 @@ examples:
 ---
 
 # Update Theme Customization (GraphQL)
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a theme that exists in your store — use the [`adminSettingsThemes`](./list.md) query to discover valid ids.
+:::

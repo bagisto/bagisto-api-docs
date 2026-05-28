@@ -8,7 +8,7 @@ examples:
         updateAdminCustomer(input: $input) { adminCustomer { id _id firstName status } }
       }
     variables: |
-      { "input": { "id": "/api/admin/customers/14", "first_name": "Janet", "status": 0 } }
+      { "input": { "id": "/api/admin/customers/14", "firstName": "Janet", "status": 0 } }
     response: |
       { "data": { "updateAdminCustomer": { "adminCustomer": { "id": "/api/admin/customers/14", "_id": 14, "firstName": "Janet", "status": 0 } } } }
 ---

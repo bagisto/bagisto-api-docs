@@ -15,7 +15,7 @@ examples:
           qty
           from
           to
-          bookingProductType
+          bookingType
           order { id incrementId status }
           orderItem { id name qtyOrdered }
           createdAt
@@ -36,7 +36,7 @@ examples:
             "qty": 2,
             "from": 1716220800,
             "to": 1716224400,
-            "bookingProductType": "event",
+            "bookingType": "event",
             "order": { "id": 8, "incrementId": "00000000008", "status": "complete" },
             "orderItem": { "id": 42, "name": "Concert Ticket", "qtyOrdered": 2 },
             "createdAt": "2026-05-20 10:00:00"

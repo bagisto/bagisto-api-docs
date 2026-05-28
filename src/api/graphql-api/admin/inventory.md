@@ -5,35 +5,13 @@ examples:
     title: Get Inventory Levels
     description: Retrieve inventory information for products.
     query: |
-      query getInventory($productId: ID!) {
-        inventory(productId: $productId) {
-          id
-          productId
-          sku
-          quantity
-          status
-        }
-      }
+      # This page documents a legacy Shop GraphQL stub; the actual Admin API
+      # query is `adminCatalogProductInventories`. See: ./catalog/products/inventories-list.md
     variables: |
-      {
-        "productId": "1"
-      }
+      {}
     response: |
-      {
-        "data": {
-          "inventory": {
-            "id": "1",
-            "productId": "1",
-            "sku": "PROD-001",
-            "quantity": 100,
-            "status": "in-stock"
-          }
-        }
-      }
-    commonErrors:
-      - error: PRODUCT_NOT_FOUND
-        cause: Product ID does not exist
-        solution: Verify product ID
+      {}
+
 ---
 
 # Inventory

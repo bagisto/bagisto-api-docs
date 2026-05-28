@@ -43,6 +43,10 @@ does not exceed the order's remaining refundable balance before calling
 After the mutation, fetch the full refund via `adminRefund(id:)` or the REST
 `GET /api/admin/refunds/{id}` endpoint.
 
+::: tip Prerequisites
+The example item quantities must be ≤ each item's `qty_to_refund`. Already-refunded quantities are rejected with *"We found an invalid quantity to refund items."* — fetch the order detail to see the current per-item refundable qty before submitting.
+:::
+
 ## Operation
 
 | Operation | Type |

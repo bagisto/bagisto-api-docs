@@ -16,3 +16,7 @@ examples:
 # Update Review Status (GraphQL)
 
 Status-only. Permission: `customers.reviews.edit`.
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a review that exists in your store — use the [`adminCustomerReviews`](./list.md) query to discover valid ids.
+:::

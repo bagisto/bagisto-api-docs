@@ -12,7 +12,7 @@ examples:
         $status: Int
         $locale: String
       ) {
-        adminCatalogCategories(
+        adminCategories(
           first: $first
           after: $after
           name: $name
@@ -56,7 +56,7 @@ examples:
     response: |
       {
         "data": {
-          "adminCatalogCategories": {
+          "adminCategories": {
             "edges": [
               {
                 "cursor": "MA==",

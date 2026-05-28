@@ -29,6 +29,10 @@ examples:
 Deletes an attribute family. Equivalent to
 [`DELETE /api/admin/catalog/families/{id}`](/api/rest-api/admin/catalog/families/families-delete).
 
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a attribute family that exists in your store — use the [`adminAttributeFamilies`](./families-listing.md) query to discover valid ids.
+:::
+
 ## Operation
 
 | Operation | Type | Purpose |

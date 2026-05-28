@@ -14,8 +14,8 @@ examples:
       {
         "attributeId": 12,
         "input": {
-          "admin_name": "Wool",
-          "sort_order": 2,
+          "adminName": "Wool",
+          "sortOrder": 2,
           "translations": { "en": { "label": "Wool" }, "fr": { "label": "Laine" } }
         }
       }
@@ -42,8 +42,8 @@ examples:
         "attributeId": 12,
         "optionId": 45,
         "input": {
-          "admin_name": "Merino Wool",
-          "sort_order": 1,
+          "adminName": "Merino Wool",
+          "sortOrder": 1,
           "translations": { "en": { "label": "Merino Wool" } }
         }
       }
@@ -60,16 +60,16 @@ examples:
     title: Delete Attribute Option
     description: Delete one option. Refused if products still reference the option. Mirrors DELETE /api/admin/catalog/attributes/{attributeId}/options/{optionId}.
     query: |
-      mutation DeleteAttributeOption($input: deleteAdminAttributeOptionInput!, $attributeId: Int!, $optionId: Int!) {
-        deleteAdminAttributeOption(input: $input, attributeId: $attributeId, optionId: $optionId) {
-          adminAttributeOption { id }
+      mutation DeleteAttributeOption($input: deleteAdminAttributeOptionInput!) {
+        deleteAdminAttributeOption(input: $input) {
+          adminAttribute { id }
         }
       }
     variables: |
       {
-        "attributeId": 12,
-        "optionId": 45,
-        "input": {}
+        "input": {
+          "id": "/api/admin/catalog/attributes/12/options/45"
+        }
       }
     response: |
       {

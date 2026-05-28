@@ -32,6 +32,10 @@ admin order-view screen — same eligibility gates as REST, same
 shape (use the REST `GET /api/admin/orders/{id}` endpoint to refetch the full
 detail payload if needed).
 
+::: tip Prerequisites
+The example targets an order with cancellable items. If your order has no items with `qty_to_cancel > 0` (already canceled / fully shipped / closed / fraud) the mutation returns an `errors[]` entry like *"There is nothing to cancel on this order."* — pick an order in `pending` or `processing` state.
+:::
+
 ## Operation
 
 | Operation | Type | Purpose |

@@ -36,6 +36,10 @@ examples:
 
 Equivalent to [`POST /api/admin/catalog/products/{sourceId}/copy`](/api/rest-api/admin/catalog/products/copy).
 
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a product that exists in your store — use the [`adminCatalogProducts`](./list.md) query to discover valid ids.
+:::
+
 ## Operation
 
 | Operation | Type |

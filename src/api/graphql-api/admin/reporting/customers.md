@@ -6,13 +6,17 @@ examples:
     query: |
       query AdminReportingCustomers($type: String) {
         statsAdminReportingCustomers(type: $type) {
-          edges { node { entity type dateRange statistics } }
+          entity
+          type
+          dateRange
+          statistics
         }
       }
     variables: |
       { "type": "total-customers" }
     response: |
-      { "data": { "statsAdminReportingCustomers": { "edges": [{ "node": { "entity": "customers", "type": "total-customers", "dateRange": "25 Apr - 25 May", "statistics": {} } }] } } }
+      { "data": { "statsAdminReportingCustomers": { "entity": "customers", "type": "total-customers", "dateRange": { "previous": "...", "current": "..." }, "statistics": {} } } }
+
 ---
 
 # Reporting — Customers (GraphQL)

@@ -15,13 +15,13 @@ examples:
         "input": {
           "code": "electronics",
           "name": "Electronics",
-          "attribute_groups": [
+          "attributeGroups": [
             {
               "code": "general",
               "name": "General",
               "column": 1,
               "position": 1,
-              "custom_attributes": [ { "id": 1 }, { "id": 2 } ]
+              "customAttributes": [ { "id": 1 }, { "id": 2 } ]
             }
           ]
         }

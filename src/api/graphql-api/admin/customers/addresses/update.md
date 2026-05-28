@@ -16,3 +16,7 @@ examples:
 # Update Customer Address (GraphQL)
 
 Cross-customer edits return errors[]. Permission: `customers.addresses.edit`.
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a customer address that exists in your store — use the `adminCustomerAddresses` query to discover valid ids.
+:::

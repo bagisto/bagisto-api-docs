@@ -18,3 +18,7 @@ examples:
 # Update Marketing Campaign (GraphQL)
 
 Mutation: `updateAdminMarketingCampaign`.
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a campaign that exists in your store — use the [`adminMarketingCampaigns`](./campaigns-list.md) query to discover valid ids.
+:::

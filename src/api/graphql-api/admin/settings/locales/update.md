@@ -14,3 +14,7 @@ examples:
 ---
 
 # Update Locale (GraphQL)
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a locale that exists in your store — use the [`adminSettingsLocales`](./list.md) query to discover valid ids.
+:::

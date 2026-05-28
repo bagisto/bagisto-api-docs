@@ -10,7 +10,7 @@ examples:
         }
       }
     variables: |
-      { "input": { "file_name": "sitemap.xml", "path": "/" } }
+      { "input": { "fileName": "sitemap.xml", "path": "/" } }
     response: |
       { "data": { "createAdminMarketingSitemap": { "adminMarketingSitemap": { "id": "/api/admin/marketing/sitemaps/4", "_id": 4, "fileName": "sitemap.xml", "path": "/" } } } }
 ---

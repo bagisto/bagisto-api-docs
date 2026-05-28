@@ -42,6 +42,10 @@ After the mutation, fetch the full invoice via `adminInvoice(id:)` or the
 REST `GET /api/admin/invoices/{id}` endpoint to get the embedded items and
 totals.
 
+::: tip Prerequisites
+The example targets an order with invoiceable items. If your order has no items with `qty_to_invoice > 0` (already fully invoiced / closed / fraud / paypal_standard payment method) the mutation returns *"There is nothing to invoice on this order."* — pick an order with outstanding qty to invoice.
+:::
+
 ## Operation
 
 | Operation | Type |

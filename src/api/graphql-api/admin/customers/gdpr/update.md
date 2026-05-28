@@ -16,3 +16,7 @@ examples:
 # Update GDPR Request (GraphQL)
 
 Status + message only. Use `createAdminCustomerGdprProcess` for the destructive cascade. Permission: `customers.gdpr_requests.edit`.
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a GDPR request that exists in your store — use the [`adminCustomerGdprRequests`](./list.md) query to discover valid ids.
+:::

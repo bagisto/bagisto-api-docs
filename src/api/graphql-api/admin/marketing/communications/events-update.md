@@ -18,3 +18,7 @@ examples:
 # Update Marketing Event (GraphQL)
 
 Mutation: `updateAdminMarketingEvent`.
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a event that exists in your store — use the [`adminMarketingEvents`](./events-list.md) query to discover valid ids.
+:::

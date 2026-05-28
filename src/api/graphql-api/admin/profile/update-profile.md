@@ -5,88 +5,28 @@ examples:
     title: Update Admin Profile
     description: Update the authenticated admin's name or email. currentPassword is always required.
     query: |
-      mutation createAdminProfileUpdate(
-        $name: String
-        $email: String
-        $currentPassword: String!
-      ) {
-        createAdminProfileUpdate(
-          input: {
-            name: $name
-            email: $email
-            currentPassword: $currentPassword
-          }
-        ) {
-          adminProfileUpdate {
-            id
-            name
-            email
-            success
-            message
-          }
-        }
-      }
+      # This endpoint was removed in the 2026-05-27 admin-auth refactor.
+      # Admin clients now authenticate with a pre-issued Integration token
+      # (Admin → Settings → Integration in the panel).
+      # See ./profile/get-profile.md for the only surviving auth-related call.
     variables: |
-      {
-          "name": "Updated Admin Name",
-          "currentPassword": "admin123"
-      }
+      {}
     response: |
-      {
-        "data": {
-          "createAdminProfileUpdate": {
-            "adminProfileUpdate": {
-              "id": "1",
-              "name": "Updated Admin Name",
-              "email": "admin@example.com",
-              "success": true,
-              "message": "Account updated successfully."
-            }
-          }
-        }
-      }
+      {}
 
   - id: admin-change-password
     title: Change Admin Password
     description: Change the authenticated admin's password. Requires currentPassword and a matching confirmPassword.
     query: |
-      mutation createAdminProfileUpdate(
-        $currentPassword: String!
-        $password: String
-        $confirmPassword: String
-      ) {
-        createAdminProfileUpdate(
-          input: {
-            currentPassword: $currentPassword
-            password: $password
-            confirmPassword: $confirmPassword
-          }
-        ) {
-          adminProfileUpdate {
-            id
-            success
-            message
-          }
-        }
-      }
+      # This endpoint was removed in the 2026-05-27 admin-auth refactor.
+      # Admin clients now authenticate with a pre-issued Integration token
+      # (Admin → Settings → Integration in the panel).
+      # See ./profile/get-profile.md for the only surviving auth-related call.
     variables: |
-      {
-          "currentPassword": "admin123",
-          "password": "NewPass123!",
-          "confirmPassword": "NewPass123!"
-      }
+      {}
     response: |
-      {
-        "data": {
-          "createAdminProfileUpdate": {
-            "adminProfileUpdate": {
-              "id": "1",
-              "success": true,
-              "message": "Account updated successfully."
-            }
-          }
-        }
-      }
+      {}
+
 ---
 
 # Update Admin Profile

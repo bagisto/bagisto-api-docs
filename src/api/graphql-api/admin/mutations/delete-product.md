@@ -5,32 +5,13 @@ examples:
     title: Delete Product
     description: Delete a product from the system.
     query: |
-      mutation deleteProduct($id: ID!) {
-        deleteProduct(id: $id) {
-          message
-          success
-        }
-      }
+      # This page documents a legacy Shop GraphQL stub; the actual Admin API
+      # query is `deleteAdminCatalogProduct`. See: ./catalog/products/delete.md
     variables: |
-      {
-        "id": "1"
-      }
+      {}
     response: |
-      {
-        "data": {
-          "deleteProduct": {
-            "message": "Product deleted successfully",
-            "success": true
-          }
-        }
-      }
-    commonErrors:
-      - error: PRODUCT_NOT_FOUND
-        cause: Product ID does not exist
-        solution: Verify product ID
-      - error: CANNOT_DELETE_PRODUCT
-        cause: Product cannot be deleted (e.g., has orders)
-        solution: Check related records before deletion
+      {}
+
 ---
 
 # Delete Product

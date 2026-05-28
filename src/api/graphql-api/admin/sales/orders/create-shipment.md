@@ -43,6 +43,10 @@ chosen source, then calls `ShipmentRepository::create`.
 After the mutation, fetch the full shipment via `adminShipment(id:)` or the
 REST `GET /api/admin/shipments/{id}` endpoint.
 
+::: tip Prerequisites
+The example targets an order with shippable items. If your order has no items with `qty_to_ship > 0` (already fully shipped / not yet invoiced) the mutation returns *"At least one item with a positive quantity is required."* — pick an order with outstanding qty to ship.
+:::
+
 ## Operation
 
 | Operation | Type |

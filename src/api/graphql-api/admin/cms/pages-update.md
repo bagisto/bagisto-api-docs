@@ -37,6 +37,10 @@ examples:
 
 Equivalent to [`PUT /api/admin/cms/pages/{id}`](/api/rest-api/admin/cms/pages-update).
 
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a CMS page that exists in your store — use the [`adminCmsPages`](./pages-list.md) query to discover valid ids.
+:::
+
 ## Operation
 
 | Operation | Type |

@@ -10,7 +10,7 @@ examples:
         }
       }
     variables: |
-      { "input": { "id": "/api/admin/marketing/search-terms/1", "term": "red shirt", "redirect_url": "https://example.com/shirts" } }
+      { "input": { "id": "/api/admin/marketing/search-terms/1", "term": "red shirt", "redirectUrl": "https://example.com/shirts" } }
     response: |
       { "data": { "updateAdminMarketingSearchTerm": { "adminMarketingSearchTerm": { "id": "/api/admin/marketing/search-terms/1", "_id": 1, "term": "red shirt", "redirectUrl": "https://example.com/shirts" } } } }
 ---

@@ -18,3 +18,7 @@ examples:
 ::: warning Guards
 Refuses if last currency or any channel uses it as base.
 :::
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a currency that exists in your store — use the [`adminSettingsCurrencies`](./list.md) query to discover valid ids.
+:::

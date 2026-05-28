@@ -6,13 +6,16 @@ examples:
     query: |
       query AdminDashboard($type: String, $start: String, $end: String, $channel: String) {
         statsAdminDashboard(type: $type, start: $start, end: $end, channel: $channel) {
-          edges { node { type dateRange statistics } }
+          type
+          dateRange
+          statistics
         }
       }
     variables: |
       { "type": "over-all", "start": "2026-04-25", "end": "2026-05-25" }
     response: |
-      { "data": { "statsAdminDashboard": { "edges": [{ "node": { "type": "over-all", "dateRange": "25 Apr - 25 May", "statistics": { "total_customers": { "previous": 12, "current": 18, "progress": 50 }, "total_orders": { "previous": 32, "current": 41, "progress": 28.13 } } } }] } } }
+      { "data": { "statsAdminDashboard": { "type": "over-all", "dateRange": "25 Apr - 25 May", "statistics": {} } } }
+
 ---
 
 # Dashboard Statistics (GraphQL)

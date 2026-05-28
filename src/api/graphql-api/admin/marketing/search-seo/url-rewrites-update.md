@@ -10,7 +10,7 @@ examples:
         }
       }
     variables: |
-      { "input": { "id": "/api/admin/marketing/url-rewrites/1", "target_path": "newer-path", "redirect_type": "302" } }
+      { "input": { "id": "/api/admin/marketing/url-rewrites/1", "targetPath": "newer-path", "redirectType": "302" } }
     response: |
       { "data": { "updateAdminMarketingUrlRewrite": { "adminMarketingUrlRewrite": { "id": "/api/admin/marketing/url-rewrites/1", "_id": 1, "targetPath": "newer-path", "redirectType": "302" } } } }
 ---
