@@ -7,7 +7,6 @@ examples:
     description: Deletes a batch of catalog products in one call. Non-existent IDs are silently skipped. Mirrors Bagisto monolith `ProductController::massDestroy`.
     query: |
       curl -X POST "https://your-domain.com/api/admin/catalog/products/mass-delete" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{

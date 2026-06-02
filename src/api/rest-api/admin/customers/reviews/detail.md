@@ -7,7 +7,6 @@ examples:
     description: Eager-loads product + customer + images. Each image has id/path/url.
     query: |
       curl -X GET "https://your-domain.com/api/admin/customers/reviews/9" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       {

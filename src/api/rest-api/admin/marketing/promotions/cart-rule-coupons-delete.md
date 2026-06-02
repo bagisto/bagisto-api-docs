@@ -6,7 +6,6 @@ examples:
     title: Delete Cart Rule Coupon
     query: |
       curl -X DELETE "https://your-domain.com/api/admin/marketing/cart-rules/1/coupons/12" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       { "message": "Coupon deleted." }

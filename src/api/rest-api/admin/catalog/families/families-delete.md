@@ -7,7 +7,6 @@ examples:
     description: Refuses with HTTP 400 if the family is the last one in the store, or if any product is still using it.
     query: |
       curl -X DELETE "https://your-domain.com/api/admin/catalog/families/4" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       id=4

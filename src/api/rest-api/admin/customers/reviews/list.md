@@ -7,7 +7,6 @@ examples:
     description: Reviews are written from the storefront. The admin endpoints are moderation-only — list / detail / status-update / delete.
     query: |
       curl -X GET "https://your-domain.com/api/admin/customers/reviews?status=pending&per_page=10" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       {

@@ -5,7 +5,7 @@ examples:
   - id: rest
     title: Create Locale
     query: |
-      curl -X POST "https://your-domain.com/api/admin/settings/locales" -H "X-Admin-Key: <key>" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "code": "fr", "name": "French", "direction": "ltr" }'
+      curl -X POST "https://your-domain.com/api/admin/settings/locales" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "code": "fr", "name": "French", "direction": "ltr" }'
     response: |
       { "id": 2, "code": "fr", "name": "French", "direction": "ltr" }
 ---

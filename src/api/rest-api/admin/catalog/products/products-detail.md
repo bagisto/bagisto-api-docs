@@ -7,7 +7,6 @@ examples:
     description: Single catalog product record with all detail-level fields populated. Type-specific blocks (superAttributes/variants for configurable, bundleOptions for bundle, linkedProducts for grouped, downloadableLinks/downloadableSamples for downloadable) are populated only for the matching product type; all others are null. No IRI strings — every nested array is an inline JSON object.
     query: |
       curl -X GET "https://your-domain.com/api/admin/catalog/products/42" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Accept: application/json"
     variables: |
@@ -94,7 +93,7 @@ examples:
 
       - error: Unauthorized (401)
         cause: Missing, invalid, expired, or revoked admin Bearer token
-        solution: 'Authenticate via `POST /api/admin/login` and pass the returned token as `Authorization: Bearer <token>`'
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 
 ---
 
@@ -122,10 +121,9 @@ Every request requires:
 
 ```
 Authorization: Bearer <token>
-X-Admin-Key: <your-admin-api-key>
 ```
 
-Obtain the Bearer token via [`POST /api/admin/login`](/api/rest-api/admin/authentication).
+Obtain the Bearer token via [Authentication](/api/rest-api/admin/authentication).
 
 ## Path Parameter
 
@@ -256,7 +254,6 @@ omitted from the listing for performance.
 
 ```bash
 curl -X GET "https://your-domain.com/api/admin/catalog/products/42" \
-  -H "X-Admin-Key: <your-admin-api-key>" \
   -H "Authorization: Bearer <token>" \
   -H "Accept: application/json"
 ```
@@ -345,7 +342,7 @@ curl -X GET "https://your-domain.com/api/admin/catalog/products/42" \
 | HTTP Status | Cause |
 |-------------|-------|
 | `401 Unauthorized` | Missing, expired, or revoked admin Bearer token |
-| `401 Unauthorized` | Invalid `X-Admin-Key` header |
+| `401 Unauthorized` | Missing or invalid admin Bearer token |
 | `404 Not Found` | The specified `{id}` does not exist in the database |
 
 ## Notes

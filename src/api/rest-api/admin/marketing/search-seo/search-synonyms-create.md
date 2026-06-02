@@ -6,7 +6,6 @@ examples:
     title: Create Search Synonym
     query: |
       curl -X POST "https://your-domain.com/api/admin/marketing/search-synonyms" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "name": "shirt-group", "terms": "shirt,tshirt,tee" }'

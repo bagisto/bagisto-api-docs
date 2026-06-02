@@ -6,7 +6,6 @@ examples:
     title: Update Customer Address
     query: |
       curl -X PUT "https://your-domain.com/api/admin/customers/14/addresses/27" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "city": "Chicago", "postcode": "60601" }'

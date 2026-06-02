@@ -6,7 +6,6 @@ examples:
     title: Create Customer Group
     query: |
       curl -X POST "https://your-domain.com/api/admin/customers/groups" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "code": "vip", "name": "VIP" }'

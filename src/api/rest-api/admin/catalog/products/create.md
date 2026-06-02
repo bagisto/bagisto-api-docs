@@ -7,7 +7,6 @@ examples:
     description: Mirrors the Bagisto admin Create-Product wizard step 1. Only `sku` + `attribute_family_id` + `type` are submitted (plus `super_attributes` when type is `configurable`). Name, description, price, inventories, etc. are added via the step-2 Update endpoint.
     query: |
       curl -X POST "https://your-domain.com/api/admin/catalog/products" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{

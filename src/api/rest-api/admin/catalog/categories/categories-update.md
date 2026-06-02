@@ -7,7 +7,6 @@ examples:
     description: "Mirrors Bagisto admin Catalog → Categories → Edit. Validation is LOCALE-NESTED — `<locale>.slug`, `<locale>.name`, `<locale>.description` (when display_mode requires it) are required. Moving a category is done by sending `parent_id` + `position` on this same endpoint — there is NO separate /move endpoint."
     query: |
       curl -X PUT "https://your-domain.com/api/admin/catalog/categories/7" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{

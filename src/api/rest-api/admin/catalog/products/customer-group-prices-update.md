@@ -7,7 +7,6 @@ examples:
     description: Partially updates the given tier-price row. The new `(qty, customer_group_id)` combination must remain unique for the product.
     query: |
       curl -X PUT "https://your-domain.com/api/admin/catalog/products/1/customer-group-prices/12" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{

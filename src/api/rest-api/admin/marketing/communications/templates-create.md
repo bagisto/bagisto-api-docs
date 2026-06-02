@@ -6,7 +6,6 @@ examples:
     title: Create Email Template
     query: |
       curl -X POST "https://your-domain.com/api/admin/marketing/templates" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "name": "Welcome Email", "status": "active", "content": "<p>Welcome to our store!</p>" }'

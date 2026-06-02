@@ -6,7 +6,6 @@ examples:
     title: Cart Rule Detail
     query: |
       curl -X GET "https://your-domain.com/api/admin/marketing/cart-rules/1" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       { "id": 1, "name": "10% off summer", "status": 1, "couponType": 1, "actionType": "by_percent", "discountAmount": 10, "channels": [1], "customerGroups": [1, 2, 3], "conditions": [] }

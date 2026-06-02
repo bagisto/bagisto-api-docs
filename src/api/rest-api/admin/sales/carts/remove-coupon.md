@@ -7,7 +7,6 @@ examples:
     description: Remove the currently-applied coupon (if any) from the draft cart and recollect totals. Idempotent.
     query: |
       curl -X DELETE "https://your-domain.com/api/admin/carts/314/coupon" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}

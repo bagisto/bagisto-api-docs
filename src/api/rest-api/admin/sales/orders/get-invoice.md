@@ -7,7 +7,6 @@ examples:
     description: Fetch a single invoice with totals and embedded line items.
     query: |
       curl -X GET "https://your-domain.com/api/admin/invoices/88" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}
@@ -53,7 +52,7 @@ examples:
         solution: Verify the invoice ID
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via `/api/admin/login`
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # Get Invoice

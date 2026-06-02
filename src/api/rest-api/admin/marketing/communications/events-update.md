@@ -6,7 +6,6 @@ examples:
     title: Update Marketing Event
     query: |
       curl -X PUT "https://your-domain.com/api/admin/marketing/events/1" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "date": "2026-12-22" }'

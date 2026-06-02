@@ -6,7 +6,6 @@ examples:
     title: Customer Address Detail
     query: |
       curl -X GET "https://your-domain.com/api/admin/customers/14/addresses/27" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       { "id": 27, "customerId": 14, "firstName": "Jane", "lastName": "Doe", "address": "742 Evergreen Terrace", "city": "Springfield", "state": "IL", "country": "US", "postcode": "62704", "phone": "+15551234567", "defaultAddress": true }

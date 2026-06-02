@@ -6,7 +6,6 @@ examples:
     title: Marketing Campaign Detail
     query: |
       curl -X GET "https://your-domain.com/api/admin/marketing/campaigns/1" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       { "id": 1, "name": "July Newsletter", "subject": "Big July deals inside!", "status": 1, "marketingTemplateId": 1, "marketingEventId": 1, "channelId": 1, "customerGroupId": 1, "marketingTemplateName": "Welcome Email", "marketingEventName": "Holiday Sale Kickoff", "channelName": "Default", "customerGroupCode": "general" }

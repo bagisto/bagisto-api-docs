@@ -7,7 +7,6 @@ examples:
     description: Full order-view payload — every relation embedded inline.
     query: |
       curl -X GET "https://your-domain.com/api/admin/orders/2392" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}
@@ -46,7 +45,7 @@ examples:
         solution: Verify the order ID
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via /api/admin/login and send the returned token
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # Order Detail
@@ -88,5 +87,5 @@ The frontend reads `item.type` and renders accordingly:
 | `grouped` | `children` — grouped sub-items |
 | `downloadable` | `downloadableLinks` — purchased links |
 
-Every `/api/admin/*` request requires the `X-Admin-Key` header and an admin
+Every `/api/admin/*` request requires an admin
 Bearer token.

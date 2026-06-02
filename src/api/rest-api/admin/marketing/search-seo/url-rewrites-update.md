@@ -6,7 +6,6 @@ examples:
     title: Update URL Rewrite
     query: |
       curl -X PUT "https://your-domain.com/api/admin/marketing/url-rewrites/1" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "target_path": "newer-path", "redirect_type": "302" }'

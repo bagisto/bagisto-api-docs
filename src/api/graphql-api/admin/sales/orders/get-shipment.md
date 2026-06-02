@@ -15,9 +15,10 @@ examples:
           trackNumber
           inventorySourceName
           items {
-            edges {
-              node { id sku name qty }
-            }
+            id
+            sku
+            name
+            qty
           }
         }
       }
@@ -36,18 +37,14 @@ examples:
             "carrierTitle": "UPS",
             "trackNumber": "1Z999AA1",
             "inventorySourceName": "Default",
-            "items": {
-              "edges": [
-                {
-                  "node": {
-                    "id": "/api/order-action-item-dtos/401",
-                    "sku": "WS-12-S",
-                    "name": "Argus All-Weather Tank-S",
-                    "qty": 3
-                  }
-                }
-              ]
-            }
+            "items": [
+              {
+                "id": 401,
+                "sku": "WS-12-S",
+                "name": "Argus All-Weather Tank-S",
+                "qty": 3
+              }
+            ]
           }
         }
       }
@@ -62,3 +59,7 @@ Returns a single shipment with totals and embedded line items.
 | Operation | Type |
 |-----------|------|
 | `adminShipment(id: ID!)` | Query |
+
+> Note: `items` is exposed as a plain JSON array (the underlying DTO declares
+> `public array $items`), not as a GraphQL cursor connection. Query the fields
+> directly with `items { id sku ... }` — do NOT wrap with `edges { node { ... } }`.

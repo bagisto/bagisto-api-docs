@@ -6,7 +6,6 @@ examples:
     title: Reporting — Sales
     query: |
       curl -X GET "https://your-domain.com/api/admin/reporting/sales?type=total-sales" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       [{ "entity": "sales", "type": "total-sales", "dateRange": "25 Apr - 25 May", "statistics": {} }]

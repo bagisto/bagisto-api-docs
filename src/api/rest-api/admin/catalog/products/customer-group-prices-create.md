@@ -7,7 +7,6 @@ examples:
     description: "Creates a new tier-price row. `customer_group_id: null` makes the price apply to every customer group. The combination `(qty, customer_group_id)` must be unique per product."
     query: |
       curl -X POST "https://your-domain.com/api/admin/catalog/products/1/customer-group-prices" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{

@@ -6,7 +6,6 @@ examples:
     title: Mass Update Review Status
     query: |
       curl -X POST "https://your-domain.com/api/admin/customers/reviews/mass-update-status" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "indices": [9, 10], "value": "approved" }'

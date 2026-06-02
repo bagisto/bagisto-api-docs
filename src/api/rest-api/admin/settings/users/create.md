@@ -5,7 +5,7 @@ examples:
   - id: rest
     title: Create Admin User
     query: |
-      curl -X POST "https://your-domain.com/api/admin/settings/users" -H "X-Admin-Key: <key>" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "name": "Ops User", "email": "ops@example.com", "password": "secret123", "password_confirmation": "secret123", "role_id": 2, "status": 1 }'
+      curl -X POST "https://your-domain.com/api/admin/settings/users" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "name": "Ops User", "email": "ops@example.com", "password": "secret123", "password_confirmation": "secret123", "role_id": 2, "status": 1 }'
     response: |
       { "id": 4, "name": "Ops User", "email": "ops@example.com", "roleId": 2, "status": 1 }
 ---

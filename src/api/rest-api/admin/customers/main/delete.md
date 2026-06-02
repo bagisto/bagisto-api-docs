@@ -7,7 +7,6 @@ examples:
     description: Refuses with HTTP 400 if the customer has any pending/processing orders.
     query: |
       curl -X DELETE "https://your-domain.com/api/admin/customers/14" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       { "message": "Customer deleted." }

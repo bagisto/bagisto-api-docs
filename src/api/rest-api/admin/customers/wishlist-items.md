@@ -7,7 +7,6 @@ examples:
     description: The customer's wishlist — the right-sidebar "Wishlist Items" panel on the Create-Order screen.
     query: |
       curl -X GET "https://your-domain.com/api/admin/customers/19/wishlist-items" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}
@@ -35,5 +34,5 @@ The customer's full wishlist. Right-sidebar panel on the Create-Order screen.
 | `/api/admin/customers/{customerId}/wishlist-items` | GET |
 
 Returns the standard `{ data, meta }` envelope. Each row includes the product
-thumbnail (`productImage`) for the badge. Requires `X-Admin-Key` + admin
+thumbnail (`productImage`) for the badge. Requires an admin
 Bearer token.

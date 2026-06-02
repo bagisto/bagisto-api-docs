@@ -6,7 +6,6 @@ examples:
     title: Update Catalog Rule
     query: |
       curl -X PUT "https://your-domain.com/api/admin/marketing/catalog-rules/1" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "name": "Summer 15% off", "discount_amount": 15, "channels": [1], "customer_groups": [1] }'

@@ -2,106 +2,104 @@
 outline: false
 apiType: rest
 examples:
-  - id: admin-login
-    title: Admin Login
-    description: Authenticate an admin user and retrieve a Bearer token for all subsequent Admin API calls.
+  - id: admin-authenticated-request
+    title: Authenticated Request
+    description: Every Admin REST call carries the admin Bearer token. This example reads the authenticated admin's own profile to confirm the token works.
     query: |
-      curl -X POST "https://your-domain.com/api/admin/login" \
-        -H "Content-Type: application/json" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
-        -d '{
+      curl -X GET "https://your-domain.com/api/admin/get" \
+        -H "Accept: application/json" \
+        -H "Authorization: Bearer <id>|<token>"
+    variables: |
+      {}
+    response: |
+      [
+        {
+          "id": "4",
+          "name": "Admin User",
           "email": "admin@example.com",
-          "password": "admin123"
-        }'
-    variables: |
-      {}
-    response: |
-      {
-        "id": 1,
-        "name": "Example Admin",
-        "email": "admin@example.com",
-        "token": "12|xY7s06JCndg5FHb8WbfF6ZR8jGq23168m9gm37J9Cmz4xah8...",
-        "success": true,
-        "message": "Logged in successfully."
-      }
+          "image": null,
+          "status": "1",
+          "roleId": 1,
+          "roleName": "Administrator",
+          "success": true,
+          "message": null
+        }
+      ]
     commonErrors:
-      - error: Invalid credentials
-        cause: Wrong email or password
-        solution: Verify the email and password; `success` is false and `token` is empty
-      - error: Account inactive
-        cause: The admin account has status = 0
-        solution: Activate the admin account from the Bagisto panel
-
-  - id: admin-logout
-    title: Admin Logout
-    description: Revoke the current admin Bearer token. Pass "all" = true to revoke every token for the admin.
-    query: |
-      curl -X POST "https://your-domain.com/api/admin/logout" \
-        -H "Content-Type: application/json" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
-        -H "Authorization: Bearer <token>" \
-        -d '{ "all": false }'
-    variables: |
-      {}
-    response: |
-      {
-        "success": true,
-        "message": "Logged out successfully."
-      }
-
-  - id: admin-forgot-password
-    title: Admin Forgot Password
-    description: Send a password reset link to the given admin email if the account exists.
-    query: |
-      curl -X POST "https://your-domain.com/api/admin/forgot-password" \
-        -H "Content-Type: application/json" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
-        -d '{
-          "email": "admin@example.com"
-        }'
-    variables: |
-      {}
-    response: |
-      {
-        "success": true,
-        "message": "A password reset link has been sent to your email."
-      }
+      - error: Unauthenticated
+        cause: Missing, malformed, expired, or revoked Bearer token
+        solution: Send a valid Bearer token from an active Integration token on the Authorization header
+      - error: Forbidden
+        cause: The token is valid but the owning admin lacks permission for the action
+        solution: Use a token whose admin has the required role permission
 ---
 
 # Admin Authentication
 
-Sign-in endpoints for admin users of the Bagisto Admin REST API. An admin signs
-in with their panel credentials and receives a Bearer token that authorises
-every subsequent Admin API request.
+The Bagisto Admin REST API authenticates every request with a pre-issued **Integration token**. There is no login call — you generate a token once in the admin panel and send it on every request.
 
-## Endpoints
+## How to authenticate
 
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/admin/login` | POST | Sign in, receive a Bearer token |
-| `/api/admin/logout` | POST | Revoke the current (or all) token(s) |
-| `/api/admin/forgot-password` | POST | Request a password-reset email |
+1. In the admin panel, open the **Integration** menu (`Admin → Integration`) and generate a token.
+2. Copy the token the moment it is shown — it is displayed **once**.
+3. Send it on every Admin API request as a Bearer token:
 
-## Authentication model
+```
+Authorization: Bearer <id>|<token>
+```
 
-- The token returned by `/api/admin/login` is a **Sanctum personal access
-  token** issued on the admin account. Send it on every authenticated request:
+That single header is all that is required. The `/api/admin/*` routes do **not** use the storefront key — only the Bearer token above.
 
-  ```
-  Authorization: Bearer <token>
-  ```
+## About the token
 
-- Every `/api/admin/*` request also requires the admin API key header
-  `X-Admin-Key`, the same way `/api/shop/*` requires `X-STOREFRONT-KEY`.
-- Admin login tokens are independent of the **Integration tokens** managed in
-  Admin → Settings → Integration (those are for server-to-server callers).
-- Inactive admins (`status = 0`) cannot log in.
-- `/api/admin/logout` revokes the current token; send `{"all": true}` to revoke
-  every token for the admin.
-- `/api/admin/forgot-password` sends a reset link via the `admins` password
-  broker.
+- The token belongs to a specific admin user and carries that admin's permissions. A request can never do more than the owning admin is allowed to do.
+- The plaintext format is `<id>|<random>`. Send it verbatim.
+- A token can be locked down with scoped **permissions**, an **IP allowlist**, an **expiry date**, and **rate limits** — see [Token security](#token-security) below.
+- Revoke or regenerate a token at any time from the same **Integration** menu. A revoked token stops working immediately.
+
+## Token security
+
+Each Integration token can be locked down at generation time in the **Integration** menu. Four independent controls scope what a token can do:
+
+### Permissions (ACL)
+
+A token is tied to one admin and **inherits that admin's role permissions** — it can never do more than its owner. When generating the token you choose a permission mode:
+
+- **All** — every action the owner's role allows.
+- **Custom** — a specific subset of permissions you select, frozen onto the token.
+- **Same as web** — always mirrors the owner's current role, so the token automatically follows any later changes to that role.
+
+A request for an action the token isn't permitted to perform returns **403 Forbidden**.
+
+### IP allowlist
+
+Optionally restrict a token to specific client IPs. Individual **IPv4** and **IPv6** addresses and **CIDR ranges** are all supported. Leave the allowlist empty to allow any IP. A request from an address that isn't on the list is rejected as **401 Unauthenticated**. (`127.0.0.1` is always allowed, for local development.)
+
+### Expiry
+
+A token can have an **expiry date** (default: one year after generation) or be set to **never expire**. After the expiry date the token stops working (**401**).
+
+### Rate limits
+
+Each token is throttled by two independent buckets:
+
+| Bucket | Default |
+|---|---|
+| Per minute | 60 requests |
+| Per day | 10,000 requests |
+
+Exceeding either limit returns **429 Too Many Requests**.
+
+**Unlimited rate limit** — when generating or editing the token, choose the **Unlimited** option for the per-minute and/or per-day limit. That removes the cap for that bucket; set **both** to Unlimited for a fully unthrottled token.
+
+## Errors
+
+| Condition | HTTP | Body |
+|---|---|---|
+| Missing / malformed / expired / revoked token, or client IP not on the token's allowlist | `401` | `{ "message": "Unauthenticated.", "error": "unauthenticated" }` |
+| Token valid but lacks permission for the action | `403` | Forbidden |
+| Per-minute or per-day rate limit exceeded | `429` | Too Many Requests |
 
 ## Examples
 
-Use the interactive examples on the right — each shows the request as cURL,
-Node.js, React, and PHP, plus the response.
+Use the interactive example on the right to see an authenticated request in cURL, Node.js, React, and PHP.

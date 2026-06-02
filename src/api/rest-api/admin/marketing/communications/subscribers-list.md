@@ -6,7 +6,6 @@ examples:
     title: List Newsletter Subscribers
     query: |
       curl -X GET "https://your-domain.com/api/admin/marketing/subscribers" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       { "data": [{ "id": 1, "email": "subscriber@example.com", "channelId": 1, "channelName": "Default", "customerId": 12, "customerName": "Jane Doe", "isSubscribed": true }], "meta": { "currentPage": 1, "perPage": 10, "lastPage": 1, "total": 1, "from": 1, "to": 1 } }

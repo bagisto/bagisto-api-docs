@@ -7,7 +7,6 @@ examples:
     description: Mirrors Bagisto monolith `ProductController::updateInventories`. Sources passed with qty=0 are kept but zeroed-out; sources NOT in the payload are left untouched.
     query: |
       curl -X PUT "https://your-domain.com/api/admin/catalog/products/12/inventories" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{

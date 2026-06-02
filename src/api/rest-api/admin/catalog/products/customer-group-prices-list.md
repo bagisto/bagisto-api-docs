@@ -7,7 +7,6 @@ examples:
     description: Lists every customer-group price row attached to the product, in the standard admin `{ data, meta }` envelope.
     query: |
       curl "https://your-domain.com/api/admin/catalog/products/1/customer-group-prices" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}

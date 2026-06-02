@@ -5,7 +5,7 @@ examples:
   - id: rest
     title: Create Theme Customization (Step 1)
     query: |
-      curl -X POST "https://your-domain.com/api/admin/settings/themes" -H "X-Admin-Key: <key>" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "name": "Homepage Banner", "type": "image_carousel", "sort_order": 1, "channel_id": 1, "theme_code": "default" }'
+      curl -X POST "https://your-domain.com/api/admin/settings/themes" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "name": "Homepage Banner", "type": "image_carousel", "sort_order": 1, "channel_id": 1, "theme_code": "default" }'
     response: |
       { "id": 1, "name": "Homepage Banner", "type": "image_carousel" }
 ---

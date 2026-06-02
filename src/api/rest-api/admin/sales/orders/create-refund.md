@@ -7,7 +7,6 @@ examples:
     description: Refund one or more order items, with optional shipping refund and adjustment fee/refund. Quantity is validated against `qty_to_refund`, and the computed total is checked against the maximum refundable amount before saving.
     query: |
       curl -X POST "https://your-domain.com/api/admin/orders/2392/refunds" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{
@@ -85,7 +84,7 @@ examples:
         solution: Verify the order ID
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via `/api/admin/login`
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # Create Refund

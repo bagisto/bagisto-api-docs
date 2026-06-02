@@ -5,7 +5,7 @@ examples:
   - id: rest
     title: Delete Import
     query: |
-      curl -X DELETE "https://your-domain.com/api/admin/settings/data-transfer/imports/3" -H "X-Admin-Key: <key>" -H "Authorization: Bearer <token>"
+      curl -X DELETE "https://your-domain.com/api/admin/settings/data-transfer/imports/3" -H "Authorization: Bearer <token>"
     response: |
       { "message": "Import deleted." }
 ---

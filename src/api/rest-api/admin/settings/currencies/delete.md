@@ -6,7 +6,6 @@ examples:
     title: Delete Currency
     query: |
       curl -X DELETE "https://your-domain.com/api/admin/settings/currencies/2" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       { "message": "Currency deleted." }

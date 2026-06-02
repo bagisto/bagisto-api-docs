@@ -5,7 +5,7 @@ examples:
   - id: rest
     title: Delete Exchange Rate
     query: |
-      curl -X DELETE "https://your-domain.com/api/admin/settings/exchange-rates/1" -H "X-Admin-Key: <key>" -H "Authorization: Bearer <token>"
+      curl -X DELETE "https://your-domain.com/api/admin/settings/exchange-rates/1" -H "Authorization: Bearer <token>"
     response: |
       { "message": "Exchange rate deleted." }
 ---

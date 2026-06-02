@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: admin-order-detail
     title: Get Order Detail
-    description: Full order-view payload for one order. Nested collections (items, invoices, shipments) are GraphQL connections — query them via edges/node.
+    description: Full order-view payload for one order. Nested collections (items, invoices, shipments) are returned as plain JSON arrays (identical shape to REST).
     query: |
       query adminOrderDetail($id: ID!) {
         adminOrderDetail(id: $id) {
@@ -24,20 +24,16 @@ examples:
           billingAddress { city state country postcode }
           shippingAddress { city state country postcode }
           items {
-            edges {
-              node {
-                id
-                sku
-                type
-                name
-                qtyOrdered
-                price
-                formattedPrice
-              }
-            }
+            id
+            sku
+            type
+            name
+            qtyOrdered
+            price
+            formattedPrice
           }
-          invoices { edges { node { id state grandTotal } } }
-          shipments { edges { node { id status carrierTitle } } }
+          invoices { id state grandTotal }
+          shipments { id status carrierTitle }
         }
       }
     variables: |
@@ -64,23 +60,19 @@ examples:
             },
             "billingAddress": { "city": "New York", "state": "NY", "country": "US", "postcode": "10001" },
             "shippingAddress": { "city": "New York", "state": "NY", "country": "US", "postcode": "10001" },
-            "items": {
-              "edges": [
-                {
-                  "node": {
-                    "id": "/api/order_detail_items/2694",
-                    "sku": "test65",
-                    "type": "simple",
-                    "name": "Classic Watch Hand",
-                    "qtyOrdered": 1,
-                    "price": 4000,
-                    "formattedPrice": "$4,000.00"
-                  }
-                }
-              ]
-            },
-            "invoices": { "edges": [] },
-            "shipments": { "edges": [] }
+            "items": [
+              {
+                "id": "/api/order_detail_items/2694",
+                "sku": "test65",
+                "type": "simple",
+                "name": "Classic Watch Hand",
+                "qtyOrdered": 1,
+                "price": 4000,
+                "formattedPrice": "$4,000.00"
+              }
+            ],
+            "invoices": [],
+            "shipments": []
           }
         }
       }
@@ -106,16 +98,18 @@ the admin **Sales → Orders → View** screen.
 
 ## GraphQL shape notes
 
-- **Nested collections are connections.** `items`, `invoices`, and `shipments`
-  are returned as GraphQL cursor connections — query them via
-  `items { edges { node { ... } } }`, not as plain arrays. (The REST endpoint
-  returns plain arrays instead — different idiom per transport.)
+- **Nested collections are plain JSON arrays.** `items`, `invoices`, and
+  `shipments` are returned as flat arrays (`items { id ... }`), identical to
+  the REST endpoint. They are NOT GraphQL cursor connections — do **not** wrap
+  them in `edges { node { ... } }`. (Prior to 2026-05-28 these were exposed as
+  connections; the shape was unified with REST so both transports return the
+  same payload.)
 - **`id` vs `_id`.** `id` is the resource IRI (`/api/admin/orders/2392`);
   `_id` is the raw integer.
 
 ## Product-type-aware items
 
-Each item `node` carries a `type` (`simple`, `configurable`, `bundle`,
+Each item carries a `type` (`simple`, `configurable`, `bundle`,
 `downloadable`, `grouped`, `virtual`). Select the type-specific fields you need
 and switch on `type` in the client:
 
@@ -123,5 +117,5 @@ and switch on `type` in the client:
 |--------|----------------------|
 | `simple`, `virtual` | — |
 | `configurable` | `child { ... }`, `additional` |
-| `bundle`, `grouped` | `children { edges { node { ... } } }`, `additional` |
+| `bundle`, `grouped` | `children { ... }`, `additional` |
 | `downloadable` | `downloadableLinks` |

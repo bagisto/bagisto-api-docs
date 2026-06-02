@@ -7,7 +7,6 @@ examples:
     description: Mirrors Bagisto admin CMS → Pages → Edit. Validation is LOCALE-NESTED — `<locale>.url_key`, `<locale>.page_title`, `<locale>.html_content` are required. Top-level `channels` and `locale` are also required.
     query: |
       curl -X PUT "https://your-domain.com/api/admin/cms/pages/7" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{

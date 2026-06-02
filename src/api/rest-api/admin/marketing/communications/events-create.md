@@ -6,7 +6,6 @@ examples:
     title: Create Marketing Event
     query: |
       curl -X POST "https://your-domain.com/api/admin/marketing/events" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "name": "Holiday Sale Kickoff", "description": "Email blast to all subscribers.", "date": "2026-12-20" }'

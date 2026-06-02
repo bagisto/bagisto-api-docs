@@ -6,7 +6,6 @@ examples:
     title: Configuration Values
     query: |
       curl -X GET "https://your-domain.com/api/admin/configuration?slug=sales.order_settings&channel=default&locale=en" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       [{ "slug": "sales.order_settings", "channel": "default", "locale": "en", "values": { "sales.order_settings.reorder.admin": "1", "sales.order_settings.reorder.shop": "1", "sales.order_settings.minimum_order.enable": "0" } }]

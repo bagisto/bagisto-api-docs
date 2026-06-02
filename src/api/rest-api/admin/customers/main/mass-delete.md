@@ -7,7 +7,6 @@ examples:
     description: Customers with active orders are skipped with a reason instead of aborting the batch.
     query: |
       curl -X POST "https://your-domain.com/api/admin/customers/mass-delete" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "indices": [12, 13, 14] }'

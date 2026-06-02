@@ -6,7 +6,6 @@ examples:
     title: Customer Group Detail
     query: |
       curl -X GET "https://your-domain.com/api/admin/customers/groups/4" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       { "id": 4, "code": "wholesale", "name": "Wholesale", "isUserDefined": 1, "customersCount": 23, "createdAt": "2026-05-20 12:00:00" }

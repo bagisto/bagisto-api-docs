@@ -7,7 +7,6 @@ examples:
     description: One row per `bookings` table entry (a booking line on an order). `from`/`to` are unix timestamps plus formatted variants.
     query: |
       curl -X GET "https://your-domain.com/api/admin/bookings?per_page=10" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       {

@@ -6,7 +6,6 @@ examples:
     title: GDPR Request Detail
     query: |
       curl -X GET "https://your-domain.com/api/admin/customers/gdpr-requests/1" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       { "id": 1, "customerId": 14, "customerName": "Jane Doe", "email": "jane@example.com", "type": "delete", "status": "pending", "message": "Please remove my account", "revokedAt": null, "createdAt": "2026-05-25 08:00:00" }

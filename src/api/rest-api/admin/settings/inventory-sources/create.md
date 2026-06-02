@@ -5,7 +5,7 @@ examples:
   - id: rest
     title: Create Inventory Source
     query: |
-      curl -X POST "https://your-domain.com/api/admin/settings/inventory-sources" -H "X-Admin-Key: <key>" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "code": "warehouse-east", "name": "East Coast Warehouse", "contact_name": "Ops", "contact_email": "east@example.com", "contact_number": "+15551112222", "country": "US", "state": "NY", "city": "Brooklyn", "street": "123 Front St", "postcode": "11201", "priority": 1, "status": 1 }'
+      curl -X POST "https://your-domain.com/api/admin/settings/inventory-sources" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "code": "warehouse-east", "name": "East Coast Warehouse", "contact_name": "Ops", "contact_email": "east@example.com", "contact_number": "+15551112222", "country": "US", "state": "NY", "city": "Brooklyn", "street": "123 Front St", "postcode": "11201", "priority": 1, "status": 1 }'
     response: |
       { "id": 2, "code": "warehouse-east", "name": "East Coast Warehouse" }
 ---

@@ -6,7 +6,6 @@ examples:
     title: Update Configuration (JSON)
     query: |
       curl -X POST "https://your-domain.com/api/admin/configuration" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{
@@ -24,7 +23,6 @@ examples:
     title: Update Configuration (multipart, file upload)
     query: |
       curl -X POST "https://your-domain.com/api/admin/configuration" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -F "slug=general.design.admin_logo" \
         -F "channel=default" \

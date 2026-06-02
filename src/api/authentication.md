@@ -161,56 +161,39 @@ Once authenticated, customers can:
 
 **Best for:** Building admin dashboards to manage products, inventory, customers, and system settings.
 
+::: tip Admin uses a pre-issued Integration token
+Admin clients authenticate with an **Integration token** generated from the **Integration** menu in the admin panel — there is no admin login. Send it as `Authorization: Bearer <id>|<token>` (no `X-STOREFRONT-KEY`). Admin **GraphQL** clients POST to `/api/admin/graphql`. See the [Admin Authentication](/api/graphql-api/admin/authentication) reference.
+:::
+
 ### The Basics
 
-- **What you need:** Bearer token (from admin login)
+- **What you need:** A pre-issued Integration token (no login)
 - **What you get:** Full control over all store data
-- **Who can use it:** Authenticated admin users only
+- **Who can use it:** Admins (and sub-admins) holding a valid Integration token
 - **Perfect for:** Admin dashboards, inventory management, reporting tools
 
 ### How It Works (3 Steps)
 
-**Step 1: Admin logs in**
+**Step 1: Generate an Integration token**
 
-```bash
-curl -X POST "https://your-domain.com/api/admin/login" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "admin@example.com",
-    "password": "AdminPass@123"
-  }'
-```
-
-**You'll get back:**
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "admin": {
-    "id": 1,
-    "email": "admin@example.com",
-    "name": "Administrator",
-    "role": "admin"
-  },
-  "message": "Login successful"
-}
-```
+In the admin panel, open the **Integration** menu and generate a token. A store owner can generate tokens here and share them with the sub-admins who need API access — each token is tied to a specific admin user and inherits that admin's permissions. The token is shown **once** — copy it.
 
 **Step 2: Save the token**
 
 Store the token securely in your application. See the [Introduction Guide](./introduction.md) for recommended storage patterns.
 
-**Step 3: Use token in API requests**
+**Step 3: Use the token in API requests**
 
 ```bash
 curl -X GET "https://your-domain.com/api/admin/products" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  -H "Authorization: Bearer <id>|<token>"
 ```
 
 **JavaScript example:**
 
 ```javascript
-const token = '<token-from-login-response>';
+const token = '<your-integration-token>';
 
 fetch('https://your-domain.com/api/admin/products', {
   headers: {
@@ -238,8 +221,8 @@ Admins have full control over:
 
 ### Key Facts
 
-- 🔑 **Admin-only** — Requires admin login (no Storefront Key needed)
-- 🔐 **Requires login** — Must authenticate with admin credentials
+- 🔑 **Admin-only** — Requires an admin Integration token (no Storefront Key needed)
+- 🔐 **Token-based** — Authenticate with a pre-issued Integration token (no login)
 - 📝 **Full CRUD** — Create, read, update, and delete everything
 - ⚙️ **System-wide** — Can affect all store data
 - 🚫 **Not cacheable** — Data changes frequently
@@ -255,7 +238,7 @@ Admins have full control over:
 |----------|----------|------------------|---|
 | **Public** | Browse products, categories | `X-STOREFRONT-KEY` only | ❌ No |
 | **Customer** | Cart, orders, profile | `X-STOREFRONT-KEY` + `Authorization: Bearer` | ✅ Customer login |
-| **Admin** | Manage products, inventory | `Authorization: Bearer` only | ✅ Admin login |
+| **Admin** | Manage products, inventory | `Authorization: Bearer` only | Integration token |
 
 ### Optional Context Headers
 

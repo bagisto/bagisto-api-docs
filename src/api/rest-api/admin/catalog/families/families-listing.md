@@ -7,7 +7,6 @@ examples:
     description: Paginated, filterable, sortable attribute family list mirroring the Bagisto admin Catalog → Attribute Families datagrid. Returns the standard `{ data, meta }` envelope. Only 3 columns are returned — id, code, name — because the underlying table carries no timestamps.
     query: |
       curl -X GET "https://your-domain.com/api/admin/catalog/families?per_page=10&page=1&sort=id&order=desc" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Accept: application/json"
     variables: |
@@ -38,7 +37,7 @@ examples:
     commonErrors:
       - error: Unauthorized (401)
         cause: Missing, invalid, expired, or revoked admin Bearer token
-        solution: 'Authenticate via `POST /api/admin/login` and pass the returned token as `Authorization: Bearer <token>`'
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 
 ---
 
@@ -61,10 +60,9 @@ Every request requires:
 
 ```
 Authorization: Bearer <token>
-X-Admin-Key: <your-admin-api-key>
 ```
 
-Obtain the Bearer token via [`POST /api/admin/login`](/api/rest-api/admin/authentication).
+Obtain the Bearer token via [Authentication](/api/rest-api/admin/authentication).
 
 ## Query Parameters
 
@@ -112,7 +110,6 @@ only available via the detail endpoint `GET /api/admin/catalog/families/{id}`.
 
 ```bash
 curl -X GET "https://your-domain.com/api/admin/catalog/families?per_page=10&page=1&sort=id&order=desc" \
-  -H "X-Admin-Key: <your-admin-api-key>" \
   -H "Authorization: Bearer <token>" \
   -H "Accept: application/json"
 ```
@@ -169,7 +166,7 @@ curl -X GET "https://your-domain.com/api/admin/catalog/families?per_page=10&page
 | HTTP Status | Cause |
 |-------------|-------|
 | `401 Unauthorized` | Missing, expired, or revoked admin Bearer token |
-| `401 Unauthorized` | Invalid `X-Admin-Key` header |
+| `401 Unauthorized` | Missing or invalid admin Bearer token |
 
 **Unknown filter parameters** are silently ignored — no error is returned.
 

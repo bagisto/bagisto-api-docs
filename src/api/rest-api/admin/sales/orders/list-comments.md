@@ -7,7 +7,6 @@ examples:
     description: Cursor-friendly list of an order's comments, newest first. Wrapped in the standard `{ data, meta }` admin envelope.
     query: |
       curl -X GET "https://your-domain.com/api/admin/orders/2392/comments?per_page=10&page=1" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}
@@ -46,7 +45,7 @@ examples:
         solution: Verify the order ID
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via `/api/admin/login`
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # List Order Comments

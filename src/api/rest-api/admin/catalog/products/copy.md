@@ -7,7 +7,6 @@ examples:
     description: Duplicates an existing product across all attribute_values, images, inventories, categories and customer_group_prices. Refuses configurable variants. Mirrors Bagisto monolith `ProductController::copy`.
     query: |
       curl -X POST "https://your-domain.com/api/admin/catalog/products/12/copy" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}

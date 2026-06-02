@@ -7,7 +7,6 @@ examples:
     description: Remove a single line item from the draft cart. Body carries the cartItemId.
     query: |
       curl -X DELETE "https://your-domain.com/api/admin/carts/314/items" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "cartItemId": 6711 }'

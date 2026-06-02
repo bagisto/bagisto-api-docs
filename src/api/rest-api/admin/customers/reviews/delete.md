@@ -6,7 +6,6 @@ examples:
     title: Delete Review
     query: |
       curl -X DELETE "https://your-domain.com/api/admin/customers/reviews/9" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       { "message": "Review deleted." }

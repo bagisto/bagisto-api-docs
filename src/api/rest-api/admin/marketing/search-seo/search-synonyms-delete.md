@@ -6,7 +6,6 @@ examples:
     title: Delete Search Synonym
     query: |
       curl -X DELETE "https://your-domain.com/api/admin/marketing/search-synonyms/1" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       { "message": "Search synonym deleted." }

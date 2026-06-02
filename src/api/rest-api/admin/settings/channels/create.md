@@ -5,7 +5,7 @@ examples:
   - id: rest
     title: Create Channel
     query: |
-      curl -X POST "https://your-domain.com/api/admin/settings/channels" -H "X-Admin-Key: <key>" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "code": "us", "name": "US Store", "hostname": "us.example.com", "locales": [1], "currencies": [1], "inventory_sources": [1], "default_locale_id": 1, "base_currency_id": 1, "root_category_id": 1, "description": "Our US storefront", "seo_title": "Best products", "seo_description": "Welcome to our shop" }'
+      curl -X POST "https://your-domain.com/api/admin/settings/channels" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "code": "us", "name": "US Store", "hostname": "us.example.com", "locales": [1], "currencies": [1], "inventory_sources": [1], "default_locale_id": 1, "base_currency_id": 1, "root_category_id": 1, "description": "Our US storefront", "seo_title": "Best products", "seo_description": "Welcome to our shop" }'
     response: |
       { "id": 2, "code": "us", "name": "US Store", "hostname": "us.example.com" }
 ---

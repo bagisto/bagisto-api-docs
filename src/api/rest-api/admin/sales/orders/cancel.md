@@ -7,7 +7,6 @@ examples:
     description: Cancel every cancellable item on an order. Returns the updated `OrderDetail` so the client can refresh the order-view screen without a follow-up GET.
     query: |
       curl -X POST "https://your-domain.com/api/admin/orders/2392/cancel" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}
@@ -39,7 +38,7 @@ examples:
         solution: Verify the order ID
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via `/api/admin/login`
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # Cancel Order

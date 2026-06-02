@@ -7,7 +7,6 @@ examples:
     description: Append-only — every POST inserts a new row into `customer_notes` (the legacy `customers.notes` text column was dropped in 2023).
     query: |
       curl -X POST "https://your-domain.com/api/admin/customers/14/notes" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "note": "Followed up about return RMA-1023", "customer_notified": false }'

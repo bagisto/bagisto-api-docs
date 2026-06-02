@@ -6,7 +6,6 @@ examples:
     title: Create URL Rewrite
     query: |
       curl -X POST "https://your-domain.com/api/admin/marketing/url-rewrites" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "entity_type": "product", "request_path": "old-path", "target_path": "new-path", "redirect_type": "301", "locale": "en" }'

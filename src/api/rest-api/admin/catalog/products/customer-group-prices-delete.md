@@ -7,7 +7,6 @@ examples:
     description: Deletes a single customer-group price row.
     query: |
       curl -X DELETE "https://your-domain.com/api/admin/catalog/products/1/customer-group-prices/12" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}

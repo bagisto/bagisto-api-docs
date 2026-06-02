@@ -7,7 +7,6 @@ examples:
     description: Up to 5 most-recent distinct items the customer has ordered. Right-sidebar panel on the Create-Order screen.
     query: |
       curl -X GET "https://your-domain.com/api/admin/customers/19/recent-order-items" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}
@@ -38,4 +37,4 @@ right-sidebar "Recent Order Items" panel on the Create-Order screen.
 Mirrors the monolith: distinct `product_id` from `order_items` joined to
 `orders`, `parent_id IS NULL`, ordered by `orders.created_at DESC`, limited
 to 5. Each row carries the product `type` so the client can render
-type-specific UI. Requires `X-Admin-Key` + admin Bearer token.
+type-specific UI. Requires an admin Bearer token.

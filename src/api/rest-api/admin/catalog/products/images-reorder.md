@@ -7,7 +7,6 @@ examples:
     description: Updates the position of one or more existing images for a product. Each image ID must belong to the product or the request is rejected.
     query: |
       curl -X PUT "https://your-domain.com/api/admin/catalog/products/12/images/reorder" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{

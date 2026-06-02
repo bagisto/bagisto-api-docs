@@ -7,7 +7,6 @@ examples:
     description: Create a new address under a customer. Setting `default_address=true` unsets the previous default for that customer.
     query: |
       curl -X POST "https://your-domain.com/api/admin/customers/14/addresses" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{

@@ -7,7 +7,6 @@ examples:
     description: Paginated invoices listing mirroring the admin Sales → Invoices datagrid. Returns a `{ data, meta }` envelope.
     query: |
       curl -X GET "https://your-domain.com/api/admin/invoices?per_page=10&state=paid" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Accept: application/json"
     response: |

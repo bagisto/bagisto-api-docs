@@ -442,18 +442,6 @@ export default defineConfig(({ command, mode }) => {
                     collapsed: true,
                     items: [
                       { text: 'Get Profile', link: '/api/graphql-api/admin/profile/get-profile' },
-                      { text: 'Update Profile', link: '/api/graphql-api/admin/profile/update-profile' },
-                    ]
-                  },
-                  {
-                    text: 'Customers',
-                    collapsed: true,
-                    items: [
-                      { text: 'Addresses', link: '/api/graphql-api/admin/customers/addresses' },
-                      { text: 'Active Cart Items', link: '/api/graphql-api/admin/customers/active-cart-items' },
-                      { text: 'Wishlist Items', link: '/api/graphql-api/admin/customers/wishlist-items' },
-                      { text: 'Recent Order Items', link: '/api/graphql-api/admin/customers/recent-order-items' },
-                      { text: 'Create Draft Cart', link: '/api/graphql-api/admin/customers/create-draft-cart' },
                     ]
                   },
                   {
@@ -624,26 +612,21 @@ export default defineConfig(({ command, mode }) => {
                     ]
                   },
                   {
-                    text: 'Customers (Full CRUD)',
+                    text: 'Customers',
                     collapsed: true,
                     items: [
+                      { text: 'List Customers', link: '/api/graphql-api/admin/customers/main/list' },
+                      { text: 'Customer Detail', link: '/api/graphql-api/admin/customers/main/detail' },
+                      { text: 'Create Customer', link: '/api/graphql-api/admin/customers/main/create' },
+                      { text: 'Update Customer', link: '/api/graphql-api/admin/customers/main/update' },
+                      { text: 'Delete Customer', link: '/api/graphql-api/admin/customers/main/delete' },
+                      { text: 'Mass Delete', link: '/api/graphql-api/admin/customers/main/mass-delete' },
+                      { text: 'Mass Update Status', link: '/api/graphql-api/admin/customers/main/mass-update-status' },
                       {
-                        text: 'Customers',
+                        text: 'Addresses',
                         collapsed: true,
                         items: [
-                          { text: 'List Customers', link: '/api/graphql-api/admin/customers/main/list' },
-                          { text: 'Customer Detail', link: '/api/graphql-api/admin/customers/main/detail' },
-                          { text: 'Create Customer', link: '/api/graphql-api/admin/customers/main/create' },
-                          { text: 'Update Customer', link: '/api/graphql-api/admin/customers/main/update' },
-                          { text: 'Delete Customer', link: '/api/graphql-api/admin/customers/main/delete' },
-                          { text: 'Mass Delete', link: '/api/graphql-api/admin/customers/main/mass-delete' },
-                          { text: 'Mass Update Status', link: '/api/graphql-api/admin/customers/main/mass-update-status' },
-                        ]
-                      },
-                      {
-                        text: 'Addresses (CRUD)',
-                        collapsed: true,
-                        items: [
+                          { text: 'List Addresses', link: '/api/graphql-api/admin/customers/addresses' },
                           { text: 'Address Detail', link: '/api/graphql-api/admin/customers/addresses/detail' },
                           { text: 'Create Address', link: '/api/graphql-api/admin/customers/addresses/create' },
                           { text: 'Update Address', link: '/api/graphql-api/admin/customers/addresses/update' },
@@ -677,7 +660,7 @@ export default defineConfig(({ command, mode }) => {
                         ]
                       },
                       {
-                        text: 'Reviews (Moderation)',
+                        text: 'Reviews',
                         collapsed: true,
                         items: [
                           { text: 'List Reviews', link: '/api/graphql-api/admin/customers/reviews/list' },
@@ -698,6 +681,16 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Delete Request', link: '/api/graphql-api/admin/customers/gdpr/delete' },
                           { text: 'Process (Approve + Execute)', link: '/api/graphql-api/admin/customers/gdpr/process' },
                           { text: 'Download Data Export', link: '/api/graphql-api/admin/customers/gdpr/download-data' },
+                        ]
+                      },
+                      {
+                        text: 'Create-Order Helpers',
+                        collapsed: true,
+                        items: [
+                          { text: 'Active Cart Items', link: '/api/graphql-api/admin/customers/active-cart-items' },
+                          { text: 'Wishlist Items', link: '/api/graphql-api/admin/customers/wishlist-items' },
+                          { text: 'Recent Order Items', link: '/api/graphql-api/admin/customers/recent-order-items' },
+                          { text: 'Create Draft Cart', link: '/api/graphql-api/admin/customers/create-draft-cart' },
                         ]
                       }
                     ]
@@ -1165,18 +1158,6 @@ export default defineConfig(({ command, mode }) => {
                     collapsed: true,
                     items: [
                       { text: 'Get Profile', link: '/api/rest-api/admin/profile/get-profile' },
-                      { text: 'Update Profile', link: '/api/rest-api/admin/profile/update-profile' },
-                    ]
-                  },
-                  {
-                    text: 'Customers',
-                    collapsed: true,
-                    items: [
-                      { text: 'Addresses', link: '/api/rest-api/admin/customers/addresses' },
-                      { text: 'Active Cart Items', link: '/api/rest-api/admin/customers/active-cart-items' },
-                      { text: 'Wishlist Items', link: '/api/rest-api/admin/customers/wishlist-items' },
-                      { text: 'Recent Order Items', link: '/api/rest-api/admin/customers/recent-order-items' },
-                      { text: 'Create Draft Cart', link: '/api/rest-api/admin/customers/create-draft-cart' },
                     ]
                   },
                   {
@@ -1347,26 +1328,21 @@ export default defineConfig(({ command, mode }) => {
                     ]
                   },
                   {
-                    text: 'Customers (Full CRUD)',
+                    text: 'Customers',
                     collapsed: true,
                     items: [
+                      { text: 'List Customers', link: '/api/rest-api/admin/customers/main/list' },
+                      { text: 'Customer Detail', link: '/api/rest-api/admin/customers/main/detail' },
+                      { text: 'Create Customer', link: '/api/rest-api/admin/customers/main/create' },
+                      { text: 'Update Customer', link: '/api/rest-api/admin/customers/main/update' },
+                      { text: 'Delete Customer', link: '/api/rest-api/admin/customers/main/delete' },
+                      { text: 'Mass Delete', link: '/api/rest-api/admin/customers/main/mass-delete' },
+                      { text: 'Mass Update Status', link: '/api/rest-api/admin/customers/main/mass-update-status' },
                       {
-                        text: 'Customers',
+                        text: 'Addresses',
                         collapsed: true,
                         items: [
-                          { text: 'List Customers', link: '/api/rest-api/admin/customers/main/list' },
-                          { text: 'Customer Detail', link: '/api/rest-api/admin/customers/main/detail' },
-                          { text: 'Create Customer', link: '/api/rest-api/admin/customers/main/create' },
-                          { text: 'Update Customer', link: '/api/rest-api/admin/customers/main/update' },
-                          { text: 'Delete Customer', link: '/api/rest-api/admin/customers/main/delete' },
-                          { text: 'Mass Delete', link: '/api/rest-api/admin/customers/main/mass-delete' },
-                          { text: 'Mass Update Status', link: '/api/rest-api/admin/customers/main/mass-update-status' },
-                        ]
-                      },
-                      {
-                        text: 'Addresses (CRUD)',
-                        collapsed: true,
-                        items: [
+                          { text: 'List Addresses', link: '/api/rest-api/admin/customers/addresses' },
                           { text: 'Address Detail', link: '/api/rest-api/admin/customers/addresses/detail' },
                           { text: 'Create Address', link: '/api/rest-api/admin/customers/addresses/create' },
                           { text: 'Update Address', link: '/api/rest-api/admin/customers/addresses/update' },
@@ -1400,7 +1376,7 @@ export default defineConfig(({ command, mode }) => {
                         ]
                       },
                       {
-                        text: 'Reviews (Moderation)',
+                        text: 'Reviews',
                         collapsed: true,
                         items: [
                           { text: 'List Reviews', link: '/api/rest-api/admin/customers/reviews/list' },
@@ -1421,6 +1397,16 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Delete Request', link: '/api/rest-api/admin/customers/gdpr/delete' },
                           { text: 'Process (Approve + Execute)', link: '/api/rest-api/admin/customers/gdpr/process' },
                           { text: 'Download Data Export', link: '/api/rest-api/admin/customers/gdpr/download-data' },
+                        ]
+                      },
+                      {
+                        text: 'Create-Order Helpers',
+                        collapsed: true,
+                        items: [
+                          { text: 'Active Cart Items', link: '/api/rest-api/admin/customers/active-cart-items' },
+                          { text: 'Wishlist Items', link: '/api/rest-api/admin/customers/wishlist-items' },
+                          { text: 'Recent Order Items', link: '/api/rest-api/admin/customers/recent-order-items' },
+                          { text: 'Create Draft Cart', link: '/api/rest-api/admin/customers/create-draft-cart' },
                         ]
                       }
                     ]

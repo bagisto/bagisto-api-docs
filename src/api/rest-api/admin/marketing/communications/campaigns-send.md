@@ -6,7 +6,6 @@ examples:
     title: Send Marketing Campaign
     query: |
       curl -X POST "https://your-domain.com/api/admin/marketing/campaigns/12/send" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       { "id": 12, "campaignId": 12, "queued": 5, "message": "Campaign queued for 5 recipient(s)." }

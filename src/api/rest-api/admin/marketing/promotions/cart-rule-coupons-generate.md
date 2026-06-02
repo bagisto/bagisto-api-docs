@@ -6,7 +6,6 @@ examples:
     title: Bulk-Generate Coupons
     query: |
       curl -X POST "https://your-domain.com/api/admin/marketing/cart-rules/1/coupons/generate" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "length": 10, "format": "alphanumeric", "prefix": "SAVE-", "suffix": "-2026", "coupon_qty": 5 }'

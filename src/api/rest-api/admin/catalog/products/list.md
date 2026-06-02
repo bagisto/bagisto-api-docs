@@ -7,7 +7,6 @@ examples:
     description: Paginated product search for the admin Create-Order "Add Product" modal and any other admin product-picker. Unlike the storefront product list, returns ALL statuses by default (admin must see disabled / draft products too). Booking products ARE listed here so admin can find them; they're blocked at admin cart add-to-cart time.
     query: |
       curl -X GET "https://your-domain.com/api/admin/products?query=watch&type=simple&per_page=30&page=1" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Accept: application/json"
     variables: |
@@ -39,7 +38,7 @@ examples:
     commonErrors:
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: 'Authenticate via `/api/admin/login` and pass the token as `Authorization: Bearer <token>`'
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 
 ---
 

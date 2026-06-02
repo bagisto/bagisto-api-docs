@@ -7,7 +7,6 @@ examples:
     description: Creates an attribute with optional translations and options (for select/multiselect/checkbox types). The `code` must be unique, pass the Code rule (letters/digits/underscore), and not be a reserved word.
     query: |
       curl -X POST "https://your-domain.com/api/admin/catalog/attributes" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{
@@ -84,7 +83,7 @@ examples:
         solution: Send a unique snake_case code that matches `^[a-z][a-z0-9_]*$`
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via `/api/admin/login`
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # Catalog Attribute — Create

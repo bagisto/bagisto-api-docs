@@ -5,7 +5,7 @@ examples:
   - id: rest
     title: Delete Locale
     query: |
-      curl -X DELETE "https://your-domain.com/api/admin/settings/locales/2" -H "X-Admin-Key: <key>" -H "Authorization: Bearer <token>"
+      curl -X DELETE "https://your-domain.com/api/admin/settings/locales/2" -H "Authorization: Bearer <token>"
     response: |
       { "message": "Locale deleted." }
 ---

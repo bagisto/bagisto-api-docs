@@ -7,7 +7,6 @@ examples:
     description: Mirrors Bagisto admin CMS → Pages → Create. Top-level translated fields (page_title, html_content, etc.) are broadcast to every locale by the PageRepository.
     query: |
       curl -X POST "https://your-domain.com/api/admin/cms/pages" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{

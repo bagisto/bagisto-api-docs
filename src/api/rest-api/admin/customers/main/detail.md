@@ -7,7 +7,6 @@ examples:
     description: Eager-loads `group`, surfaces detail-only counters (`totalAddresses`, `totalOrders`, `totalAmountSpent`).
     query: |
       curl -X GET "https://your-domain.com/api/admin/customers/14" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       {

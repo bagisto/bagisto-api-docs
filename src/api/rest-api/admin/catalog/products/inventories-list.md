@@ -7,7 +7,6 @@ examples:
     description: Returns one row per inventory_source that has a product_inventories entry for the product. The envelope `meta.totalQty` is the sum across all sources.
     query: |
       curl "https://your-domain.com/api/admin/catalog/products/12/inventories" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}

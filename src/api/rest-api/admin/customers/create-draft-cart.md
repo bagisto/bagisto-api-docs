@@ -7,7 +7,6 @@ examples:
     description: Bootstrap an empty admin draft cart (`is_active = false`) for the given customer. Returns the `cartId` the admin uses for the rest of the Create-Order flow.
     query: |
       curl -X POST "https://your-domain.com/api/admin/customers/7/draft-carts" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json"
     variables: |
@@ -28,7 +27,7 @@ examples:
         solution: Confirm a default channel + valid customer; review the error message
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via /api/admin/login first
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # Create Draft Cart

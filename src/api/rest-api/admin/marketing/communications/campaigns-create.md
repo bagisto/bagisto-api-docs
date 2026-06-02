@@ -6,7 +6,6 @@ examples:
     title: Create Marketing Campaign
     query: |
       curl -X POST "https://your-domain.com/api/admin/marketing/campaigns" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "name": "July Newsletter", "subject": "Big July deals inside!", "marketing_template_id": 1, "marketing_event_id": 1, "channel_id": 1, "customer_group_id": 1, "status": 1 }'

@@ -13,73 +13,18 @@ The Admin API allows administrators to:
 - View reports and analytics
 
 ::: warning Authentication Required
-All Admin API requests require a valid admin token obtained via the `adminLogin` mutation.
+All Admin API requests require an admin **Integration token** sent as `Authorization: Bearer <id>|<token>`. See [Authentication](/api/graphql-api/admin/authentication).
 :::
 
 ## Authentication
 
-### Admin Login
-
-```graphql
-mutation {
-  adminLogin(input: {
-    email: "admin@example.com"
-    password: "AdminPassword123!"
-  }) {
-    accessToken
-    refreshToken
-    admin {
-      id
-      name
-      email
-      role
-      permissions {
-        edges {
-          node {
-            id
-            name
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-**Response:**
-```json
-{
-  "data": {
-    "adminLogin": {
-      "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-      "refreshToken": "refresh_token_string",
-      "admin": {
-        "id": "1",
-        "name": "Admin User",
-        "email": "admin@example.com",
-        "role": "admin"
-      }
-    }
-  }
-}
-```
-
-### Admin Logout
-
-```graphql
-mutation {
-  adminLogout(input: {}) {
-    status
-    message
-  }
-}
-```
-
-Use the `accessToken` in the Authorization header for all subsequent requests:
+Admin API requests authenticate with a pre-issued **Integration token** — there is no login mutation. Generate a token from the **Integration** menu in the admin panel (a store owner can generate tokens here and share them with the sub-admins who need API access), then send it on every request:
 
 ```bash
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Authorization: Bearer <id>|<token>
 ```
+
+The admin GraphQL endpoint is `POST /api/admin/graphql`. See [Admin Authentication](/api/graphql-api/admin/authentication) for the full token lifecycle, IP allowlists, and rate limits.
 
 ## Products
 

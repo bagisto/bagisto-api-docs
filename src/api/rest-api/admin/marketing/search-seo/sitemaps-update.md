@@ -6,7 +6,6 @@ examples:
     title: Update Sitemap
     query: |
       curl -X PUT "https://your-domain.com/api/admin/marketing/sitemaps/4" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "file_name": "sitemap-v2.xml" }'

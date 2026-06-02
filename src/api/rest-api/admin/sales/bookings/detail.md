@@ -7,7 +7,6 @@ examples:
     description: Single booking + booking-product sub-type + order/orderItem summaries inlined.
     query: |
       curl -X GET "https://your-domain.com/api/admin/bookings/1" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       {

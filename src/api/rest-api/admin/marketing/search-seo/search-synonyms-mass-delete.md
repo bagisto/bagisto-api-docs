@@ -6,7 +6,6 @@ examples:
     title: Mass Delete Search Synonyms
     query: |
       curl -X POST "https://your-domain.com/api/admin/marketing/search-synonyms/mass-delete" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "indices": [12, 18] }'

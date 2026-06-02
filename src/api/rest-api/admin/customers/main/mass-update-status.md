@@ -7,7 +7,6 @@ examples:
     description: Sets `status` on every supplied customer. `value` must be `0` or `1`. Fires `customer.update.before/after` per row.
     query: |
       curl -X POST "https://your-domain.com/api/admin/customers/mass-update-status" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "indices": [12, 13, 14], "value": 0 }'

@@ -7,7 +7,6 @@ examples:
     description: Adds a new option to a `select`, `multiselect`, or `checkbox` attribute. Returns the full updated attribute detail.
     query: |
       curl -X POST "https://your-domain.com/api/admin/catalog/attributes/12/options" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{
@@ -41,14 +40,13 @@ examples:
         solution: Verify the attribute id
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via `/api/admin/login`
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 
   - id: admin-catalog-attribute-option-update
     title: Update Attribute Option
     description: Partially update an existing option. Only supplied fields are changed; translations merge per locale.
     query: |
       curl -X PUT "https://your-domain.com/api/admin/catalog/attributes/12/options/45" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{
@@ -74,7 +72,6 @@ examples:
     description: Removes an option. Refused (HTTP 409) when one or more products still reference the option.
     query: |
       curl -X DELETE "https://your-domain.com/api/admin/catalog/attributes/12/options/45" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       attributeId=12

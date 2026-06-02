@@ -7,7 +7,6 @@ examples:
     description: Bulk-update line-item quantities. `qty` is a map of cart_item_id → new quantity, mirroring the monolith admin shape.
     query: |
       curl -X PUT "https://your-domain.com/api/admin/carts/314/items" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "qty": { "6711": 3 } }'

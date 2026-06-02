@@ -5,7 +5,7 @@ examples:
   - id: rest
     title: Mass Delete Locales
     query: |
-      curl -X POST "https://your-domain.com/api/admin/settings/locales/mass-delete" -H "X-Admin-Key: <key>" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "indices": [3, 4] }'
+      curl -X POST "https://your-domain.com/api/admin/settings/locales/mass-delete" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "indices": [3, 4] }'
     response: |
       { "deleted": [4], "skipped": [{ "id": 3, "reason": "Channel default" }], "message": "Locales processed." }
 ---

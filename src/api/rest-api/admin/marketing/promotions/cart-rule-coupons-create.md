@@ -6,7 +6,6 @@ examples:
     title: Create Cart Rule Coupon
     query: |
       curl -X POST "https://your-domain.com/api/admin/marketing/cart-rules/1/coupons" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "code": "WELCOME10", "usage_limit": 100, "usage_per_customer": 1, "expired_at": "2027-12-31" }'

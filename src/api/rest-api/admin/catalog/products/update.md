@@ -7,7 +7,6 @@ examples:
     description: Free-shape pass-through payload that the core ProductRepository::update understands. Locale-keyed translations may be supplied either at the top level or under a `translations` key. Sub-resource fields (images, inventories, customer_group_prices, videos) are silently stripped — those have dedicated endpoints.
     query: |
       curl -X PUT "https://your-domain.com/api/admin/catalog/products/42" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{

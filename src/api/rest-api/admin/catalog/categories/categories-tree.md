@@ -7,7 +7,6 @@ examples:
     description: Full nested category tree. Returns a JSON array of root nodes, each carrying its full subtree under `children`. Supports optional locale, status, and rootId filters.
     query: |
       curl -X GET "https://your-domain.com/api/admin/catalog/categories/tree?locale=en&status=1" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Accept: application/json"
     variables: |
@@ -59,7 +58,7 @@ examples:
     commonErrors:
       - error: Unauthorized (401)
         cause: Missing, invalid, expired, or revoked admin Bearer token
-        solution: 'Authenticate via `POST /api/admin/login` and pass the returned token as `Authorization: Bearer <token>`'
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 
 ---
 
@@ -89,10 +88,9 @@ Every request requires:
 
 ```
 Authorization: Bearer <token>
-X-Admin-Key: <your-admin-api-key>
 ```
 
-Obtain the Bearer token via [`POST /api/admin/login`](/api/rest-api/admin/authentication).
+Obtain the Bearer token via [Authentication](/api/rest-api/admin/authentication).
 
 ## Query Parameters
 
@@ -131,7 +129,6 @@ after filtering.
 
 ```bash
 curl -X GET "https://your-domain.com/api/admin/catalog/categories/tree?locale=en&status=1" \
-  -H "X-Admin-Key: <your-admin-api-key>" \
   -H "Authorization: Bearer <token>" \
   -H "Accept: application/json"
 ```
@@ -191,7 +188,6 @@ Pass `?rootId=<id>` to return only the subtree rooted at that category ID
 
 ```bash
 curl -X GET "https://your-domain.com/api/admin/catalog/categories/tree?rootId=2&locale=en" \
-  -H "X-Admin-Key: <your-admin-api-key>" \
   -H "Authorization: Bearer <token>"
 ```
 
@@ -202,7 +198,7 @@ If the `rootId` does not exist in the database, the response is `{ "data": [], "
 | HTTP Status | Cause |
 |-------------|-------|
 | `401 Unauthorized` | Missing, expired, or revoked admin Bearer token |
-| `401 Unauthorized` | Invalid `X-Admin-Key` header |
+| `401 Unauthorized` | Missing or invalid admin Bearer token |
 
 ## Notes
 

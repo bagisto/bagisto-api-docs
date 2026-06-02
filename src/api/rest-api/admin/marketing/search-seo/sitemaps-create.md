@@ -6,7 +6,6 @@ examples:
     title: Create Sitemap
     query: |
       curl -X POST "https://your-domain.com/api/admin/marketing/sitemaps" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "file_name": "sitemap.xml", "path": "/" }'

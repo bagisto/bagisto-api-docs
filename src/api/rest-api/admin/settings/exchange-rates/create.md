@@ -5,7 +5,7 @@ examples:
   - id: rest
     title: Create Exchange Rate
     query: |
-      curl -X POST "https://your-domain.com/api/admin/settings/exchange-rates" -H "X-Admin-Key: <key>" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "target_currency": 2, "rate": 0.92 }'
+      curl -X POST "https://your-domain.com/api/admin/settings/exchange-rates" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "target_currency": 2, "rate": 0.92 }'
     response: |
       { "id": 1, "targetCurrency": 2, "rate": 0.92 }
 ---

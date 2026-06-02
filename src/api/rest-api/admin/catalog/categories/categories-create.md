@@ -7,7 +7,6 @@ examples:
     description: Mirrors Bagisto admin Catalog → Categories → Create. Validates slug (unique), name, position, attributes. `description` is required when `display_mode` is `description_only` or `products_and_description`. File-upload for `logo_path` / `banner_path` is NOT supported in v1.
     query: |
       curl -X POST "https://your-domain.com/api/admin/catalog/categories" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{
@@ -47,7 +46,7 @@ examples:
         solution: Send a unique slug and the required core fields
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via `/api/admin/login`
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # Category — Create

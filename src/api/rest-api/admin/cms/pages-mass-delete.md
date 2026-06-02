@@ -7,7 +7,6 @@ examples:
     description: Deletes a batch of CMS pages. Non-existent IDs are silently skipped (mirrors monolith).
     query: |
       curl -X POST "https://your-domain.com/api/admin/cms/pages/mass-delete" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{

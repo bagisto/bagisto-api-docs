@@ -7,7 +7,6 @@ examples:
     description: Build a fresh admin draft cart from a previous order's items. Returns the new cart ID — the admin can then finalise the order in /admin/sales/orders/create.
     query: |
       curl -X POST "https://your-domain.com/api/admin/orders/2392/reorder" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}
@@ -36,7 +35,7 @@ examples:
         solution: Verify the order ID
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via /api/admin/login and send the returned token
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # Reorder

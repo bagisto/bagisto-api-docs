@@ -7,7 +7,6 @@ examples:
     description: Read an admin draft cart (items, totals, addresses, selected shipping/payment). Only `is_active = 0` (draft) carts are accessible; storefront carts return 403.
     query: |
       curl -X GET "https://your-domain.com/api/admin/carts/314" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}
@@ -54,7 +53,7 @@ examples:
         solution: This endpoint only mutates draft carts. Storefront carts are owned by the customer's session
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via /api/admin/login
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # Get Cart
@@ -71,4 +70,4 @@ by every cart write operation, so the client never needs a refetch.
 | `/api/admin/carts/{id}` | GET |
 
 `{id}` is the draft cart id (typically the value returned by the Reorder action
-or a future Create-Cart endpoint). Requires `X-Admin-Key` + admin Bearer token.
+or a future Create-Cart endpoint). Requires an admin Bearer token.

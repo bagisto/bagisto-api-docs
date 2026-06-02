@@ -7,7 +7,6 @@ examples:
     description: DataGrid-parity listing. Returns slim rows; detail-only fields (`totalAddresses`, `totalOrders`, `totalAmountSpent`) are null on listing.
     query: |
       curl -X GET "https://your-domain.com/api/admin/customers?per_page=10&customer_group_id=2" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       {

@@ -5,7 +5,7 @@ examples:
   - id: rest
     title: List Locales
     query: |
-      curl -X GET "https://your-domain.com/api/admin/settings/locales?per_page=10" -H "X-Admin-Key: <key>" -H "Authorization: Bearer <token>"
+      curl -X GET "https://your-domain.com/api/admin/settings/locales?per_page=10" -H "Authorization: Bearer <token>"
     response: |
       { "data": [{ "id": 1, "code": "en", "name": "English", "direction": "ltr", "logoPath": null, "logoUrl": null }], "meta": { "currentPage": 1, "perPage": 10, "lastPage": 1, "total": 1, "from": 1, "to": 1 } }
 ---

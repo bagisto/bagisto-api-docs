@@ -7,7 +7,6 @@ examples:
     description: Creates an attribute family with optional nested attribute groups and per-group `custom_attributes`. `code` must be unique and pass the Code rule.
     query: |
       curl -X POST "https://your-domain.com/api/admin/catalog/families" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{
@@ -53,7 +52,7 @@ examples:
         solution: Send a unique snake_case code that matches the Code rule
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via `/api/admin/login`
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # Attribute Family — Create

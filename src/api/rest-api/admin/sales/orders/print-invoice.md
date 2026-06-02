@@ -7,7 +7,6 @@ examples:
     description: Downloads the invoice as an `application/pdf` binary attachment. Generated with dompdf using the same blade view (`admin::sales.invoices.pdf`) the monolith uses.
     query: |
       curl -X GET "https://your-domain.com/api/admin/invoices/88/print" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         --output invoice-88.pdf
     variables: |
@@ -27,7 +26,7 @@ examples:
         solution: Check storage permissions and the dompdf install; the underlying exception message is returned in `detail`
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via `/api/admin/login`
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # Print Invoice (PDF)

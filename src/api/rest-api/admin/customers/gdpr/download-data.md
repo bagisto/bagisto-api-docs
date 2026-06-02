@@ -7,7 +7,6 @@ examples:
     description: Ad-hoc data dump (not bound to a GDPR request). Returns every table referencing the customer's id.
     query: |
       curl -X POST "https://your-domain.com/api/admin/customers/14/gdpr-download-data" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       {

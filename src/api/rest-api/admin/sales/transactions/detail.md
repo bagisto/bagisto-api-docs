@@ -7,7 +7,6 @@ examples:
     description: Full transaction row + slim order summary inlined.
     query: |
       curl -X GET "https://your-domain.com/api/admin/transactions/4" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       {

@@ -5,7 +5,7 @@ examples:
   - id: rest
     title: Update Channel
     query: |
-      curl -X PUT "https://your-domain.com/api/admin/settings/channels/2" -H "X-Admin-Key: <key>" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "translations": { "en": { "name": "United States Store", "description": "Our US storefront", "seo_description": "Welcome" } } }'
+      curl -X PUT "https://your-domain.com/api/admin/settings/channels/2" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "translations": { "en": { "name": "United States Store", "description": "Our US storefront", "seo_description": "Welcome" } } }'
     response: |
       { "id": 2, "code": "us", "name": "United States Store" }
 ---

@@ -7,7 +7,6 @@ examples:
     description: Deletes a user-defined attribute. Returns HTTP 403 for system attributes, HTTP 409 if the attribute is referenced by any attribute family.
     query: |
       curl -X DELETE "https://your-domain.com/api/admin/catalog/attributes/50" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       id=50
@@ -27,7 +26,7 @@ examples:
         solution: Verify the id via the listing endpoint
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via `/api/admin/login`
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # Catalog Attribute — Delete

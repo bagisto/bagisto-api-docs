@@ -18,9 +18,11 @@ examples:
           adjustmentRefund
           adjustmentFee
           items {
-            edges {
-              node { id sku name qty formattedTotal }
-            }
+            id
+            sku
+            name
+            qty
+            formattedTotal
           }
         }
       }
@@ -42,19 +44,15 @@ examples:
             "formattedGrandTotal": "$32.99",
             "adjustmentRefund": 0.0,
             "adjustmentFee": 0.0,
-            "items": {
-              "edges": [
-                {
-                  "node": {
-                    "id": "/api/order-action-item-dtos/701",
-                    "sku": "WS-12-S",
-                    "name": "Argus All-Weather Tank-S",
-                    "qty": 1,
-                    "formattedTotal": "$29.99"
-                  }
-                }
-              ]
-            }
+            "items": [
+              {
+                "id": 701,
+                "sku": "WS-12-S",
+                "name": "Argus All-Weather Tank-S",
+                "qty": 1,
+                "formattedTotal": "$29.99"
+              }
+            ]
           }
         }
       }
@@ -69,3 +67,7 @@ Returns a single refund with totals and embedded line items.
 | Operation | Type |
 |-----------|------|
 | `adminRefund(id: ID!)` | Query |
+
+> Note: `items` is exposed as a plain JSON array (the underlying DTO declares
+> `public array $items`), not as a GraphQL cursor connection. Query the fields
+> directly with `items { id sku ... }` — do NOT wrap with `edges { node { ... } }`.

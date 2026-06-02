@@ -6,7 +6,6 @@ examples:
     title: Configuration Menu (schema)
     query: |
       curl -X GET "https://your-domain.com/api/admin/configuration/menu?slug=sales.order_settings" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       [{ "key": "sales", "name": "Sales", "children": [{ "key": "sales.order_settings", "name": "Order Settings", "children": [{ "key": "sales.order_settings.reorder", "name": "Reorder", "fields": [{ "name": "admin", "code": "sales.order_settings.reorder.admin", "title": "Allow Reorder (Admin)", "type": "boolean", "default": "1", "channelBased": false, "localeBased": false, "validation": null, "options": null }, { "name": "shop", "code": "sales.order_settings.reorder.shop", "title": "Allow Reorder (Storefront)", "type": "boolean", "default": "1", "channelBased": false, "localeBased": false, "validation": null, "options": null }] }] }] }]

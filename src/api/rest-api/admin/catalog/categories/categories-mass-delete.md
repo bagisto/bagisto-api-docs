@@ -7,7 +7,6 @@ examples:
     description: Deletes a batch of categories. If any ID in the batch is non-deletable (root or a channel root), the entire batch is rejected (HTTP 400). Non-existent IDs are silently skipped.
     query: |
       curl -X POST "https://your-domain.com/api/admin/catalog/categories/mass-delete" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "indices": [12, 18] }'

@@ -7,7 +7,6 @@ examples:
     description: Paginated, filterable list of all orders, returned in the { data, meta } envelope.
     query: |
       curl -X GET "https://your-domain.com/api/admin/orders?per_page=10&page=1" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}
@@ -42,7 +41,6 @@ examples:
     description: Filter by status and a date preset. Filters compose; date presets and date_from/date_to are mutually exclusive.
     query: |
       curl -X GET "https://your-domain.com/api/admin/orders?status=processing&date_range=this_month" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}
@@ -91,5 +89,5 @@ the listing.
 | `date_from`, `date_to` | Custom date range (`Y-m-d`) — overrides `date_range` |
 | `sort`, `order` | Sort field + `asc`/`desc` (default `created_at desc`) |
 
-Every `/api/admin/*` request requires the `X-Admin-Key` header and an admin
+Every `/api/admin/*` request requires an admin
 Bearer token.

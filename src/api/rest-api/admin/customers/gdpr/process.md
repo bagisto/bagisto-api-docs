@@ -7,7 +7,6 @@ examples:
     description: Approves a pending request AND, for `type=delete`, cascades the customer delete via `CustomerRepository::delete`.
     query: |
       curl -X POST "https://your-domain.com/api/admin/customers/gdpr-requests/1/process" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "message": "Approved on customer request" }'

@@ -7,7 +7,6 @@ examples:
     description: Returns a single CMS page with all translations and channels inlined as plain arrays.
     query: |
       curl "https://your-domain.com/api/admin/cms/pages/7" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}

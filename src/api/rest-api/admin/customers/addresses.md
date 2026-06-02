@@ -7,7 +7,6 @@ examples:
     description: All saved addresses for a customer — used by the Create-Order screen's billing / shipping picker.
     query: |
       curl -X GET "https://your-domain.com/api/admin/customers/122/addresses" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}
@@ -38,4 +37,4 @@ All saved addresses for a customer — read-only sub-resource used by the
 
 Returns the standard `{ data, meta }` envelope. Not paginated by the UI but
 wrapped for consistency. 404 if the customer doesn't exist; 401 without an
-admin Bearer token. Requires `X-Admin-Key`.
+admin Bearer token.

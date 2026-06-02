@@ -7,7 +7,6 @@ examples:
     description: Bulk-flips the `status` flag of a batch of products to either 0 (disabled) or 1 (enabled). Mirrors Bagisto monolith `ProductController::massUpdate` — best-effort, fires `catalog.product.update.before` / `.after` for each ID.
     query: |
       curl -X POST "https://your-domain.com/api/admin/catalog/products/mass-update-status" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{

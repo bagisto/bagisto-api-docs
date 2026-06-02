@@ -6,7 +6,6 @@ examples:
     title: Mass Delete Catalog Rules
     query: |
       curl -X POST "https://your-domain.com/api/admin/marketing/catalog-rules/mass-delete" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "indices": [12, 18] }'

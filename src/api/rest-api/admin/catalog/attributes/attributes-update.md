@@ -7,7 +7,6 @@ examples:
     description: Update an attribute. The `code` field cannot be changed. Changing `type` is refused when product attribute values exist. If `options` is supplied, the full set is replaced — existing options keyed by `id` are updated, omitted ids are deleted, and entries without an `id` are inserted.
     query: |
       curl -X PUT "https://your-domain.com/api/admin/catalog/attributes/50" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{
@@ -41,7 +40,7 @@ examples:
         solution: Verify the id via the listing endpoint
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via `/api/admin/login`
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # Catalog Attribute — Update

@@ -17,15 +17,11 @@ examples:
           grandTotal
           formattedGrandTotal
           items {
-            edges {
-              node {
-                id
-                sku
-                name
-                qty
-                formattedTotal
-              }
-            }
+            id
+            sku
+            name
+            qty
+            formattedTotal
           }
         }
       }
@@ -46,19 +42,15 @@ examples:
             "formattedSubTotal": "$119.96",
             "grandTotal": 129.96,
             "formattedGrandTotal": "$129.96",
-            "items": {
-              "edges": [
-                {
-                  "node": {
-                    "id": "/api/order-action-item-dtos/901",
-                    "sku": "WS-12-S",
-                    "name": "Argus All-Weather Tank-S",
-                    "qty": 3,
-                    "formattedTotal": "$89.97"
-                  }
-                }
-              ]
-            }
+            "items": [
+              {
+                "id": 901,
+                "sku": "WS-12-S",
+                "name": "Argus All-Weather Tank-S",
+                "qty": 3,
+                "formattedTotal": "$89.97"
+              }
+            ]
           }
         }
       }
@@ -74,6 +66,6 @@ Returns a single invoice with totals and embedded line items.
 |-----------|------|
 | `adminInvoice(id: ID!)` | Query |
 
-> Note: nested item collections are exposed as GraphQL cursor connections —
-> query them via `items { edges { node { ... } } }`. Same pattern used by
-> `adminOrderDetail`.
+> Note: `items` is exposed as a plain JSON array (the underlying DTO declares
+> `public array $items`), not as a GraphQL cursor connection. Query the fields
+> directly with `items { id sku ... }` — do NOT wrap with `edges { node { ... } }`.

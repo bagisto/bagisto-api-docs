@@ -7,7 +7,6 @@ examples:
     description: Computes refund totals (subtotal, discount, tax, shipping, grandTotal) for a hypothetical refund body without saving anything. Same body as Create Refund.
     query: |
       curl -X POST "https://your-domain.com/api/admin/orders/2392/refunds/preview" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{
@@ -48,7 +47,7 @@ examples:
         solution: Verify the order ID
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via `/api/admin/login`
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # Refund Preview

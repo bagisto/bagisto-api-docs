@@ -5,7 +5,7 @@ examples:
   - id: rest
     title: Delete Admin User
     query: |
-      curl -X DELETE "https://your-domain.com/api/admin/settings/users/4" -H "X-Admin-Key: <key>" -H "Authorization: Bearer <token>"
+      curl -X DELETE "https://your-domain.com/api/admin/settings/users/4" -H "Authorization: Bearer <token>"
     response: |
       { "message": "Admin deleted." }
 ---

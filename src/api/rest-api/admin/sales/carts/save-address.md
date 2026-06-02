@@ -7,7 +7,6 @@ examples:
     description: Set the billing (and shipping unless billing.useForShipping is true) addresses on the draft cart and recollect totals.
     query: |
       curl -X POST "https://your-domain.com/api/admin/carts/314/addresses" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{

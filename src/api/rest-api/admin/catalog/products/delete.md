@@ -7,7 +7,6 @@ examples:
     description: Deletes a catalog product. For configurable products, all variants cascade. No "refuse if in non-completed order" guard — mirrors Bagisto admin behaviour.
     query: |
       curl -X DELETE "https://your-domain.com/api/admin/catalog/products/42" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}

@@ -119,15 +119,8 @@ mutation {
 }
 ```
 
-### Admin Login (Admin API)
-```graphql
-mutation {
-  adminLogin(email: "admin@example.com", password: "password") {
-    accessToken
-    admin { id name }
-  }
-}
-```
+### Admin Authentication (Admin API)
+Admin requests use a pre-issued **Integration token** — there is no login mutation. Generate it from the **Integration** menu, then send `Authorization: Bearer <id>|<token>` on every request to `POST /api/admin/graphql`. See [Authentication](/api/graphql-api/admin/authentication).
 
 ---
 

@@ -7,7 +7,6 @@ examples:
     description: Creates a new customer. When `send_password` is true (default) a random password is generated and emailed via `Webkul\Admin\Mail\Customer\NewCustomerNotification`.
     query: |
       curl -X POST "https://your-domain.com/api/admin/customers" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "first_name": "Jane", "last_name": "Doe", "email": "jane@example.com", "customer_group_id": 2, "status": 1, "send_password": true }'

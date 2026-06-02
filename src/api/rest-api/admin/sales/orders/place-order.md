@@ -7,7 +7,6 @@ examples:
     description: Finalise a fully prepared draft cart into a real order. Mirrors the monolith `admin.sales.orders.store` flow.
     query: |
       curl -X POST "https://your-domain.com/api/admin/orders/place/314" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}
@@ -44,7 +43,7 @@ examples:
         solution: Confirm the cart ID returned by Create-Cart / Reorder
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via /api/admin/login
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # Place Order

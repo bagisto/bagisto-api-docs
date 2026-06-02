@@ -7,7 +7,6 @@ examples:
     description: Add a product (any type) to the admin draft cart. Body keys mirror the storefront add-to-cart payload so configurable, bundle, grouped, and downloadable products work without code changes.
     query: |
       curl -X POST "https://your-domain.com/api/admin/carts/314/items" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{

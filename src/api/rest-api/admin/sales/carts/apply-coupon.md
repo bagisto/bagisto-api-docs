@@ -7,7 +7,6 @@ examples:
     description: Apply a cart-rule coupon code to the draft cart and recollect totals. Mirrors the monolith status codes — 404 for unknown / inactive, 422 if the same coupon is already applied.
     query: |
       curl -X POST "https://your-domain.com/api/admin/carts/314/coupon" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "code": "WELCOME10" }'

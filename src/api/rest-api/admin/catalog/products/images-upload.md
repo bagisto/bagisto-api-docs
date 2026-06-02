@@ -7,7 +7,6 @@ examples:
     description: Multipart upload of a single product image. Allowed mime types — bmp, jpeg, jpg, png, webp.
     query: |
       curl -X POST "https://your-domain.com/api/admin/catalog/products/12/images" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -F "image=@/path/to/photo.webp" \
         -F "position=1"

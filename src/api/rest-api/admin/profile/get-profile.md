@@ -7,7 +7,6 @@ examples:
     description: Return the authenticated admin's profile. Requires the Bearer token in the Authorization header.
     query: |
       curl -X GET "https://your-domain.com/api/admin/get" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}
@@ -28,7 +27,7 @@ examples:
     commonErrors:
       - error: Unauthorized (401)
         cause: Missing, invalid, or revoked Bearer token
-        solution: Log in via /api/admin/login and send the returned token
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # Get Admin Profile
@@ -43,7 +42,7 @@ Read the profile of the currently authenticated admin.
 
 ## Details
 
-- Requires the `X-Admin-Key` header and a valid admin Bearer token.
+- Requires a valid admin Bearer token.
 - The response is a JSON array containing a single profile object — `id`,
   `name`, `email`, `image`, `status`, and role (`roleId` / `roleName`).
 - An unauthenticated request returns HTTP `401`.

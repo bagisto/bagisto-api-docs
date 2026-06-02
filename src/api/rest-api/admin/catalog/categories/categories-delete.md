@@ -7,7 +7,6 @@ examples:
     description: Refused with HTTP 400 if the category is the root (id=1) or referenced as `channels.root_category_id`.
     query: |
       curl -X DELETE "https://your-domain.com/api/admin/catalog/categories/7" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       id=7

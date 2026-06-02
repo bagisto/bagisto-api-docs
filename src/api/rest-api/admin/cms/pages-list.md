@@ -7,7 +7,6 @@ examples:
     description: Paginated, filterable, sortable CMS pages list. Mirrors the admin CMS → Pages datagrid.
     query: |
       curl "https://your-domain.com/api/admin/cms/pages?page=1&per_page=10&sort=id&order=desc" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       page=1

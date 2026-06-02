@@ -6,7 +6,6 @@ examples:
     title: Delete Customer Address
     query: |
       curl -X DELETE "https://your-domain.com/api/admin/customers/14/addresses/27" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       { "message": "Address deleted." }

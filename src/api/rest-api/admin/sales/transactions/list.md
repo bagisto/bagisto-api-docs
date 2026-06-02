@@ -7,7 +7,6 @@ examples:
     description: DataGrid-parity listing of every order transaction.
     query: |
       curl -X GET "https://your-domain.com/api/admin/transactions?per_page=10" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       {

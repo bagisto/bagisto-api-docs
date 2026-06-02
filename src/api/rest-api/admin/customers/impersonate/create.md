@@ -7,7 +7,6 @@ examples:
     description: Returns a short-lived Sanctum customer token the admin can use to act as the customer.
     query: |
       curl -X POST "https://your-domain.com/api/admin/customers/14/impersonate" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       {

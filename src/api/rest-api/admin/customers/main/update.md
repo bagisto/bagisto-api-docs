@@ -7,7 +7,6 @@ examples:
     description: Partial update. Email uniqueness excludes self.
     query: |
       curl -X PUT "https://your-domain.com/api/admin/customers/14" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "first_name": "Janet", "status": 0 }'

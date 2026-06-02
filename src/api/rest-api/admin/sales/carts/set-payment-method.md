@@ -7,7 +7,6 @@ examples:
     description: Save the selected payment method on the draft cart and recollect totals.
     query: |
       curl -X POST "https://your-domain.com/api/admin/carts/314/payment-methods" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "method": "cashondelivery" }'
@@ -39,7 +38,7 @@ examples:
 
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: 'Log in via /api/admin/login'
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 
 ---
 

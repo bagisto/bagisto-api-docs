@@ -5,7 +5,7 @@ examples:
   - id: rest
     title: Create Role
     query: |
-      curl -X POST "https://your-domain.com/api/admin/settings/roles" -H "X-Admin-Key: <key>" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "name": "Catalog Manager", "description": "Can manage catalog only", "permission_type": "custom", "permissions": ["catalog.products.view", "catalog.products.edit"] }'
+      curl -X POST "https://your-domain.com/api/admin/settings/roles" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "name": "Catalog Manager", "description": "Can manage catalog only", "permission_type": "custom", "permissions": ["catalog.products.view", "catalog.products.edit"] }'
     response: |
       { "id": 3, "name": "Catalog Manager", "permissionType": "custom", "permissions": ["catalog.products.view", "catalog.products.edit"] }
 ---

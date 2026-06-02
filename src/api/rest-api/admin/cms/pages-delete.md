@@ -7,7 +7,6 @@ examples:
     description: Deletes a CMS page.
     query: |
       curl -X DELETE "https://your-domain.com/api/admin/cms/pages/7" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}

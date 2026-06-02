@@ -5,7 +5,7 @@ examples:
   - id: rest
     title: Create Tax Category
     query: |
-      curl -X POST "https://your-domain.com/api/admin/settings/tax-categories" -H "X-Admin-Key: <key>" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "code": "us-tax", "name": "US Tax", "description": "Standard US sales tax", "taxrates": [1, 2] }'
+      curl -X POST "https://your-domain.com/api/admin/settings/tax-categories" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{ "code": "us-tax", "name": "US Tax", "description": "Standard US sales tax", "taxrates": [1, 2] }'
     response: |
       { "id": 1, "code": "us-tax", "name": "US Tax", "taxRates": [1, 2] }
 ---

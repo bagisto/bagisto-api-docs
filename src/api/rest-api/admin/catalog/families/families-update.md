@@ -7,7 +7,6 @@ examples:
     description: Update a family. Inside `attribute_groups`, items keyed by numeric id update existing groups; items keyed by `group_*` create new groups; omitted existing ids are deleted.
     query: |
       curl -X PUT "https://your-domain.com/api/admin/catalog/families/4" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{

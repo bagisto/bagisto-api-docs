@@ -5,7 +5,7 @@ examples:
   - id: rest
     title: Cancel Import
     query: |
-      curl -X POST "https://your-domain.com/api/admin/settings/data-transfer/imports/3/cancel" -H "X-Admin-Key: <key>" -H "Authorization: Bearer <token>"
+      curl -X POST "https://your-domain.com/api/admin/settings/data-transfer/imports/3/cancel" -H "Authorization: Bearer <token>"
     response: |
       { "id": 3, "state": "cancelled", "message": "Import cancelled successfully." }
 ---

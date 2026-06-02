@@ -7,7 +7,6 @@ examples:
     description: Items in the customer's OWN active storefront cart (carts.is_active = 1) — the right-sidebar "Cart Items" panel on the Create-Order screen.
     query: |
       curl -X GET "https://your-domain.com/api/admin/customers/19/cart-items" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}
@@ -38,5 +37,5 @@ into the draft.
 | `/api/admin/customers/{customerId}/cart-items` | GET |
 
 Returns only **top-level** items (`cart_items.parent_id IS NULL`). Empty `data`
-array when the customer has no active cart. Requires `X-Admin-Key` + admin
+array when the customer has no active cart. Requires an admin
 Bearer token.

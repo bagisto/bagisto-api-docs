@@ -6,7 +6,6 @@ examples:
     title: Create Currency
     query: |
       curl -X POST "https://your-domain.com/api/admin/settings/currencies" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "code": "EUR", "name": "Euro", "symbol": "€" }'

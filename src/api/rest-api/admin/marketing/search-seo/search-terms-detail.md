@@ -6,7 +6,6 @@ examples:
     title: Search Term Detail
     query: |
       curl -X GET "https://your-domain.com/api/admin/marketing/search-terms/1" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>"
     response: |
       { "id": 1, "term": "red shirt", "results": 23, "uses": 142, "redirectUrl": null, "channelId": 1, "channelName": "Default", "locale": "en" }

@@ -6,7 +6,6 @@ examples:
     title: Update Search Term
     query: |
       curl -X PUT "https://your-domain.com/api/admin/marketing/search-terms/1" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "term": "red shirt", "redirect_url": "https://example.com/shirts" }'

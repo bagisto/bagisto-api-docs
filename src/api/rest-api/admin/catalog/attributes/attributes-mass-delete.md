@@ -7,7 +7,6 @@ examples:
     description: Deletes a batch of user-defined attributes. If any ID in the batch belongs to a system attribute, the entire batch is rejected (HTTP 422). Non-existent IDs are silently skipped.
     query: |
       curl -X POST "https://your-domain.com/api/admin/catalog/attributes/mass-delete" \
-        -H "X-Admin-Key: <your-admin-api-key>" \
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json" \
         -d '{ "indices": [24, 31] }'
@@ -26,7 +25,7 @@ examples:
         solution: Remove system-attribute ids from the batch before retrying — the operation is all-or-nothing
       - error: Unauthorized (401)
         cause: Missing or invalid admin Bearer token
-        solution: Log in via `/api/admin/login`
+        solution: Send a valid admin Bearer token (Integration token) in the Authorization header. See the Authentication page.
 ---
 
 # Catalog Attribute — Mass Delete
