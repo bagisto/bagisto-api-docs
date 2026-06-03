@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: get-product-by-id
     title: Get Product by ID
-    description: Retrieve product information using the product ID.
+    description: Retrieve product information using the product ID. `isInWishlist` and `isInCompare` indicate whether the signed-in customer has this product in their wishlist / compare list (`1` = yes, `0` = no) — send the customer Bearer token (both are `0` for guests). Over GraphQL these flags are returned as `"1"` / `"0"` strings; the REST API returns `1` / `0` integers.
     query: |
       query getProduct($id: ID!) {
         product(id: $id) {
@@ -12,6 +12,8 @@ examples:
           sku
           urlKey
           price
+          isInWishlist
+          isInCompare
         }
       }
     variables: |
@@ -26,7 +28,9 @@ examples:
             "name": "Ivory Frost Classic Overcoat XL",
             "sku": "sku-345346346-variant-9",
             "urlKey": "sku-345346346-variant-9",
-            "price": "500"
+            "price": "500",
+            "isInWishlist": "1",
+            "isInCompare": "0"
           }
         }
       }
@@ -1522,6 +1526,10 @@ All product types (simple, configurable, grouped, bundle, downloadable, virtual)
 | `visibility` | `String!` | Visibility status (visible, not visible, search only). |
 | `createdAt` | `DateTime!` | Product creation date. |
 | `updatedAt` | `DateTime!` | Last modification date. |
+| `isInWishlist` | `Int` | Whether the signed-in customer has this product in their **wishlist** (active channel): `1` = yes, `0` = no. |
+| `isInCompare` | `Int` | Whether the signed-in customer has this product in their **compare list**: `1` = yes, `0` = no. |
+
+> **Wishlist & compare flags:** `isInWishlist` and `isInCompare` let you highlight the wishlist / compare icon directly from the product response instead of separately fetching and cross-referencing those lists. They require the customer Bearer token — for guests both are `0`. The values are `0` / `1`; over GraphQL they are returned as the strings `"1"` (in the list) / `"0"` (not in the list), while the REST API returns them as `1` / `0` integers.
 
 ## Configurable Products
 

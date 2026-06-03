@@ -577,6 +577,7 @@ export default defineConfig(({ command, mode }) => {
                         collapsed: true,
                         items: [
                           { text: 'List Invoices', link: '/api/graphql-api/admin/sales/invoices/list' },
+                          { text: 'Get Invoice', link: '/api/graphql-api/admin/sales/orders/get-invoice' },
                         ]
                       },
                       {
@@ -584,6 +585,7 @@ export default defineConfig(({ command, mode }) => {
                         collapsed: true,
                         items: [
                           { text: 'List Shipments', link: '/api/graphql-api/admin/sales/shipments/list' },
+                          { text: 'Get Shipment', link: '/api/graphql-api/admin/sales/orders/get-shipment' },
                         ]
                       },
                       {
@@ -591,6 +593,7 @@ export default defineConfig(({ command, mode }) => {
                         collapsed: true,
                         items: [
                           { text: 'List Refunds', link: '/api/graphql-api/admin/sales/refunds/list' },
+                          { text: 'Get Refund', link: '/api/graphql-api/admin/sales/orders/get-refund' },
                         ]
                       },
                       {
@@ -1293,6 +1296,7 @@ export default defineConfig(({ command, mode }) => {
                         collapsed: true,
                         items: [
                           { text: 'List Invoices', link: '/api/rest-api/admin/sales/invoices/list' },
+                          { text: 'Get Invoice', link: '/api/rest-api/admin/sales/orders/get-invoice' },
                         ]
                       },
                       {
@@ -1300,6 +1304,7 @@ export default defineConfig(({ command, mode }) => {
                         collapsed: true,
                         items: [
                           { text: 'List Shipments', link: '/api/rest-api/admin/sales/shipments/list' },
+                          { text: 'Get Shipment', link: '/api/rest-api/admin/sales/orders/get-shipment' },
                         ]
                       },
                       {
@@ -1307,6 +1312,7 @@ export default defineConfig(({ command, mode }) => {
                         collapsed: true,
                         items: [
                           { text: 'List Refunds', link: '/api/rest-api/admin/sales/refunds/list' },
+                          { text: 'Get Refund', link: '/api/rest-api/admin/sales/orders/get-refund' },
                         ]
                       },
                       {

@@ -9,16 +9,22 @@
 export const REST_API_URL = import.meta.env.VITE_REST_API_URL || 'http://localhost:8000'
 
 // GraphQL API Base URL
-export const GRAPHQL_API_URL = import.meta.env.VITE_GRAPHQL_API_URL || 'http://localhost:8000'
+export const GRAPHQL_API_URL = import.meta.env.VITE_GRAPHQL_API_URL || 'http://nextjs.bagisto.com'
 
-// GraphQL Endpoint
+// GraphQL Endpoint (Shop — requires X-STOREFRONT-KEY)
 export const GRAPHQL_ENDPOINT = `${GRAPHQL_API_URL}/api/graphql`
+
+// GraphQL Admin Endpoint (requires Authorization: Bearer only — no storefront key)
+export const GRAPHQL_ADMIN_ENDPOINT = `${GRAPHQL_API_URL}/api/admin/graphql`
 
 // REST API Docs (Swagger)
 export const REST_API_DOCS = `${REST_API_URL}/api/docs`
 
-// GraphQL Playground
+// GraphQL Playground (Shop)
 export const GRAPHQL_PLAYGROUND = `${GRAPHQL_API_URL}/api/graphiql`
+
+// GraphQL Admin Playground
+export const GRAPHQL_ADMIN_PLAYGROUND = `${GRAPHQL_API_URL}/api/admin/graphiql`
 
 // Exported configuration object for convenience
 export const API_CONFIG = {
@@ -30,6 +36,8 @@ export const API_CONFIG = {
     baseUrl: GRAPHQL_API_URL,
     endpoint: GRAPHQL_ENDPOINT,
     playground: GRAPHQL_PLAYGROUND,
+    adminEndpoint: GRAPHQL_ADMIN_ENDPOINT,
+    adminPlayground: GRAPHQL_ADMIN_PLAYGROUND,
   },
 } as const
 

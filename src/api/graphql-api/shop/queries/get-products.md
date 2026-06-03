@@ -1,6 +1,62 @@
 ---
 outline: false
 examples:
+  - id: get-products-wishlist-compare-flags
+    title: Get Products with Wishlist & Compare Flags
+    description: For a signed-in customer, every product carries `isInWishlist` and `isInCompare`, so you can highlight the wishlist / compare icon directly on each product card without separately fetching and cross-referencing the wishlist or compare lists (which paginate independently of the catalog). Send the customer Bearer token. The flags are `1` (in the list) or `0` (not in the list); over GraphQL they are returned as the strings `"1"` / `"0"`. For guests, both are always `"0"`.
+    query: |
+      query getProductsWithFlags {
+        products(first: 3) {
+          edges {
+            node {
+              id
+              name
+              sku
+              isInWishlist
+              isInCompare
+            }
+          }
+        }
+      }
+    variables: |
+      {}
+    response: |
+      {
+        "data": {
+          "products": {
+            "edges": [
+              {
+                "node": {
+                  "id": "/api/shop/products/1",
+                  "name": "Coastal Breeze Men's Blue Zipper Hoodie",
+                  "sku": "COASTALBREEZEMENSHOODIE",
+                  "isInWishlist": "1",
+                  "isInCompare": "0"
+                }
+              },
+              {
+                "node": {
+                  "id": "/api/shop/products/22",
+                  "name": "Acme Drawstring Bag",
+                  "sku": "ACME-DRAWBAG-001",
+                  "isInWishlist": "0",
+                  "isInCompare": "1"
+                }
+              },
+              {
+                "node": {
+                  "id": "/api/shop/products/92",
+                  "name": "Bagisto Sticker",
+                  "sku": "bagisto-sticker",
+                  "isInWishlist": "0",
+                  "isInCompare": "0"
+                }
+              }
+            ]
+          }
+        }
+      }
+
   - id: get-products-currency-formatted-prices
     title: Get Products with Currency Formatted Prices
     description: Fetch products with all formatted price fields that reflect the active currency set via the locale header. Use these formatted fields instead of raw price fields when displaying prices to customers, as they include currency conversion and symbol.
@@ -1639,6 +1695,25 @@ The query supports cursor-based pagination to efficiently handle large product c
 - Created and updated timestamps
 
 > **Currency & Formatted Prices:** All price fields reflect the active currency set via the `X-Currency` header — both numeric fields (e.g. `price`, `specialPrice`, `minimumPrice`) and formatted fields (e.g. `formattedPrice`, `formattedMinimumPrice`) return converted values. The difference is that numeric fields return the converted amount as a number, while formatted fields return the converted amount as a string with the currency symbol prefixed (e.g. `"€84.99"`). See the "Get Products with Currency Formatted Prices" dropdown example above for all available price fields.
+
+## Wishlist & Compare Flags
+
+Every product in the list carries two per-customer boolean flags so you can render the wishlist and compare icon states directly from the catalog response:
+
+| Field | Description |
+|-------|-------------|
+| `isInWishlist` | Whether this product is in the signed-in customer's **wishlist** for the active channel. |
+| `isInCompare` | Whether this product is in the signed-in customer's **compare list**. |
+
+Why they exist: the wishlist and compare lists are their own endpoints and paginate independently of the catalog — a product on catalog page 1 may have its wishlist entry on a different wishlist page, so matching the two lists on the client is unreliable. These flags answer the question per product, in the same response, so the wishlist/compare icon can be highlighted without any extra requests.
+
+Things to know:
+
+- **Authentication is required.** Send the customer Bearer token. For guests (no token) both flags are always `0`.
+- **The flags are `0` / `1`** — `1` when the product is in the list, `0` when it is not. Over GraphQL they are returned as the strings `"1"` / `"0"` (the REST API returns them as `1` / `0` integers). Either way, `0` is falsy and `1` is truthy.
+- A product is considered "in the list" when its own product ID is in the customer's wishlist / compare list — so a configurable parent is flagged when the parent itself was added.
+
+See the **"Get Products with Wishlist & Compare Flags"** dropdown example above.
 
 ## Arguments
 

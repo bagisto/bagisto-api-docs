@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: get-simple-product
     title: Get a Simple Product
-    description: PDP-ready document for a `simple` product. All relations are inlined — no follow-up requests required.
+    description: PDP-ready document for a `simple` product. All relations are inlined — no follow-up requests required. `isInWishlist` / `isInCompare` reflect the signed-in customer (`1` = in the list, `0` = not; send the customer Bearer token); this guest request returns both as `0`.
     request: |
       curl -X GET "http://localhost/api/shop/products/2" \
         -H "Accept: application/json" \
@@ -34,6 +34,8 @@ examples:
         "createdAt": "2024-04-16T23:04:43+05:30",
         "updatedAt": "2024-04-16T23:04:43+05:30",
         "isSaleable": true,
+        "isInWishlist": 0,
+        "isInCompare": 0,
         "color": null, "size": null, "brand": null,
         "categories": [],
         "channels": [
@@ -178,7 +180,9 @@ GET /api/shop/products/{id}
 
 ### Card-level fields
 
-Same shape as items in [Products](/api/rest-api/shop/products/get-products#card-level-fields) — see that page for the field table.
+Same shape as items in [Products](/api/rest-api/shop/products/get-products#card-level-fields) — see that page for the field table. This includes the per-customer `isInWishlist` and `isInCompare` booleans.
+
+> **Wishlist & compare flags:** `isInWishlist` (active channel) and `isInCompare` tell you whether the signed-in customer already has this product in their wishlist / compare list (`1` = yes, `0` = no), so you can highlight the wishlist / compare icon on the product page without a separate lookup. Include the customer Bearer token alongside the storefront key — for guests both are `0`. REST returns `1` / `0` integers (over GraphQL the same flags come back as the strings `"1"` / `"0"`).
 
 ### Always-present extras (over the list)
 

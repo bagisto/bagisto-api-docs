@@ -35,7 +35,9 @@ examples:
           "formattedSpecialPrice": null,
           "formattedMinimumPrice": "$100.00",
           "formattedMaximumPrice": "$100.00",
-          "baseImageUrl": "http://localhost/storage/product/1/zKcWZTLDjcawJmaNg8g1cpARqwVONgEKEflabstT.webp"
+          "baseImageUrl": "http://localhost/storage/product/1/zKcWZTLDjcawJmaNg8g1cpARqwVONgEKEflabstT.webp",
+          "isInWishlist": 0,
+          "isInCompare": 0
         }
       ]
     commonErrors:
@@ -45,6 +47,58 @@ examples:
       - error: 403 Forbidden
         cause: Storefront key inactive or rate-limited
         solution: Activate the key or wait for the rate limit window to reset.
+
+  - id: list-products-wishlist-compare-flags
+    title: List Products with Wishlist & Compare Flags
+    description: Every card carries `isInWishlist` and `isInCompare` so you can highlight the wishlist / compare icon directly from the listing — no need to separately fetch and cross-reference the wishlist or compare lists. These are per-customer flags (`1` = in the list, `0` = not), so include the customer Bearer token; without it (guest) both are always `0`.
+    request: |
+      curl -X GET "http://localhost/api/shop/products?per_page=3" \
+        -H "Accept: application/json" \
+        -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" \
+        -H "Authorization: Bearer 1|customer_token_xxxxxxxxxxxxxxxxxxxxxxxx"
+    response: |
+      HTTP/1.1 200 OK
+      X-Total-Count: 84
+      X-Page: 1
+      X-Per-Page: 3
+      X-Total-Pages: 28
+
+      [
+        {
+          "id": 1,
+          "sku": "COASTALBREEZEMENSHOODIE",
+          "type": "simple",
+          "name": "Coastal Breeze Men's Blue Zipper Hoodie",
+          "price": 100,
+          "baseImageUrl": "http://localhost/storage/product/1/zKcWZTLDjcawJmaNg8g1cpARqwVONgEKEflabstT.webp",
+          "isInWishlist": 1,
+          "isInCompare": 0
+        },
+        {
+          "id": 22,
+          "sku": "ACME-DRAWBAG-001",
+          "type": "simple",
+          "name": "Acme Drawstring Bag",
+          "price": 3000,
+          "baseImageUrl": "http://localhost/storage/product/22/acme-drawbag.webp",
+          "isInWishlist": 0,
+          "isInCompare": 1
+        },
+        {
+          "id": 92,
+          "sku": "bagisto-sticker",
+          "type": "simple",
+          "name": "Bagisto Sticker",
+          "price": 10,
+          "baseImageUrl": "http://localhost/storage/product/92/sticker.webp",
+          "isInWishlist": 0,
+          "isInCompare": 0
+        }
+      ]
+    commonErrors:
+      - error: 401 Unauthorized
+        cause: Missing or invalid `X-STOREFRONT-KEY`
+        solution: Send a valid storefront API key.
 
   - id: paginated-products
     title: Paginated List
@@ -129,8 +183,21 @@ These ~20 fields are returned for every product in the list. The PDP endpoint re
 | `formattedMinimumPrice`  | string          | Currency-formatted `minimumPrice`                                    |
 | `formattedMaximumPrice`  | string          | Currency-formatted `maximumPrice`                                    |
 | `baseImageUrl`           | string \| null  | Primary thumbnail URL                                                |
+| `isInWishlist`           | integer (0/1)   | `1` if this product is in the signed-in customer's wishlist (active channel), else `0`. `0` for guests. |
+| `isInCompare`            | integer (0/1)   | `1` if this product is in the signed-in customer's compare list, else `0`. `0` for guests. |
 
 > Heavy relations (`images`, `videos`, `categories`, `channels`, `variants`, `bookingProducts`, `bundleOptions`, `customizableOptions`, `relatedProducts`, etc.) are **omitted** from the list response. Fetch the [Single Product](/api/rest-api/shop/products/get-product) to get them inlined.
+
+## Wishlist & compare flags
+
+Every product card carries two per-customer booleans, `isInWishlist` and `isInCompare`, so you can render the wishlist and compare icon states straight from the listing response.
+
+Why they exist: the wishlist and compare lists are their own endpoints and paginate independently of the catalog — a product on catalog page 1 may have its wishlist entry on a different wishlist page, so matching the two lists on the client is unreliable. These flags answer the question per product, in the same response, so the wishlist/compare icon can be highlighted without any extra requests.
+
+- **Authentication is required.** Include the customer Bearer token alongside the storefront key. For guests (no customer token) both flags are always `0`.
+- **`isInWishlist`** is scoped to the active channel; **`isInCompare`** applies across the store.
+- A product is flagged (`1`) when its own product ID is in the customer's wishlist / compare list — so a configurable parent is flagged when the parent itself was added.
+- The REST API returns these as `1` / `0` integers. (Over GraphQL the same flags are returned as the strings `"1"` / `"0"`.)
 
 ## Use Cases
 
