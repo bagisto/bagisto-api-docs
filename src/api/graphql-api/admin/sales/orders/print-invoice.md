@@ -14,9 +14,8 @@ GET /api/admin/invoices/{id}/print
 Authorization: Bearer <admin-token>
 ```
 
-The response is an `application/pdf` binary attachment, rendered server-side
-with dompdf using the `admin::sales.invoices.pdf` blade view (the same view the
-monolith `InvoiceController::printInvoice` uses).
+The response is an `application/pdf` binary attachment — the same PDF the admin
+panel produces.
 
 See the [REST → Print Invoice](/api/rest-api/admin/sales/orders/print-invoice)
 page for the full details.
