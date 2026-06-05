@@ -53,10 +53,11 @@ examples:
             "createdAt": "2026-05-20 10:00:00",
             "order": {
               "id": 8,
-              "incrementId": "2000000008",
-              "status": "complete",
-              "customerEmail": "jane.doe@example.com",
-              "grandTotal": 120,
+              "incrementId": "00000000008",
+              "status": "processing",
+              "customerName": "John Doe",
+              "customerEmail": "john.doe@example.com",
+              "grandTotal": 240,
               "orderCurrencyCode": "USD"
             },
             "orderItem": {
@@ -116,6 +117,7 @@ A slim summary of the order this booking belongs to, so you can render the booki
 | `id` | `Int` | Order id. |
 | `incrementId` | `String` | Human-facing order number. |
 | `status` | `String` | Order status — e.g. `complete`, `processing`, `pending`. |
+| `customerName` | `String` | Name of the customer who placed the order. |
 | `customerEmail` | `String` | Email of the customer who placed the order. |
 | `grandTotal` | `Float` | Order grand total (order currency). |
 | `orderCurrencyCode` | `String` | Currency the order was placed in (e.g. `USD`). |

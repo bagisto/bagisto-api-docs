@@ -1,16 +1,23 @@
 ---
 outline: false
 examples:
-  - id: admin-get-shipment
+  - id: admin-shipment-detail-gql
     title: Get Shipment
-    description: Fetch a single shipment with carrier/tracking detail and embedded line items.
+    description: Fetch a single shipment by id, with the order/customer context, both addresses, and the shipped line items inlined.
     query: |
-      query GetShipment($id: ID!) {
+      query AdminShipment($id: ID!) {
         adminShipment(id: $id) {
           id
           _id
           orderId
           orderIncrementId
+          shippedTo
+          orderDate
+          orderStatus
+          orderStatusLabel
+          channelName
+          customerName
+          customerEmail
           status
           totalQty
           totalWeight
@@ -20,73 +27,74 @@ examples:
           emailSent
           inventorySourceId
           inventorySourceName
-          shippedTo
-          orderDate
+          billingAddress
+          shippingAddress
           createdAt
           updatedAt
-          items {
-            edges {
-              node {
-                id
-                orderItemId
-                sku
-                name
-                qty
-                price
-                formattedPrice
-                total
-                formattedTotal
-                productId
-                productType
-              }
-            }
-          }
+          items
         }
       }
     variables: |
       {
-        "id": "/api/admin/shipments/55"
+        "id": "/api/admin/shipments/7"
       }
     response: |
       {
         "data": {
           "adminShipment": {
-            "id": "/api/admin/shipments/55",
-            "_id": 55,
-            "orderId": 2392,
-            "orderIncrementId": "2000000392",
-            "status": "1",
-            "totalQty": 3,
+            "id": "/api/admin/shipments/7",
+            "_id": 7,
+            "orderId": 8,
+            "orderIncrementId": "00000000008",
+            "shippedTo": "John Doe",
+            "orderDate": "2026-05-20 10:00:00",
+            "orderStatus": "processing",
+            "orderStatusLabel": "Processing",
+            "channelName": "Default",
+            "customerName": "John Doe",
+            "customerEmail": "john.doe@example.com",
+            "status": null,
+            "totalQty": 2,
             "totalWeight": null,
-            "carrierCode": "ups",
+            "carrierCode": null,
             "carrierTitle": "UPS",
             "trackNumber": "1Z999AA1",
-            "emailSent": true,
+            "emailSent": false,
             "inventorySourceId": 1,
             "inventorySourceName": "Default",
-            "shippedTo": "John Doe",
-            "orderDate": "2026-05-19 13:11:39",
-            "createdAt": "2026-05-19 13:20:02",
-            "updatedAt": "2026-05-19 13:20:02",
-            "items": {
-              "edges": [
-                {
-                  "node": {
-                    "id": 401,
-                    "orderItemId": 1042,
-                    "sku": "WS-12-S",
-                    "name": "Argus All-Weather Tank-S",
-                    "qty": 3,
-                    "price": 29.99,
-                    "formattedPrice": "$29.99",
-                    "total": 89.97,
-                    "formattedTotal": "$89.97",
-                    "productId": 27,
-                    "productType": "simple"
-                  }
-                }
-              ]
-            }
+            "billingAddress": {
+              "id": 16,
+              "addressType": "order_billing",
+              "firstName": "John",
+              "lastName": "Doe",
+              "city": "Los Angeles",
+              "country": "US",
+              "postcode": "90001",
+              "email": "john.doe@example.com",
+              "phone": "5551234567"
+            },
+            "shippingAddress": {
+              "id": 15,
+              "addressType": "order_shipping",
+              "firstName": "John",
+              "lastName": "Doe",
+              "city": "Los Angeles",
+              "country": "US",
+              "postcode": "90001",
+              "email": "john.doe@example.com",
+              "phone": "5551234567"
+            },
+            "createdAt": "2026-05-20 12:00:00",
+            "updatedAt": "2026-05-20 12:00:00",
+            "items": [
+              {
+                "id": 11,
+                "orderItemId": 42,
+                "sku": "TSHIRT-RED-M",
+                "name": "Red T-Shirt",
+                "qty": 2
+              }
+            ]
           }
         }
       }
@@ -94,7 +102,7 @@ examples:
 
 # Get Shipment
 
-GraphQL counterpart of `GET /api/admin/shipments/{id}`. Returns a single shipment with carrier/tracking detail and its embedded line items — everything the listing leaves out.
+GraphQL counterpart of `GET /api/admin/shipments/{id}`. Returns a single shipment with the order/customer context, both addresses, and the shipped line `items` inlined — everything the listing leaves out.
 
 ## Operation
 
@@ -104,6 +112,10 @@ GraphQL counterpart of `GET /api/admin/shipments/{id}`. Returns a single shipmen
 
 Pass the shipment IRI (`/api/admin/shipments/{id}`) as `id`. Permission: `sales.shipments.view`.
 
+::: warning billingAddress, shippingAddress and items are returned whole
+`billingAddress`, `shippingAddress` and `items` are returned as JSON — **query them bare, without a sub-selection** (`shippingAddress`, not `shippingAddress { … }`). The whole object/array comes back. The keys inside each are listed below for reference.
+:::
+
 ## Fields
 
 | Field | Type | Description |
@@ -112,42 +124,51 @@ Pass the shipment IRI (`/api/admin/shipments/{id}`) as `id`. Permission: `sales.
 | `_id` | `Int` | Numeric shipment id. |
 | `orderId` | `Int` | Id of the parent order. |
 | `orderIncrementId` | `String` | Human-facing number of the parent order. |
-| `status` | `String` | Shipment status. |
-| `totalQty` | `Int` | Total quantity shipped. |
-| `totalWeight` | `Float` | Total weight of the shipment (null when not recorded). |
-| `carrierCode` | `String` | Shipping carrier code (e.g. `ups`). |
-| `carrierTitle` | `String` | Shipping carrier display name (e.g. `UPS`). |
-| `trackNumber` | `String` | Tracking number for the shipment. |
-| `emailSent` | `Boolean` | Whether the shipment email was sent to the customer. |
-| `inventorySourceId` | `Int` | Id of the inventory source (warehouse) items shipped from. |
-| `inventorySourceName` | `String` | Name of that inventory source. |
-| `shippedTo` | `String` | Recipient name from the order's shipping address. |
-| `orderDate` | `String` | When the parent order was placed. |
+| `shippedTo` | `String` | The name on the order's shipping address. |
+| `orderDate` | `String` | When the order was placed. |
+| `orderStatus` | `String` | Parent order status code. |
+| `orderStatusLabel` | `String` | Parent order status display label. |
+| `channelName` | `String` | Sales channel the order belongs to. |
+| `customerName` | `String` | Name of the customer who placed the order. |
+| `customerEmail` | `String` | Email of the customer who placed the order. |
+| `status` | `String` | Shipment status — often `null`. |
+| `totalQty` | `Float` | Total quantity shipped across all line items. |
+| `totalWeight` | `Float` | Combined weight of the shipment — may be `null`. |
+| `carrierCode` | `String` | Shipping carrier code — may be `null`. |
+| `carrierTitle` | `String` | Shipping carrier display name — may be `null`. |
+| `trackNumber` | `String` | Carrier tracking number — may be `null`. |
+| `emailSent` | `Boolean` | Whether the shipment notification email was sent. |
+| `inventorySourceId` | `Int` | Id of the inventory source the items shipped from. |
+| `inventorySourceName` | `String` | Name of the inventory source (warehouse) the items shipped from. |
+| `billingAddress` | `JSON` | The order's billing address — see below. |
+| `shippingAddress` | `JSON` | The order's shipping address — see below. |
 | `createdAt` | `String` | When the shipment was created. |
 | `updatedAt` | `String` | When the shipment was last updated. |
-| `items` | `[ShipmentItem]` | Shipped line items — see the table below. |
+| `items` | `JSON` | The shipped line items — see below. |
 
-### Item fields (`items`)
+### Address objects (`billingAddress`, `shippingAddress`)
 
-`items` is a **cursor connection** — wrap the fields in `edges { node { … } }`, e.g. `items { edges { node { sku qty formattedTotal … } } }`.
+Each is returned as a whole JSON object — query it as a bare field (`shippingAddress`), you cannot sub-select its keys in the query. The keys below are returned inside each object.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | `Int` | Shipment-item id. |
-| `orderItemId` | `Int` | Id of the order item this line was shipped from. |
+| `id` | `Int` | Address row id. |
+| `addressType` | `String` | `order_billing` or `order_shipping`. |
+| `firstName` / `lastName` | `String` | Recipient name. |
+| `city` | `String` | City. |
+| `country` | `String` | Country code (e.g. `US`). |
+| `postcode` | `String` | Postal code. |
+| `email` | `String` | Contact email. |
+| `phone` | `String` | Contact phone. |
+
+### Shipped items (`items`)
+
+`items` is returned as a whole JSON array — query it as a bare field (`items`), you cannot sub-select its keys in the query. Each entry has the keys below.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `Int` | Shipment-item row id. |
+| `orderItemId` | `Int` | The order line this shipped item maps to. |
 | `sku` | `String` | Product SKU. |
-| `name` | `String` | Product name as ordered. |
-| `qty` | `Int` | Quantity shipped for this line. |
-| `price` | `Float` | Unit price (order currency). |
-| `formattedPrice` | `String` | `price` formatted. |
-| `basePrice` | `Float` | Unit price in the store's base currency. |
-| `total` | `Float` | Line total (order currency). |
-| `formattedTotal` | `String` | `total` formatted. |
-| `baseTotal` | `Float` | Line total in the store's base currency. |
-| `taxAmount` | `Float` | Tax for this line. |
-| `formattedTaxAmount` | `String` | `taxAmount` formatted. |
-| `discountAmount` | `Float` | Discount for this line. |
-| `formattedDiscountAmount` | `String` | `discountAmount` formatted. |
-| `productId` | `Int` | Id of the product. |
-| `productType` | `String` | Product type — `simple`, `configurable`, `bundle`, etc. |
-| `additional` | `JSON` | Extra item data (selected options, configurable attributes, etc.). |
+| `name` | `String` | Product name. |
+| `qty` | `Float` | Quantity shipped for this line. |

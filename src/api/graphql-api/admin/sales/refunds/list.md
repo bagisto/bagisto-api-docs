@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: admin-refunds-list-gql
     title: List Refunds (Datagrid)
-    description: Cursor-paginated refunds datagrid listing. Returns the slim datagrid columns for each refund — query the single-refund endpoint for line items and the full totals breakdown.
+    description: Cursor-paginated refunds datagrid. Every refund column plus the billing/shipping addresses are populated on each row — only line items and payment info are detail-only.
     query: |
       query AdminRefunds($first: Int, $after: String) {
         adminRefunds(first: $first, after: $after) {
@@ -15,12 +15,32 @@ examples:
               orderId
               orderIncrementId
               state
+              emailSent
+              totalQty
+              orderCurrencyCode
+              baseCurrencyCode
+              subTotal
+              formattedSubTotal
+              baseSubTotal
               grandTotal
               formattedGrandTotal
               baseGrandTotal
               formattedBaseGrandTotal
+              taxAmount
+              discountAmount
+              shippingAmount
+              adjustmentRefund
+              adjustmentFee
               billedTo
+              orderStatus
+              orderStatusLabel
+              channelName
+              customerName
+              customerEmail
+              billingAddress
+              shippingAddress
               createdAt
+              updatedAt
             }
           }
           pageInfo {
@@ -42,17 +62,53 @@ examples:
               {
                 "cursor": "MA==",
                 "node": {
-                  "id": "/api/admin_refund_list_dtos/1",
+                  "id": "/api/admin/refunds/1",
                   "_id": 1,
                   "orderId": 105,
-                  "orderIncrementId": "2000000105",
+                  "orderIncrementId": "105",
                   "state": "refunded",
+                  "emailSent": true,
+                  "totalQty": 3,
+                  "orderCurrencyCode": "USD",
+                  "baseCurrencyCode": "USD",
+                  "subTotal": 4203,
+                  "formattedSubTotal": "$4,203.00",
+                  "baseSubTotal": 4203,
                   "grandTotal": 4233,
                   "formattedGrandTotal": "$4,233.00",
                   "baseGrandTotal": 4233,
                   "formattedBaseGrandTotal": "$4,233.00",
+                  "taxAmount": 0,
+                  "discountAmount": 0,
+                  "shippingAmount": 30,
+                  "adjustmentRefund": 0,
+                  "adjustmentFee": 0,
                   "billedTo": "John Doe",
-                  "createdAt": "2026-05-18 09:42:11"
+                  "orderStatus": "closed",
+                  "orderStatusLabel": "Closed",
+                  "channelName": "bagisto store",
+                  "customerName": "John Doe",
+                  "customerEmail": "john.doe@example.com",
+                  "billingAddress": {
+                    "id": 493,
+                    "addressType": "order_billing",
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "city": "Los Angeles",
+                    "country": "US",
+                    "postcode": "90001"
+                  },
+                  "shippingAddress": {
+                    "id": 492,
+                    "addressType": "order_shipping",
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "city": "Los Angeles",
+                    "country": "US",
+                    "postcode": "90001"
+                  },
+                  "createdAt": "2026-05-20 14:00:00",
+                  "updatedAt": "2026-05-20 14:00:02"
                 }
               }
             ],
@@ -69,7 +125,7 @@ examples:
 
 # List Refunds (Datagrid)
 
-GraphQL counterpart of `GET /api/admin/refunds`. Returns a cursor-paginated list of refunds, one slim row per refund — the same columns shown on the admin **Sales → Refunds** datagrid.
+GraphQL counterpart of `GET /api/admin/refunds`. Returns a cursor-paginated list of refunds — the same rows shown on the admin **Sales → Refunds** datagrid. Every refund **column** plus the billing/shipping addresses are populated on each row; only the line `items` and payment info are detail-only.
 
 ## Operation
 
@@ -79,42 +135,16 @@ GraphQL counterpart of `GET /api/admin/refunds`. Returns a cursor-paginated list
 
 `sales.refunds.view`
 
+::: warning Address objects are returned whole
+`billingAddress` and `shippingAddress` are returned as JSON — **query them bare, without a sub-selection** (`billingAddress`, not `billingAddress { … }`). The whole object comes back.
+:::
+
 ## Fields
 
-Every field below is part of the refund node, so all are valid to query. The **On listing** column tells you which are populated by `adminRefunds`: a ✓ field is filled on every row; a **detail** field returns `null` on the listing and is populated when you fetch the refund by id (`adminRefund(id:)`). The example above queries only the ✓ fields, which is what you normally want for a datagrid.
-
-| Field | Type | On listing | Description |
-|-------|------|:---------:|-------------|
-| `id` | `ID` | ✓ | Resource identifier (IRI form). |
-| `_id` | `Int` | ✓ | Numeric refund id — use this to fetch the full refund. |
-| `orderId` | `Int` | ✓ | Id of the order this refund belongs to. |
-| `orderIncrementId` | `String` | ✓ | Human-facing number of the parent order. |
-| `state` | `String` | ✓ | Refund state — e.g. `refunded`. |
-| `grandTotal` | `Float` | ✓ | Total amount refunded, in the **order's** currency. |
-| `formattedGrandTotal` | `String` | ✓ | `grandTotal` with the currency symbol (e.g. `"$4,233.00"`). |
-| `baseGrandTotal` | `Float` | ✓ | Refund total in the **store's base** currency. |
-| `formattedBaseGrandTotal` | `String` | ✓ | `baseGrandTotal` with the base-currency symbol. |
-| `billedTo` | `String` | ✓ | Name on the order's billing address (who was refunded). |
-| `createdAt` | `String` | ✓ | When the refund was created. |
-| `orderCurrencyCode` | `String` | detail | Currency the order was placed in (e.g. `USD`). |
-| `totalQty` | `Int` | detail | Total quantity refunded. |
-| `subTotal` | `Float` | detail | Line-items subtotal refunded (order currency). |
-| `formattedSubTotal` | `String` | detail | `subTotal` formatted. |
-| `shippingAmount` | `Float` | detail | Shipping amount refunded (order currency). |
-| `formattedShippingAmount` | `String` | detail | `shippingAmount` formatted. |
-| `taxAmount` | `Float` | detail | Tax amount refunded. |
-| `formattedTaxAmount` | `String` | detail | `taxAmount` formatted. |
-| `discountAmount` | `Float` | detail | Discount adjustment on the refund. |
-| `formattedDiscountAmount` | `String` | detail | `discountAmount` formatted. |
-| `adjustmentRefund` | `Float` | detail | Manual "refund extra" adjustment added by the admin. |
-| `formattedAdjustmentRefund` | `String` | detail | `adjustmentRefund` formatted. |
-| `adjustmentFee` | `Float` | detail | Manual "refund fee" adjustment withheld by the admin. |
-| `formattedAdjustmentFee` | `String` | detail | `adjustmentFee` formatted. |
-| `updatedAt` | `String` | detail | When the refund was last updated. |
-| `items` | `[RefundItem]` | detail | Refunded line items (a **cursor connection** — query `items { edges { node { sku qty price formattedTotal ... } } }`). |
+Every refund column is populated on each row (currency codes, all `base_*` / `formatted*` / incl-tax variants, the adjustment refund/fee, order & customer context, and both address objects). Only `items` (the refunded line items) and the payment info (`paymentMethod`, `paymentTitle`, `shippingMethod`, `shippingTitle`) are **detail-only** — they return `null` on the listing and are filled when you fetch the refund by id with `adminRefund(id:)`. The full field reference is on the [Get Refund](/api/graphql-api/admin/sales/orders/get-refund) page.
 
 **Amounts — which one to show.** Use `formattedGrandTotal` for a viewer working in the order's currency, and `baseGrandTotal` / `formattedBaseGrandTotal` for reporting in the store's base currency. For a single-currency store the two are identical.
 
 ## Listing vs. full record
 
-The listing is a **slim datagrid** — it returns the ✓ columns above for fast paginated browsing. The **detail** fields are not "empty data"; the values exist on the refund record, but loading them (especially `items`) for every row of a large list would be expensive, so the listing leaves them out. Fetch them by id with the single-refund query — see [Get Refund](/api/graphql-api/admin/sales/orders/get-refund). Typical flow: list with `adminRefunds`, read `_id` from the row you want, then fetch the full record.
+The listing already carries every column — the only reason to fetch a single refund is to read its line `items` and payment info, which are skipped on the listing because loading items for every row of a large list would be expensive. Typical flow: list with `adminRefunds`, read `_id` from the row you want, then fetch the full record with `adminRefund(id:)`.

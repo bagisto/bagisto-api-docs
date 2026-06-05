@@ -204,6 +204,10 @@ examples:
 
 GraphQL counterpart of `GET /api/admin/invoices`. Returns a cursor-paginated list of invoices — every invoice **column** is populated on each row, so you can query whichever fields you need without a follow-up call. Requires the `sales.invoices.view` permission. All admin endpoints require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
 
+::: tip How this menu works
+For the invoice `state` semantics, why a paid order can read "pending", the red payment-due countdown, and the print / send-duplicate / mass-status operations, see the [Invoices overview](/api/graphql-api/admin/sales/invoices/).
+:::
+
 ## Operation
 
 `adminInvoices(first, after, id, order_id, state, base_grand_total_from, base_grand_total_to, created_at_from, created_at_to, date_range, sort, order)` — a cursor `QueryCollection`. Every REST query parameter is also exposed as a GraphQL argument; see the [REST page](/api/rest-api/admin/sales/invoices/list) for the full argument table.

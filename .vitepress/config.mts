@@ -532,10 +532,12 @@ export default defineConfig(({ command, mode }) => {
                   },
                   {
                     text: 'Sales',
+                    link: '/api/graphql-api/admin/sales/',
                     collapsed: true,
                     items: [
                       {
                         text: 'Orders',
+                        link: '/api/graphql-api/admin/sales/orders/',
                         collapsed: true,
                         items: [
                           { text: 'List Orders', link: '/api/graphql-api/admin/sales/orders/list-orders' },
@@ -558,6 +560,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Carts',
+                        link: '/api/graphql-api/admin/sales/carts/',
                         collapsed: true,
                         items: [
                           { text: 'Get Cart', link: '/api/graphql-api/admin/sales/carts/get-cart' },
@@ -575,14 +578,19 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Invoices (Datagrid)',
+                        link: '/api/graphql-api/admin/sales/invoices/',
                         collapsed: true,
                         items: [
                           { text: 'List Invoices', link: '/api/graphql-api/admin/sales/invoices/list' },
                           { text: 'Get Invoice', link: '/api/graphql-api/admin/sales/orders/get-invoice' },
+                          { text: 'Print Invoice (PDF)', link: '/api/graphql-api/admin/sales/orders/print-invoice' },
+                          { text: 'Send Duplicate Invoice', link: '/api/graphql-api/admin/sales/orders/send-duplicate-invoice' },
+                          { text: 'Mass Update Status', link: '/api/graphql-api/admin/sales/invoices/mass-update-status' },
                         ]
                       },
                       {
                         text: 'Shipments (Datagrid)',
+                        link: '/api/graphql-api/admin/sales/shipments/',
                         collapsed: true,
                         items: [
                           { text: 'List Shipments', link: '/api/graphql-api/admin/sales/shipments/list' },
@@ -591,6 +599,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Refunds (Datagrid)',
+                        link: '/api/graphql-api/admin/sales/refunds/',
                         collapsed: true,
                         items: [
                           { text: 'List Refunds', link: '/api/graphql-api/admin/sales/refunds/list' },
@@ -599,6 +608,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Transactions',
+                        link: '/api/graphql-api/admin/sales/transactions/',
                         collapsed: true,
                         items: [
                           { text: 'List Transactions', link: '/api/graphql-api/admin/sales/transactions/list' },
@@ -607,6 +617,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Bookings',
+                        link: '/api/graphql-api/admin/sales/bookings/',
                         collapsed: true,
                         items: [
                           { text: 'List Bookings', link: '/api/graphql-api/admin/sales/bookings/list' },
@@ -1252,10 +1263,12 @@ export default defineConfig(({ command, mode }) => {
                   },
                   {
                     text: 'Sales',
+                    link: '/api/rest-api/admin/sales/',
                     collapsed: true,
                     items: [
                       {
                         text: 'Orders',
+                        link: '/api/rest-api/admin/sales/orders/',
                         collapsed: true,
                         items: [
                           { text: 'List Orders', link: '/api/rest-api/admin/sales/orders/list-orders' },
@@ -1278,6 +1291,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Carts',
+                        link: '/api/rest-api/admin/sales/carts/',
                         collapsed: true,
                         items: [
                           { text: 'Get Cart', link: '/api/rest-api/admin/sales/carts/get-cart' },
@@ -1295,14 +1309,19 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Invoices (Datagrid)',
+                        link: '/api/rest-api/admin/sales/invoices/',
                         collapsed: true,
                         items: [
                           { text: 'List Invoices', link: '/api/rest-api/admin/sales/invoices/list' },
                           { text: 'Get Invoice', link: '/api/rest-api/admin/sales/orders/get-invoice' },
+                          { text: 'Print Invoice (PDF)', link: '/api/rest-api/admin/sales/orders/print-invoice' },
+                          { text: 'Send Duplicate Invoice', link: '/api/rest-api/admin/sales/orders/send-duplicate-invoice' },
+                          { text: 'Mass Update Status', link: '/api/rest-api/admin/sales/invoices/mass-update-status' },
                         ]
                       },
                       {
                         text: 'Shipments (Datagrid)',
+                        link: '/api/rest-api/admin/sales/shipments/',
                         collapsed: true,
                         items: [
                           { text: 'List Shipments', link: '/api/rest-api/admin/sales/shipments/list' },
@@ -1311,6 +1330,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Refunds (Datagrid)',
+                        link: '/api/rest-api/admin/sales/refunds/',
                         collapsed: true,
                         items: [
                           { text: 'List Refunds', link: '/api/rest-api/admin/sales/refunds/list' },
@@ -1319,6 +1339,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Transactions',
+                        link: '/api/rest-api/admin/sales/transactions/',
                         collapsed: true,
                         items: [
                           { text: 'List Transactions', link: '/api/rest-api/admin/sales/transactions/list' },
@@ -1327,6 +1348,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Bookings',
+                        link: '/api/rest-api/admin/sales/bookings/',
                         collapsed: true,
                         items: [
                           { text: 'List Bookings', link: '/api/rest-api/admin/sales/bookings/list' },

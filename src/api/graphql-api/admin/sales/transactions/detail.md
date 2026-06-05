@@ -54,11 +54,12 @@ examples:
             "updatedAt": "2026-05-20 12:35:00",
             "order": {
               "id": 8,
-              "incrementId": "2000000460",
-              "status": "complete",
+              "incrementId": "00000000008",
+              "status": "processing",
+              "customerName": "John Doe",
+              "customerEmail": "john.doe@example.com",
               "grandTotal": 99.99,
-              "orderCurrencyCode": "USD",
-              "customerEmail": "jane@example.com"
+              "orderCurrencyCode": "USD"
             }
           }
         }
@@ -111,6 +112,7 @@ Pass the transaction IRI (`/api/admin/transactions/{id}`) as `id`. Permission: `
 | `id` | `Int` | Id of the linked order. |
 | `incrementId` | `String` | Human-facing order number. |
 | `status` | `String` | Order status — e.g. `complete`, `processing`. |
+| `customerName` | `String` | Name of the customer who placed the order. |
+| `customerEmail` | `String` | Email of the customer who placed the order. |
 | `grandTotal` | `Float` | Order grand total (order currency). |
 | `orderCurrencyCode` | `String` | Currency the order was placed in (e.g. `USD`). |
-| `customerEmail` | `String` | Email of the customer who placed the order. |

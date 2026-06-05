@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: admin-transactions-list-gql
     title: List Transactions (Datagrid)
-    description: Cursor-paginated transactions datagrid listing. Returns the slim datagrid columns for each payment transaction — query the single-transaction endpoint for the gateway payload and the linked order summary.
+    description: Cursor-paginated transactions datagrid. Every transaction column plus the raw gateway data blob and the linked order summary is populated on each row.
     query: |
       query AdminTransactions($first: Int, $after: String, $status: String) {
         adminTransactions(first: $first, after: $after, status: $status) {
@@ -21,7 +21,11 @@ examples:
               status
               type
               paymentMethod
+              paymentTitle
+              data
               createdAt
+              updatedAt
+              order
             }
           }
           pageInfo {
@@ -44,18 +48,30 @@ examples:
               {
                 "cursor": "MA==",
                 "node": {
-                  "id": "/api/admin_transaction_list_dtos/4",
+                  "id": "/api/admin/transactions/4",
                   "_id": 4,
-                  "transactionId": "TXN-2000000460",
+                  "transactionId": "pi_3PqXyz9aBcD",
                   "invoiceId": 12,
                   "orderId": 8,
-                  "orderIncrementId": "2000000460",
+                  "orderIncrementId": "00000000008",
                   "amount": 99.99,
                   "formattedAmount": "$99.99",
                   "status": "paid",
-                  "type": "order",
+                  "type": "capture",
                   "paymentMethod": "cashondelivery",
-                  "createdAt": "2026-05-20 12:35:00"
+                  "paymentTitle": "Cash On Delivery",
+                  "data": { "gateway": "offline", "captured": true },
+                  "createdAt": "2026-05-20 12:35:00",
+                  "updatedAt": "2026-05-20 12:35:00",
+                  "order": {
+                    "id": 8,
+                    "incrementId": "00000000008",
+                    "status": "processing",
+                    "customerName": "John Doe",
+                    "customerEmail": "john.doe@example.com",
+                    "grandTotal": 99.99,
+                    "orderCurrencyCode": "USD"
+                  }
                 }
               }
             ],
@@ -67,12 +83,11 @@ examples:
           }
         }
       }
-
 ---
 
 # List Transactions (Datagrid)
 
-GraphQL counterpart of `GET /api/admin/transactions`. Returns a cursor-paginated list of payment transactions, one slim row per transaction — the same columns shown on the admin **Sales → Transactions** datagrid.
+GraphQL counterpart of `GET /api/admin/transactions`. Returns a cursor-paginated list of payment transactions — the same rows shown on the admin **Sales → Transactions** datagrid. Every transaction **column** plus the raw gateway `data` blob and the linked `order` summary are populated on each row, so the field set is identical to [Transaction Detail](/api/graphql-api/admin/sales/transactions/detail).
 
 ## Operation
 
@@ -82,29 +97,14 @@ GraphQL counterpart of `GET /api/admin/transactions`. Returns a cursor-paginated
 
 `sales.transactions.view`
 
+::: warning data and order are returned whole
+`data` (the gateway payload) and `order` (the order summary) are returned as JSON — **query them bare, without a sub-selection** (`data` / `order`, not `order { … }`). The whole object comes back. See [Transaction Detail](/api/graphql-api/admin/sales/transactions/detail) for the keys inside each.
+:::
+
 ## Fields
 
-Every field the listing returns is shown below. The listing columns are a **subset** of the full transaction record, so every documented list field is populated on every row — there are no "empty until you fetch by id" fields here. The **On listing** column marks ✓ for fields the listing returns; a **detail** field is not part of the row and is only available from the single-transaction query (`adminTransaction(id:)`).
+Every field is populated on each row — the transaction columns, the resolved `paymentTitle`, the raw gateway `data` object, and the `order` summary. The full per-field reference is on the [Transaction Detail](/api/graphql-api/admin/sales/transactions/detail) page.
 
-| Field | Type | On listing | Description |
-|-------|------|:---------:|-------------|
-| `id` | `ID` | ✓ | Resource identifier (IRI form). |
-| `_id` | `Int` | ✓ | Numeric transaction id — use this to fetch the full record. |
-| `transactionId` | `String` | ✓ | Gateway transaction reference. |
-| `invoiceId` | `Int` | ✓ | Id of the invoice this transaction settled (null for non-invoice transactions). |
-| `orderId` | `Int` | ✓ | Id of the order this transaction belongs to. |
-| `orderIncrementId` | `String` | ✓ | Human-facing number of the parent order. |
-| `amount` | `Float` | ✓ | Transaction amount. |
-| `formattedAmount` | `String` | ✓ | `amount` with the currency symbol (e.g. `"$99.99"`). |
-| `status` | `String` | ✓ | Transaction status — e.g. `paid`, `pending`. |
-| `type` | `String` | ✓ | Transaction type — e.g. `order`. |
-| `paymentMethod` | `String` | ✓ | Payment method used — e.g. `cashondelivery`. |
-| `createdAt` | `String` | ✓ | When the transaction was recorded. |
-| `paymentTitle` | `String` | detail | Human-readable payment-method title. |
-| `data` | `JSON` | detail | Raw gateway response payload. |
-| `updatedAt` | `String` | detail | When the transaction was last updated. |
-| `order` | `Order` | detail | Slim summary of the linked order (id, increment, status, total, currency, customer email). |
+## Listing vs. fetching one
 
-## Listing vs. full record
-
-The listing is a **slim datagrid** built for fast paginated browsing. Unlike invoices, shipments, or refunds, the transaction listing fields are not "trimmed" values — every column above is fully populated on each row. The single-transaction query simply adds a few extra fields (`paymentTitle`, the gateway `data` payload, `updatedAt`, and the nested `order` summary) that are too heavy or too specific for a datagrid row. Fetch them by id — see [Transaction Detail](/api/graphql-api/admin/sales/transactions/detail). Typical flow: list with `adminTransactions`, read `_id` from the row you want, then fetch the full record.
+The listing already carries the full payload — fetching a single transaction by id (`adminTransaction(id:)`) is only needed when you already hold a transaction id and want just that record. Typical flow: list with `adminTransactions`, read `_id` from the row you want, then fetch the full record.

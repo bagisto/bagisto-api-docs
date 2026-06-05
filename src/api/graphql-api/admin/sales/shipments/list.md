@@ -3,10 +3,10 @@ outline: false
 examples:
   - id: admin-shipments-list-gql
     title: List Shipments (Datagrid)
-    description: Cursor-paginated shipments datagrid listing. Returns the slim datagrid columns for each shipment — query the single-shipment endpoint for line items and carrier/tracking detail.
+    description: Cursor-paginated shipments datagrid. Every shipment column plus the order/customer context and both addresses is populated on each row — only the shipped line items are detail-only.
     query: |
-      query AdminShipments($first: Int, $after: String) {
-        adminShipments(first: $first, after: $after) {
+      query AdminShipments($first: Int, $after: String, $order_id: String) {
+        adminShipments(first: $first, after: $after, order_id: $order_id) {
           edges {
             cursor
             node {
@@ -14,11 +14,27 @@ examples:
               _id
               orderId
               orderIncrementId
-              totalQty
-              inventorySourceName
               shippedTo
               orderDate
+              orderStatus
+              orderStatusLabel
+              channelName
+              customerName
+              customerEmail
+              status
+              totalQty
+              totalWeight
+              carrierCode
+              carrierTitle
+              trackNumber
+              emailSent
+              inventorySourceId
+              inventorySourceName
+              billingAddress
+              shippingAddress
               createdAt
+              updatedAt
+              items
             }
           }
           pageInfo {
@@ -30,7 +46,8 @@ examples:
       }
     variables: |
       {
-        "first": 10
+        "first": 10,
+        "order_id": "00000000008"
       }
     response: |
       {
@@ -40,32 +57,67 @@ examples:
               {
                 "cursor": "MA==",
                 "node": {
-                  "id": "/api/admin_shipment_list_dtos/15",
-                  "_id": 15,
-                  "orderId": 172,
-                  "orderIncrementId": "2000000172",
-                  "totalQty": 1,
-                  "inventorySourceName": "Default",
+                  "id": "/api/admin/shipments/7",
+                  "_id": 7,
+                  "orderId": 8,
+                  "orderIncrementId": "00000000008",
                   "shippedTo": "John Doe",
-                  "orderDate": "2026-05-12 10:04:55",
-                  "createdAt": "2026-05-12 11:20:31"
+                  "orderDate": "2026-05-20 10:00:00",
+                  "orderStatus": "processing",
+                  "orderStatusLabel": "Processing",
+                  "channelName": "Default",
+                  "customerName": "John Doe",
+                  "customerEmail": "john.doe@example.com",
+                  "status": null,
+                  "totalQty": 2,
+                  "totalWeight": null,
+                  "carrierCode": null,
+                  "carrierTitle": "UPS",
+                  "trackNumber": "1Z999AA1",
+                  "emailSent": false,
+                  "inventorySourceId": 1,
+                  "inventorySourceName": "Default",
+                  "billingAddress": {
+                    "id": 16,
+                    "addressType": "order_billing",
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "city": "Los Angeles",
+                    "country": "US",
+                    "postcode": "90001",
+                    "email": "john.doe@example.com",
+                    "phone": "5551234567"
+                  },
+                  "shippingAddress": {
+                    "id": 15,
+                    "addressType": "order_shipping",
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "city": "Los Angeles",
+                    "country": "US",
+                    "postcode": "90001",
+                    "email": "john.doe@example.com",
+                    "phone": "5551234567"
+                  },
+                  "createdAt": "2026-05-20 12:00:00",
+                  "updatedAt": "2026-05-20 12:00:00",
+                  "items": []
                 }
               }
             ],
             "pageInfo": {
-              "hasNextPage": true,
-              "endCursor": "OQ=="
+              "hasNextPage": false,
+              "endCursor": "MA=="
             },
-            "totalCount": 15
+            "totalCount": 1
           }
         }
       }
-
 ---
 
 # List Shipments (Datagrid)
 
-GraphQL counterpart of `GET /api/admin/shipments`. Returns a cursor-paginated list of shipments, one slim row per shipment — the same columns shown on the admin **Sales → Shipments** datagrid.
+GraphQL counterpart of `GET /api/admin/shipments`. Returns a cursor-paginated list of shipments — the same rows shown on the admin **Sales → Shipments** datagrid. Every shipment **column** plus the order/customer context and both the billing and shipping addresses are populated on each row, so the field set is identical to [Shipment Detail](/api/graphql-api/admin/sales/orders/get-shipment) except for the shipped line `items`, which are returned only by the detail query (`[]` on the listing).
 
 ## Operation
 
@@ -75,31 +127,14 @@ GraphQL counterpart of `GET /api/admin/shipments`. Returns a cursor-paginated li
 
 `sales.shipments.view`
 
+::: warning billingAddress, shippingAddress and items are returned whole
+`billingAddress`, `shippingAddress` and `items` are returned as JSON — **query them bare, without a sub-selection** (`shippingAddress`, not `shippingAddress { … }`). The whole object/array comes back. See [Shipment Detail](/api/graphql-api/admin/sales/orders/get-shipment) for the keys inside each.
+:::
+
 ## Fields
 
-Every field below is part of the shipment node, so all are valid to query. The **On listing** column tells you which are populated by `adminShipments`: a ✓ field is filled on every row; a **detail** field returns `null` on the listing and is populated when you fetch the shipment by id (`adminShipment(id:)`). The example above queries only the ✓ fields, which is what you normally want for a datagrid.
+Every field is populated on each row — the shipment columns, the order/customer context, and both address objects. Only the shipped line `items` are left empty (`[]`) on the listing. The full per-field reference is on the [Shipment Detail](/api/graphql-api/admin/sales/orders/get-shipment) page.
 
-| Field | Type | On listing | Description |
-|-------|------|:---------:|-------------|
-| `id` | `ID` | ✓ | Resource identifier (IRI form). |
-| `_id` | `Int` | ✓ | Numeric shipment id — use this to fetch the full shipment. |
-| `orderId` | `Int` | ✓ | Id of the order this shipment belongs to. |
-| `orderIncrementId` | `String` | ✓ | Human-facing number of the parent order. |
-| `totalQty` | `Int` | ✓ | Total quantity shipped in this shipment. |
-| `inventorySourceName` | `String` | ✓ | Name of the inventory source (warehouse) the items shipped from. |
-| `shippedTo` | `String` | ✓ | Recipient name from the order's shipping address. |
-| `orderDate` | `String` | ✓ | When the parent order was placed. |
-| `createdAt` | `String` | ✓ | When the shipment was created. |
-| `status` | `String` | detail | Shipment status. |
-| `totalWeight` | `Float` | detail | Total weight of the shipment. |
-| `carrierCode` | `String` | detail | Shipping carrier code. |
-| `carrierTitle` | `String` | detail | Shipping carrier display name. |
-| `trackNumber` | `String` | detail | Tracking number for the shipment. |
-| `emailSent` | `Boolean` | detail | Whether the shipment email was sent to the customer. |
-| `inventorySourceId` | `Int` | detail | Id of the inventory source the items shipped from. |
-| `updatedAt` | `String` | detail | When the shipment was last updated. |
-| `items` | `[ShipmentItem]` | detail | Shipped line items (a **cursor connection** — query `items { edges { node { sku qty price formattedTotal ... } } }`). |
+## Listing vs. fetching one
 
-## Listing vs. full record
-
-The listing is a **slim datagrid** — it returns the ✓ columns above for fast paginated browsing. The **detail** fields are not "empty data"; the values exist on the shipment record, but loading them (especially `items`) for every row of a large list would be expensive, so the listing leaves them out. Fetch them by id with the single-shipment query — see [Get Shipment](/api/graphql-api/admin/sales/orders/get-shipment). Typical flow: list with `adminShipments`, read `_id` from the row you want, then fetch the full record.
+The listing already carries the full payload — fetching a single shipment by id (`adminShipment(id:)`) is only needed when you want the shipped line `items`, or when you already hold a shipment id and want just that record. Typical flow: list with `adminShipments`, read `_id` from the row you want, then fetch the full record.
