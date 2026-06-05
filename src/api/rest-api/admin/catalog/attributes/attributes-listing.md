@@ -61,6 +61,10 @@ Paginated, filterable, and sortable attribute list that mirrors the Bagisto admi
 listing for the admin API — same columns, same filters, and the same sort options
 used by the datagrid.
 
+::: tip How this menu works
+For attribute types, options, and the configurable/filterable flags, see the [Attributes overview](/api/rest-api/admin/catalog/attributes/).
+:::
+
 ## Endpoint
 
 | Endpoint | Method | Authentication |

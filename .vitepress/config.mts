@@ -450,6 +450,7 @@ export default defineConfig(({ command, mode }) => {
                     items: [
                       {
                         text: 'Products',
+                        link: '/api/graphql-api/admin/catalog/products/',
                         collapsed: true,
                         items: [
                           { text: 'List Products (Picker)', link: '/api/graphql-api/admin/catalog/products/list' },
@@ -474,6 +475,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Categories',
+                        link: '/api/graphql-api/admin/catalog/categories/',
                         collapsed: true,
                         items: [
                           { text: 'Categories Listing (Datagrid)', link: '/api/graphql-api/admin/catalog/categories/categories-listing' },
@@ -488,6 +490,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Attributes',
+                        link: '/api/graphql-api/admin/catalog/attributes/',
                         collapsed: true,
                         items: [
                           { text: 'Attributes Listing (Datagrid)', link: '/api/graphql-api/admin/catalog/attributes/attributes-listing' },
@@ -501,6 +504,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Attribute Families',
+                        link: '/api/graphql-api/admin/catalog/families/',
                         collapsed: true,
                         items: [
                           { text: 'Families Listing (Datagrid)', link: '/api/graphql-api/admin/catalog/families/families-listing' },
@@ -1181,6 +1185,7 @@ export default defineConfig(({ command, mode }) => {
                     items: [
                       {
                         text: 'Products',
+                        link: '/api/rest-api/admin/catalog/products/',
                         collapsed: true,
                         items: [
                           { text: 'List Products (Picker)', link: '/api/rest-api/admin/catalog/products/list' },
@@ -1205,6 +1210,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Categories',
+                        link: '/api/rest-api/admin/catalog/categories/',
                         collapsed: true,
                         items: [
                           { text: 'Categories Listing (Datagrid)', link: '/api/rest-api/admin/catalog/categories/categories-listing' },
@@ -1219,6 +1225,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Attributes',
+                        link: '/api/rest-api/admin/catalog/attributes/',
                         collapsed: true,
                         items: [
                           { text: 'Attributes Listing (Datagrid)', link: '/api/rest-api/admin/catalog/attributes/attributes-listing' },
@@ -1232,6 +1239,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Attribute Families',
+                        link: '/api/rest-api/admin/catalog/families/',
                         collapsed: true,
                         items: [
                           { text: 'Families Listing (Datagrid)', link: '/api/rest-api/admin/catalog/families/families-listing' },

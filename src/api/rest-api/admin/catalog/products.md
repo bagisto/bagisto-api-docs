@@ -32,7 +32,17 @@ examples:
             "attributeFamilyId": 1,
             "attributeFamilyName": "Default",
             "urlKey": "classic-watch",
-            "visibleIndividually": true
+            "visibleIndividually": true,
+            "shortDescription": "<p>A timeless classic watch.</p>",
+            "description": "<p>Full HTML product description.</p>",
+            "metaTitle": "Classic Watch",
+            "metaDescription": "Buy the Classic Watch",
+            "metaKeywords": "watch, classic",
+            "weight": 0.25,
+            "featured": false,
+            "new": true,
+            "createdAt": "2026-05-20 10:00:00",
+            "updatedAt": "2026-05-22 14:30:00"
           }
         ],
         "meta": {
@@ -57,6 +67,10 @@ Paginated, filterable, and sortable product list that mirrors the Bagisto admin
 **Catalog → Products** datagrid 1:1. This is the authoritative product-management
 listing for the admin API — same columns, same filters, and the same sort options
 used by the datagrid.
+
+::: tip How this menu works
+For the product types, the two-step create flow, status vs. visibleIndividually, and the per-product sub-resources, see the [Products overview](/api/rest-api/admin/catalog/products/).
+:::
 
 ::: tip Distinct from the Create-Order picker
 `GET /api/admin/catalog/products` (this endpoint) is the full datagrid — 18
@@ -144,6 +158,23 @@ Responses use the standard admin `{ data, meta }` envelope.
 | `attributeFamilyName` | string\|null | Attribute family name |
 | `urlKey` | string\|null | URL slug (e.g. `classic-watch`) |
 | `visibleIndividually` | boolean\|null | Whether the product appears in category/search listings |
+| `shortDescription` | string\|null | Short HTML description |
+| `description` | string\|null | Full HTML description |
+| `metaTitle` | string\|null | SEO meta title |
+| `metaDescription` | string\|null | SEO meta description |
+| `metaKeywords` | string\|null | SEO meta keywords |
+| `weight` | number\|null | Product weight |
+| `featured` | boolean | Whether the product is flagged as featured |
+| `new` | boolean | Whether the product is flagged as "new" |
+| `createdAt` | string | Creation timestamp |
+| `updatedAt` | string | Last-update timestamp |
+
+The **heavy relations** — `translations`, `images`, `categories`, `inventories`,
+`customerGroupPrices`, and the type-specific blocks (`variants` / `bundleOptions`
+/ `linkedProducts` / `downloadableLinks` / `downloadableSamples` /
+`superAttributes`) — stay **detail-only** (returned as `null` on the listing).
+Fetch them from the single-product endpoint
+`GET /api/admin/catalog/products/{id}`.
 
 ## Example Request
 
@@ -176,7 +207,17 @@ curl -X GET "https://your-domain.com/api/admin/catalog/products?per_page=10&page
       "attributeFamilyId": 1,
       "attributeFamilyName": "Default",
       "urlKey": "classic-watch",
-      "visibleIndividually": true
+      "visibleIndividually": true,
+      "shortDescription": "<p>A timeless classic watch.</p>",
+      "description": "<p>Full HTML product description.</p>",
+      "metaTitle": "Classic Watch",
+      "metaDescription": "Buy the Classic Watch",
+      "metaKeywords": "watch, classic",
+      "weight": 0.25,
+      "featured": false,
+      "new": true,
+      "createdAt": "2026-05-20 10:00:00",
+      "updatedAt": "2026-05-22 14:30:00"
     }
   ],
   "meta": {

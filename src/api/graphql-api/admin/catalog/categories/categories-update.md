@@ -13,7 +13,7 @@ examples:
     variables: |
       {
         "input": {
-          "id": "/api/admin/categories/7",
+          "id": "/api/admin/catalog/categories/7",
           "locale": "en",
           "position": 2,
           "attributes": [11, 23],
@@ -30,7 +30,7 @@ examples:
       {
         "data": {
           "updateAdminCategory": {
-            "adminCategory": { "id": "/api/admin/categories/7", "_id": 7 }
+            "adminCategory": { "id": "/api/admin/catalog/categories/7", "_id": 7 }
           }
         }
       }

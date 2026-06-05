@@ -53,7 +53,7 @@ examples:
               {
                 "cursor": "MA==",
                 "node": {
-                  "id": "/api/admin/admin_attribute_families/3",
+                  "id": "/api/admin/catalog/families/3",
                   "_id": 3,
                   "code": "apparel",
                   "name": "Apparel"
@@ -62,7 +62,7 @@ examples:
               {
                 "cursor": "MQ==",
                 "node": {
-                  "id": "/api/admin/admin_attribute_families/1",
+                  "id": "/api/admin/catalog/families/1",
                   "_id": 1,
                   "code": "default",
                   "name": "Default"
@@ -86,6 +86,10 @@ examples:
 Cursor-paginated GraphQL query that mirrors the Bagisto admin **Catalog →
 Attribute Families** datagrid. Returns the flat family list with filtering,
 sorting, and cursor pagination.
+
+::: tip How this menu works
+For how a family's attribute groups + attributes are structured and the delete guards, see the [Attribute Families overview](/api/graphql-api/admin/catalog/families/).
+:::
 
 ## Operation
 
@@ -136,7 +140,7 @@ Each `edges[].node` object contains:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | `ID` | API Platform IRI (e.g. `/api/admin/admin_attribute_families/1`) |
+| `id` | `ID` | API Platform IRI (e.g. `/api/admin/catalog/families/1`) |
 | `_id` | `Int` | Raw family ID |
 | `code` | `String` | Family code (e.g. `default`, `apparel`) |
 | `name` | `String` | Family display name (e.g. `Default`, `Apparel`) |
@@ -205,7 +209,7 @@ query AdminAttributeFamilies(
         {
           "cursor": "MA==",
           "node": {
-            "id": "/api/admin/admin_attribute_families/3",
+            "id": "/api/admin/catalog/families/3",
             "_id": 3,
             "code": "apparel",
             "name": "Apparel"
@@ -214,7 +218,7 @@ query AdminAttributeFamilies(
         {
           "cursor": "MQ==",
           "node": {
-            "id": "/api/admin/admin_attribute_families/1",
+            "id": "/api/admin/catalog/families/1",
             "_id": 1,
             "code": "default",
             "name": "Default"

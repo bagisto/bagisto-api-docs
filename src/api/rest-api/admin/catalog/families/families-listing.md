@@ -48,6 +48,10 @@ admin **Catalog → Attribute Families** datagrid 1:1. This is the authoritative
 family-management listing for the admin API — same 3 columns and the same sort
 options used by the datagrid.
 
+::: tip How this menu works
+For how a family's attribute groups + attributes are structured and the delete guards, see the [Attribute Families overview](/api/rest-api/admin/catalog/families/).
+:::
+
 ## Endpoint
 
 | Endpoint | Method | Authentication |

@@ -61,7 +61,7 @@ examples:
               {
                 "cursor": "MA==",
                 "node": {
-                  "id": "/api/admin/admin_categories/7",
+                  "id": "/api/admin/catalog/categories/7",
                   "_id": 7,
                   "name": "Apparel",
                   "slug": "apparel",
@@ -95,11 +95,15 @@ Cursor-paginated GraphQL query that mirrors the Bagisto admin **Catalog →
 Categories** datagrid. Returns the flat category list with filtering, sorting,
 and cursor pagination.
 
+::: tip How this menu works
+For the flat-list vs. tree shapes, hierarchy/move semantics, and display modes, see the [Categories overview](/api/graphql-api/admin/catalog/categories/).
+:::
+
 ::: tip Distinct from the tree query
-`adminCatalogCategories` (this query) returns a **flat, cursor-paginated list**
+`adminCategories` (this query) returns a **flat, cursor-paginated list**
 — ideal for datagrid/table views.
 
-`adminCatalogCategoryTrees` returns the **nested hierarchy** — ideal for
+`adminCategoryTrees` returns the **nested hierarchy** — ideal for
 tree-picker UIs.
 :::
 
@@ -107,7 +111,7 @@ tree-picker UIs.
 
 | Operation | Type | Pagination |
 |-----------|------|------------|
-| `adminCatalogCategories` | Query | Cursor (`first` / `after`) |
+| `adminCategories` | Query | Cursor (`first` / `after`) |
 
 ## Authentication
 
@@ -148,7 +152,7 @@ Each `edges[].node` object contains:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | `ID` | API Platform IRI (e.g. `/api/admin/admin_categories/7`) |
+| `id` | `ID` | API Platform IRI (e.g. `/api/admin/catalog/categories/7`) |
 | `_id` | `Int` | Raw category ID |
 | `name` | `String` | Category name resolved via `locale` |
 | `slug` | `String` | URL slug |
@@ -172,7 +176,7 @@ query AdminCatalogCategories(
   $status: Int
   $locale: String
 ) {
-  adminCatalogCategories(
+  adminCategories(
     first: $first
     after: $after
     name: $name
@@ -222,12 +226,12 @@ query AdminCatalogCategories(
 ```json
 {
   "data": {
-    "adminCatalogCategories": {
+    "adminCategories": {
       "edges": [
         {
           "cursor": "MA==",
           "node": {
-            "id": "/api/admin/admin_categories/7",
+            "id": "/api/admin/catalog/categories/7",
             "_id": 7,
             "name": "Apparel",
             "slug": "apparel",
@@ -278,7 +282,7 @@ Pass `sort` with the column name and `order` for direction. The compound form
 
 ## Notes
 
-- **`translations` and `filterableAttributeIds` are not available** in this query — they are only returned by the item query `adminCatalogCategory(id: ID!)`. Use the item query when you need per-locale metadata for a specific category.
+- **`translations` and `filterableAttributeIds` are not available** in this query — they are only returned by the item query `adminCategory(id: ID!)`. Use the item query when you need per-locale metadata for a specific category.
 - **Same provider as the REST endpoint** — `AdminCategoryCollectionProvider` serves both transports with identical filter and sort semantics.
 - **No automatic status filter** — this query returns all statuses by default. Pass `status: 1` to restrict to enabled categories.
-- **`parent_id` filter** returns only direct children of the specified parent. For the full subtree use `adminCatalogCategoryTrees` with `rootId`.
+- **`parent_id` filter** returns only direct children of the specified parent. For the full subtree use `adminCategoryTrees` with `rootId`.

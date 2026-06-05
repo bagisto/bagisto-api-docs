@@ -12,7 +12,7 @@ examples:
         $isConfigurable: Int
         $locale: String
       ) {
-        adminCatalogAdminAttributes(
+        adminAttributes(
           first: $first
           after: $after
           type: $type
@@ -61,12 +61,12 @@ examples:
     response: |
       {
         "data": {
-          "adminCatalogAdminAttributes": {
+          "adminAttributes": {
             "edges": [
               {
                 "cursor": "MA==",
                 "node": {
-                  "id": "/api/admin/admin_attributes/12",
+                  "id": "/api/admin/catalog/attributes/12",
                   "_id": 12,
                   "code": "color",
                   "type": "select",
@@ -105,16 +105,20 @@ Cursor-paginated GraphQL query that mirrors the Bagisto admin **Catalog →
 Attributes** datagrid. Returns the flat attribute list with filtering, sorting,
 and cursor pagination.
 
+::: tip How this menu works
+For attribute types, options, and the configurable/filterable flags, see the [Attributes overview](/api/graphql-api/admin/catalog/attributes/).
+:::
+
 ## Operation
 
 | Operation | Type | Pagination |
 |-----------|------|------------|
-| `adminCatalogAdminAttributes` | Query | Cursor (`first` / `after`) |
+| `adminAttributes` | Query | Cursor (`first` / `after`) |
 
 ::: tip Operation name
 API Platform derives the GraphQL operation name from the resource `shortName`.
 `AdminAttribute` has `shortName: 'AdminAttribute'`, so the collection query is
-`adminCatalogAdminAttributes` (the `Catalog` segment is the API tag, not part of
+`adminAttributes` (the `Catalog` segment is the API tag, not part of
 the name). The item query is `adminAttribute(id: ID!)`.
 :::
 
@@ -162,7 +166,7 @@ Each `edges[].node` object contains:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | `ID` | API Platform IRI (e.g. `/api/admin/admin_attributes/12`) |
+| `id` | `ID` | API Platform IRI (e.g. `/api/admin/catalog/attributes/12`) |
 | `_id` | `Int` | Raw attribute ID |
 | `code` | `String` | Attribute code (e.g. `color`, `size`) |
 | `type` | `String` | Attribute type (e.g. `select`, `text`, `boolean`) |
@@ -197,7 +201,7 @@ query AdminCatalogAttributes(
   $is_configurable: Int
   $locale: String
 ) {
-  adminCatalogAdminAttributes(
+  adminAttributes(
     first: $first
     after: $after
     type: $type
@@ -252,12 +256,12 @@ query AdminCatalogAttributes(
 ```json
 {
   "data": {
-    "adminCatalogAdminAttributes": {
+    "adminAttributes": {
       "edges": [
         {
           "cursor": "MA==",
           "node": {
-            "id": "/api/admin/admin_attributes/12",
+            "id": "/api/admin/catalog/attributes/12",
             "_id": 12,
             "code": "color",
             "type": "select",
@@ -313,7 +317,7 @@ Pass `sort` with the column name and `order` for direction.
 
 ## Notes
 
-- **Same provider as the REST endpoint** — `AdminAttributeCollectionProvider` serves both transports with identical filter and sort semantics.
+- **GraphQL and REST share identical filter and sort semantics** — the same results are returned over both transports.
 - **No automatic filter applied.** All attributes (system and user-defined) are returned by default. Pass `is_user_defined: 1` to restrict to admin-created attributes.
-- **`extraArgs` declares custom arguments.** The filter/sort arguments are not part of the standard API Platform GraphQL schema for `QueryCollection` — they are explicitly declared via `extraArgs` on the operation. Pass them at the top level of the query, alongside `first` and `after`.
-- **Scalar GraphQL quirk:** camelCase fields (`isRequired`, `isConfigurable`, etc.) may return `null` over GraphQL for some installations — a known pre-existing limitation in the project's scalar name conversion for non-string fields. Use the REST listing endpoint if you need guaranteed non-null boolean/integer values.
+- **Pass filter and sort arguments at the top level** of the query, alongside `first` and `after`.
+- **Every camelCase flag field resolves over GraphQL** — `isRequired`, `isConfigurable`, `isFilterable`, etc. all come back populated; GraphQL and REST return the same values.

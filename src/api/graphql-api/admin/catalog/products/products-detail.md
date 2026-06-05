@@ -60,7 +60,7 @@ examples:
       {
         "data": {
           "adminCatalogProduct": {
-            "id": "/api/admin/admin_catalog_products/42",
+            "id": "/api/admin/catalog/products/42",
             "_id": 42,
             "sku": "SP-001",
             "name": "Classic Watch",
@@ -179,7 +179,7 @@ accepted by the resolver.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | `ID` | API Platform IRI (e.g. `/api/admin/admin_catalog_products/42`) |
+| `id` | `ID` | API Platform IRI (e.g. `/api/admin/catalog/products/42`) |
 | `_id` | `Int` | Raw numeric product ID |
 | `sku` | `String` | Product SKU |
 | `name` | `String` | Localised product name |
@@ -271,20 +271,8 @@ accepted by the resolver.
 | `sourceCode` | string | Inventory source code (e.g. `default`) |
 | `qty` | integer | Quantity at this source |
 
-::: warning Known limitation — ?array fields may return null over GraphQL
-`translations`, `images`, `categories`, `inventories`, `customerGroupPrices`, and
-all type-specific blocks are typed as `?array` (plain PHP arrays) on the
-`AdminCatalogProduct` resource. API Platform's GraphQL serializer does not reliably
-serialize raw `?array` scalar fields — these fields can return `null` over GraphQL
-even when the REST endpoint returns the full array.
-
-**Recommended approach:** use `GET /api/admin/catalog/products/{id}` (REST) as the
-canonical path when you need guaranteed nested-array data such as translations,
-images, inventories, or type-specific blocks. This is a pre-existing project-wide
-limitation; no workaround is available on the GraphQL side without promoting each
-array to a typed sub-resource (which would change the response shape). If the
-fields come back non-null in your environment, the shapes described above are
-correct and can be used safely.
+::: warning Nested data is returned whole
+`translations`, `images`, `categories`, `inventories`, `customerGroupPrices`, and the type-specific blocks (`variants` / `bundleOptions` / `linkedProducts` / `downloadableLinks` / `downloadableSamples` / `superAttributes`) are returned as **whole JSON** — query each as a bare field (`translations`, not `translations { … }`). The entire array comes back, and it resolves over GraphQL on the detail query.
 :::
 
 ## Example Query
@@ -351,7 +339,7 @@ query AdminCatalogProduct($id: ID!) {
 {
   "data": {
     "adminCatalogProduct": {
-      "id": "/api/admin/admin_catalog_products/42",
+      "id": "/api/admin/catalog/products/42",
       "_id": 42,
       "sku": "SP-001",
       "name": "Classic Watch",

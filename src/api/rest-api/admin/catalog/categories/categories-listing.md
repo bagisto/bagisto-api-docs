@@ -55,6 +55,10 @@ Paginated, filterable, and sortable category list that mirrors the Bagisto admin
 listing for the admin API — same columns, same filters, and the same sort options
 used by the datagrid.
 
+::: tip How this menu works
+For the flat-list vs. tree shapes, hierarchy/move semantics, and display modes, see the [Categories overview](/api/rest-api/admin/catalog/categories/).
+:::
+
 ::: tip Distinct from the tree endpoint
 `GET /api/admin/catalog/categories` (this endpoint) returns a **flat, paginated
 list** of categories — ideal for datagrid/table views.

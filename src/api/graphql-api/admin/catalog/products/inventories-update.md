@@ -39,7 +39,7 @@ Equivalent to [`PUT /api/admin/catalog/products/{productId}/inventories`](/api/r
 
 | Operation | Type |
 |-----------|------|
-| `updateAdminCatalogProductInventories` | Mutation |
+| `updateAdminCatalogProductInventory` | Mutation |
 
 ## Input
 

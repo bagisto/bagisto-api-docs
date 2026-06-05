@@ -33,13 +33,13 @@ examples:
       }
     variables: |
       {
-        "id": "/api/admin/admin_attributes/12"
+        "id": "/api/admin/catalog/attributes/12"
       }
     response: |
       {
         "data": {
           "adminAttribute": {
-            "id": "/api/admin/admin_attributes/12",
+            "id": "/api/admin/catalog/attributes/12",
             "_id": 12,
             "code": "color",
             "type": "select",
@@ -123,18 +123,18 @@ mutation.
 
 | Argument | Type | Required | Description |
 |----------|------|----------|-------------|
-| `id` | `ID!` | Yes | API Platform IRI of the attribute (e.g. `"/api/admin/admin_attributes/12"`) |
+| `id` | `ID!` | Yes | API Platform IRI of the attribute (e.g. `"/api/admin/catalog/attributes/12"`) |
 
 ::: tip Finding the IRI
-The IRI can be taken directly from `id` in any `adminCatalogAdminAttributes` edge
-node, or constructed as `/api/admin/admin_attributes/{numericId}`.
+The IRI can be taken directly from `id` in any `adminAttributes` edge
+node, or constructed as `/api/admin/catalog/attributes/{numericId}`.
 :::
 
 ## Fields
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | `ID` | API Platform IRI (e.g. `/api/admin/admin_attributes/12`) |
+| `id` | `ID` | API Platform IRI (e.g. `/api/admin/catalog/attributes/12`) |
 | `_id` | `Int` | Raw attribute ID |
 | `code` | `String` | Attribute code (e.g. `color`, `size`) |
 | `type` | `String` | Attribute type (e.g. `select`, `text`, `boolean`) |
@@ -188,6 +188,10 @@ corresponds to one row in `attribute_options`:
 | `locale` | string | Locale code (e.g. `en`, `fr`) |
 | `label` | string\|null | Locale-specific display label for the option |
 
+::: warning translations and options are returned whole
+`translations` and `options` (each option with its nested `translations`) are returned as **whole JSON** — query each as a bare field (`translations`, not `translations { … }`). The entire structure comes back, and they resolve over GraphQL.
+:::
+
 ## Example Query
 
 ```graphql
@@ -221,7 +225,7 @@ query AdminCatalogAttribute($id: ID!) {
 
 ```json
 {
-  "id": "/api/admin/admin_attributes/12"
+  "id": "/api/admin/catalog/attributes/12"
 }
 ```
 
@@ -231,7 +235,7 @@ query AdminCatalogAttribute($id: ID!) {
 {
   "data": {
     "adminAttribute": {
-      "id": "/api/admin/admin_attributes/12",
+      "id": "/api/admin/catalog/attributes/12",
       "_id": 12,
       "code": "color",
       "type": "select",
@@ -296,6 +300,5 @@ query AdminCatalogAttribute($id: ID!) {
 - **`translations` and `options` are plain JSON scalars**, not typed GraphQL object lists. You access them as regular JSON arrays in the response. This avoids API Platform serializing nested objects as IRI strings instead of inline objects — a known behaviour when using nested DTO types in API Platform GraphQL.
 - **`options` is `null` for non-option types.** Only `select`, `multiselect`, and `checkbox` attributes have options. For all other types, `options` is `null`.
 - **`translations` contains every locale in the DB**, not just the current app locale. If the store has translations for `en`, `fr`, and `de`, all three entries are returned. Missing locale entries have `null` name.
-- **The `id` argument is the IRI**, not the numeric integer. Use the `_id` field from listing queries and construct `"/api/admin/admin_attributes/{_id}"`, or pass the `id` field directly from a listing result.
-- **Same provider as the REST detail endpoint** — `AdminAttributeItemProvider` serves both transports with identical data loading semantics. Both return `translations` as a plain associative array, not a sub-resource.
-- **Scalar GraphQL quirk:** camelCase integer fields (`isRequired`, `isConfigurable`, etc.) may return `null` over GraphQL for some installations — a known pre-existing project-wide limitation. `code`, `type`, `adminName`, `locale`, `createdAt`, `updatedAt`, `translations`, and `options` are not affected (string/array scalars resolve correctly). Use the REST detail endpoint if you need guaranteed non-null integer flag values.
+- **The `id` argument is the IRI**, not the numeric integer. Use the `_id` field from listing queries and construct `"/api/admin/catalog/attributes/{_id}"`, or pass the `id` field directly from a listing result.
+- **GraphQL and REST return identical data** for this query — both return `translations` and `options` as plain JSON arrays queried bare (no sub-selection), and every camelCase flag field (`isRequired`, `isConfigurable`, `adminName`, etc.) resolves over GraphQL.

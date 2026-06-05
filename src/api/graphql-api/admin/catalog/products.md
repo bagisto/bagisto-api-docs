@@ -45,6 +45,16 @@ examples:
               attributeFamilyName
               urlKey
               visibleIndividually
+              shortDescription
+              description
+              metaTitle
+              metaDescription
+              metaKeywords
+              weight
+              featured
+              new
+              createdAt
+              updatedAt
             }
           }
           pageInfo {
@@ -71,7 +81,7 @@ examples:
               {
                 "cursor": "MA==",
                 "node": {
-                  "id": "/api/admin/admin_catalog_products/142",
+                  "id": "/api/admin/catalog/products/142",
                   "_id": 142,
                   "sku": "SP-001",
                   "name": "Classic Watch",
@@ -89,13 +99,23 @@ examples:
                   "attributeFamilyId": 1,
                   "attributeFamilyName": "Default",
                   "urlKey": "classic-watch",
-                  "visibleIndividually": true
+                  "visibleIndividually": true,
+                  "shortDescription": "<p>A timeless classic watch.</p>",
+                  "description": "<p>Full HTML product description.</p>",
+                  "metaTitle": "Classic Watch",
+                  "metaDescription": "Buy the Classic Watch",
+                  "metaKeywords": "watch, classic",
+                  "weight": 0.25,
+                  "featured": false,
+                  "new": true,
+                  "createdAt": "2026-05-20 10:00:00",
+                  "updatedAt": "2026-05-22 14:30:00"
                 }
               },
               {
                 "cursor": "MQ==",
                 "node": {
-                  "id": "/api/admin/admin_catalog_products/143",
+                  "id": "/api/admin/catalog/products/143",
                   "_id": 143,
                   "sku": "SP-002",
                   "name": "Sport Watch",
@@ -113,7 +133,17 @@ examples:
                   "attributeFamilyId": 1,
                   "attributeFamilyName": "Default",
                   "urlKey": "sport-watch",
-                  "visibleIndividually": true
+                  "visibleIndividually": true,
+                  "shortDescription": "<p>A rugged sport watch.</p>",
+                  "description": "<p>Full HTML product description.</p>",
+                  "metaTitle": "Sport Watch",
+                  "metaDescription": "Buy the Sport Watch",
+                  "metaKeywords": "watch, sport",
+                  "weight": 0.30,
+                  "featured": true,
+                  "new": false,
+                  "createdAt": "2026-05-21 09:15:00",
+                  "updatedAt": "2026-05-23 11:00:00"
                 }
               }
             ],
@@ -134,6 +164,10 @@ examples:
 Cursor-paginated GraphQL query that mirrors the Bagisto admin **Catalog →
 Products** datagrid. Returns the full 18-field product row with filtering,
 sorting, and cursor pagination.
+
+::: tip How this menu works
+For the product types, the two-step create flow, status vs. visibleIndividually, and the per-product sub-resources, see the [Products overview](/api/graphql-api/admin/catalog/products/).
+:::
 
 ::: tip Distinct from the Create-Order product picker
 `adminCatalogProducts` (this query) is the full datagrid — 18 fields per row,
@@ -190,7 +224,7 @@ Each `edges[].node` object contains the following fields:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | `ID` | API Platform IRI (e.g. `/api/admin/admin_catalog_products/142`) |
+| `id` | `ID` | API Platform IRI (e.g. `/api/admin/catalog/products/142`) |
 | `_id` | `Int` | Raw product ID |
 | `sku` | `String` | Product SKU |
 | `name` | `String` | Product name (resolved via `locale` and `channel`) |
@@ -209,6 +243,22 @@ Each `edges[].node` object contains the following fields:
 | `attributeFamilyName` | `String` | Attribute family name |
 | `urlKey` | `String` | URL slug (e.g. `"classic-watch"`) |
 | `visibleIndividually` | `Boolean` | Whether the product appears in category/search listings |
+| `shortDescription` | `String` | Short HTML description |
+| `description` | `String` | Full HTML description |
+| `metaTitle` | `String` | SEO meta title |
+| `metaDescription` | `String` | SEO meta description |
+| `metaKeywords` | `String` | SEO meta keywords |
+| `weight` | `Float` | Product weight |
+| `featured` | `Boolean` | Whether the product is flagged as featured |
+| `new` | `Boolean` | Whether the product is flagged as "new" |
+| `createdAt` | `String` | Creation timestamp |
+| `updatedAt` | `String` | Last-update timestamp |
+
+The **heavy relations** — `translations`, `images`, `categories`, `inventories`,
+`customerGroupPrices`, and the type-specific blocks (`variants` / `bundleOptions`
+/ `linkedProducts` / `downloadableLinks` / `downloadableSamples` /
+`superAttributes`) — stay **detail-only** (returned as `null` on the listing).
+Fetch them from the single-product query `adminCatalogProduct(id:)`.
 
 ## Example Query
 
@@ -253,6 +303,16 @@ query AdminCatalogProducts(
         attributeFamilyName
         urlKey
         visibleIndividually
+        shortDescription
+        description
+        metaTitle
+        metaDescription
+        metaKeywords
+        weight
+        featured
+        new
+        createdAt
+        updatedAt
       }
     }
     pageInfo {
@@ -285,7 +345,7 @@ query AdminCatalogProducts(
         {
           "cursor": "MA==",
           "node": {
-            "id": "/api/admin/admin_catalog_products/142",
+            "id": "/api/admin/catalog/products/142",
             "_id": 142,
             "sku": "SP-001",
             "name": "Classic Watch",
@@ -303,7 +363,17 @@ query AdminCatalogProducts(
             "attributeFamilyId": 1,
             "attributeFamilyName": "Default",
             "urlKey": "classic-watch",
-            "visibleIndividually": true
+            "visibleIndividually": true,
+            "shortDescription": "<p>A timeless classic watch.</p>",
+            "description": "<p>Full HTML product description.</p>",
+            "metaTitle": "Classic Watch",
+            "metaDescription": "Buy the Classic Watch",
+            "metaKeywords": "watch, classic",
+            "weight": 0.25,
+            "featured": false,
+            "new": true,
+            "createdAt": "2026-05-20 10:00:00",
+            "updatedAt": "2026-05-22 14:30:00"
           }
         }
       ],

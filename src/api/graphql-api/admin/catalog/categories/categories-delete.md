@@ -12,13 +12,13 @@ examples:
       }
     variables: |
       {
-        "input": { "id": "/api/admin/categories/7" }
+        "input": { "id": "/api/admin/catalog/categories/7" }
       }
     response: |
       {
         "data": {
           "deleteAdminCategory": {
-            "adminCategory": { "id": "/api/admin/categories/7" }
+            "adminCategory": { "id": "/api/admin/catalog/categories/7" }
           }
         }
       }
@@ -30,7 +30,7 @@ Deletes a category. Equivalent to
 [`DELETE /api/admin/catalog/categories/{id}`](/api/rest-api/admin/catalog/categories/categories-delete).
 
 ::: tip Prerequisites
-The example uses an illustrative `id` value. Replace it with the id of a category that exists in your store — use the [`adminCatalogCategories`](./categories-listing.md) query to discover valid ids.
+The example uses an illustrative `id` value. Replace it with the id of a category that exists in your store — use the [`adminCategories`](./categories-listing.md) query to discover valid ids.
 :::
 
 ## Operation

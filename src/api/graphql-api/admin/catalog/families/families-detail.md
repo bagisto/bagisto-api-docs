@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: admin-catalog-family-detail
     title: Attribute Family Detail (with attribute groups and attributes)
-    description: Fetch a single attribute family by IRI including all attribute groups and — within each group — all associated attributes with pivot position. The attributeGroups field is a plain JSON scalar in GraphQL; it may return null in some environments due to a known API Platform ?array serialization limitation — use the REST endpoint as the canonical path for guaranteed full data.
+    description: Fetch a single attribute family by IRI including all attribute groups and — within each group — all associated attributes with pivot position. The attributeGroups field is returned as whole JSON — query it as a bare field; the entire structure resolves over GraphQL.
     query: |
       query AdminAttributeFamily($id: ID!) {
         adminAttributeFamily(id: $id) {
@@ -22,7 +22,7 @@ examples:
       {
         "data": {
           "adminAttributeFamily": {
-            "id": "/api/admin/admin_attribute_families/1",
+            "id": "/api/admin/catalog/families/1",
             "_id": 1,
             "code": "default",
             "name": "Default",
@@ -101,7 +101,7 @@ are accepted by the resolver.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | `ID` | API Platform IRI (e.g. `/api/admin/admin_attribute_families/1`) |
+| `id` | `ID` | API Platform IRI (e.g. `/api/admin/catalog/families/1`) |
 | `_id` | `Int` | Raw family ID |
 | `code` | `String` | Family code (e.g. `default`, `apparel`) |
 | `name` | `String` | Family display name (e.g. `Default`, `Apparel`) |
@@ -134,19 +134,8 @@ Each element corresponds to one attribute mapped via `attribute_group_mappings`:
 | `column` | integer | Layout column position of this attribute within the group |
 | `position` | integer | Display order position of this attribute within the group |
 
-::: warning Known limitation — attributeGroups may return null over GraphQL
-`attributeGroups` is typed as `?array` (a plain PHP array) on the
-`AdminAttributeFamily` resource. API Platform's GraphQL serializer does not
-reliably serialize raw `?array` scalar fields on non-Eloquent DTO resources —
-the field can return `null` even when the REST endpoint returns the full array.
-
-**Recommended approach:** use `GET /api/admin/catalog/families/{id}` (REST) as
-the canonical path when you need guaranteed `attributeGroups` data. This is a
-pre-existing project-wide limitation documented in the codebase; no workaround
-is available on the GraphQL side without promoting `attributeGroups` to a typed
-sub-resource (which would break the inline-object shape). If `attributeGroups`
-comes back non-null in your environment, the shape described above is correct —
-you can safely use it.
+::: warning attributeGroups is returned whole
+`attributeGroups` (each group with its nested `attributes`) is returned as **whole JSON** — query it as a bare field (`attributeGroups`, not `attributeGroups { … }`). The entire structure comes back, and it resolves over GraphQL.
 :::
 
 ## Example Query
@@ -175,7 +164,7 @@ query AdminAttributeFamily($id: ID!) {
 {
   "data": {
     "adminAttributeFamily": {
-      "id": "/api/admin/admin_attribute_families/1",
+      "id": "/api/admin/catalog/families/1",
       "_id": 1,
       "code": "default",
       "name": "Default",
@@ -221,8 +210,8 @@ query AdminAttributeFamily($id: ID!) {
 ## Notes
 
 - **`attributeGroups` is a plain JSON scalar**, not a typed GraphQL object list. You access it as a regular JSON array in the response. This avoids API Platform serializing nested objects as IRI strings instead of inline objects — a known behavior when using nested DTO types in API Platform GraphQL.
-- **`attributeGroups` may return null** — see the warning above. This is a known pre-existing project limitation with `?array` scalar fields on non-Eloquent resources in API Platform GraphQL. The REST detail endpoint always returns the full array.
-- **Same provider as the REST detail endpoint** — `AdminAttributeFamilyItemProvider` serves both transports with identical data loading semantics. Both eagerly load `attributeGroups.customAttributes` and embed the pivot `column` and `position` fields.
+- **`attributeGroups` is returned whole** — query it as a bare field (not with a sub-selection); the entire structure resolves over GraphQL. The REST detail endpoint returns the same array.
+- **GraphQL and REST return identical data** for this query — both embed every group with its nested attributes including the `column` and `position` fields.
 - **The `id` argument is the IRI**, not the numeric integer. Construct it as `"/api/admin/catalog/families/{_id}"` using the `_id` field from a listing query, or pass the `id` field directly from a listing result.
 - **No timestamps.** The `attribute_families` table has `$timestamps = false`, so `createdAt` and `updatedAt` are not available on either transport.
 - **Attribute detail fields are slim.** Each attribute inside `attributeGroups[].attributes` carries only the fields needed for family-structure display: `id`, `code`, `type`, `isRequired`, `column`, `position`. For the full attribute payload (translations, options, validation), use `adminAttribute(id: ID!)` or `GET /api/admin/catalog/attributes/{id}`.

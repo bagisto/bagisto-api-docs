@@ -108,10 +108,10 @@ Each edge node represents a root-level category and carries its complete subtree
 under `children`. Leaf nodes have `children: []`.
 
 ::: tip Distinct from the flat listing query
-`adminCatalogCategoryTrees` (this query) returns the **nested hierarchy** —
+`adminCategoryTrees` (this query) returns the **nested hierarchy** —
 ideal for tree-picker UIs and navigation menus.
 
-`adminCatalogCategories` returns a **flat, cursor-paginated list** — ideal for
+`adminCategories` returns a **flat, cursor-paginated list** — ideal for
 datagrid/table views with filtering and sorting.
 :::
 
@@ -119,7 +119,7 @@ datagrid/table views with filtering and sorting.
 
 | Operation | Type | Pagination |
 |-----------|------|------------|
-| `adminCatalogCategoryTrees` | Query | Cursor (`first` / `after`) |
+| `adminCategoryTrees` | Query | Cursor (`first` / `after`) |
 
 ## Authentication
 
@@ -181,7 +181,7 @@ query AdminCatalogCategoryTrees(
   $status: Int
   $rootId: Int
 ) {
-  adminCatalogCategoryTrees(
+  adminCategoryTrees(
     first: $first
     after: $after
     locale: $locale
@@ -226,7 +226,7 @@ query AdminCatalogCategoryTrees(
 ```json
 {
   "data": {
-    "adminCatalogCategoryTrees": {
+    "adminCategoryTrees": {
       "edges": [
         {
           "cursor": "MA==",
@@ -296,5 +296,5 @@ If the `rootId` does not exist in the database, `totalCount` will be `0` and
 - **`children` is a plain JSON array**, not a GraphQL connection. You traverse it as a standard JSON array without `edges`/`node` wrappers. This is intentional — nested DTOs would cause API Platform to serialize them as IRI strings instead of inline objects.
 - **`status` filtering preserves ancestor nodes.** When `status: 1` is applied, a disabled parent still appears if it has at least one enabled descendant, so the tree remains navigable.
 - **Cursor pagination operates on root nodes.** The `first`/`after` arguments page through the top-level nodes; each root node's full subtree is always returned in the same response.
-- **Same provider as the REST tree endpoint** — `AdminCategoryTreeProvider` serves both transports, so filter semantics are identical between `adminCatalogCategoryTrees` and `GET /api/admin/catalog/categories/tree`.
-- **`translations` and `filterableAttributeIds` are not included** in tree nodes. Use the item query `adminCatalogCategory(id: ID!)` when you need the full detail for a specific category.
+- **Same provider as the REST tree endpoint** — `AdminCategoryTreeProvider` serves both transports, so filter semantics are identical between `adminCategoryTrees` and `GET /api/admin/catalog/categories/tree`.
+- **`translations` and `filterableAttributeIds` are not included** in tree nodes. Use the item query `adminCategory(id: ID!)` when you need the full detail for a specific category.

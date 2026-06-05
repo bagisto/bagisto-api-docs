@@ -28,7 +28,7 @@ examples:
       {
         "data": {
           "createAdminCategory": {
-            "adminCategory": { "id": "/api/admin/categories/7", "_id": 7 }
+            "adminCategory": { "id": "/api/admin/catalog/categories/7", "_id": 7 }
           }
         }
       }

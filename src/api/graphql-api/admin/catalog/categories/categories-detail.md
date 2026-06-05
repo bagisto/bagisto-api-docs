@@ -27,13 +27,13 @@ examples:
       }
     variables: |
       {
-        "id": "/api/admin/categories/7"
+        "id": "/api/admin/catalog/categories/7"
       }
     response: |
       {
         "data": {
           "adminCategory": {
-            "id": "/api/admin/categories/7",
+            "id": "/api/admin/catalog/categories/7",
             "_id": 7,
             "name": "Apparel",
             "slug": "apparel",
@@ -86,7 +86,7 @@ e.g. when pre-populating the edit form in Catalog → Categories.
 
 | Operation | Type |
 |-----------|------|
-| `adminCatalogCategory` | Query (item) |
+| `adminCategory` | Query (item) |
 
 ## Authentication
 
@@ -103,19 +103,19 @@ mutation.
 
 | Argument | Type | Required | Description |
 |----------|------|----------|-------------|
-| `id` | `ID!` | Yes | API Platform IRI of the category (e.g. `"/api/admin/admin_categories/7"`) |
+| `id` | `ID!` | Yes | API Platform IRI of the category (e.g. `"/api/admin/catalog/categories/7"`) |
 
 ::: tip Finding the IRI
-The IRI can be taken directly from `id` in any `adminCatalogCategories` or
-`adminCatalogCategoryTrees` edge node, or constructed as
-`/api/admin/admin_categories/{numericId}`.
+The IRI can be taken directly from `id` in any `adminCategories` or
+`adminCategoryTrees` edge node, or constructed as
+`/api/admin/catalog/categories/{numericId}`.
 :::
 
 ## Node Fields
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | `ID` | API Platform IRI (e.g. `/api/admin/admin_categories/7`) |
+| `id` | `ID` | API Platform IRI (e.g. `/api/admin/catalog/categories/7`) |
 | `_id` | `Int` | Raw category ID |
 | `name` | `String` | Category name in the current app locale |
 | `slug` | `String` | URL slug in the current app locale |
@@ -151,7 +151,7 @@ element corresponds to one locale row in `category_translations`:
 
 ```graphql
 query AdminCatalogCategory($id: ID!) {
-  adminCatalogCategory(id: $id) {
+  adminCategory(id: $id) {
     id
     _id
     name
@@ -174,7 +174,7 @@ query AdminCatalogCategory($id: ID!) {
 
 ```json
 {
-  "id": "/api/admin/admin_categories/7"
+  "id": "/api/admin/catalog/categories/7"
 }
 ```
 
@@ -183,8 +183,8 @@ query AdminCatalogCategory($id: ID!) {
 ```json
 {
   "data": {
-    "adminCatalogCategory": {
-      "id": "/api/admin/admin_categories/7",
+    "adminCategory": {
+      "id": "/api/admin/catalog/categories/7",
       "_id": 7,
       "name": "Apparel",
       "slug": "apparel",
@@ -228,7 +228,7 @@ query AdminCatalogCategory($id: ID!) {
 
 | Scenario | GraphQL `errors[]` | HTTP Status |
 |----------|-------------------|-------------|
-| Unknown ID | `"Category not found"` in `errors[]`, `data.adminCatalogCategory: null` | `200` (GraphQL convention) |
+| Unknown ID | `"Category not found"` in `errors[]`, `data.adminCategory: null` | `200` (GraphQL convention) |
 | Missing auth | `"Unauthenticated"` in `errors[]` | `200` |
 
 ## Notes
@@ -236,5 +236,5 @@ query AdminCatalogCategory($id: ID!) {
 - **`translations` is a plain JSON scalar**, not a typed GraphQL object list. You access it as a regular JSON array. This avoids API Platform serializing nested DTO objects as IRI strings instead of inline objects.
 - **`translations` contains every locale in the DB**, not just the current app locale. If the store has 3 locale rows (`en`, `fr`, `de`), all three are returned. Fields without content for a locale are `null`.
 - **`filterableAttributeIds`** is a plain JSON scalar array of integers. An empty array `[]` means no filterable attributes have been configured for this category.
-- **The `id` argument is the IRI**, not the numeric integer. Use the `_id` field from listing or tree queries and construct `"/api/admin/admin_categories/{_id}"`, or pass the `id` field directly.
-- **Same provider as the REST detail endpoint** — `AdminCategoryItemProvider` serves both transports with identical data loading semantics.
+- **The `id` argument is the IRI**, not the numeric integer. Use the `_id` field from listing or tree queries and construct `"/api/admin/catalog/categories/{_id}"`, or pass the `id` field directly.
+- **`translations` and `filterableAttributeIds` are returned whole** — query each as a bare field (no sub-selection); the entire structure resolves over GraphQL. The REST detail endpoint returns the same data.
