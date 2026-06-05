@@ -4,7 +4,7 @@ apiType: rest
 examples:
   - id: admin-cart-list-payment-methods
     title: List Payment Methods
-    description: List the payment methods supported for the draft cart. Mirrors `Payment::getSupportedPaymentMethods()`. Requires a shipping method to be selected first.
+    description: List the payment methods supported for the draft cart. Requires a shipping method to be selected first.
     query: |
       curl -X GET "https://your-domain.com/api/admin/carts/314/payment-methods" \
         -H "Authorization: Bearer <token>"
@@ -35,9 +35,9 @@ examples:
 
 # List Payment Methods
 
-Returns the payment methods Bagisto considers valid for the current draft
-cart. Only `cashondelivery` and `moneytransfer` are usable from
-`POST /api/admin/orders/place/{cartId}` (matches the Bagisto admin monolith).
+Returns the payment methods valid for the current draft cart. Only
+`cashondelivery` and `moneytransfer` are usable from
+`POST /api/admin/orders/place/{cartId}` (matches the admin Create-Order screen).
 
 ## Endpoint
 

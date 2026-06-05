@@ -19,6 +19,10 @@ A shipment records which items, in what quantity, were dispatched — and from w
 
 The `shippingAddress` carried on each shipment, and the `shippedTo` name, come from the **order's shipping address** — the destination the items were dispatched to. The order's billing address is also included as `billingAddress` for context.
 
+## Payment and Shipping
+
+The shipment detail also surfaces the order's Payment and Shipping info — the payment method and its title, the order currency, and the shipping method, its title and price — matching the admin Shipment view's "Payment and Shipping" panel. The shipping fields can be `null` when the order had no shipping method (e.g. virtual/free).
+
 ## Endpoints in this menu
 
 | Action | Endpoint |

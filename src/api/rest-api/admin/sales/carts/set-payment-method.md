@@ -44,8 +44,7 @@ examples:
 
 # Set Payment Method
 
-Saves the chosen payment method on the cart by calling
-`Cart::savePaymentMethod(['method' => ...])` and recollecting totals. The
+Saves the chosen payment method on the cart and recollects totals. The
 response is the full updated cart.
 
 ## Endpoint
@@ -62,6 +61,6 @@ HTTP 409 with a precise message identifying the missing step.
 ## Note on supported methods
 
 For `POST /api/admin/orders/place/{cartId}` to succeed, the saved method must
-be one of `cashondelivery` or `moneytransfer` (mirrors the Bagisto admin
-monolith). This endpoint will *save* any supported method, but place-order
+be one of `cashondelivery` or `moneytransfer` (matches the admin Create-Order
+screen). This endpoint will *save* any supported method, but place-order
 returns HTTP 422 for any other choice.

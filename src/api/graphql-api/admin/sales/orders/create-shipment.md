@@ -34,11 +34,11 @@ examples:
 
 # Create Shipment
 
-Ships one or more order items from a chosen inventory source. Mirrors the
-monolith `ShipmentController::store` — runs the shared
-`AdminOrderActionGuard.assertCanShip` checks, validates each item's requested
-quantity against `qty_to_ship` AND against the inventory available at the
-chosen source, then calls `ShipmentRepository::create`.
+Ships one or more order items from a chosen inventory source. The same
+eligibility checks as the admin Shipment screen apply (the order must not be
+closed or marked fraud). Each item's requested quantity is validated against its
+still-shippable quantity, `qty_to_ship`, AND against the inventory available at
+the chosen source before the shipment is created.
 
 After the mutation, fetch the full shipment via `adminShipment(id:)` or the
 REST `GET /api/admin/shipments/{id}` endpoint.
@@ -65,4 +65,4 @@ The example targets an order with shippable items. If your order has no items wi
 | Items missing | `bagistoapi::app.admin.order.actions.shipment.items-required` | At least one item with a positive quantity is required. |
 | Qty exceeds available | `bagistoapi::app.admin.order.actions.shipment.qty-exceeds` | Requested quantity (`:requested`) exceeds available quantity (`:available`) for SKU `:sku`. |
 | Inventory insufficient | `bagistoapi::app.admin.order.actions.shipment.inventory-insufficient` | Inventory at the selected source is insufficient for SKU `:sku`. |
-| Repository failure | `bagistoapi::app.admin.order.actions.shipment.failed` | Could not create the shipment. |
+| Save failed | `bagistoapi::app.admin.order.actions.shipment.failed` | Could not create the shipment. |

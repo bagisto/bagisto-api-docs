@@ -43,9 +43,9 @@ examples:
 
 # Cancel Order
 
-Cancels every cancellable item on an order. Mirrors the **Cancel** button on the
-admin order-view screen — same eligibility gates, same `OrderRepository::cancel`
-call. The response is the full updated `OrderDetail`, so the client can refresh
+Cancels every cancellable item on an order. This is the same action as the
+**Cancel** button on the admin order-view screen, with the same eligibility
+gates. The response is the full updated order detail, so the client can refresh
 the screen without a follow-up GET.
 
 ## Endpoint
@@ -58,9 +58,8 @@ The request body is empty — the order is identified by the URL.
 
 ## Errors
 
-The endpoint enforces the same 4-check guard the admin panel uses via the shared
-`AdminOrderActionGuard`. Each failure returns **HTTP 422** with the matching
-message:
+The endpoint enforces the same 4 eligibility checks the admin panel uses. Each
+failure returns **HTTP 422** with the matching message:
 
 | Condition | Lang key | Message |
 |-----------|----------|---------|

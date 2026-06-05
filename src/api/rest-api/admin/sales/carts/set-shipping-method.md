@@ -44,9 +44,8 @@ examples:
 
 # Set Shipping Method
 
-Saves the chosen shipping method on the cart by calling
-`Cart::saveShippingMethod(...)` and recollecting totals. The response is the
-full updated cart so the UI can render new totals without another fetch.
+Saves the chosen shipping method on the cart and recollects totals. The response
+is the full updated cart so the UI can render new totals without another fetch.
 
 ## Endpoint
 

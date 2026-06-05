@@ -47,4 +47,4 @@ carries an `errors[]` entry equivalent to HTTP 409 on REST.
 ## Note
 
 Only `cashondelivery` and `moneytransfer` succeed at `createAdminPlaceOrder`
-— matches the Bagisto admin monolith Create-Order screen.
+— matches the admin Create-Order screen.

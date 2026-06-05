@@ -47,7 +47,7 @@ examples:
     variables: |
       {
         "first": 10,
-        "order_id": "00000000008"
+        "order_id": "8"
       }
     response: |
       {
@@ -60,7 +60,7 @@ examples:
                   "id": "/api/admin/shipments/7",
                   "_id": 7,
                   "orderId": 8,
-                  "orderIncrementId": "00000000008",
+                  "orderIncrementId": "8",
                   "shippedTo": "John Doe",
                   "orderDate": "2026-05-20 10:00:00",
                   "orderStatus": "processing",

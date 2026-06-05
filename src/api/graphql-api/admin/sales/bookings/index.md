@@ -26,6 +26,10 @@ The `bookingType` field tells you what kind of booking the line is — it comes 
 
 The booked time window is returned twice: `from` / `to` as raw **unix timestamps** (integers, for programmatic use) and `fromFormatted` / `toFormatted` as readable strings. Some sub-types are not strictly time-windowed, so all four can be `null` for those rows.
 
+## What the booking detail embeds
+
+In the admin, viewing a booking jumps to the underlying order view. The booking detail mirrors that by embedding the order's **billing and shipping address**, its **payment & shipping info** (payment method/title, shipping method/title), and its **invoices, shipments and refunds** — matching what the admin Booking view shows when it opens the order. Addresses can be `null` when the order has none, and the invoices/shipments/refunds arrays are empty when there are none. These are returned as whole JSON objects/arrays — query them bare (no sub-field selection).
+
 ## Operations in this menu
 
 | Action | Operation |

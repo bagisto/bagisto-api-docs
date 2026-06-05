@@ -45,8 +45,8 @@ examples:
 
 # Add Item to Cart
 
-Forwards the whole request body straight to Bagisto's `Cart::addProduct`
-helper. Use whatever extra keys that product type requires:
+Adds a product to the draft cart. The whole request body is forwarded to the
+cart, so use whatever extra keys that product type requires:
 
 | Product type | Body keys (in addition to `productId` and `quantity`) |
 |--------------|--------------------------------------------------------|

@@ -8,6 +8,22 @@ The Orders menu is the heart of Sales: browse every order in the store and run e
 
 Invoices, shipments, and refunds are **generated from an order** here, but each also has its own store-wide menu listing every such document across all orders: see the [Invoices](/api/graphql-api/admin/sales/invoices/), [Shipments](/api/graphql-api/admin/sales/shipments/), and [Refunds](/api/graphql-api/admin/sales/refunds/) overviews.
 
+## Creating an order for a customer (admin Create Order)
+
+An admin can place an order **on behalf of a customer** — the same "Create Order" flow as the admin panel. It works through a **draft cart**: create a draft cart for the customer, add products, save the billing/shipping addresses, choose a shipping method and a payment method, then place the order. The draft cart is an internal building block of order creation, not a separate menu.
+
+| Step | Operation |
+|------|-----------|
+| Start a draft cart for a customer | `createAdminDraftCart` mutation |
+| [Get the draft cart](/api/graphql-api/admin/sales/carts/get-cart) | `adminCart(id:)` query |
+| [Add an item](/api/graphql-api/admin/sales/carts/add-item) · [update](/api/graphql-api/admin/sales/carts/update-items) · [remove](/api/graphql-api/admin/sales/carts/remove-item) | `addItemAdminCart` / `updateItemsAdminCart` / `removeItemAdminCart` mutations |
+| [Save addresses](/api/graphql-api/admin/sales/carts/save-address) | `saveAddressAdminCart` mutation |
+| [List](/api/graphql-api/admin/sales/carts/list-shipping-methods) / [set](/api/graphql-api/admin/sales/carts/set-shipping-method) shipping method | `adminCartShippingRates` query / `setShippingMethodAdminCart` mutation |
+| [List](/api/graphql-api/admin/sales/carts/list-payment-methods) / [set](/api/graphql-api/admin/sales/carts/set-payment-method) payment method | `adminCartPaymentMethods` query / `setPaymentMethodAdminCart` mutation |
+| [Place the order](/api/graphql-api/admin/sales/orders/place-order) | `createAdminPlaceOrder` mutation |
+
+(There's also [apply](/api/graphql-api/admin/sales/carts/apply-coupon) / [remove coupon](/api/graphql-api/admin/sales/carts/remove-coupon) on the draft cart.) [Reorder](/api/graphql-api/admin/sales/orders/reorder) is a shortcut that seeds a fresh draft cart from an existing order's items.
+
 ## Operations in this menu
 
 | Action | Operation |

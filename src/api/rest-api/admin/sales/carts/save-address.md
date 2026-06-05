@@ -55,9 +55,8 @@ examples:
 # Save Cart Addresses
 
 Saves the billing (and optionally a separate shipping) address on the draft
-cart. Mirrors the monolith `CartAddressRequest` shape. CamelCase keys
-(`firstName`, `useForShipping`) are normalised to snake_case before being
-passed to `Cart::saveAddresses`.
+cart. CamelCase keys (`firstName`, `useForShipping`) are accepted and normalised
+to snake_case before being saved.
 
 ## Endpoint
 

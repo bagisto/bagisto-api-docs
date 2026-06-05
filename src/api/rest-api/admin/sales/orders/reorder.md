@@ -52,21 +52,20 @@ button on the admin order-view screen.
 
 ## What it does
 
-Mirrors the monolith admin Reorder action:
+This is the same action as the admin Reorder button:
 
-1. `Cart::createCart` for the order's customer with `is_active = false` (a
-   draft admin cart, separate from the customer's active cart).
-2. For each item in the order: `Cart::addProduct($item->product, $item->additional)`.
-   Per-item failures are swallowed (best-effort) — the same behaviour the admin
-   panel has.
+1. A new draft admin cart is created for the order's customer (separate from the
+   customer's own active cart).
+2. Each item from the order is re-added to that draft cart. Per-item failures
+   are swallowed (best-effort) — the same behaviour the admin panel has.
 3. Returns the new cart ID. The client can then redirect to the admin's order
    create screen with that cart.
 
 ## When it refuses
 
-The endpoint enforces the same 3-check guard the admin panel uses. Each failure
-returns **HTTP 422** with the error message in the `detail` field — different
-message per failure mode so the client can act on it.
+The endpoint enforces the same 3 eligibility checks the admin panel uses. Each
+failure returns **HTTP 422** with the error message in the `detail` field —
+different message per failure mode so the client can act on it.
 
 | HTTP | Condition | Message |
 |------|-----------|---------|

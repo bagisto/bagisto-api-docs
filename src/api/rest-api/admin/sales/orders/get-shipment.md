@@ -21,6 +21,13 @@ examples:
         "channelName": "Default",
         "customerName": "John Doe",
         "customerEmail": "john.doe@example.com",
+        "paymentMethod": "cashondelivery",
+        "paymentTitle": "Cash On Delivery",
+        "orderCurrencyCode": "USD",
+        "shippingMethod": "free_free",
+        "shippingTitle": "Free Shipping - Free Shipping",
+        "baseShippingAmount": 0,
+        "formattedBaseShippingAmount": "$0.00",
         "status": null,
         "totalQty": 2,
         "totalWeight": null,
@@ -87,6 +94,11 @@ Returns a single shipment by id — every column, the order/customer context, bo
 | `orderStatus` / `orderStatusLabel` | String | Parent order status code and its display label. |
 | `channelName` | String | Sales channel the order belongs to. |
 | `customerName` / `customerEmail` | String | Customer who placed the order. |
+| `paymentMethod` / `paymentTitle` | String | The order's payment method code and its display title — see Payment and Shipping below. |
+| `orderCurrencyCode` | String | Currency the order was placed in (e.g. `USD`). |
+| `shippingMethod` / `shippingTitle` | String | The order's shipping method code and its display title — may be `null`. |
+| `baseShippingAmount` | Number | Shipping price in the store's base currency — may be `null`. |
+| `formattedBaseShippingAmount` | String | The same shipping price pre-formatted for display — may be `null`. |
 | `status` | String | Shipment status — often `null`. |
 | `totalQty` | Number | Total quantity shipped across all line items. |
 | `totalWeight` | Number | Combined weight of the shipment — may be `null`. |
@@ -98,6 +110,20 @@ Returns a single shipment by id — every column, the order/customer context, bo
 | `shippingAddress` | Object | The order's shipping address — see below. |
 | `createdAt` / `updatedAt` | String | Timestamps. |
 | `items` | Array | The shipped line items — see below. |
+
+### Payment and Shipping
+
+Mirrors the "Payment and Shipping" panel on the admin Shipment view — the order's payment and shipping details carried alongside the shipment.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `paymentMethod` | String | The order's payment method code (e.g. `cashondelivery`). |
+| `paymentTitle` | String | The payment method's display title (e.g. `Cash On Delivery`). |
+| `orderCurrencyCode` | String | Currency the order was placed in (e.g. `USD`). |
+| `shippingMethod` | String | The order's shipping method code (e.g. `free_free`) — `null` when the order had no shipping method (e.g. virtual/free). |
+| `shippingTitle` | String | The shipping method's display title — `null` when there was no shipping method. |
+| `baseShippingAmount` | Number | Shipping price in the store's base currency — `null` when there was no shipping method. |
+| `formattedBaseShippingAmount` | String | The same shipping price pre-formatted for display — `null` when there was no shipping method. |
 
 ### Address objects (`billingAddress`, `shippingAddress`)
 

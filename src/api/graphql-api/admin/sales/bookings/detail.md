@@ -25,6 +25,15 @@ examples:
           createdAt
           order
           orderItem
+          paymentMethod
+          paymentTitle
+          shippingMethod
+          shippingTitle
+          billingAddress
+          shippingAddress
+          invoices
+          shipments
+          refunds
         }
       }
     variables: |
@@ -65,7 +74,38 @@ examples:
               "sku": "BK-EVENT-01",
               "name": "Concert Ticket",
               "qtyOrdered": 2
-            }
+            },
+            "paymentMethod": "moneytransfer",
+            "paymentTitle": "Money Transfer",
+            "shippingMethod": null,
+            "shippingTitle": null,
+            "billingAddress": {
+              "id": 4939,
+              "addressType": "order_billing",
+              "firstName": "John",
+              "lastName": "Doe",
+              "companyName": "Acme Inc.",
+              "address": "123 Main St\nApt 4B",
+              "city": "New York",
+              "state": "NY",
+              "country": "US",
+              "postcode": "10001",
+              "email": "john@example.com",
+              "phone": "1234567890"
+            },
+            "shippingAddress": null,
+            "invoices": [
+              {
+                "id": 559,
+                "incrementId": "559",
+                "state": "paid",
+                "baseGrandTotal": 204,
+                "formattedBaseGrandTotal": "$204.00",
+                "createdAt": "2026-05-19 13:11:39"
+              }
+            ],
+            "shipments": [],
+            "refunds": []
           }
         }
       }
@@ -73,7 +113,7 @@ examples:
 
 # Booking Detail
 
-GraphQL counterpart of `GET /api/admin/bookings/{id}`. Returns a single booking with everything the listing leaves out — the booking sub-type, the linked event-ticket id, and embedded summaries of the parent order and order line item so you can render the booking view without any follow-up fetch.
+GraphQL counterpart of `GET /api/admin/bookings/{id}`. Returns a single booking with everything the listing leaves out — the booking sub-type, the linked event-ticket id, embedded summaries of the parent order and order line item, and the underlying order's billing/shipping address, payment & shipping info, and its invoices / shipments / refunds — so you can render the booking view (and the order it opens) without any follow-up fetch.
 
 ## Operation
 
@@ -82,6 +122,10 @@ GraphQL counterpart of `GET /api/admin/bookings/{id}`. Returns a single booking 
 | `adminBooking(id: ID!)` | Query |
 
 Pass the booking IRI (`/api/admin/bookings/{id}`) as `id`. Permission: `sales.bookings.view`.
+
+::: warning order, orderItem, billingAddress, shippingAddress, invoices, shipments and refunds are returned whole
+`order`, `orderItem`, `billingAddress`, `shippingAddress`, `invoices`, `shipments` and `refunds` are returned as whole JSON objects/arrays — **query them bare, without a sub-selection** (`billingAddress`, not `billingAddress { … }`; `invoices`, not `invoices { edges { node { … } } }`). The complete object/array comes back. The keys inside each are listed below for reference.
+:::
 
 ## Fields
 
@@ -107,6 +151,15 @@ The booking window is exposed two ways: `from` / `to` are raw **unix timestamps*
 | `createdAt` | `String` | When the parent order was created. |
 | `order` | `Object` | Summary of the parent order — see the table below. |
 | `orderItem` | `Object` | Summary of the parent order line item — see the table below. |
+| `paymentMethod` | `String` | The order's payment method code (e.g. `moneytransfer`). |
+| `paymentTitle` | `String` | The payment method's display title. |
+| `shippingMethod` | `String` | The order's shipping method code — `null` when the order had no shipping method. |
+| `shippingTitle` | `String` | The shipping method's display title — `null` when there was no shipping method. |
+| `billingAddress` | `JSON` | The order's billing address object, or `null` — see below. |
+| `shippingAddress` | `JSON` | The order's shipping address object, or `null` — see below. |
+| `invoices` | `JSON` | Array of the order's invoice summaries — empty when none. See below. |
+| `shipments` | `JSON` | Array of the order's shipment summaries — empty when none. See below. |
+| `refunds` | `JSON` | Array of the order's refund summaries — empty when none. See below. |
 
 ### Order fields (`order`)
 
@@ -132,3 +185,58 @@ A slim summary of the order line item this booking was created from. `orderItem`
 | `sku` | `String` | SKU of the ordered item. |
 | `name` | `String` | Product name as ordered. |
 | `qtyOrdered` | `Float` | Quantity ordered for this line item. |
+
+### Address objects (`billingAddress`, `shippingAddress`)
+
+The order's billing and shipping addresses, mirroring the admin order view's address panel. Each is returned as a whole JSON object (or `null` when the order has none) — query it as a bare field (`billingAddress`), you cannot sub-select its keys in the query. The keys below are returned inside each object.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `Int` | Address row id. |
+| `addressType` | `String` | `order_billing` or `order_shipping`. |
+| `firstName` / `lastName` | `String` | Recipient name. |
+| `companyName` | `String` | Company name — may be `null`. |
+| `address` | `String` | Street address (may span multiple lines). |
+| `city` | `String` | City. |
+| `state` | `String` | State / province. |
+| `country` | `String` | Country code (e.g. `US`). |
+| `postcode` | `String` | Postal code. |
+| `email` | `String` | Contact email. |
+| `phone` | `String` | Contact phone. |
+
+### Invoices (`invoices`)
+
+Slim summaries of the order's invoices, returned as a whole JSON array (empty when none) — query it as a bare field (`invoices`), you cannot sub-select its keys in the query. Each entry has the keys below.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `Int` | Invoice id. |
+| `incrementId` | `String` | Human-facing invoice number. |
+| `state` | `String` | Invoice state — e.g. `paid`, `pending`. |
+| `baseGrandTotal` | `Float` | Invoice grand total in the store's base currency. |
+| `formattedBaseGrandTotal` | `String` | The same total pre-formatted for display. |
+| `createdAt` | `String` | When the invoice was created. |
+
+### Shipments (`shipments`)
+
+Slim summaries of the order's shipments, returned as a whole JSON array (empty when none) — query it as a bare field (`shipments`), you cannot sub-select its keys in the query. Each entry has the keys below.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `Int` | Shipment id. |
+| `totalQty` | `Float` | Total quantity shipped. |
+| `carrierTitle` | `String` | Shipping carrier title — may be `null`. |
+| `trackNumber` | `String` | Carrier tracking number — may be `null`. |
+| `createdAt` | `String` | When the shipment was created. |
+
+### Refunds (`refunds`)
+
+Slim summaries of the order's refunds, returned as a whole JSON array (empty when none) — query it as a bare field (`refunds`), you cannot sub-select its keys in the query. Each entry has the keys below.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `Int` | Refund id. |
+| `state` | `String` | Refund state. |
+| `baseGrandTotal` | `Float` | Refund grand total in the store's base currency. |
+| `formattedBaseGrandTotal` | `String` | The same total pre-formatted for display. |
+| `createdAt` | `String` | When the refund was created. |

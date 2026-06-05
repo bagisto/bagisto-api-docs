@@ -67,7 +67,7 @@ examples:
         solution: Resolve the fraud flag before invoicing
       - error: PayPal Standard (422)
         cause: Order was paid through PayPal Standard
-        solution: Invoices cannot be created via admin for PayPal Standard orders (mirrors the monolith)
+        solution: Invoices cannot be created via admin for PayPal Standard orders
       - error: Nothing to invoice (422)
         cause: Every item has already been fully invoiced
         solution: No further invoice can be created
@@ -91,10 +91,12 @@ examples:
 
 # Create Invoice
 
-Creates an invoice for one or more order items. Mirrors the monolith
-`InvoiceController::store` flow — eligibility gates from `AdminOrderActionGuard`,
-quantity validation against `qty_to_invoice` (rejected per-SKU with a message
-carrying the requested vs available quantity), then `InvoiceRepository::create`.
+Creates an invoice for one or more order items. The same eligibility checks as
+the admin Invoice screen apply (the order must not be closed, marked fraud, or
+paid through PayPal Standard). Each item's requested quantity is validated
+against its still-invoiceable quantity, `qty_to_invoice` (rejected per-SKU with
+a message carrying the requested vs available quantity) before the invoice is
+created.
 
 ## Endpoint
 

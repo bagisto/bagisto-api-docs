@@ -26,11 +26,12 @@ examples:
 
 # Place Order
 
-Mirrors the Bagisto admin monolith `OrderController::store` flow. Items,
-addresses, shipping and payment must already be set on the draft cart.
+Finalises a fully prepared draft cart into a real order — the same flow as the
+admin Create-Order screen's place-order step. Items, addresses, shipping and
+payment must already be set on the draft cart.
 
 ::: tip Prerequisites
-The example uses an illustrative cart id. Admin cart endpoints only operate on **draft carts** (`is_active=0`) — storefront carts are rejected by the admin cart guard. Create a draft cart first with the [`createAdminDraftCart`](../../customers/create-draft-cart.md) mutation and use the returned `cartId`.
+The example uses an illustrative cart id. Admin cart endpoints only operate on **draft carts** (`is_active=0`) — storefront carts are rejected. Create a draft cart first with the [`createAdminDraftCart`](../../customers/create-draft-cart.md) mutation and use the returned `cartId`.
 :::
 
 ## Operation

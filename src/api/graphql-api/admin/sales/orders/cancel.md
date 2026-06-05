@@ -26,11 +26,11 @@ examples:
 
 # Cancel Order
 
-Cancels every cancellable item on an order. Mirrors the **Cancel** button on the
-admin order-view screen — same eligibility gates as REST, same
-`OrderRepository::cancel` call. The mutation output is the updated `OrderDetail`
-shape (use the REST `GET /api/admin/orders/{id}` endpoint to refetch the full
-detail payload if needed).
+Cancels every cancellable item on an order. This is the same action as the
+**Cancel** button on the admin order-view screen, with the same eligibility
+gates as REST. The mutation output is the updated order detail shape (use the
+REST `GET /api/admin/orders/{id}` endpoint to refetch the full detail payload if
+needed).
 
 ::: tip Prerequisites
 The example targets an order with cancellable items. If your order has no items with `qty_to_cancel > 0` (already canceled / fully shipped / closed / fraud) the mutation returns an `errors[]` entry like *"There is nothing to cancel on this order."* — pick an order in `pending` or `processing` state.

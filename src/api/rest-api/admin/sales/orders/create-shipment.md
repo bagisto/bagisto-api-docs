@@ -88,11 +88,11 @@ examples:
 
 # Create Shipment
 
-Ships one or more order items from a chosen inventory source. Mirrors the
-monolith `ShipmentController::store` — runs the standard
-`AdminOrderActionGuard` checks, then validates each item's requested quantity
-against `qty_to_ship` AND against the inventory available at the chosen source
-before calling `ShipmentRepository::create`.
+Ships one or more order items from a chosen inventory source. The same
+eligibility checks as the admin Shipment screen apply (the order must not be
+closed or marked fraud). Each item's requested quantity is validated against its
+still-shippable quantity, `qty_to_ship`, AND against the inventory available at
+the chosen source before the shipment is created.
 
 ## Endpoint
 

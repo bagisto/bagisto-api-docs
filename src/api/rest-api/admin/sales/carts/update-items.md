@@ -4,7 +4,7 @@ apiType: rest
 examples:
   - id: admin-cart-update-items
     title: Update Cart Item Quantities
-    description: Bulk-update line-item quantities. `qty` is a map of cart_item_id → new quantity, mirroring the monolith admin shape.
+    description: Bulk-update line-item quantities. `qty` is a map of cart_item_id → new quantity.
     query: |
       curl -X PUT "https://your-domain.com/api/admin/carts/314/items" \
         -H "Authorization: Bearer <token>" \
@@ -39,4 +39,4 @@ Bulk-update line-item quantities on a draft cart.
 | `/api/admin/carts/{id}/items` | PUT |
 
 Body: `{ "qty": { "<cartItemId>": <newQty>, ... } }`. Quantities of `0` remove
-the line (delegated to `Cart::updateItems`).
+the line.

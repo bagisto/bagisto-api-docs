@@ -18,6 +18,13 @@ examples:
           channelName
           customerName
           customerEmail
+          paymentMethod
+          paymentTitle
+          orderCurrencyCode
+          shippingMethod
+          shippingTitle
+          baseShippingAmount
+          formattedBaseShippingAmount
           status
           totalQty
           totalWeight
@@ -53,6 +60,13 @@ examples:
             "channelName": "Default",
             "customerName": "John Doe",
             "customerEmail": "john.doe@example.com",
+            "paymentMethod": "cashondelivery",
+            "paymentTitle": "Cash On Delivery",
+            "orderCurrencyCode": "USD",
+            "shippingMethod": "free_free",
+            "shippingTitle": "Free Shipping - Free Shipping",
+            "baseShippingAmount": 0,
+            "formattedBaseShippingAmount": "$0.00",
             "status": null,
             "totalQty": 2,
             "totalWeight": null,
@@ -131,6 +145,13 @@ Pass the shipment IRI (`/api/admin/shipments/{id}`) as `id`. Permission: `sales.
 | `channelName` | `String` | Sales channel the order belongs to. |
 | `customerName` | `String` | Name of the customer who placed the order. |
 | `customerEmail` | `String` | Email of the customer who placed the order. |
+| `paymentMethod` | `String` | The order's payment method code (e.g. `cashondelivery`). |
+| `paymentTitle` | `String` | The payment method's display title. |
+| `orderCurrencyCode` | `String` | Currency the order was placed in (e.g. `USD`). |
+| `shippingMethod` | `String` | The order's shipping method code — may be `null`. |
+| `shippingTitle` | `String` | The shipping method's display title — may be `null`. |
+| `baseShippingAmount` | `Float` | Shipping price in the store's base currency — may be `null`. |
+| `formattedBaseShippingAmount` | `String` | The same shipping price pre-formatted for display — may be `null`. |
 | `status` | `String` | Shipment status — often `null`. |
 | `totalQty` | `Float` | Total quantity shipped across all line items. |
 | `totalWeight` | `Float` | Combined weight of the shipment — may be `null`. |
@@ -145,6 +166,20 @@ Pass the shipment IRI (`/api/admin/shipments/{id}`) as `id`. Permission: `sales.
 | `createdAt` | `String` | When the shipment was created. |
 | `updatedAt` | `String` | When the shipment was last updated. |
 | `items` | `JSON` | The shipped line items — see below. |
+
+### Payment and Shipping
+
+Mirrors the "Payment and Shipping" panel on the admin Shipment view — the order's payment and shipping details carried alongside the shipment. These are flat scalar fields and resolve normally (select them directly, no sub-selection). `shippingMethod`, `shippingTitle`, `baseShippingAmount` and `formattedBaseShippingAmount` are `null` when the order had no shipping method (e.g. virtual/free).
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `paymentMethod` | `String` | The order's payment method code (e.g. `cashondelivery`). |
+| `paymentTitle` | `String` | The payment method's display title (e.g. `Cash On Delivery`). |
+| `orderCurrencyCode` | `String` | Currency the order was placed in (e.g. `USD`). |
+| `shippingMethod` | `String` | The order's shipping method code (e.g. `free_free`) — may be `null`. |
+| `shippingTitle` | `String` | The shipping method's display title — may be `null`. |
+| `baseShippingAmount` | `Float` | Shipping price in the store's base currency — may be `null`. |
+| `formattedBaseShippingAmount` | `String` | The same shipping price pre-formatted for display — may be `null`. |
 
 ### Address objects (`billingAddress`, `shippingAddress`)
 

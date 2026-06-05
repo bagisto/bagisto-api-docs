@@ -4,7 +4,7 @@ apiType: rest
 examples:
   - id: admin-cart-apply-coupon
     title: Apply a Coupon
-    description: Apply a cart-rule coupon code to the draft cart and recollect totals. Mirrors the monolith status codes — 404 for unknown / inactive, 422 if the same coupon is already applied.
+    description: Apply a cart-rule coupon code to the draft cart and recollect totals. Returns 404 for an unknown / inactive code, 422 if the same coupon is already applied.
     query: |
       curl -X POST "https://your-domain.com/api/admin/carts/314/coupon" \
         -H "Authorization: Bearer <token>" \

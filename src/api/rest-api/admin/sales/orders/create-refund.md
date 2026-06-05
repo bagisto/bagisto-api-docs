@@ -89,13 +89,12 @@ examples:
 
 # Create Refund
 
-Refunds one or more order items, with optional shipping refund and adjustment
-fee/refund. Mirrors the monolith `RefundController::store` flow — runs the
-shared `AdminOrderActionGuard.assertCanRefund` checks, validates each item's
-quantity against `qty_to_refund`, computes totals via
-`RefundRepository::getOrderItemsRefundSummary`, then verifies the refund
-amount does not exceed the order's remaining refundable balance before
-calling `RefundRepository::create`.
+Refunds one or more order items, with an optional shipping refund and an
+adjustment fee/refund. The same eligibility checks as the admin Refund screen
+apply (the order must not be closed or marked fraud, and each item's requested
+quantity must be ≤ its still-refundable quantity, `qty_to_refund`). The refund
+totals are computed from the items + shipping + adjustments, and the total
+cannot exceed the order's remaining refundable balance.
 
 ## Endpoint
 

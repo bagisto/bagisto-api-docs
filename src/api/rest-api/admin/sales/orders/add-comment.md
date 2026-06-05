@@ -4,7 +4,7 @@ apiType: rest
 examples:
   - id: admin-add-order-comment
     title: Add Order Comment
-    description: Persist a comment against an order. When `customerNotified` is true, Bagisto core listeners send the customer notification email via the `sales.order.comment.create.after` event.
+    description: Add a comment to an order. When `customerNotified` is true, the customer is sent a notification email with the comment.
     query: |
       curl -X POST "https://your-domain.com/api/admin/orders/2392/comments" \
         -H "Authorization: Bearer <token>" \
@@ -42,13 +42,10 @@ examples:
 
 # Add Order Comment
 
-Adds a comment to an order. Mirrors the monolith `Admin\Sales\OrderController::comment`
-flow — fires the `sales.order.comment.create.before` and
-`sales.order.comment.create.after` events so Bagisto core listeners can send the
-customer notification email when `customerNotified=true`.
+Adds a comment to an order. When `customerNotified=true`, the customer is sent a
+notification email with the comment.
 
-**No permission gate** — matches the monolith. Any authenticated admin can add
-a comment.
+**No permission gate** — any authenticated admin can add a comment.
 
 ## Endpoint
 
@@ -61,7 +58,7 @@ a comment.
 | Field | Type | Required | Notes |
 |-------|------|----------|-------|
 | `comment` | string | yes | Free-form comment body. |
-| `customerNotified` | boolean | no | When `true`, core listeners send the customer email. Defaults to `false`. |
+| `customerNotified` | boolean | no | When `true`, the customer is emailed the comment. Defaults to `false`. |
 
 ## Errors
 

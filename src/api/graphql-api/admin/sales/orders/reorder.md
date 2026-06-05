@@ -55,12 +55,12 @@ the **Reorder** button on the admin order-view screen.
 
 ## Behaviour
 
-Mirrors the monolith admin Reorder action:
+This is the same action as the admin Reorder button:
 
-1. `Cart::createCart` for the order's customer with `is_active = false`
-   (a draft admin cart, not the customer's active one).
-2. Re-adds every item via `Cart::addProduct($item->product, $item->additional)`.
-   Per-item failures are swallowed.
+1. A new draft admin cart is created for the order's customer (not the
+   customer's own active cart).
+2. Every item from the order is re-added to that draft cart. Per-item failures
+   are swallowed.
 3. Returns `success`, `message`, and the new `cartId`.
 
 ## Errors

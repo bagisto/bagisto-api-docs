@@ -4,7 +4,7 @@ apiType: rest
 examples:
   - id: admin-place-order
     title: Place Order
-    description: Finalise a fully prepared draft cart into a real order. Mirrors the monolith `admin.sales.orders.store` flow.
+    description: Finalise a fully prepared draft cart into a real order.
     query: |
       curl -X POST "https://your-domain.com/api/admin/orders/place/314" \
         -H "Authorization: Bearer <token>"
@@ -34,7 +34,7 @@ examples:
         solution: Select a payment method via `POST /api/admin/carts/{id}/payment-methods`
       - error: Unprocessable Entity (422)
         cause: Payment method is not in ['cashondelivery','moneytransfer']
-        solution: Select COD or money transfer. Other methods are blocked for admin-placed orders, mirroring Bagisto core.
+        solution: Select COD or money transfer. Other methods are blocked for admin-placed orders.
       - error: Forbidden (403)
         cause: Cart is an active storefront cart
         solution: Only draft carts can be finalised
@@ -48,14 +48,13 @@ examples:
 
 # Place Order
 
-Finalises a fully prepared draft cart into a real order. Mirrors the Bagisto
-admin monolith `OrderController::store` step-by-step:
+Finalises a fully prepared draft cart into a real order. This is the same flow
+as the admin Create-Order screen's place-order step:
 
-```
-Cart::setCart -> Cart::collectTotals ->
-payment.method in ['cashondelivery','moneytransfer'] ->
-OrderResource::jsonSerialize -> OrderRepository::create -> Cart::removeCart
-```
+1. The cart's totals are recalculated.
+2. The selected payment method must be one of `cashondelivery` or
+   `moneytransfer` (other gateways are not supported for admin-placed orders).
+3. The order is created from the cart, and the draft cart is then removed.
 
 ## Endpoint
 

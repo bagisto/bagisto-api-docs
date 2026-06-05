@@ -32,13 +32,12 @@ examples:
 
 # Create Refund
 
-Refunds one or more order items, with optional shipping refund and adjustment
-fee/refund. Mirrors the monolith `RefundController::store` — runs the shared
-`AdminOrderActionGuard.assertCanRefund` checks, validates each item's quantity
-against `qty_to_refund`, computes totals via
-`RefundRepository::getOrderItemsRefundSummary`, then verifies the refund amount
-does not exceed the order's remaining refundable balance before calling
-`RefundRepository::create`.
+Refunds one or more order items, with an optional shipping refund and an
+adjustment fee/refund. The same eligibility checks as the admin Refund screen
+apply (the order must not be closed or marked fraud, and each item's requested
+quantity must be ≤ its still-refundable quantity, `qty_to_refund`). The refund
+totals are computed from the items + shipping + adjustments, and the total
+cannot exceed the order's remaining refundable balance.
 
 After the mutation, fetch the full refund via `adminRefund(id:)` or the REST
 `GET /api/admin/refunds/{id}` endpoint.
@@ -64,4 +63,4 @@ The example item quantities must be ≤ each item's `qty_to_refund`. Already-ref
 | Qty exceeds available | `bagistoapi::app.admin.order.actions.refund.qty-exceeds` | Requested quantity (`:requested`) exceeds available quantity (`:available`) for SKU `:sku`. |
 | Amount zero | `bagistoapi::app.admin.order.actions.refund.amount-zero` | The computed refund amount is zero. Adjust quantity, shipping or adjustment values. |
 | Amount exceeds maximum | `bagistoapi::app.admin.order.actions.refund.amount-exceeds-max` | The refund amount (`:amount`) exceeds the maximum refundable amount (`:max`). |
-| Repository failure | `bagistoapi::app.admin.order.actions.refund.failed` | Could not create the refund. |
+| Save failed | `bagistoapi::app.admin.order.actions.refund.failed` | Could not create the refund. |

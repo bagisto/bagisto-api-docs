@@ -53,9 +53,8 @@ examples:
 
 # List Shipping Methods
 
-Returns the available shipping rates for the draft cart by calling
-`Shipping::collectRates()`. The grouped result is flattened into one row per
-rate so the client can render a flat selector.
+Returns the available shipping rates for the draft cart. The grouped result is
+flattened into one row per rate so the client can render a flat selector.
 
 ## Endpoint
 

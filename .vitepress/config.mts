@@ -564,7 +564,6 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Carts',
-                        link: '/api/graphql-api/admin/sales/carts/',
                         collapsed: true,
                         items: [
                           { text: 'Get Cart', link: '/api/graphql-api/admin/sales/carts/get-cart' },
@@ -612,7 +611,6 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Transactions',
-                        link: '/api/graphql-api/admin/sales/transactions/',
                         collapsed: true,
                         items: [
                           { text: 'List Transactions', link: '/api/graphql-api/admin/sales/transactions/list' },
@@ -1295,11 +1293,11 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Create Refund', link: '/api/rest-api/admin/sales/orders/create-refund' },
                           { text: 'Refund Preview', link: '/api/rest-api/admin/sales/orders/refund-preview' },
                           { text: 'Get Refund', link: '/api/rest-api/admin/sales/orders/get-refund' },
+                          { text: 'Export Orders (CSV)', link: '/api/rest-api/admin/sales/orders/export' },
                         ]
                       },
                       {
                         text: 'Carts',
-                        link: '/api/rest-api/admin/sales/carts/',
                         collapsed: true,
                         items: [
                           { text: 'Get Cart', link: '/api/rest-api/admin/sales/carts/get-cart' },
@@ -1325,6 +1323,7 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Print Invoice (PDF)', link: '/api/rest-api/admin/sales/orders/print-invoice' },
                           { text: 'Send Duplicate Invoice', link: '/api/rest-api/admin/sales/orders/send-duplicate-invoice' },
                           { text: 'Mass Update Status', link: '/api/rest-api/admin/sales/invoices/mass-update-status' },
+                          { text: 'Export Invoices (CSV)', link: '/api/rest-api/admin/sales/invoices/export' },
                         ]
                       },
                       {
@@ -1334,6 +1333,7 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           { text: 'List Shipments', link: '/api/rest-api/admin/sales/shipments/list' },
                           { text: 'Get Shipment', link: '/api/rest-api/admin/sales/orders/get-shipment' },
+                          { text: 'Export Shipments (CSV)', link: '/api/rest-api/admin/sales/shipments/export' },
                         ]
                       },
                       {
@@ -1343,15 +1343,16 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           { text: 'List Refunds', link: '/api/rest-api/admin/sales/refunds/list' },
                           { text: 'Get Refund', link: '/api/rest-api/admin/sales/orders/get-refund' },
+                          { text: 'Export Refunds (CSV)', link: '/api/rest-api/admin/sales/refunds/export' },
                         ]
                       },
                       {
                         text: 'Transactions',
-                        link: '/api/rest-api/admin/sales/transactions/',
                         collapsed: true,
                         items: [
                           { text: 'List Transactions', link: '/api/rest-api/admin/sales/transactions/list' },
                           { text: 'Transaction Detail', link: '/api/rest-api/admin/sales/transactions/detail' },
+                          { text: 'Export Transactions (CSV)', link: '/api/rest-api/admin/sales/transactions/export' },
                         ]
                       },
                       {
@@ -1361,6 +1362,7 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           { text: 'List Bookings', link: '/api/rest-api/admin/sales/bookings/list' },
                           { text: 'Booking Detail', link: '/api/rest-api/admin/sales/bookings/detail' },
+                          { text: 'Export Bookings (CSV)', link: '/api/rest-api/admin/sales/bookings/export' },
                         ]
                       }
                     ]
