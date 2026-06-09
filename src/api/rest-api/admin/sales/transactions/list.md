@@ -44,11 +44,7 @@ examples:
 
 # List Transactions
 
-Mirrors the admin **Sales → Transactions** datagrid. Every transaction **column** plus the raw gateway `data` blob and the linked `order` summary are populated on each row — the field set is identical to [Transaction Detail](/api/rest-api/admin/sales/transactions/detail).
-
-::: tip How this menu works
-For when a transaction row appears and what each field means, see the [Transactions overview](/api/rest-api/admin/sales/transactions/).
-:::
+Mirrors the admin **Sales → Transactions** datagrid. Every transaction **column** plus the raw gateway `data` blob and the linked `order` summary are populated on each row.
 
 ## Endpoint
 
@@ -69,6 +65,22 @@ For when a transaction row appears and what each field means, see the [Transacti
 | `created_at_from` / `_to` | date | Range. |
 | `sort` | string | `id`, `transaction_id`, `amount`, `invoice_id`, `order_id`, `status`, `created_at`. |
 | `order` | string | `asc`, `desc`. |
+
+## Response fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | Integer | Transaction row id. |
+| `transactionId` | String | Gateway transaction id. |
+| `invoiceId` | Integer | The invoice this transaction paid (if any). |
+| `orderId` / `orderIncrementId` | Integer / String | Parent order id and human-facing number. |
+| `amount` / `formattedAmount` | Number / String | Transaction amount, raw and formatted. |
+| `status` | String | Transaction status — e.g. `paid`, `pending`. |
+| `type` | String | Transaction type — e.g. `capture`. |
+| `paymentMethod` / `paymentTitle` | String | Payment method code and its human-readable title. |
+| `data` | Object | The verbatim gateway response payload (shape varies by gateway; may be `null`). |
+| `createdAt` / `updatedAt` | String | Timestamps. |
+| `order` | Object | Slim order summary — `id`, `incrementId`, `status`, `customerName`, `customerEmail`, `grandTotal`, `orderCurrencyCode`. |
 
 ## Permission
 

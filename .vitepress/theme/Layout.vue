@@ -88,6 +88,41 @@ const updateAsideStyles = () => {
 
 /*
 |--------------------------------------------------------------------------
+| Scroll the sidebar so the active menu item is visible
+|--------------------------------------------------------------------------
+| VitePress auto-expands the group containing the current page but does not
+| scroll the sidebar to it. On a hard reload a deep link can sit far below
+| the fold. This scrolls the sidebar container (not the window) so the active
+| item lands ~1/3 from the top — only when it isn't already in view.
+*/
+function scrollSidebarToActive() {
+  if (import.meta.env.SSR) return
+
+  const tryScroll = (attemptsLeft) => {
+    const sidebar = document.querySelector('.VPSidebar')
+    const active = sidebar && sidebar.querySelector('.VPSidebarItem.is-active')
+
+    if (sidebar && active) {
+      const sRect = sidebar.getBoundingClientRect()
+      const aRect = active.getBoundingClientRect()
+
+      const isVisible = aRect.top >= sRect.top && aRect.bottom <= sRect.bottom
+      if (!isVisible) {
+        sidebar.scrollTop += (aRect.top - sRect.top) - sidebar.clientHeight / 3
+      }
+      return
+    }
+
+    if (attemptsLeft > 0) {
+      setTimeout(() => tryScroll(attemptsLeft - 1), 120)
+    }
+  }
+
+  nextTick(() => tryScroll(8))
+}
+
+/*
+|--------------------------------------------------------------------------
 | Load Examples (UNCHANGED)
 |--------------------------------------------------------------------------
 */
@@ -109,10 +144,12 @@ function loadExamples() {
 onMounted(() => {
   isClient.value = true
   loadExamples()
+  scrollSidebarToActive()
 })
 
 watch(() => route.path, () => {
   loadExamples()
+  scrollSidebarToActive()
 })
 
 watch(

@@ -160,7 +160,7 @@ Returns a single invoice with the full totals breakdown, the order/customer cont
 | `incrementId` | String | Human-facing invoice number. |
 | `orderId` | Integer | Id of the parent order. |
 | `orderIncrementId` | String | Human-facing number of the parent order. |
-| `state` | String | Invoice state — `pending`, `pending_payment`, `paid`, `overdue`, `refunded`. |
+| `state` | String | Invoice state — `pending`, `pending_payment`, `paid`, `overdue`. |
 | `emailSent` | Boolean | Whether the invoice email was sent to the customer. |
 | `totalQty` | Integer | Total quantity invoiced. |
 

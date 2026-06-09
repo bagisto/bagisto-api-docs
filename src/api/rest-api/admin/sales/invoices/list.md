@@ -133,7 +133,7 @@ For the invoice `state` semantics, why a paid order can read "pending", the red 
 | `per_page` | integer | Items per page (default `10`, cap `50`). |
 | `id` | string | Filter by invoice id (integer or comma-separated list). |
 | `order_id` | string | Partial match on the parent order number. |
-| `state` | string | `pending`, `pending_payment`, `paid`, `overdue`, `refunded`. |
+| `state` | string | `pending`, `pending_payment`, `paid`, `overdue`. |
 | `base_grand_total_from` | number | Min grand total. |
 | `base_grand_total_to` | number | Max grand total. |
 | `created_at_from` | date | Created after (ISO date). |

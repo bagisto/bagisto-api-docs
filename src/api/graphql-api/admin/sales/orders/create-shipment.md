@@ -40,6 +40,11 @@ closed or marked fraud). Each item's requested quantity is validated against its
 still-shippable quantity, `qty_to_ship`, AND against the inventory available at
 the chosen source before the shipment is created.
 
+For **composite products** (bundle, configurable, grouped), the requested
+quantity is split across the line's component items, and each component's own
+shippable quantity and stock at the chosen source are validated — so a shipment
+can't be created for more component stock than is physically available.
+
 After the mutation, fetch the full shipment via `adminShipment(id:)` or the
 REST `GET /api/admin/shipments/{id}` endpoint.
 

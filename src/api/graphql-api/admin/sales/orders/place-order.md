@@ -46,6 +46,7 @@ Each missing step surfaces as a distinct GraphQL error (REST counterpart in
 parentheses):
 
 - Cart empty (409)
+- Cart total below the store's minimum order amount (422)
 - Addresses missing (409)
 - Shipping method missing (409)
 - Payment method missing (409)

@@ -2,8 +2,8 @@
 outline: false
 examples:
   - id: admin-products-list
-    title: List / Search Products (Admin)
-    description: Paginated cursor-based product search for the admin Create-Order "Add Product" modal. Returns ALL statuses by default (admin sees disabled / draft products too). Booking products ARE listed but blocked when added to an admin draft cart.
+    title: Add-Product Search (Create-Order)
+    description: The slim product search behind the admin Create-Order "Add Product" modal. NOT the product listing — for the full product list with all columns and filters use the List Products datagrid. Returns ALL statuses by default (admin sees disabled / draft products too). Booking products ARE listed but blocked when added to an admin draft cart.
     query: |
       query AdminProducts($first: Int, $after: String, $type: String, $sku: String) {
         adminProducts(first: $first, after: $after, type: $type, sku: $sku) {
@@ -29,7 +29,8 @@ examples:
     variables: |
       {
         "first": 30,
-        "type": "simple"
+        "type": "simple",
+        "sku": "SP-001"
       }
     response: |
       {
@@ -39,30 +40,39 @@ examples:
               {
                 "cursor": "MA==",
                 "node": {
-                  "id": "/api/admin/products/142",
-                  "_id": 142,
+                  "id": "/api/admin/admin_products/2512",
+                  "_id": 2512,
                   "sku": "SP-001",
                   "type": "simple",
-                  "name": "Classic Watch",
+                  "name": "Arctic Cozy Knit Unisex Beanie",
                   "status": 1,
-                  "price": 99.99,
-                  "formattedPrice": "$99.99",
-                  "baseImageUrl": "http://localhost:8000/cache/medium/product/142/image.webp",
+                  "price": 14,
+                  "formattedPrice": "$14.00",
+                  "baseImageUrl": "http://localhost:8000/cache/medium/product/2512/Muc0qeWks34MTZaxf38s6DBmfqMqrCxku81Uo8EB.webp",
                   "isSaleable": true
                 }
               }
             ],
-            "pageInfo": { "hasNextPage": true, "hasPreviousPage": false, "endCursor": "MA==", "startCursor": "MA==" },
-            "totalCount": 231
+            "pageInfo": { "hasNextPage": false, "hasPreviousPage": false, "endCursor": "MA==", "startCursor": "MA==" },
+            "totalCount": 1
           }
         }
       }
 ---
 
-# List / Search Products (Admin)
+# Add-Product Search (Create-Order)
 
-GraphQL counterpart of `GET /api/admin/products`. Cursor pagination via
-`first` / `after`.
+The slim product **search** that powers the admin **Create Order** screen's
+"Add Product" modal — the GraphQL counterpart of `GET /api/admin/products`.
+Cursor pagination via `first` / `after`.
+
+::: warning This is not the product listing
+For the full admin product listing — every column plus all the
+Channel / Name / SKU / Attribute Family / Price / ID / Status / Type filters —
+use [List Products](/api/graphql-api/admin/catalog/products) (the
+`adminCatalogProducts` query). This page documents only the Create-Order search
+tool.
+:::
 
 ## Operation
 

@@ -19,4 +19,17 @@ examples:
 
 ## Query Parameters
 
-`page`, `per_page` (default 10, cap 50), `name` (partial), `status` (0/1), `sort` (`id`, `name`, `sort_order`), `order` (`asc`/`desc`).
+| Parameter | Notes |
+|-----------|-------|
+| `page` | Page number. |
+| `per_page` | Page size (default 10, cap 50). |
+| `id` | Single id or comma-separated list (e.g. `1,4,9`). |
+| `name` | Partial match. |
+| `status` | `0`/`1`. |
+| `sort_order` | Priority, exact match. |
+| `starts_from_from` | Start-date range lower bound (ISO 8601). |
+| `starts_from_to` | Start-date range upper bound (ISO 8601). |
+| `ends_till_from` | End-date range lower bound (ISO 8601). |
+| `ends_till_to` | End-date range upper bound (ISO 8601). |
+| `sort` | `id`, `name`, `sort_order`. |
+| `order` | `asc`/`desc`. |

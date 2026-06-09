@@ -87,7 +87,7 @@ examples:
 
 # List Transactions (Datagrid)
 
-GraphQL counterpart of `GET /api/admin/transactions`. Returns a cursor-paginated list of payment transactions — the same rows shown on the admin **Sales → Transactions** datagrid. Every transaction **column** plus the raw gateway `data` blob and the linked `order` summary are populated on each row, so the field set is identical to [Transaction Detail](/api/graphql-api/admin/sales/transactions/detail).
+GraphQL counterpart of `GET /api/admin/transactions`. Returns a cursor-paginated list of payment transactions — the same rows shown on the admin **Sales → Transactions** datagrid. Every transaction **column** plus the raw gateway `data` blob and the linked `order` summary are populated on each row.
 
 ## Operation
 
@@ -98,13 +98,24 @@ GraphQL counterpart of `GET /api/admin/transactions`. Returns a cursor-paginated
 `sales.transactions.view`
 
 ::: warning data and order are returned whole
-`data` (the gateway payload) and `order` (the order summary) are returned as JSON — **query them bare, without a sub-selection** (`data` / `order`, not `order { … }`). The whole object comes back. See [Transaction Detail](/api/graphql-api/admin/sales/transactions/detail) for the keys inside each.
+`data` (the gateway payload) and `order` (the order summary) are returned as JSON — **query them bare, without a sub-selection** (`data` / `order`, not `order { … }`). The whole object comes back. See the field reference below for the keys inside each.
 :::
 
 ## Fields
 
-Every field is populated on each row — the transaction columns, the resolved `paymentTitle`, the raw gateway `data` object, and the `order` summary. The full per-field reference is on the [Transaction Detail](/api/graphql-api/admin/sales/transactions/detail) page.
+Every field is populated on each row — the transaction columns, the resolved `paymentTitle`, the raw gateway `data` object, and the `order` summary.
 
-## Listing vs. fetching one
-
-The listing already carries the full payload — fetching a single transaction by id (`adminTransaction(id:)`) is only needed when you already hold a transaction id and want just that record. Typical flow: list with `adminTransactions`, read `_id` from the row you want, then fetch the full record.
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `ID` | Resource IRI of the transaction (`/api/admin/transactions/{id}`). |
+| `_id` | `Int` | Transaction row id. |
+| `transactionId` | `String` | Gateway transaction id. |
+| `invoiceId` | `Int` | The invoice this transaction paid (if any). |
+| `orderId` / `orderIncrementId` | `Int` / `String` | Parent order id and human-facing number. |
+| `amount` / `formattedAmount` | `Float` / `String` | Transaction amount, raw and formatted. |
+| `status` | `String` | Transaction status — e.g. `paid`, `pending`. |
+| `type` | `String` | Transaction type — e.g. `capture`. |
+| `paymentMethod` / `paymentTitle` | `String` | Payment method code and its human-readable title. |
+| `data` | JSON | The verbatim gateway response payload — query bare; shape varies by gateway; may be `null`. |
+| `createdAt` / `updatedAt` | `String` | Timestamps. |
+| `order` | JSON | Slim order summary (query bare) — `id`, `incrementId`, `status`, `customerName`, `customerEmail`, `grandTotal`, `orderCurrencyCode`. |

@@ -237,7 +237,7 @@ Pass the invoice IRI (`/api/admin/invoices/{id}`) as `id`. Requires the `sales.i
 | `incrementId` | `String` | Human-facing invoice number. |
 | `orderId` | `Int` | Id of the parent order. |
 | `orderIncrementId` | `String` | Human-facing number of the parent order. |
-| `state` | `String` | Invoice state — `pending`, `pending_payment`, `paid`, `overdue`, `refunded`. |
+| `state` | `String` | Invoice state — `pending`, `pending_payment`, `paid`, `overdue`. |
 | `emailSent` | `Boolean` | Whether the invoice email was sent to the customer. |
 | `totalQty` | `Int` | Total quantity invoiced. |
 

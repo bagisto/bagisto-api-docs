@@ -2,8 +2,8 @@
 outline: false
 examples:
   - id: admin-cart-add-item
-    title: Add Item to Cart
-    description: Add a product to the draft cart. `id` is the resource IRI; `cartId` is forwarded as the raw integer for the processor. All other body keys (product type-specific) mirror the storefront add-to-cart payload.
+    title: Add Item (simple)
+    description: Add a simple/virtual product. `id` is the resource IRI; `cartId` is forwarded as the raw integer for the processor.
     query: |
       mutation AddItem($input: addItemAdminCartInput!) {
         addItemAdminCart(input: $input) {
@@ -17,6 +17,120 @@ examples:
           "cartId": "314",
           "productId": 142,
           "quantity": 1
+        }
+      }
+    response: |
+      {
+        "data": {
+          "addItemAdminCart": {
+            "adminCart": { "id": "/api/admin/carts/314", "_id": 314 }
+          }
+        }
+      }
+  - id: admin-cart-add-configurable
+    title: Add Item (configurable)
+    description: Configurable products require the chosen variant's product id in selectedConfigurableOption.
+    query: |
+      mutation AddItem($input: addItemAdminCartInput!) {
+        addItemAdminCart(input: $input) {
+          adminCart { id _id }
+        }
+      }
+    variables: |
+      {
+        "input": {
+          "id": "/api/admin/carts/314",
+          "cartId": "314",
+          "productId": 123,
+          "quantity": 1,
+          "selectedConfigurableOption": 124
+        }
+      }
+    response: |
+      {
+        "data": {
+          "addItemAdminCart": {
+            "adminCart": { "id": "/api/admin/carts/314", "_id": 314 }
+          }
+        }
+      }
+  - id: admin-cart-add-bundle
+    title: Add Item (bundle)
+    description: Bundle products require bundleOptions — a list of { optionId, productIds, quantity }.
+    query: |
+      mutation AddItem($input: addItemAdminCartInput!) {
+        addItemAdminCart(input: $input) {
+          adminCart { id _id }
+        }
+      }
+    variables: |
+      {
+        "input": {
+          "id": "/api/admin/carts/314",
+          "cartId": "314",
+          "productId": 2517,
+          "quantity": 1,
+          "bundleOptions": [
+            { "optionId": 5, "productIds": [10], "quantity": 1 },
+            { "optionId": 6, "productIds": [12], "quantity": 1 }
+          ]
+        }
+      }
+    response: |
+      {
+        "data": {
+          "addItemAdminCart": {
+            "adminCart": { "id": "/api/admin/carts/314", "_id": 314 }
+          }
+        }
+      }
+  - id: admin-cart-add-grouped
+    title: Add Item (grouped)
+    description: Grouped products require groupedQuantities — a list of { productId, quantity }.
+    query: |
+      mutation AddItem($input: addItemAdminCartInput!) {
+        addItemAdminCart(input: $input) {
+          adminCart { id _id }
+        }
+      }
+    variables: |
+      {
+        "input": {
+          "id": "/api/admin/carts/314",
+          "cartId": "314",
+          "productId": 2516,
+          "quantity": 1,
+          "groupedQuantities": [
+            { "productId": 301, "quantity": 1 },
+            { "productId": 302, "quantity": 2 }
+          ]
+        }
+      }
+    response: |
+      {
+        "data": {
+          "addItemAdminCart": {
+            "adminCart": { "id": "/api/admin/carts/314", "_id": 314 }
+          }
+        }
+      }
+  - id: admin-cart-add-downloadable
+    title: Add Item (downloadable)
+    description: Downloadable products require links — a list of downloadable-link ids.
+    query: |
+      mutation AddItem($input: addItemAdminCartInput!) {
+        addItemAdminCart(input: $input) {
+          adminCart { id _id }
+        }
+      }
+    variables: |
+      {
+        "input": {
+          "id": "/api/admin/carts/314",
+          "cartId": "314",
+          "productId": 2506,
+          "quantity": 1,
+          "links": [1, 2]
         }
       }
     response: |
@@ -48,6 +162,23 @@ The example uses an illustrative cart id. Admin cart endpoints only operate on *
 | Operation | Type |
 |-----------|------|
 | `addItemAdminCart(input: addItemAdminCartInput!)` | Mutation |
+
+## Product type fields
+
+Each product type needs its own selection fields (besides `productId` and
+`quantity`). These are typed input fields, so they work over GraphQL exactly as
+they do over REST:
+
+| Product type | Field |
+|--------------|-------|
+| Simple / Virtual | — |
+| Configurable | `selectedConfigurableOption` — the chosen variant's product id |
+| Downloadable | `links` — list of downloadable-link ids |
+| Grouped      | `groupedQuantities` — list of `{ productId, quantity }` |
+| Bundle       | `bundleOptions` — list of `{ optionId, productIds, quantity }` |
+| Booking      | not supported in admin Create-Order (returns an error) |
+
+See the examples dropdown for a per-type sample.
 
 ## Errors
 

@@ -113,7 +113,7 @@ export default defineConfig(({ command, mode }) => {
     sidebar: [
       {
         text: 'Bagisto APIs',
-        collapsed: false,
+        collapsed: true,
         items: [
           { text: 'Introduction', link: '/api/introduction' },
           { text: 'Setup', link: '/api/setup' },
@@ -127,15 +127,15 @@ export default defineConfig(({ command, mode }) => {
               { text: 'Authentication', link: '/api/graphql-api/authentication' },
               {
                 text: 'Shop API',
-                collapsed: false,
+                collapsed: true,
                 items: [
                       {
                         text: 'Locales',
-                        collapsed: false,
+                        collapsed: true,
                         items: [     
                            {
                             text: 'Queries',
-                            collapsed: false,
+                            collapsed: true,
                             items: [               
                               { text: 'Locales', link: '/api/graphql-api/shop/locales/queries/locales' },
                               { text: 'Single Locale', link: '/api/graphql-api/shop/locales/queries/single-locale' }
@@ -149,7 +149,7 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           {
                             text: 'Queries',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Tree Categories', link: '/api/graphql-api/shop/queries/tree-categories' },  
                               { text: 'Categories', link: '/api/graphql-api/shop/queries/categories' },
@@ -160,7 +160,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Theme Customisations',
-                        collapsed: false,
+                        collapsed: true,
                         items: [                    
                           { text: 'Theme Customisations', link: '/api/graphql-api/shop/queries/theme-customisations' },
                           { text: 'Single Theme Customisation', link: '/api/graphql-api/shop/queries/single-theme-customisation' }
@@ -172,7 +172,7 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           {
                             text: 'Queries',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Pages', link: '/api/graphql-api/shop/queries/get-pages' },
                               { text: 'Single Page', link: '/api/graphql-api/shop/queries/get-page' },
@@ -186,7 +186,7 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           {
                             text: 'Queries',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Products', link: '/api/graphql-api/shop/queries/get-products' },
                               { text: 'Search Products', link: '/api/graphql-api/shop/queries/search-products' },
@@ -202,14 +202,14 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           {
                             text: 'Queries',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Product Reviews', link: '/api/graphql-api/shop/queries/get-product-reviews' },
                             ]
                           },
                           {
                             text: 'Mutations',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Create Product Review', link: '/api/graphql-api/shop/mutations/create-product-review' },
                               { text: 'Update Product Review', link: '/api/graphql-api/shop/mutations/update-product-review' },
@@ -225,7 +225,7 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           {
                             text: 'Queries',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Attributes', link: '/api/graphql-api/shop/queries/get-attributes' },
                               { text: 'Single Attribute', link: '/api/graphql-api/shop/queries/get-attribute' },
@@ -240,7 +240,7 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           {
                             text: 'Queries',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Channels', link: '/api/graphql-api/shop/queries/get-channels' },
                               { text: 'Single Channel', link: '/api/graphql-api/shop/queries/get-channel' },
@@ -254,7 +254,7 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           {
                             text: 'Queries',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Currencies', link: '/api/graphql-api/shop/queries/get-currencies' },
                               { text: 'Single Currency', link: '/api/graphql-api/shop/queries/get-currency' },
@@ -264,7 +264,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       { 
                         text: 'Country',
-                        collapsed: false,
+                        collapsed: true,
                         items: [                    
                           { text: 'Single Country', link: '/api/graphql-api/shop/queries/get-country' },
                           { text: 'Countries', link: '/api/graphql-api/shop/queries/get-countries' },
@@ -278,7 +278,7 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           {
                             text: 'Queries',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Get Customer Profile', link: '/api/graphql-api/shop/queries/get-customer-profile' },
                               { text: 'Get Customer Orders', link: '/api/graphql-api/shop/queries/get-customer-orders' },
@@ -297,7 +297,7 @@ export default defineConfig(({ command, mode }) => {
                           },
                           {
                             text: 'Mutations',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Customer Registration', link: '/api/graphql-api/shop/mutations/customer-registration' },
                               { text: 'Customer Login', link: '/api/graphql-api/shop/mutations/customer-login' },
@@ -323,7 +323,7 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           {
                             text: 'Queries',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Get Cart', link: '/api/graphql-api/shop/queries/get-cart' },
                             ]   
@@ -331,7 +331,7 @@ export default defineConfig(({ command, mode }) => {
                           },
                           {
                             text: 'Mutations',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'CreateCart', link: '/api/graphql-api/shop/mutations/create-cart' },
                               { text: 'AddToCart', link: '/api/graphql-api/shop/mutations/add-to-cart' },
@@ -350,7 +350,7 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           {
                             text: 'Queries',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Get Addresses', link: '/api/graphql-api/shop/queries/get-addresses' },
                               { text: 'Get Shipping Methods', link: '/api/graphql-api/shop/queries/get-shipping-methods' },
@@ -359,7 +359,7 @@ export default defineConfig(({ command, mode }) => {
                           },
                           {
                             text: 'Mutations',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Set Checkout Address', link: '/api/graphql-api/shop/mutations/set-billing-address' },
                               { text: 'Set Shipping Method', link: '/api/graphql-api/shop/mutations/set-shipping-method' },
@@ -375,7 +375,7 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           {
                             text: 'Queries',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Get Wishlists', link: '/api/graphql-api/shop/queries/get-wishlists' },
                               { text: 'Get Wishlist Item', link: '/api/graphql-api/shop/queries/get-wishlist' },
@@ -383,7 +383,7 @@ export default defineConfig(({ command, mode }) => {
                           },
                           {
                             text: 'Mutations',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Create Wishlist', link: '/api/graphql-api/shop/mutations/create-wishlist' },
                               { text: 'Toggle Wishlist', link: '/api/graphql-api/shop/mutations/toggle-wishlist' },
@@ -400,7 +400,7 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           {
                             text: 'Queries',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Get Compare Items', link: '/api/graphql-api/shop/queries/get-compare-items' },
                               { text: 'Get Compare Item', link: '/api/graphql-api/shop/queries/get-compare-item' },
@@ -408,7 +408,7 @@ export default defineConfig(({ command, mode }) => {
                           },
                           {
                             text: 'Mutations',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Create Compare Item', link: '/api/graphql-api/shop/mutations/create-compare-item' },
                               { text: 'Delete Compare Item', link: '/api/graphql-api/shop/mutations/delete-compare-item' },
@@ -423,7 +423,7 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           {
                             text: 'Mutations',
-                            collapsed: false,
+                            collapsed: true,
                             items: [
                               { text: 'Create Contact Us', link: '/api/graphql-api/shop/mutations/create-contact-us' },
                             ]
@@ -434,7 +434,7 @@ export default defineConfig(({ command, mode }) => {
               },
               {
                 text: 'Admin API',
-                collapsed: false,
+                collapsed: true,
                 items: [
                   { text: 'Authentication', link: '/api/graphql-api/admin/authentication' },
                   {
@@ -453,8 +453,8 @@ export default defineConfig(({ command, mode }) => {
                         link: '/api/graphql-api/admin/catalog/products/',
                         collapsed: true,
                         items: [
-                          { text: 'List Products (Picker)', link: '/api/graphql-api/admin/catalog/products/list' },
-                          { text: 'Catalog Products (Datagrid)', link: '/api/graphql-api/admin/catalog/products' },
+                          { text: 'List Products', link: '/api/graphql-api/admin/catalog/products' },
+                          { text: 'Add-Product Search (Create-Order)', link: '/api/graphql-api/admin/catalog/products/list' },
                           { text: 'Catalog Product Detail', link: '/api/graphql-api/admin/catalog/products/products-detail' },
                           { text: 'Create Product', link: '/api/graphql-api/admin/catalog/products/create' },
                           { text: 'Update Product', link: '/api/graphql-api/admin/catalog/products/update' },
@@ -518,18 +518,25 @@ export default defineConfig(({ command, mode }) => {
                   },
                   {
                     text: 'CMS',
+                    link: '/api/graphql-api/admin/cms/pages/',
                     collapsed: true,
                     items: [
                       {
-                        text: 'Pages',
+                        text: 'Queries',
                         collapsed: true,
                         items: [
-                          { text: 'List Pages', link: '/api/graphql-api/admin/cms/pages-list' },
-                          { text: 'Page Detail', link: '/api/graphql-api/admin/cms/pages-detail' },
-                          { text: 'Create Page', link: '/api/graphql-api/admin/cms/pages-create' },
-                          { text: 'Update Page', link: '/api/graphql-api/admin/cms/pages-update' },
-                          { text: 'Delete Page', link: '/api/graphql-api/admin/cms/pages-delete' },
-                          { text: 'Mass Delete Pages', link: '/api/graphql-api/admin/cms/pages-mass-delete' },
+                          { text: 'List Pages', link: '/api/graphql-api/admin/cms/pages/queries/list' },
+                          { text: 'Page Detail', link: '/api/graphql-api/admin/cms/pages/queries/detail' },
+                        ]
+                      },
+                      {
+                        text: 'Mutations',
+                        collapsed: true,
+                        items: [
+                          { text: 'Create Page', link: '/api/graphql-api/admin/cms/pages/mutations/create' },
+                          { text: 'Update Page', link: '/api/graphql-api/admin/cms/pages/mutations/update' },
+                          { text: 'Delete Page', link: '/api/graphql-api/admin/cms/pages/mutations/delete' },
+                          { text: 'Mass Delete Pages', link: '/api/graphql-api/admin/cms/pages/mutations/mass-delete' },
                         ]
                       }
                     ]
@@ -614,7 +621,6 @@ export default defineConfig(({ command, mode }) => {
                         collapsed: true,
                         items: [
                           { text: 'List Transactions', link: '/api/graphql-api/admin/sales/transactions/list' },
-                          { text: 'Transaction Detail', link: '/api/graphql-api/admin/sales/transactions/detail' },
                         ]
                       },
                       {
@@ -750,6 +756,7 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Update', link: '/api/graphql-api/admin/settings/exchange-rates/update' },
                           { text: 'Delete', link: '/api/graphql-api/admin/settings/exchange-rates/delete' },
                           { text: 'Mass Delete', link: '/api/graphql-api/admin/settings/exchange-rates/mass-delete' },
+                          { text: 'Update Rates', link: '/api/graphql-api/admin/settings/exchange-rates/update-rates' },
                         ]
                       },
                       {
@@ -784,6 +791,7 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Create', link: '/api/graphql-api/admin/settings/users/create' },
                           { text: 'Update', link: '/api/graphql-api/admin/settings/users/update' },
                           { text: 'Delete', link: '/api/graphql-api/admin/settings/users/delete' },
+                          { text: 'Delete My Account', link: '/api/graphql-api/admin/settings/users/delete-self' },
                         ]
                       },
                       {
@@ -838,6 +846,12 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           { text: 'List', link: '/api/graphql-api/admin/settings/data-transfer-imports/list' },
                           { text: 'Detail', link: '/api/graphql-api/admin/settings/data-transfer-imports/detail' },
+                          { text: 'Create', link: '/api/graphql-api/admin/settings/data-transfer-imports/create' },
+                          { text: 'Validate', link: '/api/graphql-api/admin/settings/data-transfer-imports/validate' },
+                          { text: 'Start', link: '/api/graphql-api/admin/settings/data-transfer-imports/start' },
+                          { text: 'Link', link: '/api/graphql-api/admin/settings/data-transfer-imports/link' },
+                          { text: 'Index', link: '/api/graphql-api/admin/settings/data-transfer-imports/index' },
+                          { text: 'Stats', link: '/api/graphql-api/admin/settings/data-transfer-imports/stats' },
                           { text: 'Delete', link: '/api/graphql-api/admin/settings/data-transfer-imports/delete' },
                           { text: 'Cancel', link: '/api/graphql-api/admin/settings/data-transfer-imports/cancel' },
                         ]
@@ -887,6 +901,7 @@ export default defineConfig(({ command, mode }) => {
                             items: [
                               { text: 'List', link: '/api/graphql-api/admin/marketing/promotions/cart-rules-list' },
                               { text: 'Detail', link: '/api/graphql-api/admin/marketing/promotions/cart-rules-detail' },
+                              { text: 'Copy', link: '/api/graphql-api/admin/marketing/promotions/cart-rules-copy' },
                               { text: 'Create', link: '/api/graphql-api/admin/marketing/promotions/cart-rules-create' },
                               { text: 'Update', link: '/api/graphql-api/admin/marketing/promotions/cart-rules-update' },
                               { text: 'Delete', link: '/api/graphql-api/admin/marketing/promotions/cart-rules-delete' },
@@ -1035,11 +1050,11 @@ export default defineConfig(({ command, mode }) => {
               
               {
                 text: 'Shop API',
-                collapsed: false,
+                collapsed: true,
                 items: [
                   {
                     text: 'Locales',
-                    collapsed: false,
+                    collapsed: true,
                     items: [ 
                       { text: 'Get All Locales', link: '/api/rest-api/shop/locales/get-locales' },
                       { text: 'Get Single Locale', link: '/api/rest-api/shop/locales/get-single-locale' }
@@ -1047,7 +1062,7 @@ export default defineConfig(({ command, mode }) => {
                   },
                   {
                     text: 'Categories',
-                    collapsed: false,
+                    collapsed: true,
                     items: [
                           { text: 'Categories', link: '/api/rest-api/shop/categories/get-categories' },
                           { text: 'Category Tree', link: '/api/rest-api/shop/categories/get-category-tree' },
@@ -1055,14 +1070,14 @@ export default defineConfig(({ command, mode }) => {
                   },
                   {
                     text: 'Theme Customizations',
-                    collapsed: false,
+                    collapsed: true,
                     items: [
                           { text: 'Theme Customizations', link: '/api/rest-api/shop/theme-customizations/get-theme-customizations' },
                     ]
                   },
                   {
                     text: 'Products',
-                    collapsed: false,
+                    collapsed: true,
                     items: [
                           { text: 'Products', link: '/api/rest-api/shop/products/get-products' },
                           { text: 'Search Products', link: '/api/rest-api/shop/products/search-product' },
@@ -1074,7 +1089,7 @@ export default defineConfig(({ command, mode }) => {
                   },
                   {
                     text: 'Product Review',
-                    collapsed: false,
+                    collapsed: true,
                     items: [
                           { text: 'Get Product Reviews', link: '/api/rest-api/shop/product-reviews/get-product-reviews' },
                           { text: 'Get Product Review', link: '/api/rest-api/shop/product-reviews/get-product-review' },
@@ -1085,7 +1100,7 @@ export default defineConfig(({ command, mode }) => {
                   },
                   {
                     text: 'Attribute',
-                    collapsed: false,
+                    collapsed: true,
                     items: [
                           { text: 'Attributes', link: '/api/rest-api/shop/attributes/get-attributes' },
                           { text: 'Attribute Options', link: '/api/rest-api/shop/attributes/get-attribute-options' },
@@ -1094,7 +1109,7 @@ export default defineConfig(({ command, mode }) => {
                   },
                   {
                     text: 'Channel',
-                    collapsed: false,
+                    collapsed: true,
                     items: [
                           { text: 'Channels', link: '/api/rest-api/shop/channels/get-channels' },
                           { text: 'Channel Translations', link: '/api/rest-api/shop/channels/get-channel-translations' },
@@ -1102,7 +1117,7 @@ export default defineConfig(({ command, mode }) => {
                   },
                   {
                     text: 'Country and State',
-                    collapsed: false,
+                    collapsed: true,
                     items: [
                           { text: 'Countries', link: '/api/rest-api/shop/countries/get-countries' },
                           { text: 'Country States', link: '/api/rest-api/shop/countries/get-country-states' },
@@ -1110,7 +1125,7 @@ export default defineConfig(({ command, mode }) => {
                   },
                   {
                     text: 'Customer',
-                    collapsed: false,
+                    collapsed: true,
                     items: [
                           { text: 'Registration', link: '/api/rest-api/shop/customers/customer-registration' },
                           { text: 'Login', link: '/api/rest-api/shop/customers/customer-login' },
@@ -1138,7 +1153,7 @@ export default defineConfig(({ command, mode }) => {
                   },
                   {
                     text: 'Cart',
-                    collapsed: false,
+                    collapsed: true,
                     items: [
                           { text: 'Get Cart', link: '/api/rest-api/shop/cart/get-cart' },
                           { text: 'Create Cart', link: '/api/rest-api/shop/cart/create-cart' },
@@ -1151,7 +1166,7 @@ export default defineConfig(({ command, mode }) => {
                   },
                   {
                     text: 'Checkout',
-                    collapsed: false,
+                    collapsed: true,
                     items: [
                           { text: 'Get Addresses', link: '/api/rest-api/shop/checkout/get-addresses' },
                           { text: 'Get Shipping Methods', link: '/api/rest-api/shop/checkout/get-shipping-methods' },
@@ -1167,7 +1182,7 @@ export default defineConfig(({ command, mode }) => {
               },
               {
                 text: 'Admin API',
-                collapsed: false,
+                collapsed: true,
                 items: [
                   { text: 'Authentication', link: '/api/rest-api/admin/authentication' },
                   {
@@ -1186,8 +1201,8 @@ export default defineConfig(({ command, mode }) => {
                         link: '/api/rest-api/admin/catalog/products/',
                         collapsed: true,
                         items: [
-                          { text: 'List Products (Picker)', link: '/api/rest-api/admin/catalog/products/list' },
-                          { text: 'Catalog Products (Datagrid)', link: '/api/rest-api/admin/catalog/products' },
+                          { text: 'List Products', link: '/api/rest-api/admin/catalog/products' },
+                          { text: 'Add-Product Search (Create-Order)', link: '/api/rest-api/admin/catalog/products/list' },
                           { text: 'Catalog Product Detail', link: '/api/rest-api/admin/catalog/products/products-detail' },
                           { text: 'Create Product', link: '/api/rest-api/admin/catalog/products/create' },
                           { text: 'Update Product', link: '/api/rest-api/admin/catalog/products/update' },
@@ -1195,6 +1210,7 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Copy Product', link: '/api/rest-api/admin/catalog/products/copy' },
                           { text: 'Mass Delete Products', link: '/api/rest-api/admin/catalog/products/mass-delete' },
                           { text: 'Mass Update Status', link: '/api/rest-api/admin/catalog/products/mass-update-status' },
+                          { text: 'Export Products (CSV)', link: '/api/rest-api/admin/catalog/products/export' },
                           { text: 'Upload Image', link: '/api/rest-api/admin/catalog/products/images-upload' },
                           { text: 'Reorder Images', link: '/api/rest-api/admin/catalog/products/images-reorder' },
                           { text: 'Delete Image', link: '/api/rest-api/admin/catalog/products/images-delete' },
@@ -1255,6 +1271,7 @@ export default defineConfig(({ command, mode }) => {
                     items: [
                       {
                         text: 'Pages',
+                        link: '/api/rest-api/admin/cms/pages/',
                         collapsed: true,
                         items: [
                           { text: 'List Pages', link: '/api/rest-api/admin/cms/pages-list' },
@@ -1263,6 +1280,7 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Update Page', link: '/api/rest-api/admin/cms/pages-update' },
                           { text: 'Delete Page', link: '/api/rest-api/admin/cms/pages-delete' },
                           { text: 'Mass Delete Pages', link: '/api/rest-api/admin/cms/pages-mass-delete' },
+                          { text: 'Export Pages (CSV)', link: '/api/rest-api/admin/cms/pages/export' },
                         ]
                       }
                     ]
@@ -1351,7 +1369,6 @@ export default defineConfig(({ command, mode }) => {
                         collapsed: true,
                         items: [
                           { text: 'List Transactions', link: '/api/rest-api/admin/sales/transactions/list' },
-                          { text: 'Transaction Detail', link: '/api/rest-api/admin/sales/transactions/detail' },
                           { text: 'Export Transactions (CSV)', link: '/api/rest-api/admin/sales/transactions/export' },
                         ]
                       },
@@ -1489,6 +1506,7 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Update', link: '/api/rest-api/admin/settings/exchange-rates/update' },
                           { text: 'Delete', link: '/api/rest-api/admin/settings/exchange-rates/delete' },
                           { text: 'Mass Delete', link: '/api/rest-api/admin/settings/exchange-rates/mass-delete' },
+                          { text: 'Update Rates', link: '/api/rest-api/admin/settings/exchange-rates/update-rates' },
                         ]
                       },
                       {
@@ -1523,6 +1541,7 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Create', link: '/api/rest-api/admin/settings/users/create' },
                           { text: 'Update', link: '/api/rest-api/admin/settings/users/update' },
                           { text: 'Delete', link: '/api/rest-api/admin/settings/users/delete' },
+                          { text: 'Delete My Account', link: '/api/rest-api/admin/settings/users/delete-self' },
                         ]
                       },
                       {
@@ -1569,6 +1588,7 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Create', link: '/api/rest-api/admin/settings/tax-rates/create' },
                           { text: 'Update', link: '/api/rest-api/admin/settings/tax-rates/update' },
                           { text: 'Delete', link: '/api/rest-api/admin/settings/tax-rates/delete' },
+                          { text: 'Export (CSV)', link: '/api/rest-api/admin/settings/tax-rates/export' },
                         ]
                       },
                       {
@@ -1577,7 +1597,16 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           { text: 'List', link: '/api/rest-api/admin/settings/data-transfer-imports/list' },
                           { text: 'Detail', link: '/api/rest-api/admin/settings/data-transfer-imports/detail' },
-                          { text: 'Create (deferred)', link: '/api/rest-api/admin/settings/data-transfer-imports/create' },
+                          { text: 'Create', link: '/api/rest-api/admin/settings/data-transfer-imports/create' },
+                          { text: 'Update', link: '/api/rest-api/admin/settings/data-transfer-imports/update' },
+                          { text: 'Validate', link: '/api/rest-api/admin/settings/data-transfer-imports/validate' },
+                          { text: 'Start', link: '/api/rest-api/admin/settings/data-transfer-imports/start' },
+                          { text: 'Link', link: '/api/rest-api/admin/settings/data-transfer-imports/link' },
+                          { text: 'Index', link: '/api/rest-api/admin/settings/data-transfer-imports/index' },
+                          { text: 'Stats', link: '/api/rest-api/admin/settings/data-transfer-imports/stats' },
+                          { text: 'Download File', link: '/api/rest-api/admin/settings/data-transfer-imports/download' },
+                          { text: 'Download Error Report', link: '/api/rest-api/admin/settings/data-transfer-imports/download-error-report' },
+                          { text: 'Download Sample', link: '/api/rest-api/admin/settings/data-transfer-imports/download-sample' },
                           { text: 'Delete', link: '/api/rest-api/admin/settings/data-transfer-imports/delete' },
                           { text: 'Cancel', link: '/api/rest-api/admin/settings/data-transfer-imports/cancel' },
                         ]
@@ -1627,6 +1656,7 @@ export default defineConfig(({ command, mode }) => {
                             items: [
                               { text: 'List', link: '/api/rest-api/admin/marketing/promotions/cart-rules-list' },
                               { text: 'Detail', link: '/api/rest-api/admin/marketing/promotions/cart-rules-detail' },
+                              { text: 'Copy', link: '/api/rest-api/admin/marketing/promotions/cart-rules-copy' },
                               { text: 'Create', link: '/api/rest-api/admin/marketing/promotions/cart-rules-create' },
                               { text: 'Update', link: '/api/rest-api/admin/marketing/promotions/cart-rules-update' },
                               { text: 'Delete', link: '/api/rest-api/admin/marketing/promotions/cart-rules-delete' },

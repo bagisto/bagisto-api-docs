@@ -47,7 +47,7 @@ The CSV carries the eight datagrid columns, in order:
 
 `format` selects the export format — **only `csv` is supported** (the default); any other value returns `422`.
 
-The export honours the **same filters as the [listing](/api/rest-api/admin/sales/orders/list-orders)**, so you export exactly the rows you're viewing: `order_id`, `status`, `grand_total` (plus the `grand_total_from` / `_to` range), `channel`, `customer`, `email`, plus the date presets (`today` … `this_year`) and custom `date_from` / `date_to`. (Pagination does not apply — the export returns every matching row.)
+The export honours the **same filters as the [listing](/api/rest-api/admin/sales/orders/list-orders)**, so you export exactly the rows you're viewing: `order_id`, `status`, `grand_total` (plus the `grand_total_from` / `_to` range), `channel`, `customer`, `email`, plus the date presets (`today`, `yesterday`, `this_week`, `this_month`, `last_month`, `last_three_months`, `last_six_months`, `this_year`) and custom `date_from` / `date_to`. (Pagination does not apply — the export returns every matching row.)
 
 ## Permission
 

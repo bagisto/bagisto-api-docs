@@ -2,8 +2,8 @@
 outline: false
 examples:
   - id: admin-catalog-products-list
-    title: List Catalog Products (Datagrid)
-    description: Cursor-paginated query returning the full 18-field catalog product row — the GraphQL equivalent of the admin Catalog → Products datagrid. Supports filtering by type, status, SKU, name, price range, attribute family, channel, and locale.
+    title: List Products (Datagrid)
+    description: The canonical admin product listing over GraphQL — a cursor-paginated query returning the full catalog product row, mirroring the admin Catalog → Products datagrid. Supports filtering by type, status, SKU, name, price range, attribute family, channel, and locale.
     query: |
       query AdminCatalogProducts(
         $first: Int
@@ -34,6 +34,10 @@ examples:
               status
               price
               formattedPrice
+              specialPrice
+              formattedSpecialPrice
+              specialPriceFrom
+              specialPriceTo
               quantity
               baseImageUrl
               imagesCount
@@ -46,7 +50,6 @@ examples:
               urlKey
               visibleIndividually
               shortDescription
-              description
               metaTitle
               metaDescription
               metaKeywords
@@ -81,100 +84,70 @@ examples:
               {
                 "cursor": "MA==",
                 "node": {
-                  "id": "/api/admin/catalog/products/142",
-                  "_id": 142,
-                  "sku": "SP-001",
-                  "name": "Classic Watch",
+                  "id": "/api/admin/catalog/products/22",
+                  "_id": 22,
+                  "sku": "bagistoNGRY3424234KJCKJK",
+                  "name": "Acme Drawstring Bag",
                   "type": "simple",
                   "status": 1,
-                  "price": "99.9900",
-                  "formattedPrice": "$99.99",
-                  "quantity": 42,
-                  "baseImageUrl": "http://localhost:8000/cache/medium/product/142/image.webp",
-                  "imagesCount": 3,
-                  "categoryId": 5,
-                  "categoryName": "Accessories",
-                  "channel": "Default",
+                  "price": "3000.0000",
+                  "formattedPrice": "$3,000.00",
+                  "specialPrice": "2700.0000",
+                  "formattedSpecialPrice": "$2,700.00",
+                  "specialPriceFrom": null,
+                  "specialPriceTo": null,
+                  "quantity": 98,
+                  "baseImageUrl": "http://localhost:8000/storage/product/22/1qfyoglc5BP46kofrxYrkJ2MXRxu9lAVG3BDFlTZ.webp",
+                  "imagesCount": 1,
+                  "categoryId": null,
+                  "categoryName": null,
+                  "channel": "default",
                   "locale": "en",
                   "attributeFamilyId": 1,
                   "attributeFamilyName": "Default",
-                  "urlKey": "classic-watch",
+                  "urlKey": "acme-drawstring-bag",
                   "visibleIndividually": true,
-                  "shortDescription": "<p>A timeless classic watch.</p>",
-                  "description": "<p>Full HTML product description.</p>",
-                  "metaTitle": "Classic Watch",
-                  "metaDescription": "Buy the Classic Watch",
-                  "metaKeywords": "watch, classic",
-                  "weight": 0.25,
-                  "featured": false,
-                  "new": true,
-                  "createdAt": "2026-05-20 10:00:00",
-                  "updatedAt": "2026-05-22 14:30:00"
-                }
-              },
-              {
-                "cursor": "MQ==",
-                "node": {
-                  "id": "/api/admin/catalog/products/143",
-                  "_id": 143,
-                  "sku": "SP-002",
-                  "name": "Sport Watch",
-                  "type": "simple",
-                  "status": 1,
-                  "price": "149.9900",
-                  "formattedPrice": "$149.99",
-                  "quantity": 18,
-                  "baseImageUrl": "http://localhost:8000/cache/medium/product/143/image.webp",
-                  "imagesCount": 2,
-                  "categoryId": 5,
-                  "categoryName": "Accessories",
-                  "channel": "Default",
-                  "locale": "en",
-                  "attributeFamilyId": 1,
-                  "attributeFamilyName": "Default",
-                  "urlKey": "sport-watch",
-                  "visibleIndividually": true,
-                  "shortDescription": "<p>A rugged sport watch.</p>",
-                  "description": "<p>Full HTML product description.</p>",
-                  "metaTitle": "Sport Watch",
-                  "metaDescription": "Buy the Sport Watch",
-                  "metaKeywords": "watch, sport",
-                  "weight": 0.30,
+                  "shortDescription": "Many desktop publishing packages and web page editors now use",
+                  "metaTitle": "",
+                  "metaDescription": "",
+                  "metaKeywords": "",
+                  "weight": 32,
                   "featured": true,
-                  "new": false,
-                  "createdAt": "2026-05-21 09:15:00",
-                  "updatedAt": "2026-05-23 11:00:00"
+                  "new": true,
+                  "createdAt": "2024-04-19 11:56:43",
+                  "updatedAt": "2026-04-23 16:36:14"
                 }
               }
             ],
             "pageInfo": {
               "hasNextPage": true,
               "hasPreviousPage": false,
-              "endCursor": "MQ==",
+              "endCursor": "MA==",
               "startCursor": "MA=="
             },
-            "totalCount": 616
+            "totalCount": 265
           }
         }
       }
 ---
 
-# Catalog Products — Datagrid Listing
+# List Products
 
-Cursor-paginated GraphQL query that mirrors the Bagisto admin **Catalog →
-Products** datagrid. Returns the full 18-field product row with filtering,
-sorting, and cursor pagination.
+The **canonical admin product listing** over GraphQL — a cursor-paginated query
+that mirrors the Bagisto admin **Catalog → Products** datagrid. Returns the full
+product row with filtering, sorting, and cursor pagination. This is the query you
+want for product-management screens.
 
 ::: tip How this menu works
 For the product types, the two-step create flow, status vs. visibleIndividually, and the per-product sub-resources, see the [Products overview](/api/graphql-api/admin/catalog/products/).
 :::
 
-::: tip Distinct from the Create-Order product picker
-`adminCatalogProducts` (this query) is the full datagrid — 18 fields per row,
-designed for catalog management screens.
+::: tip Not the Create-Order search
+`adminCatalogProducts` (this query) is the full product listing.
 
-`adminProducts` is the slim picker (9 fields) used by the admin Create-Order
-"Add Product" modal. The two operations share no overlap in purpose.
+A separate slim search — [`adminProducts`](/api/graphql-api/admin/catalog/products/list) — powers the admin
+Create-Order "Add Product" modal only. Use this query for the actual product
+listing.
 :::
 
 ## Operation
@@ -230,35 +203,48 @@ Each `edges[].node` object contains the following fields:
 | `name` | `String` | Product name (resolved via `locale` and `channel`) |
 | `type` | `String` | Product type |
 | `status` | `Int` | `1` = enabled, `0` = disabled |
-| `price` | `String` | Raw price as a decimal string (e.g. `"99.9900"`) |
-| `formattedPrice` | `String` | Locale-formatted price (e.g. `"$99.99"`) |
+| `price` | `String` | Raw price as a decimal string (e.g. `"3000.0000"`) |
+| `formattedPrice` | `String` | Locale-formatted price (e.g. `"$3,000.00"`) |
+| `specialPrice` | `String` | Raw special (sale) price as a decimal string; `null` if none |
+| `formattedSpecialPrice` | `String` | Locale-formatted special price; `null` if none |
+| `specialPriceFrom` | `String` | Start of the special-price window; `null` unless a dated window is set |
+| `specialPriceTo` | `String` | End of the special-price window; `null` unless a dated window is set |
 | `quantity` | `Int` | Sum of inventory qty across all inventory sources |
-| `baseImageUrl` | `String` | Storage URL of the first product image (medium cache) |
+| `baseImageUrl` | `String` | Storage URL of the first product image; `null` if no images |
 | `imagesCount` | `Int` | Total number of images attached to the product |
-| `categoryId` | `Int` | ID of the first category this product belongs to |
-| `categoryName` | `String` | Translated name of that category |
+| `categoryId` | `Int` | ID of the first category this product belongs to; `null` if uncategorized |
+| `categoryName` | `String` | Translated name of that category; `null` if uncategorized |
 | `channel` | `String` | Channel code used for resolution |
 | `locale` | `String` | Locale code used for resolution |
 | `attributeFamilyId` | `Int` | Attribute family ID |
 | `attributeFamilyName` | `String` | Attribute family name |
-| `urlKey` | `String` | URL slug (e.g. `"classic-watch"`) |
+| `urlKey` | `String` | URL slug (e.g. `"acme-drawstring-bag"`) |
 | `visibleIndividually` | `Boolean` | Whether the product appears in category/search listings |
-| `shortDescription` | `String` | Short HTML description |
-| `description` | `String` | Full HTML description |
-| `metaTitle` | `String` | SEO meta title |
-| `metaDescription` | `String` | SEO meta description |
-| `metaKeywords` | `String` | SEO meta keywords |
+| `shortDescription` | `String` | Short description |
+| `metaTitle` | `String` | SEO meta title (empty string when unset) |
+| `metaDescription` | `String` | SEO meta description (empty string when unset) |
+| `metaKeywords` | `String` | SEO meta keywords (empty string when unset) |
 | `weight` | `Float` | Product weight |
 | `featured` | `Boolean` | Whether the product is flagged as featured |
 | `new` | `Boolean` | Whether the product is flagged as "new" |
 | `createdAt` | `String` | Creation timestamp |
 | `updatedAt` | `String` | Last-update timestamp |
 
-The **heavy relations** — `translations`, `images`, `categories`, `inventories`,
-`customerGroupPrices`, and the type-specific blocks (`variants` / `bundleOptions`
-/ `linkedProducts` / `downloadableLinks` / `downloadableSamples` /
-`superAttributes`) — stay **detail-only** (returned as `null` on the listing).
-Fetch them from the single-product query `adminCatalogProduct(id:)`.
+Notes on the listing values:
+
+- `price`, `specialPrice` are **decimal strings**, not numbers.
+- `specialPriceFrom` / `specialPriceTo` are `null` unless a **dated**
+  special-price window is configured.
+- `quantity` is the **summed** inventory across all sources.
+
+The following fields are **detail-only** and always come back `null` on the
+listing — fetch them from the single-product query `adminCatalogProduct(id:)`:
+
+- `taxCategoryId`, `manageStock`, `inStock`
+- the relation blocks: `translations`, `images`, `categories`, `inventories`,
+  `customerGroupPrices`, `superAttributes`, `variants`, `bundleOptions`,
+  `linkedProducts`, `downloadableLinks`, `downloadableSamples`, `videos`,
+  `channels`, `relatedProducts`, `upSells`, `crossSells`.
 
 ## Example Query
 
@@ -292,6 +278,10 @@ query AdminCatalogProducts(
         status
         price
         formattedPrice
+        specialPrice
+        formattedSpecialPrice
+        specialPriceFrom
+        specialPriceTo
         quantity
         baseImageUrl
         imagesCount
@@ -304,7 +294,6 @@ query AdminCatalogProducts(
         urlKey
         visibleIndividually
         shortDescription
-        description
         metaTitle
         metaDescription
         metaKeywords
@@ -345,35 +334,38 @@ query AdminCatalogProducts(
         {
           "cursor": "MA==",
           "node": {
-            "id": "/api/admin/catalog/products/142",
-            "_id": 142,
-            "sku": "SP-001",
-            "name": "Classic Watch",
+            "id": "/api/admin/catalog/products/22",
+            "_id": 22,
+            "sku": "bagistoNGRY3424234KJCKJK",
+            "name": "Acme Drawstring Bag",
             "type": "simple",
             "status": 1,
-            "price": "99.9900",
-            "formattedPrice": "$99.99",
-            "quantity": 42,
-            "baseImageUrl": "http://localhost:8000/cache/medium/product/142/image.webp",
-            "imagesCount": 3,
-            "categoryId": 5,
-            "categoryName": "Accessories",
-            "channel": "Default",
+            "price": "3000.0000",
+            "formattedPrice": "$3,000.00",
+            "specialPrice": "2700.0000",
+            "formattedSpecialPrice": "$2,700.00",
+            "specialPriceFrom": null,
+            "specialPriceTo": null,
+            "quantity": 98,
+            "baseImageUrl": "http://localhost:8000/storage/product/22/1qfyoglc5BP46kofrxYrkJ2MXRxu9lAVG3BDFlTZ.webp",
+            "imagesCount": 1,
+            "categoryId": null,
+            "categoryName": null,
+            "channel": "default",
             "locale": "en",
             "attributeFamilyId": 1,
             "attributeFamilyName": "Default",
-            "urlKey": "classic-watch",
+            "urlKey": "acme-drawstring-bag",
             "visibleIndividually": true,
-            "shortDescription": "<p>A timeless classic watch.</p>",
-            "description": "<p>Full HTML product description.</p>",
-            "metaTitle": "Classic Watch",
-            "metaDescription": "Buy the Classic Watch",
-            "metaKeywords": "watch, classic",
-            "weight": 0.25,
-            "featured": false,
+            "shortDescription": "Many desktop publishing packages and web page editors now use",
+            "metaTitle": "",
+            "metaDescription": "",
+            "metaKeywords": "",
+            "weight": 32,
+            "featured": true,
             "new": true,
-            "createdAt": "2026-05-20 10:00:00",
-            "updatedAt": "2026-05-22 14:30:00"
+            "createdAt": "2024-04-19 11:56:43",
+            "updatedAt": "2026-04-23 16:36:14"
           }
         }
       ],
@@ -383,7 +375,7 @@ query AdminCatalogProducts(
         "endCursor": "MA==",
         "startCursor": "MA=="
       },
-      "totalCount": 616
+      "totalCount": 265
     }
   }
 }
@@ -419,26 +411,22 @@ Pass `sort` with the column name and `order` for direction. A compound form
 
 | | `adminCatalogProducts` | `adminProducts` |
 |---|---|---|
-| Purpose | Full catalog management datagrid | Slim Create-Order product picker |
-| Fields per row | 18 | 9 |
-| Filters | 10+ (price range, attribute family, etc.) | 6 (query text, sku, type, status, categoryId, channel) |
+| Purpose | The canonical product listing (catalog management) | Slim Create-Order "Add Product" search |
+| Row shape | Full product row | Slim row (9 fields) |
+| Filters | Full set (price range, attribute family, status, type, etc.) | A handful (query text, sku, type, status, categoryId, channel) |
 | Default status filter | None — all statuses returned | None — all statuses returned |
-| Datagrid parity | Yes — mirrors `ProductDataGrid` 1:1 | No |
+
+Use **this** query for the product listing; use
+[`adminProducts`](/api/graphql-api/admin/catalog/products/list) only for the
+Create-Order product search.
 
 ## Notes
 
 - **Elasticsearch is not yet supported.** Even when the Bagisto admin panel is
   configured to use Elasticsearch for catalog search, this query always uses the
-  database path. Elasticsearch support is deferred to Phase 1.1.b of the Catalog
-  API roadmap.
-- **Custom filter args** — API Platform does not auto-expose filter arguments in
-  the GraphQL schema for `QueryCollection` operations. This query uses `extraArgs`
-  declared on the `QueryCollection` operation to surface all 12 filter/sort
-  arguments as first-class GraphQL arguments.
-- **Same provider as the REST endpoint** — `AdminCatalogProductCollectionProvider`
-  serves both transports with identical filter and sort semantics.
-- **No automatic status filter** — unlike `adminProducts` (the shop product
-  query), this operation returns all statuses by default. Pass `status: 1` to
-  restrict to enabled products.
+  database path.
+- **No automatic status filter** — unlike `GET /api/shop/products` (the
+  storefront product list), this query returns all statuses by default. Pass
+  `status: 1` to restrict to enabled products.
 - **Multi-category products** — only the first associated category's `categoryId`
   and `categoryName` are included (matching the datagrid display).

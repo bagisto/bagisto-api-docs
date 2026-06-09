@@ -50,6 +50,9 @@ examples:
       - error: Bad Request (400)
         cause: billing object missing or empty
         solution: Send at least a billing address
+      - error: Unprocessable Entity (422)
+        cause: a required address field is missing
+        solution: Send every required field (see below) for billing — and for shipping when useForShipping is false
 ---
 
 # Save Cart Addresses
@@ -66,3 +69,12 @@ to snake_case before being saved.
 
 If `billing.useForShipping` is `true`, the `shipping` block is optional and
 the billing address is reused for shipping.
+
+## Required fields
+
+Each address (billing always; shipping too when `useForShipping` is `false`)
+must include every one of these fields, otherwise the request is rejected with
+`422`:
+
+`firstName`, `lastName`, `email`, `address` (a non-empty array of street lines),
+`city`, `country`, `state`, `postcode`, `phone`. `companyName` is optional.

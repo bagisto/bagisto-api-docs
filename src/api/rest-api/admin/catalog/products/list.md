@@ -3,36 +3,36 @@ outline: false
 apiType: rest
 examples:
   - id: admin-products-list
-    title: List / Search Products (Admin)
-    description: Paginated product search for the admin Create-Order "Add Product" modal and any other admin product-picker. Unlike the storefront product list, returns ALL statuses by default (admin must see disabled / draft products too). Booking products ARE listed here so admin can find them; they're blocked at admin cart add-to-cart time.
+    title: Add-Product Search (Create-Order)
+    description: The slim product search behind the admin Create-Order "Add Product" modal. NOT the product listing — for the full product list with all columns and filters use the List Products datagrid. Returns ALL statuses by default (admin must see disabled / draft products too). Booking products ARE listed here so admin can find them; they're blocked at admin cart add-to-cart time.
     query: |
-      curl -X GET "https://your-domain.com/api/admin/products?query=watch&type=simple&per_page=30&page=1" \
+      curl -X GET "https://your-domain.com/api/admin/products?sku=SP-001&type=simple&per_page=30&page=1" \
         -H "Authorization: Bearer <token>" \
         -H "Accept: application/json"
     variables: |
-      query=watch&type=simple&per_page=30&page=1
+      sku=SP-001&type=simple&per_page=30&page=1
     response: |
       {
         "data": [
           {
-            "id": 142,
+            "id": 2512,
             "sku": "SP-001",
             "type": "simple",
-            "name": "Classic Watch",
+            "name": "Arctic Cozy Knit Unisex Beanie",
             "status": 1,
-            "price": 99.99,
-            "formattedPrice": "$99.99",
-            "baseImageUrl": "http://localhost:8000/cache/medium/product/142/image.webp",
+            "price": 14,
+            "formattedPrice": "$14.00",
+            "baseImageUrl": "http://localhost:8000/cache/medium/product/2512/Muc0qeWks34MTZaxf38s6DBmfqMqrCxku81Uo8EB.webp",
             "isSaleable": true
           }
         ],
         "meta": {
           "currentPage": 1,
           "perPage": 30,
-          "lastPage": 8,
-          "total": 231,
+          "lastPage": 1,
+          "total": 1,
           "from": 1,
-          "to": 30
+          "to": 1
         }
       }
     commonErrors:
@@ -42,10 +42,22 @@ examples:
 
 ---
 
-# List / Search Products (Admin)
+# Add-Product Search (Create-Order)
 
-Slim product listing endpoint for admin pickers. Returns a row per product in
-the `{ data, meta }` envelope used by every admin collection.
+The slim product **search** that powers the admin **Create Order** screen's
+"Add Product" modal. It returns a compact row per product so an operator can
+quickly find and pick a product to add to a draft order.
+
+::: warning This is not the product listing
+For the full admin product listing — every column plus all the
+Channel / Name / SKU / Attribute Family / Price / ID / Status / Type filters —
+use [List Products](/api/rest-api/admin/catalog/products)
+(`GET /api/admin/catalog/products`). This page documents only the Create-Order
+search tool.
+:::
+
+Results come back in the `{ data, meta }` envelope used by every admin
+collection.
 
 ## Endpoint
 

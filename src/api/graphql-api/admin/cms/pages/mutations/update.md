@@ -7,7 +7,12 @@ examples:
     query: |
       mutation UpdateCmsPage($input: updateAdminCmsPageInput!) {
         updateAdminCmsPage(input: $input) {
-          adminCmsPage { id _id urlKey pageTitle }
+          adminCmsPage {
+            id
+            _id
+            urlKey
+            pageTitle
+          }
         }
       }
     variables: |
@@ -27,7 +32,12 @@ examples:
       {
         "data": {
           "updateAdminCmsPage": {
-            "adminCmsPage": { "id": "/api/admin/cms_pages/7", "_id": 7, "urlKey": "about-us", "pageTitle": "About Us (Updated)" }
+            "adminCmsPage": {
+              "id": "/api/admin/cms_pages/7",
+              "_id": 7,
+              "urlKey": "about-us",
+              "pageTitle": "About Us (Updated)"
+            }
           }
         }
       }
@@ -38,7 +48,7 @@ examples:
 Equivalent to [`PUT /api/admin/cms/pages/{id}`](/api/rest-api/admin/cms/pages-update).
 
 ::: tip Prerequisites
-The example uses an illustrative `id` value. Replace it with the id of a CMS page that exists in your store — use the [`adminCmsPages`](./pages-list.md) query to discover valid ids.
+The example uses an illustrative `id` value. Replace it with the id of a CMS page that exists in your store — use the [`adminCmsPages`](/api/graphql-api/admin/cms/pages/queries/list) query to discover valid ids.
 :::
 
 ## Operation

@@ -53,3 +53,10 @@ The example uses an illustrative cart id. Admin cart endpoints only operate on *
 | Operation | Type |
 |-----------|------|
 | `saveAddressAdminCart(input: saveAddressAdminCartInput!)` | Mutation |
+
+## Required fields
+
+Each address (billing always; shipping too when `useForShipping` is `false`)
+must include `firstName`, `lastName`, `email`, `address` (a non-empty array of
+street lines), `city`, `country`, `state`, `postcode` and `phone`, otherwise the
+mutation fails with a `422`-equivalent error. `companyName` is optional.

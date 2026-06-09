@@ -34,6 +34,8 @@ examples:
           }
           invoices { id state grandTotal }
           shipments { id status carrierTitle }
+          refunds { id state grandTotal }
+          comments { id comment customerNotified createdAt }
         }
       }
     variables: |
@@ -72,7 +74,11 @@ examples:
               }
             ],
             "invoices": [],
-            "shipments": []
+            "shipments": [],
+            "refunds": [],
+            "comments": [
+              { "id": 11, "comment": "Customer called to confirm the shipping address.", "customerNotified": false, "createdAt": "2026-05-19 14:02:10" }
+            ]
           }
         }
       }
@@ -94,16 +100,17 @@ the admin **Sales → Orders → View** screen.
 - Requires an admin Bearer token in the `Authorization` header.
 - The `id` argument is the resource IRI — `"/api/admin/orders/{id}"`.
 - Everything the order-view screen needs is embedded inline: customer (with
-  group), billing/shipping addresses, items, invoices, shipments.
+  group), billing/shipping addresses, items, invoices, shipments, refunds, and
+  the comment thread (`comments`, newest first).
 
 ## GraphQL shape notes
 
-- **Nested collections are plain JSON arrays.** `items`, `invoices`, and
-  `shipments` are returned as flat arrays (`items { id ... }`), identical to
-  the REST endpoint. They are NOT GraphQL cursor connections — do **not** wrap
-  them in `edges { node { ... } }`. (Prior to 2026-05-28 these were exposed as
-  connections; the shape was unified with REST so both transports return the
-  same payload.)
+- **Nested collections are plain JSON arrays.** `items`, `invoices`,
+  `shipments`, `refunds`, and `comments` are returned as flat arrays
+  (`items { id ... }`), identical to the REST endpoint. They are NOT GraphQL
+  cursor connections — do **not** wrap them in `edges { node { ... } }`. (Prior
+  to 2026-05-28 these were exposed as connections; the shape was unified with
+  REST so both transports return the same payload.)
 - **`id` vs `_id`.** `id` is the resource IRI (`/api/admin/orders/2392`);
   `_id` is the raw integer.
 

@@ -84,7 +84,16 @@ examples:
         "bundleOptions": null,
         "linkedProducts": null,
         "downloadableLinks": null,
-        "downloadableSamples": null
+        "downloadableSamples": null,
+        "channels": [
+          { "id": 1, "code": "default", "name": "Default Channel", "assigned": true },
+          { "id": 2, "code": "mobile", "name": "Mobile Channel", "assigned": false }
+        ],
+        "attributes": [
+          { "id": 1, "code": "sku", "adminName": "SKU", "type": "text", "isRequired": true, "valuePerChannel": false, "valuePerLocale": false, "groupCode": "general", "groupName": "General", "value": "SP-001", "options": null },
+          { "id": 23, "code": "color", "adminName": "Color", "type": "select", "isRequired": false, "valuePerChannel": false, "valuePerLocale": false, "groupCode": "general", "groupName": "General", "value": null, "options": [ { "id": 1, "adminName": "Red", "swatchValue": "#ff0000", "sortOrder": 1 } ] },
+          { "id": 25, "code": "meta_title", "adminName": "Meta Title", "type": "textarea", "isRequired": false, "valuePerChannel": true, "valuePerLocale": true, "groupCode": "meta_description", "groupName": "Meta Description", "value": null, "options": null }
+        ]
       }
     commonErrors:
       - error: Not Found (404)
@@ -236,11 +245,54 @@ These four fields are **`null` unless the product type matches**:
 | `downloadableLinks` | `downloadable` | Array of download link rows (title, type, url/file, price, downloads) |
 | `downloadableSamples` | `downloadable` | Array of sample download rows |
 
+### `channels[]` array
+
+**Every** channel in the store, each flagged with whether this product is assigned to
+it — mirrors the Channels checkbox box on the edit screen (all options shown, the
+product's ones ticked). The singular `channel` field above is the channel code the
+data was resolved for.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Channel ID |
+| `code` | string | Channel code |
+| `name` | string | Channel display name |
+| `assigned` | boolean | `true` if this product is assigned to the channel |
+
+### `attributes[]` array
+
+The product's **attribute-family field set** — the same fields the admin edit screen
+renders, in the same order, driven by the product's attribute family. This includes
+family-specific fields (e.g. `color`, `size`, `brand`, `product_number`) that aren't
+top-level columns. Fields with no value are still present, with `value: null`.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Attribute ID |
+| `code` | string | Attribute code (e.g. `sku`, `color`, `meta_title`) |
+| `adminName` | string | Field label as shown in the admin |
+| `type` | string | Input type (`text`, `textarea`, `price`, `boolean`, `select`, `multiselect`, `checkbox`, `date`, `datetime`, `image`, `file`) |
+| `isRequired` | boolean | Whether the field is required |
+| `valuePerChannel` | boolean | Whether the value can differ per channel |
+| `valuePerLocale` | boolean | Whether the value can differ per locale |
+| `groupCode` | string | Code of the field group it belongs to |
+| `groupName` | string | Display name of the field group |
+| `value` | mixed\|null | The product's resolved value for the requested channel/locale (`null` when unset). For `select` it's the chosen option ID; for `multiselect`/`checkbox` a comma-separated list of option IDs |
+| `options` | array\|null | For `select`/`multiselect`/`checkbox`: the selectable options (`id`, `adminName`, `swatchValue`, `sortOrder`). `null` for other types |
+
 ::: tip Plain arrays — no follow-up calls needed
 All nested fields (`translations`, `images`, `categories`, `inventories`,
-`customerGroupPrices`, and all type-specific blocks) are serialized as **plain
-inline JSON arrays** — there are no IRI strings or sub-resource links. The full
-product structure is returned in a single response.
+`customerGroupPrices`, `channels`, `attributes`, and all type-specific blocks) are
+serialized as **plain inline JSON arrays** — there are no IRI strings or sub-resource
+links. The full product structure is returned in a single response.
+:::
+
+::: info Reconstructing the edit screen
+`attributes` + `channels` together give you everything the admin edit form shows:
+`channels` renders the channel checkboxes (with the assigned ones ticked) and
+`attributes` renders every General / Description / Meta / Settings / Price field for
+the product's family. The top-level convenience fields (`sku`, `status`, `urlKey`, …)
+are also present inside `attributes` — they're the same values surfaced twice.
 :::
 
 ::: info Listing vs detail
@@ -333,7 +385,54 @@ curl -X GET "https://your-domain.com/api/admin/catalog/products/42" \
   "bundleOptions": null,
   "linkedProducts": null,
   "downloadableLinks": null,
-  "downloadableSamples": null
+  "downloadableSamples": null,
+  "channels": [
+    { "id": 1, "code": "default", "name": "Default Channel", "assigned": true },
+    { "id": 2, "code": "mobile", "name": "Mobile Channel", "assigned": false }
+  ],
+  "attributes": [
+    {
+      "id": 1,
+      "code": "sku",
+      "adminName": "SKU",
+      "type": "text",
+      "isRequired": true,
+      "valuePerChannel": false,
+      "valuePerLocale": false,
+      "groupCode": "general",
+      "groupName": "General",
+      "value": "SP-001",
+      "options": null
+    },
+    {
+      "id": 23,
+      "code": "color",
+      "adminName": "Color",
+      "type": "select",
+      "isRequired": false,
+      "valuePerChannel": false,
+      "valuePerLocale": false,
+      "groupCode": "general",
+      "groupName": "General",
+      "value": null,
+      "options": [
+        { "id": 1, "adminName": "Red", "swatchValue": "#ff0000", "sortOrder": 1 }
+      ]
+    },
+    {
+      "id": 25,
+      "code": "meta_title",
+      "adminName": "Meta Title",
+      "type": "textarea",
+      "isRequired": false,
+      "valuePerChannel": true,
+      "valuePerLocale": true,
+      "groupCode": "meta_description",
+      "groupName": "Meta Description",
+      "value": null,
+      "options": null
+    }
+  ]
 }
 ```
 
@@ -355,17 +454,15 @@ curl -X GET "https://your-domain.com/api/admin/catalog/products/42" \
 - **All nested objects are plain inline JSON.** There are no IRI strings or
   sub-resource links in the detail response — the full structure (including type-specific
   blocks) is embedded in a single HTTP call.
-- **`null` fields are always included.** The endpoint sets
-  `normalizationContext: ['skip_null_values' => false]`, so null-valued fields appear
-  explicitly in the JSON rather than being silently dropped.
+- **`null` fields are always included.** Null-valued fields appear explicitly in the
+  JSON rather than being silently dropped.
 - **Route disambiguation via `\d+` requirement.** The `{id}` path segment is
   constrained to digits only. Non-numeric segments are rejected with `404` before
   reaching the provider — this prevents the segment from accidentally matching sibling
   routes such as `/catalog/products/list`.
-- **Listing vs detail are the same resource.** Both `GET /api/admin/catalog/products`
-  (datagrid listing) and `GET /api/admin/catalog/products/{id}` (detail) are served
-  from `AdminCatalogProduct`. The listing provider returns slim rows; the detail
-  provider returns the full payload including all type-specific blocks.
+- **Listing vs detail are the same resource.** The `GET /api/admin/catalog/products`
+  listing returns slim datagrid rows; this detail endpoint returns the full payload
+  including all type-specific blocks.
 - **Booking products are accessible via this endpoint.** Even though booking products
   cannot be added to an admin draft cart (blocked at cart add-item time with HTTP 400),
   their detail record is fully readable here.

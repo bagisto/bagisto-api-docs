@@ -7,7 +7,9 @@ examples:
     query: |
       mutation DeleteCmsPage($input: deleteAdminCmsPageInput!) {
         deleteAdminCmsPage(input: $input) {
-          adminCmsPage { id }
+          adminCmsPage {
+            id
+          }
         }
       }
     variables: |
@@ -18,7 +20,9 @@ examples:
       {
         "data": {
           "deleteAdminCmsPage": {
-            "adminCmsPage": { "id": "/api/admin/cms_pages/7" }
+            "adminCmsPage": {
+              "id": "/api/admin/cms_pages/7"
+            }
           }
         }
       }

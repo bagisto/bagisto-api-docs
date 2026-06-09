@@ -7,7 +7,11 @@ examples:
     query: |
       mutation MassDeleteCmsPages($input: createAdminCmsPageMassDeleteInput!) {
         createAdminCmsPageMassDelete(input: $input) {
-          adminCmsPageMassDelete { id deleted message }
+          adminCmsPageMassDelete {
+            id
+            deleted
+            message
+          }
         }
       }
     variables: |

@@ -3,8 +3,8 @@ outline: false
 apiType: rest
 examples:
   - id: admin-catalog-products-list
-    title: List Catalog Products (Datagrid)
-    description: Paginated, filterable, sortable product list mirroring the Bagisto admin Catalog → Products datagrid. Returns the full 18-field row shape in the standard `{ data, meta }` envelope.
+    title: List Products (Datagrid)
+    description: The canonical admin product listing — paginated, filterable, and sortable, mirroring the Bagisto admin Catalog → Products datagrid. Returns the full product row in the standard `{ data, meta }` envelope.
     query: |
       curl -X GET "https://your-domain.com/api/admin/catalog/products?per_page=10&page=1&type=simple&status=1" \
         -H "Authorization: Bearer <token>" \
@@ -15,41 +15,44 @@ examples:
       {
         "data": [
           {
-            "id": 142,
-            "sku": "SP-001",
-            "name": "Classic Watch",
+            "id": 22,
+            "sku": "bagistoNGRY3424234KJCKJK",
+            "name": "Acme Drawstring Bag",
             "type": "simple",
             "status": 1,
-            "price": "99.9900",
-            "formattedPrice": "$99.99",
-            "quantity": 42,
-            "baseImageUrl": "http://localhost:8000/cache/medium/product/142/image.webp",
-            "imagesCount": 3,
-            "categoryId": 5,
-            "categoryName": "Accessories",
-            "channel": "Default",
+            "price": "3000.0000",
+            "formattedPrice": "$3,000.00",
+            "specialPrice": "2700.0000",
+            "formattedSpecialPrice": "$2,700.00",
+            "specialPriceFrom": null,
+            "specialPriceTo": null,
+            "quantity": 98,
+            "baseImageUrl": "http://localhost:8000/storage/product/22/1qfyoglc5BP46kofrxYrkJ2MXRxu9lAVG3BDFlTZ.webp",
+            "imagesCount": 1,
+            "categoryId": null,
+            "categoryName": null,
+            "channel": "default",
             "locale": "en",
             "attributeFamilyId": 1,
             "attributeFamilyName": "Default",
-            "urlKey": "classic-watch",
+            "urlKey": "acme-drawstring-bag",
             "visibleIndividually": true,
-            "shortDescription": "<p>A timeless classic watch.</p>",
-            "description": "<p>Full HTML product description.</p>",
-            "metaTitle": "Classic Watch",
-            "metaDescription": "Buy the Classic Watch",
-            "metaKeywords": "watch, classic",
-            "weight": 0.25,
-            "featured": false,
+            "shortDescription": "Many desktop publishing packages and web page editors now use",
+            "metaTitle": "",
+            "metaDescription": "",
+            "metaKeywords": "",
+            "weight": 32,
+            "featured": true,
             "new": true,
-            "createdAt": "2026-05-20 10:00:00",
-            "updatedAt": "2026-05-22 14:30:00"
+            "createdAt": "2024-04-19 11:56:43",
+            "updatedAt": "2026-04-23 16:36:14"
           }
         ],
         "meta": {
           "currentPage": 1,
           "perPage": 10,
-          "lastPage": 62,
-          "total": 616,
+          "lastPage": 27,
+          "total": 265,
           "from": 1,
           "to": 10
         }
@@ -61,24 +64,23 @@ examples:
 
 ---
 
-# Catalog Products — Datagrid Listing
+# List Products
 
-Paginated, filterable, and sortable product list that mirrors the Bagisto admin
-**Catalog → Products** datagrid 1:1. This is the authoritative product-management
-listing for the admin API — same columns, same filters, and the same sort options
-used by the datagrid.
+The **canonical admin product listing** — a paginated, filterable, and sortable
+product list that mirrors the Bagisto admin **Catalog → Products** datagrid 1:1.
+Same columns, same filters, and the same sort options used by the admin screen.
+This is the listing you want for product-management screens.
 
 ::: tip How this menu works
 For the product types, the two-step create flow, status vs. visibleIndividually, and the per-product sub-resources, see the [Products overview](/api/rest-api/admin/catalog/products/).
 :::
 
-::: tip Distinct from the Create-Order picker
-`GET /api/admin/catalog/products` (this endpoint) is the full datagrid — 18
-fields per row, designed for catalog management screens.
+::: tip Not the Create-Order search
+`GET /api/admin/catalog/products` (this endpoint) is the full product listing.
 
-`GET /api/admin/products` is the slim picker (9 fields) used by the admin
-Create-Order "Add Product" modal. The two endpoints coexist and serve different
-surfaces.
+A separate slim search — [`GET /api/admin/products`](/api/rest-api/admin/catalog/products/list) — powers the admin
+Create-Order "Add Product" modal only. Use this page for the actual product
+listing.
 :::
 
 ## Endpoint
@@ -145,36 +147,49 @@ Responses use the standard admin `{ data, meta }` envelope.
 | `name` | string\|null | Product name (resolved via `locale` and `channel`) |
 | `type` | string\|null | Product type (e.g. `simple`, `configurable`) |
 | `status` | integer\|null | `1` = enabled, `0` = disabled |
-| `price` | string\|null | Raw price value (decimal string, e.g. `"99.9900"`) |
-| `formattedPrice` | string\|null | Locale-formatted price (e.g. `"$99.99"`) |
+| `price` | string\|null | Raw price value (decimal string, e.g. `"3000.0000"`) |
+| `formattedPrice` | string\|null | Locale-formatted price (e.g. `"$3,000.00"`) |
+| `specialPrice` | string\|null | Raw special (sale) price as a decimal string; `null` if none |
+| `formattedSpecialPrice` | string\|null | Locale-formatted special price; `null` if none |
+| `specialPriceFrom` | string\|null | Start of the special-price window; `null` unless a dated window is set |
+| `specialPriceTo` | string\|null | End of the special-price window; `null` unless a dated window is set |
 | `quantity` | integer | Sum of inventory qty across all inventory sources |
-| `baseImageUrl` | string\|null | Storage URL of the product's first image (medium cache); `null` if no images |
+| `baseImageUrl` | string\|null | Storage URL of the product's first image; `null` if no images |
 | `imagesCount` | integer | Total number of images attached to the product |
-| `categoryId` | integer\|null | ID of the first category this product belongs to |
-| `categoryName` | string\|null | Translated name of that category (resolved via `locale`) |
+| `categoryId` | integer\|null | ID of the first category this product belongs to; `null` if uncategorized |
+| `categoryName` | string\|null | Translated name of that category (resolved via `locale`); `null` if uncategorized |
 | `channel` | string\|null | Channel code used for resolution |
 | `locale` | string\|null | Locale code used for resolution |
 | `attributeFamilyId` | integer\|null | Attribute family ID |
 | `attributeFamilyName` | string\|null | Attribute family name |
-| `urlKey` | string\|null | URL slug (e.g. `classic-watch`) |
+| `urlKey` | string\|null | URL slug (e.g. `acme-drawstring-bag`) |
 | `visibleIndividually` | boolean\|null | Whether the product appears in category/search listings |
-| `shortDescription` | string\|null | Short HTML description |
-| `description` | string\|null | Full HTML description |
-| `metaTitle` | string\|null | SEO meta title |
-| `metaDescription` | string\|null | SEO meta description |
-| `metaKeywords` | string\|null | SEO meta keywords |
+| `shortDescription` | string\|null | Short description |
+| `metaTitle` | string\|null | SEO meta title (empty string when unset) |
+| `metaDescription` | string\|null | SEO meta description (empty string when unset) |
+| `metaKeywords` | string\|null | SEO meta keywords (empty string when unset) |
 | `weight` | number\|null | Product weight |
 | `featured` | boolean | Whether the product is flagged as featured |
 | `new` | boolean | Whether the product is flagged as "new" |
 | `createdAt` | string | Creation timestamp |
 | `updatedAt` | string | Last-update timestamp |
 
-The **heavy relations** — `translations`, `images`, `categories`, `inventories`,
-`customerGroupPrices`, and the type-specific blocks (`variants` / `bundleOptions`
-/ `linkedProducts` / `downloadableLinks` / `downloadableSamples` /
-`superAttributes`) — stay **detail-only** (returned as `null` on the listing).
-Fetch them from the single-product endpoint
-`GET /api/admin/catalog/products/{id}`.
+Notes on the listing values:
+
+- `price`, `specialPrice` are **decimal strings**, not numbers.
+- `specialPriceFrom` / `specialPriceTo` are `null` unless a **dated** special-price
+  window is configured.
+- `quantity` is the **summed** inventory across all sources.
+
+The following fields are **detail-only** and always come back `null` on the
+listing — fetch them from the single-product endpoint
+`GET /api/admin/catalog/products/{id}`:
+
+- `taxCategoryId`, `manageStock`, `inStock`
+- the relation blocks: `translations`, `images`, `categories`, `inventories`,
+  `customerGroupPrices`, `superAttributes`, `variants`, `bundleOptions`,
+  `linkedProducts`, `downloadableLinks`, `downloadableSamples`, `videos`,
+  `channels`, `relatedProducts`, `upSells`, `crossSells`.
 
 ## Example Request
 
@@ -190,41 +205,44 @@ curl -X GET "https://your-domain.com/api/admin/catalog/products?per_page=10&page
 {
   "data": [
     {
-      "id": 142,
-      "sku": "SP-001",
-      "name": "Classic Watch",
+      "id": 22,
+      "sku": "bagistoNGRY3424234KJCKJK",
+      "name": "Acme Drawstring Bag",
       "type": "simple",
       "status": 1,
-      "price": "99.9900",
-      "formattedPrice": "$99.99",
-      "quantity": 42,
-      "baseImageUrl": "http://localhost:8000/cache/medium/product/142/image.webp",
-      "imagesCount": 3,
-      "categoryId": 5,
-      "categoryName": "Accessories",
-      "channel": "Default",
+      "price": "3000.0000",
+      "formattedPrice": "$3,000.00",
+      "specialPrice": "2700.0000",
+      "formattedSpecialPrice": "$2,700.00",
+      "specialPriceFrom": null,
+      "specialPriceTo": null,
+      "quantity": 98,
+      "baseImageUrl": "http://localhost:8000/storage/product/22/1qfyoglc5BP46kofrxYrkJ2MXRxu9lAVG3BDFlTZ.webp",
+      "imagesCount": 1,
+      "categoryId": null,
+      "categoryName": null,
+      "channel": "default",
       "locale": "en",
       "attributeFamilyId": 1,
       "attributeFamilyName": "Default",
-      "urlKey": "classic-watch",
+      "urlKey": "acme-drawstring-bag",
       "visibleIndividually": true,
-      "shortDescription": "<p>A timeless classic watch.</p>",
-      "description": "<p>Full HTML product description.</p>",
-      "metaTitle": "Classic Watch",
-      "metaDescription": "Buy the Classic Watch",
-      "metaKeywords": "watch, classic",
-      "weight": 0.25,
-      "featured": false,
+      "shortDescription": "Many desktop publishing packages and web page editors now use",
+      "metaTitle": "",
+      "metaDescription": "",
+      "metaKeywords": "",
+      "weight": 32,
+      "featured": true,
       "new": true,
-      "createdAt": "2026-05-20 10:00:00",
-      "updatedAt": "2026-05-22 14:30:00"
+      "createdAt": "2024-04-19 11:56:43",
+      "updatedAt": "2026-04-23 16:36:14"
     }
   ],
   "meta": {
     "currentPage": 1,
     "perPage": 10,
-    "lastPage": 62,
-    "total": 616,
+    "lastPage": 27,
+    "total": 265,
     "from": 1,
     "to": 10
   }
@@ -277,10 +295,8 @@ documented ranges are also silently dropped (the filter is not applied).
 ## Notes
 
 - **Elasticsearch is not yet supported.** Even when the Bagisto admin panel is
-  configured to use Elasticsearch for catalog search
-  (`catalog.products.search.engine = elastic`), this endpoint always falls back
-  to the database query path. Elasticsearch support is planned for Phase 1.1.b
-  of the Catalog API roadmap.
+  configured to use Elasticsearch for catalog search, this endpoint always uses
+  the database query path.
 - **No automatic status filter.** Unlike `GET /api/shop/products` which only
   returns `status = 1` products, this endpoint returns all statuses by default.
   Admin operators need to see disabled and draft products. Pass `?status=1` to

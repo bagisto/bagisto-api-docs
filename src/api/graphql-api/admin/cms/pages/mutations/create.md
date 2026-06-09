@@ -7,7 +7,12 @@ examples:
     query: |
       mutation CreateCmsPage($input: createAdminCmsPageInput!) {
         createAdminCmsPage(input: $input) {
-          adminCmsPage { id _id urlKey pageTitle }
+          adminCmsPage {
+            id
+            _id
+            urlKey
+            pageTitle
+          }
         }
       }
     variables: |
@@ -23,7 +28,12 @@ examples:
       {
         "data": {
           "createAdminCmsPage": {
-            "adminCmsPage": { "id": "/api/admin/cms_pages/7", "_id": 7, "urlKey": "about-us", "pageTitle": "About Us" }
+            "adminCmsPage": {
+              "id": "/api/admin/cms_pages/7",
+              "_id": 7,
+              "urlKey": "about-us",
+              "pageTitle": "About Us"
+            }
           }
         }
       }
@@ -51,5 +61,5 @@ Equivalent to [`POST /api/admin/cms/pages`](/api/rest-api/admin/cms/pages-create
 
 ::: warning Create vs Update payload shape
 **Create** takes flat top-level fields (broadcast to all locales).
-**Update** requires a [locale-nested payload](/api/graphql-api/admin/cms/pages-update).
+**Update** requires a [locale-nested payload](/api/graphql-api/admin/cms/pages/mutations/update).
 :::

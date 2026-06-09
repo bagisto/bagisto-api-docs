@@ -32,6 +32,9 @@ examples:
       - error: Conflict (409) — payment required
         cause: No payment method selected
         solution: Select a payment method via `POST /api/admin/carts/{id}/payment-methods`
+      - error: Unprocessable Entity (422) — below minimum order amount
+        cause: The cart total is below the store's configured minimum order amount
+        solution: Add more items until the cart meets the minimum, or disable the minimum-order requirement in store settings
       - error: Unprocessable Entity (422)
         cause: Payment method is not in ['cashondelivery','moneytransfer']
         solution: Select COD or money transfer. Other methods are blocked for admin-placed orders.
@@ -52,9 +55,12 @@ Finalises a fully prepared draft cart into a real order. This is the same flow
 as the admin Create-Order screen's place-order step:
 
 1. The cart's totals are recalculated.
-2. The selected payment method must be one of `cashondelivery` or
+2. The cart total must meet the store's configured **minimum order amount**
+   (when that requirement is enabled) — otherwise the order is rejected with
+   `422`.
+3. The selected payment method must be one of `cashondelivery` or
    `moneytransfer` (other gateways are not supported for admin-placed orders).
-3. The order is created from the cart, and the draft cart is then removed.
+4. The order is created from the cart, and the draft cart is then removed.
 
 ## Endpoint
 

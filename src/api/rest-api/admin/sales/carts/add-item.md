@@ -45,16 +45,39 @@ examples:
 
 # Add Item to Cart
 
-Adds a product to the draft cart. The whole request body is forwarded to the
-cart, so use whatever extra keys that product type requires:
+Adds a product to the draft cart. Each product type needs its own selection
+fields in addition to `productId` and `quantity`. The fields below are typed and
+work **identically over REST and GraphQL**:
 
-| Product type | Body keys (in addition to `productId` and `quantity`) |
-|--------------|--------------------------------------------------------|
-| Simple       | — |
-| Configurable | `selectedConfigurableOption`, `superAttribute` |
-| Bundle       | `bundleOptions`, `bundleOptionQty` |
-| Grouped      | `qty[]` keyed by child product id |
-| Downloadable | `links` (array of link ids) |
+| Product type | Fields (besides `productId`, `quantity`) |
+|--------------|-------------------------------------------|
+| Simple / Virtual | — |
+| Configurable | `selectedConfigurableOption` — the chosen variant's product id |
+| Downloadable | `links` — array of downloadable-link ids |
+| Grouped      | `groupedQuantities` — array of `{ productId, quantity }` |
+| Bundle       | `bundleOptions` — array of `{ optionId, productIds, quantity }` |
+| Booking      | not supported in admin Create-Order (returns `400`) |
+
+Example bundle body:
+
+```json
+{
+  "productId": 142,
+  "quantity": 1,
+  "bundleOptions": [
+    { "optionId": 5, "productIds": [10], "quantity": 1 },
+    { "optionId": 6, "productIds": [12], "quantity": 1 }
+  ]
+}
+```
+
+::: tip REST also accepts the raw storefront keys
+Because REST forwards the whole body to the cart, it additionally accepts the
+storefront snake_case shape — `selected_configurable_option`, `bundle_options`
+(map of `optionId => [productIds]`), `bundle_option_qty`, `qty` (map of
+`productId => quantity`), `links`. The typed fields above are recommended because
+they also work over GraphQL.
+:::
 
 ## Endpoint
 

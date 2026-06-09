@@ -36,8 +36,15 @@ examples:
             "additional": { "quantity": 1 }, "child": null, "children": [], "downloadableLinks": []
           }
         ],
+        "totalDue": 0,
+        "formattedTotalDue": "$0.00",
+        "paymentMethod": "moneytransfer",
         "invoices": [],
-        "shipments": []
+        "shipments": [],
+        "refunds": [],
+        "comments": [
+          { "id": 11, "comment": "Customer called to confirm the shipping address.", "customerNotified": false, "createdAt": "2026-05-19 14:02:10" }
+        ]
       }
     commonErrors:
       - error: Not Found (404)
@@ -65,12 +72,17 @@ Unlike the listing, the detail **embeds every relation inline** — one request
 returns the whole screen:
 
 - Flat order fields + totals (grand / sub / tax / discount / shipping, invoiced
-  and refunded variants, with `formatted*` strings).
-- `customer` (with `group`), `billingAddress`, `shippingAddress`.
+  and refunded variants, **total due**, with `formatted*` strings) plus
+  `paymentMethod` / `paymentTitle`.
+- `customer` (with `group`), `billingAddress`, `shippingAddress` (each address
+  includes `vatId`).
 - `items` — each with `type` (`simple`, `configurable`, `bundle`,
   `downloadable`, `grouped`, `virtual`) and type-specific data in `additional`,
   `child`, `children`, `downloadableLinks`. Switch on `type` to render.
-- `invoices`, `shipments`.
+- `invoices`, `shipments`, `refunds` — the order's documents.
+- `comments` — the order's comment thread, **newest first**, each with
+  `comment`, `customerNotified`, `createdAt`. (Add a comment with
+  `POST /api/admin/orders/{id}/comments`.)
 
 Eager-loading everything for one order is bounded (~constant query count,
 measured ~20 ms), so no sub-resource round trips are needed.

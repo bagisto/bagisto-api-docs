@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: admin-catalog-product-detail
     title: Catalog Product Detail — type-aware (GraphQL)
-    description: Fetch a single catalog product by IRI. Type-specific blocks (superAttributes/variants for configurable, bundleOptions for bundle, linkedProducts for grouped, downloadableLinks/downloadableSamples for downloadable) are null on non-matching types. Note — these blocks are typed as ?array on the resource; they may return null over GraphQL even when data exists (see the warning below). Use the REST detail endpoint as the canonical path when you need guaranteed type-specific block data.
+    description: Fetch a single catalog product by IRI. Type-specific blocks (superAttributes/variants for configurable, bundleOptions for bundle, linkedProducts for grouped, downloadableLinks/downloadableSamples for downloadable) are null on non-matching types. channels lists every channel with an assigned flag; attributes mirrors the admin edit-screen field set for the product's family (empty fields included). All nested arrays are returned whole — query each as a bare field.
     query: |
       query AdminCatalogProduct($id: ID!) {
         adminCatalogProduct(id: $id) {
@@ -50,6 +50,8 @@ examples:
           linkedProducts
           downloadableLinks
           downloadableSamples
+          channels
+          attributes
         }
       }
     variables: |
@@ -132,7 +134,16 @@ examples:
             "bundleOptions": null,
             "linkedProducts": null,
             "downloadableLinks": null,
-            "downloadableSamples": null
+            "downloadableSamples": null,
+            "channels": [
+              { "id": 1, "code": "default", "name": "Default Channel", "assigned": true },
+              { "id": 2, "code": "mobile", "name": "Mobile Channel", "assigned": false }
+            ],
+            "attributes": [
+              { "id": 1, "code": "sku", "adminName": "SKU", "type": "text", "isRequired": true, "valuePerChannel": false, "valuePerLocale": false, "groupCode": "general", "groupName": "General", "value": "SP-001", "options": null },
+              { "id": 23, "code": "color", "adminName": "Color", "type": "select", "isRequired": false, "valuePerChannel": false, "valuePerLocale": false, "groupCode": "general", "groupName": "General", "value": null, "options": [ { "id": 1, "adminName": "Red", "swatchValue": "#ff0000", "sortOrder": 1 } ] },
+              { "id": 25, "code": "meta_title", "adminName": "Meta Title", "type": "textarea", "isRequired": false, "valuePerChannel": true, "valuePerLocale": true, "groupCode": "meta_description", "groupName": "Meta Description", "value": null, "options": null }
+            ]
           }
         }
       }
@@ -221,6 +232,8 @@ accepted by the resolver.
 | `categories` | scalar (JSON array\|null) | Category references — see shape below |
 | `inventories` | scalar (JSON array\|null) | Per-source inventory rows — see shape below |
 | `customerGroupPrices` | scalar (JSON array\|null) | Customer-group price overrides (empty array when none) |
+| `channels` | scalar (JSON array) | Every channel, each flagged `assigned` for this product — see shape below |
+| `attributes` | scalar (JSON array) | The product's attribute-family field set (edit-screen parity) — see shape below |
 
 ### Type-specific blocks (null unless type matches)
 
@@ -271,8 +284,40 @@ accepted by the resolver.
 | `sourceCode` | string | Inventory source code (e.g. `default`) |
 | `qty` | integer | Quantity at this source |
 
+### `channels[]` element shape
+
+Every channel in the store, with `assigned` indicating whether this product belongs
+to it — mirrors the edit-screen Channels box (all options shown, the product's ticked).
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `id` | integer | Channel ID |
+| `code` | string | Channel code |
+| `name` | string | Channel display name |
+| `assigned` | boolean | `true` if this product is assigned to the channel |
+
+### `attributes[]` element shape
+
+The product's attribute-family field set — the same fields the admin edit screen
+renders (including family-specific ones like `color`, `size`, `brand`,
+`product_number`). Empty fields are present with `value: null`.
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `id` | integer | Attribute ID |
+| `code` | string | Attribute code (e.g. `sku`, `color`, `meta_title`) |
+| `adminName` | string | Field label as shown in the admin |
+| `type` | string | Input type (`text`, `textarea`, `price`, `boolean`, `select`, `multiselect`, `checkbox`, `date`, `datetime`, `image`, `file`) |
+| `isRequired` | boolean | Whether the field is required |
+| `valuePerChannel` | boolean | Whether the value can differ per channel |
+| `valuePerLocale` | boolean | Whether the value can differ per locale |
+| `groupCode` | string | Code of the field group |
+| `groupName` | string | Display name of the field group |
+| `value` | mixed\|null | Resolved value for the requested channel/locale (`null` when unset); for `select` the chosen option ID, for `multiselect`/`checkbox` a comma-separated option-ID list |
+| `options` | array\|null | Selectable options (`id`, `adminName`, `swatchValue`, `sortOrder`) for `select`/`multiselect`/`checkbox`; `null` otherwise |
+
 ::: warning Nested data is returned whole
-`translations`, `images`, `categories`, `inventories`, `customerGroupPrices`, and the type-specific blocks (`variants` / `bundleOptions` / `linkedProducts` / `downloadableLinks` / `downloadableSamples` / `superAttributes`) are returned as **whole JSON** — query each as a bare field (`translations`, not `translations { … }`). The entire array comes back, and it resolves over GraphQL on the detail query.
+`translations`, `images`, `categories`, `inventories`, `customerGroupPrices`, `channels`, `attributes`, and the type-specific blocks (`variants` / `bundleOptions` / `linkedProducts` / `downloadableLinks` / `downloadableSamples` / `superAttributes`) are returned as **whole JSON** — query each as a bare field (`attributes`, not `attributes { … }`). The entire array comes back, and it resolves over GraphQL on the detail query.
 :::
 
 ## Example Query
@@ -323,6 +368,8 @@ query AdminCatalogProduct($id: ID!) {
     linkedProducts
     downloadableLinks
     downloadableSamples
+    channels
+    attributes
   }
 }
 ```
@@ -411,7 +458,54 @@ query AdminCatalogProduct($id: ID!) {
       "bundleOptions": null,
       "linkedProducts": null,
       "downloadableLinks": null,
-      "downloadableSamples": null
+      "downloadableSamples": null,
+      "channels": [
+        { "id": 1, "code": "default", "name": "Default Channel", "assigned": true },
+        { "id": 2, "code": "mobile", "name": "Mobile Channel", "assigned": false }
+      ],
+      "attributes": [
+        {
+          "id": 1,
+          "code": "sku",
+          "adminName": "SKU",
+          "type": "text",
+          "isRequired": true,
+          "valuePerChannel": false,
+          "valuePerLocale": false,
+          "groupCode": "general",
+          "groupName": "General",
+          "value": "SP-001",
+          "options": null
+        },
+        {
+          "id": 23,
+          "code": "color",
+          "adminName": "Color",
+          "type": "select",
+          "isRequired": false,
+          "valuePerChannel": false,
+          "valuePerLocale": false,
+          "groupCode": "general",
+          "groupName": "General",
+          "value": null,
+          "options": [
+            { "id": 1, "adminName": "Red", "swatchValue": "#ff0000", "sortOrder": 1 }
+          ]
+        },
+        {
+          "id": 25,
+          "code": "meta_title",
+          "adminName": "Meta Title",
+          "type": "textarea",
+          "isRequired": false,
+          "valuePerChannel": true,
+          "valuePerLocale": true,
+          "groupCode": "meta_description",
+          "groupName": "Meta Description",
+          "value": null,
+          "options": null
+        }
+      ]
     }
   }
 }
@@ -432,14 +526,12 @@ query AdminCatalogProduct($id: ID!) {
 - **`id` argument is the IRI, not the integer.** Construct it as
   `"/api/admin/catalog/products/{_id}"` using the `_id` field from a listing query,
   or pass the `id` field directly from a listing result.
-- **Same provider as the REST detail endpoint.** `AdminCatalogProductDetailProvider`
-  serves both transports with identical data-loading semantics. REST is canonical
-  for guaranteed non-null array fields — see the warning above.
-- **`?array` scalar nullability quirk.** This is a pre-existing project-wide
-  limitation that also affects `AdminAttributeFamily.attributeGroups`,
-  `AdminCart` array fields, and `AdminOrderDetail` nested arrays. It does not affect
-  plain scalar fields (`id`, `sku`, `name`, `type`, `price`, etc.), which are always
-  reliably returned.
+- **Same data as the REST detail endpoint.** This query and `GET /api/admin/catalog/products/{id}`
+  return identical data; the REST response uses camelCase JSON, this query returns the
+  same fields with the nested arrays as whole JSON values.
+- **Nested arrays are bare JSON, not sub-selections.** Query `attributes`, `channels`,
+  `translations`, etc. as plain fields — they return the whole array. Plain scalar
+  fields (`id`, `sku`, `name`, `type`, `price`, …) are always returned.
 - **Booking products are accessible.** Even though booking products cannot be added
   to an admin draft cart, their detail record is fully readable via this query.
 - **Route disambiguation.** The REST endpoint carries a `requirements: ['id' => '\d+']`
