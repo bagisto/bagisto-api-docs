@@ -5,7 +5,7 @@ examples:
     title: Apply Coupon to Cart
     description: Apply a discount coupon code to the shopping cart.
     request: |
-      POST /api/shop/cart/coupon
+      POST /api/shop/apply-coupon
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
 
@@ -45,7 +45,7 @@ Apply a discount coupon code to the shopping cart.
 ## Endpoint
 
 ```
-POST /api/shop/cart/coupon
+POST /api/shop/apply-coupon
 ```
 
 ## Request Headers

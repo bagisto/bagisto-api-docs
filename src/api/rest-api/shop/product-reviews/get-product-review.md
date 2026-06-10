@@ -5,7 +5,7 @@ examples:
     title: Get Single Product Review
     description: Retrieve detailed information for a specific product review.
     request: |
-      GET /api/shop/products/1/reviews/1
+      GET /api/shop/reviews/1
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
     response: |
@@ -42,7 +42,7 @@ Retrieve detailed information for a specific product review.
 ## Endpoint
 
 ```
-GET /api/shop/products/{productId}/reviews/{reviewId}
+GET /api/shop/reviews/{reviewId}
 ```
 
 ## Request Headers

@@ -5,7 +5,7 @@ examples:
     title: Update Product Review
     description: Update an existing product review.
     request: |
-      PUT /api/shop/products/1/reviews/1
+      PUT /api/shop/reviews/1
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -50,7 +50,7 @@ Update an existing product review. Only the review author can update their own r
 ## Endpoint
 
 ```
-PUT /api/shop/products/{productId}/reviews/{reviewId}
+PUT /api/shop/reviews/{reviewId}
 ```
 
 ## Request Headers

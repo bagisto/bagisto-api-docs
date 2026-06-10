@@ -5,7 +5,7 @@ examples:
     title: Forgot Password
     description: Request a password reset email.
     request: |
-      POST /api/shop/customers/forgot-password
+      POST /api/shop/forgot-passwords
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
 
@@ -33,7 +33,7 @@ Request a password reset email. A reset link will be sent to the customer's emai
 ## Endpoint
 
 ```
-POST /api/shop/customers/forgot-password
+POST /api/shop/forgot-passwords
 ```
 
 ## Request Headers
@@ -113,6 +113,6 @@ https://yourstore.com/reset-password?token=xxxxx
 
 ## Related Resources
 
-- [Reset Password](/api/rest-api/shop/customers/reset-password)
+- [Change Password](/api/rest-api/shop/customers/change-password)
 - [Customer Login](/api/rest-api/shop/customers/customer-login)
 - [Customer Registration](/api/rest-api/shop/customers/customer-registration)

@@ -5,7 +5,7 @@ examples:
     title: Verify Customer Token
     description: Verify if the customer authentication token is still valid.
     request: |
-      GET /api/shop/customers/verify-token
+      GET /api/shop/verify-tokens
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     response: |
@@ -38,7 +38,7 @@ Verify if the customer authentication token is still valid and retrieve customer
 ## Endpoint
 
 ```
-GET /api/shop/customers/verify-token
+GET /api/shop/verify-tokens
 ```
 
 ## Request Headers

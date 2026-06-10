@@ -3,6 +3,9 @@
 # abort on errors
 set -e
 
+# regenerate the AI/LLM index (llms.txt + llms-full.txt) from src/api/**
+npm run llms:generate
+
 # build
 npm run docs:build
 

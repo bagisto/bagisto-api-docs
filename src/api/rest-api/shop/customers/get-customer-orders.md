@@ -5,7 +5,7 @@ examples:
     title: Get Customer Orders
     description: Retrieve all orders for the authenticated customer.
     request: |
-      GET /api/shop/customers/orders?page=1&limit=10&sort=-createdAt
+      GET /api/shop/customer-orders?page=1&limit=10&sort=-createdAt
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     response: |
@@ -44,7 +44,7 @@ Retrieve all orders for the authenticated customer with pagination support.
 ## Endpoint
 
 ```
-GET /api/shop/customers/orders
+GET /api/shop/customer-orders
 ```
 
 ## Request Headers
@@ -120,16 +120,16 @@ GET /api/shop/customers/orders
 
 ```bash
 # Get pending orders
-GET /api/shop/customers/orders?status=pending
+GET /api/shop/customer-orders?status=pending
 
 # Get last 5 orders
-GET /api/shop/customers/orders?limit=5
+GET /api/shop/customer-orders?limit=5
 
 # Get page 2 (10 items per page)
-GET /api/shop/customers/orders?page=2&limit=10
+GET /api/shop/customer-orders?page=2&limit=10
 
 # Sort by latest
-GET /api/shop/customers/orders?sort=-createdAt
+GET /api/shop/customer-orders?sort=-createdAt
 ```
 
 ## Related Resources

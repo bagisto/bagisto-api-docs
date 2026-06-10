@@ -5,7 +5,7 @@ examples:
     title: Set Shipping Method
     description: Select a shipping method for the order.
     request: |
-      POST /api/shop/checkout/shipping-method
+      POST /api/shop/checkout-shipping-methods
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -44,7 +44,7 @@ Select a shipping method for the order.
 ## Endpoint
 
 ```
-POST /api/shop/checkout/shipping-method
+POST /api/shop/checkout-shipping-methods
 ```
 
 ## Request Headers

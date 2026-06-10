@@ -1,4 +1,5 @@
 export const redirects = {
+    '/api/rest-api/shop/customers/reset-password': '/api/rest-api/shop/customers/change-password',
 }
 
 export function makeRedirectHtml(to: string) {

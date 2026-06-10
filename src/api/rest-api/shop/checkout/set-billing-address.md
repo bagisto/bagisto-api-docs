@@ -5,7 +5,7 @@ examples:
     title: Set Billing Address
     description: Set the billing address for checkout.
     request: |
-      POST /api/shop/checkout/billing-address
+      POST /api/shop/checkout-addresses
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -48,7 +48,7 @@ Set or update the billing address for the checkout process.
 ## Endpoint
 
 ```
-POST /api/shop/checkout/billing-address
+POST /api/shop/checkout-addresses
 ```
 
 ## Request Headers

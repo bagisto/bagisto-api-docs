@@ -3,11 +3,11 @@ outline: false
 examples:
   - id: customer-login
     title: Customer Login
-    description: Authenticate customer with email and password to get access token.
+    description: Authenticate a customer with email and password to get a Bearer token for subsequent requests.
     request: |
-      POST /api/shop/customers/login
+      POST /api/shop/customer/login
       Content-Type: application/json
-      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxxxxxxxxxxxxx
 
       {
         "email": "john@example.com",
@@ -15,18 +15,12 @@ examples:
       }
     response: |
       {
-        "message": "Logged in successfully",
-        "data": {
-          "customer": {
-            "id": 1,
-            "firstName": "John",
-            "lastName": "Doe",
-            "email": "john@example.com",
-            "phone": "1234567890",
-            "status": 1
-          },
-          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-        }
+        "id": 1191,
+        "_id": 1191,
+        "apiToken": "aRfn7cVRSN7qUR6W7vGnlgb40XXa1mko4QNoLbiui1dAAKFcFh3yHY1PtG68OfJdksl0aHgbRKOvdxdl",
+        "token": "3627|DfkAK11F8qdqtaFVJPvBxlJyNbCSMNl8TFWhWm4G5c9660e4",
+        "success": true,
+        "message": "You have logged in successfully"
       }
     commonErrors:
       - error: 401 Unauthorized
@@ -43,13 +37,12 @@ examples:
 
 # Customer Login
 
-Authenticate a customer with email and password to get authentication token for subsequent requests.
-
+Authenticate a customer with email and password and receive a Bearer token to use on subsequent customer-scoped requests.
 
 ## Endpoint
 
 ```
-POST /api/shop/customers/login
+POST /api/shop/customer/login
 ```
 
 ## Request Headers
@@ -68,54 +61,35 @@ POST /api/shop/customers/login
 }
 ```
 
-## Request Parameters
-
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `email` | string | Yes | Customer email address |
 | `password` | string | Yes | Customer password |
 
-## Response Fields (200 OK)
+## Response Fields (201)
+
+The response is flat — the token is at the top level.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `message` | string | Success message |
-| `data` | object | Response data |
-| `customer` | object | Customer information |
-| `token` | string | Bearer token for authentication |
-
-## Customer Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | integer | Customer ID |
-| `firstName` | string | Customer first name |
-| `lastName` | string | Customer last name |
-| `email` | string | Customer email |
-| `phone` | string | Customer phone |
-| `status` | integer | Account status (1=active) |
+| `id` / `_id` | integer | Customer ID |
+| `token` | string | Bearer token, format `<id>\|<secret>` — send as `Authorization: Bearer <token>` |
+| `apiToken` | string | Long-lived customer API token |
+| `success` | boolean | Whether login succeeded |
+| `message` | string | Human-readable result |
 
 ## Token Usage
 
-After login, use the returned token in subsequent requests:
+Send the returned `token` on customer-scoped requests:
 
 ```bash
-Authorization: Bearer {token}
+Authorization: Bearer 3627|DfkAK11F8qdqtaFVJPvBxlJyNbCSMNl8TFWhWm4G5c9660e4
 ```
 
 ## Session Management
 
-- Token is valid for specified duration (typically 7 days)
-- Use [Verify Token](/api/rest-api/shop/customers/customer-verify-token) to check validity
-- Use [Customer Logout](/api/rest-api/shop/customers/customer-logout) to end session
-
-## Use Cases
-
-- Authenticate customer on storefront
-- Get authentication token for API calls
-- Enable customer account access
-- Retrieve customer details on login
-- Start customer session
+- Use [Verify Token](/api/rest-api/shop/customers/customer-verify-token) to check validity.
+- Use [Customer Logout](/api/rest-api/shop/customers/customer-logout) to end the session.
 
 ## Related Resources
 

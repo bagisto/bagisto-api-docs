@@ -5,7 +5,7 @@ examples:
     title: Remove Coupon from Cart
     description: Remove a discount coupon code from the shopping cart.
     request: |
-      DELETE /api/shop/cart/coupon
+      DELETE /api/shop/remove-coupon
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
     response: |
@@ -29,7 +29,7 @@ Remove a discount coupon code from the shopping cart.
 ## Endpoint
 
 ```
-DELETE /api/shop/cart/coupon
+DELETE /api/shop/remove-coupon
 ```
 
 ## Request Headers

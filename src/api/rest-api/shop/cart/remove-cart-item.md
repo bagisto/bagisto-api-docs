@@ -5,7 +5,7 @@ examples:
     title: Remove Item from Cart
     description: Remove a product from the shopping cart.
     request: |
-      DELETE /api/shop/cart/items/1
+      DELETE /api/shop/remove-cart-item
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
     response: |
@@ -30,7 +30,7 @@ Remove a product item from the shopping cart.
 ## Endpoint
 
 ```
-DELETE /api/shop/cart/items/{itemId}
+DELETE /api/shop/remove-cart-item
 ```
 
 ## Request Headers

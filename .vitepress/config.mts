@@ -119,6 +119,17 @@ export default defineConfig(({ command, mode }) => {
           { text: 'Setup', link: '/api/setup' },
           { text: 'Authentication', link: '/api/authentication' },
           { text: 'Storefront Keys', link: '/api/storefront-api-key-management-guide' },
+          { text: 'Build with AI', link: '/api/build-with-ai' },
+          {
+            text: 'Recipes',
+            collapsed: true,
+            link: '/api/recipes/',
+            items: [
+              { text: 'Build a Storefront', link: '/api/recipes/build-a-storefront' },
+              { text: 'Build an Admin Dashboard', link: '/api/recipes/build-an-admin-dashboard' },
+              { text: 'Admin Create-Order Flow', link: '/api/recipes/admin-create-order-flow' },
+            ],
+          },
           {
             text: 'GraphQL API',
             collapsed: true,
@@ -1133,7 +1144,7 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Verify Token', link: '/api/rest-api/shop/customers/customer-verify-token' },
                           { text: 'Customer Logout', link: '/api/rest-api/shop/customers/customer-logout' },
                           { text: 'Forgot Password', link: '/api/rest-api/shop/customers/forgot-password' },
-                          { text: 'Reset Password', link: '/api/rest-api/shop/customers/reset-password' },
+                          { text: 'Change Password', link: '/api/rest-api/shop/customers/change-password' },
                           { text: 'Get Addresses', link: '/api/rest-api/shop/customers/get-customer-addresses'},                               
                           { text: 'Create Address', link: '/api/rest-api/shop/customers/create-customer-address' },
                           { text: 'Update Address', link: '/api/rest-api/shop/customers/update-customer-address' },
