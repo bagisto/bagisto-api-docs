@@ -364,20 +364,26 @@ const copyCode = (tabType: 'request' | 'headers' | 'response') => {
         copiedButton.value = null
       }, 2000)
     }).catch(() => {
-      fallbackCopy(codeText)
+      fallbackCopy(codeText, tabType)
     })
   } else {
-    fallbackCopy(codeText)
+    fallbackCopy(codeText, tabType)
   }
 }
 
-const fallbackCopy = (text: string) => {
+const fallbackCopy = (text: string, tabType: string | null = null) => {
   const textarea = document.createElement('textarea')
   textarea.value = text
   document.body.appendChild(textarea)
   textarea.select()
   document.execCommand('copy')
   document.body.removeChild(textarea)
+  if (tabType) {
+    copiedButton.value = tabType
+    setTimeout(() => {
+      copiedButton.value = null
+    }, 2000)
+  }
 }
 
 const openSwagger = () => {
