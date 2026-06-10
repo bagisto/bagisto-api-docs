@@ -1,244 +1,244 @@
 ---
 outline: false
 examples:
-  - id: get-theme-customizations
-    title: Get All Theme Customizations
-    description: Retrieve all storefront theme customization sections with pagination.
+  - id: list-theme-customizations
+    title: List Theme Customizations
+    description: Retrieve a paginated list of every theme customization (carousels, footer links, static content blocks, …).
     request: |
-      GET /api/shop/theme-customizations?page=1
-      Accept: application/json
-      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      curl -X GET "http://localhost/api/shop/theme-customizations?per_page=2" \
+        -H "Accept: application/json" \
+        -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     response: |
+      HTTP/1.1 200 OK
+      X-Total-Count: 12
+      X-Page: 1
+      X-Per-Page: 2
+      X-Total-Pages: 6
+
       [
         {
           "id": 1,
           "themeCode": "default",
+          "channelId": 1,
           "type": "image_carousel",
           "name": "Image Carousel",
           "sortOrder": 1,
           "status": 1,
-          "channelId": 1,
-          "createdAt": "2026-01-07T17:20:26+05:30",
-          "updatedAt": "2026-01-07T17:20:26+05:30",
-          "code": "default",
+          "createdAt": "2024-04-16T21:44:15+05:30",
+          "updatedAt": "2026-04-06T19:15:53+05:30",
           "translation": {
             "id": 1,
             "themeCustomizationId": 1,
             "locale": "en",
-            "options": "{\"images\": [{\"link\": \"\", \"image\": \"storage/theme/1/0ZStp7YsEtaXVlrqbBLcGB7qkp4XxUZEzyejgbaz.webp\", \"title\": \"Get Ready For New Collection\"}]}"
+            "options": "{\"images\": [{\"link\": \"fashion\", \"image\": \"storage/theme/1/...webp\", \"title\": \"Fashion\"}, {\"link\": \"furniture\", \"image\": \"storage/theme/1/...webp\", \"title\": \"Furniture\"}]}"
           },
           "translations": [
-            {
-              "id": 1,
-              "themeCustomizationId": 1,
-              "locale": "en",
-              "options": "{\"images\": [{\"link\": \"\", \"image\": \"storage/theme/1/0ZStp7YsEtaXVlrqbBLcGB7qkp4XxUZEzyejgbaz.webp\", \"title\": \"Get Ready For New Collection\"}]}"
-            }
+            { "id": 1,  "themeCustomizationId": 1, "locale": "en", "options": "{\"images\": [...]}" },
+            { "id": 19, "themeCustomizationId": 1, "locale": "AR", "options": "{\"images\": [...]}" }
           ]
         },
         {
-          "id": 2,
+          "id": 3,
           "themeCode": "default",
-          "type": "static_content",
-          "name": "Offer Information",
-          "sortOrder": 2,
-          "status": 1,
           "channelId": 1,
-          "createdAt": "2026-01-07T17:20:26+05:30",
-          "updatedAt": "2026-01-07T17:20:26+05:30",
-          "code": "default",
+          "type": "category_carousel",
+          "name": "Categories Collections",
+          "sortOrder": 3,
+          "status": 1,
+          "createdAt": "2024-04-16T21:44:15+05:30",
+          "updatedAt": "2026-04-07T18:05:39+05:30",
           "translation": {
-            "id": 2,
-            "themeCustomizationId": 2,
+            "id": 3,
+            "themeCustomizationId": 3,
             "locale": "en",
-            "options": "{\"css\": \".home-offer h1 {display: block;}\", \"html\": \"<div class=\\\"home-offer\\\"><h1>Get UPTO 40% OFF</h1></div>\"}"
+            "options": "{\"filters\": {\"sort\": \"asc\", \"limit\": \"10\", \"parent_id\": \"1\"}}"
           },
           "translations": [
-            {
-              "id": 2,
-              "themeCustomizationId": 2,
-              "locale": "en",
-              "options": "{\"css\": \".home-offer h1 {display: block;}\", \"html\": \"<div class=\\\"home-offer\\\"><h1>Get UPTO 40% OFF</h1></div>\"}"
-            }
+            { "id": 3,  "themeCustomizationId": 3, "locale": "en", "options": "{\"filters\": {...}}" }
           ]
         }
       ]
     commonErrors:
       - error: 401 Unauthorized
-        cause: Invalid or missing X-STOREFRONT-KEY
-        solution: Provide valid storefront API key in X-STOREFRONT-KEY header
-      - error: 400 Bad Request
-        cause: Invalid page parameter
-        solution: Use valid page numbers starting from 1
+        cause: Missing or invalid `X-STOREFRONT-KEY`
+        solution: Send a valid storefront API key.
+      - error: 403 Forbidden
+        cause: Storefront key inactive or rate-limited
+        solution: Activate the key or wait for the rate limit window to reset.
 
-  - id: get-theme-customizations-by-type
-    title: Get Theme Customizations by Type
-    description: Filter theme customizations by type (e.g., image_carousel).
+  - id: list-by-type-footer-links
+    title: Filter by type — `footer_links`
+    description: Use `?type=footer_links` to fetch only the footer-links blocks. The same `?type=…` filter works for any of the supported types.
     request: |
-      GET /api/shop/theme-customizations?page=1&type=image_carousel
-      Accept: application/json
-      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      curl -X GET "http://localhost/api/shop/theme-customizations?type=footer_links" \
+        -H "Accept: application/json" \
+        -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     response: |
+      HTTP/1.1 200 OK
+      X-Total-Count: 1
+      X-Page: 1
+      X-Per-Page: 10
+      X-Total-Pages: 1
+
       [
         {
-          "id": 1,
+          "id": 11,
           "themeCode": "default",
-          "type": "image_carousel",
-          "name": "Image Carousel",
-          "sortOrder": 1,
-          "status": 1,
           "channelId": 1,
-          "createdAt": "2026-01-07T17:20:26+05:30",
-          "updatedAt": "2026-01-07T17:20:26+05:30",
-          "code": "default",
+          "type": "footer_links",
+          "name": "Footer Links",
+          "sortOrder": 11,
+          "status": 1,
+          "createdAt": "2024-04-16T21:44:15+05:30",
+          "updatedAt": "2026-04-23T23:54:54+05:30",
           "translation": {
-            "id": 1,
-            "themeCustomizationId": 1,
+            "id": 11,
+            "themeCustomizationId": 11,
             "locale": "en",
-            "options": "{\"images\": [{\"link\": \"\", \"image\": \"storage/theme/1/0ZStp7YsEtaXVlrqbBLcGB7qkp4XxUZEzyejgbaz.webp\", \"title\": \"Get Ready For New Collection\"}, {\"link\": \"\", \"image\": \"storage/theme/1/YmW734hTKgO73RYd5OK8bmuh4yaMj88kdUV0FAvw.webp\", \"title\": \"Get Ready For New Collection\"}]}"
+            "options": "{\"column_1\": [{\"url\": \"https://example.com/page/privacy-policy\", \"title\": \"Privacy policy\", \"sort_order\": \"3\"}, {\"url\": \"https://example.com/page/whats-new\", \"title\": \"What's New\", \"sort_order\": \"3\"}], \"column_2\": [{\"url\": \"https://example.com/page/about-us\", \"title\": \"About Us\", \"sort_order\": \"8\"}]}"
           },
           "translations": [
-            {
-              "id": 1,
-              "themeCustomizationId": 1,
-              "locale": "en",
-              "options": "{\"images\": [{\"link\": \"\", \"image\": \"storage/theme/1/0ZStp7YsEtaXVlrqbBLcGB7qkp4XxUZEzyejgbaz.webp\", \"title\": \"Get Ready For New Collection\"}, {\"link\": \"\", \"image\": \"storage/theme/1/YmW734hTKgO73RYd5OK8bmuh4yaMj88kdUV0FAvw.webp\", \"title\": \"Get Ready For New Collection\"}]}"
-            }
+            { "id": 11, "themeCustomizationId": 11, "locale": "en", "options": "{\"column_1\": [...], \"column_2\": [...]}" },
+            { "id": 21, "themeCustomizationId": 11, "locale": "AR", "options": "{\"column_1\": [...], \"column_2\": [...]}" }
           ]
         }
       ]
     commonErrors:
       - error: 401 Unauthorized
-        cause: Invalid or missing X-STOREFRONT-KEY
-        solution: Provide valid storefront API key in X-STOREFRONT-KEY header
-      - error: 400 Bad Request
-        cause: Invalid type parameter
-        solution: Use valid customization types (image_carousel, static_content, etc.)
+        cause: Missing or invalid `X-STOREFRONT-KEY`
+        solution: Send a valid storefront API key.
+
+  - id: get-theme-customization
+    title: Get Single Theme Customization
+    description: Retrieve a single theme customization by ID with its inline `translation` and `translations[]`.
+    request: |
+      curl -X GET "http://localhost/api/shop/theme-customizations/11" \
+        -H "Accept: application/json" \
+        -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    response: |
+      HTTP/1.1 200 OK
+
+      {
+        "id": 11,
+        "themeCode": "default",
+        "channelId": 1,
+        "type": "footer_links",
+        "name": "Footer Links",
+        "sortOrder": 11,
+        "status": 1,
+        "createdAt": "2024-04-16T21:44:15+05:30",
+        "updatedAt": "2026-04-23T23:54:54+05:30",
+        "translation": {
+          "id": 11,
+          "themeCustomizationId": 11,
+          "locale": "en",
+          "options": "{\"column_1\": [{\"url\": \"https://example.com/page/privacy-policy\", \"title\": \"Privacy policy\", \"sort_order\": \"3\"}], \"column_2\": [{\"url\": \"https://example.com/page/about-us\", \"title\": \"About Us\", \"sort_order\": \"8\"}]}"
+        },
+        "translations": [
+          { "id": 11, "themeCustomizationId": 11, "locale": "en", "options": "{\"column_1\": [...], \"column_2\": [...]}" },
+          { "id": 21, "themeCustomizationId": 11, "locale": "AR", "options": "{\"column_1\": [...], \"column_2\": [...]}" }
+        ]
+      }
+    commonErrors:
+      - error: 404 Not Found
+        cause: No theme customization with the given `{id}` exists or its `status=0`
+        solution: List active customizations via `GET /api/shop/theme-customizations` to discover valid IDs.
+      - error: 401 Unauthorized
+        cause: Missing or invalid `X-STOREFRONT-KEY`
+        solution: Send a valid storefront API key.
 
 ---
 
-# Get Theme Customizations
+# Theme Customizations
 
-Retrieve all storefront theme customization sections including sliders, static content, and other theme elements.
+Theme customizations are the configurable content blocks that drive the storefront home page and footer — image carousels, category carousels, product carousels, static-content slots, the footer-links columns, and the "services" / "USP" strip. Each block is scoped to a `themeCode` + `channelId` pair, with locale-specific `options` JSON inside its translations.
 
-## Endpoint
+## Endpoints
 
-```
-GET /api/shop/theme-customizations
-```
+| Method | Path                                       | Purpose                                  |
+|--------|--------------------------------------------|------------------------------------------|
+| GET    | `/api/shop/theme-customizations`           | Paginated list — supports `?type=` filter |
+| GET    | `/api/shop/theme-customizations/{id}`      | Single customization by ID               |
 
-## Query Parameters
-
-| Parameter | Type | Required | Description | Example |
-|-----------|------|----------|-------------|---------|
-| `page` | integer | No | Pagination page number | `1` |
-| `per_page` | integer | No | Items per page (max: 100) | `10` |
-| `type` | string | No | Filter by customization type | `image_carousel` |
+Use the example switcher above to flip between the unfiltered list, the `?type=footer_links` filter, and a single fetch.
 
 ## Request Headers
 
-| Header | Type | Required | Description | Example |
-|--------|------|----------|-------------|---------|
-| `X-STOREFRONT-KEY` | string | **Yes** | Storefront API key for authentication | `pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy` |
-| `Accept` | string | No | Response format | `application/json` |
+| Header             | Required | Description                              |
+|--------------------|----------|------------------------------------------|
+| `Accept`           | Yes      | `application/json`                       |
+| `X-STOREFRONT-KEY` | Yes      | Storefront API key (`pk_storefront_…`)   |
+| `X-Locale`         | No       | Override request locale — affects which row populates `translation`. Default: channel locale. |
+| `X-Channel`        | No       | Override channel scope                   |
 
-## Response Fields (200 OK)
+## Query Parameters (collection only)
 
-The response is an array of theme customization objects with the following structure:
+| Parameter   | Type    | Default | Description                                                                          |
+|-------------|---------|---------|--------------------------------------------------------------------------------------|
+| `page`      | integer | 1       | Page number (1-based)                                                                |
+| `per_page`  | integer | 10      | Items per page. Max **100** for this endpoint.                                       |
+| `type`      | string  | —       | Exact-match filter on the `type` field (see [Supported types](#supported-types))     |
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | integer | Customization section ID |
-| `themeCode` | string | Theme code (e.g., "default") |
-| `type` | string | Section type (image_carousel, static_content, etc.) |
-| `name` | string | Human-readable name |
-| `sortOrder` | integer | Display order |
-| `status` | integer | Status (1=active, 0=inactive) |
-| `channelId` | integer | Associated channel ID |
-| `createdAt` | string | ISO 8601 creation timestamp |
-| `updatedAt` | string | ISO 8601 update timestamp |
-| `code` | string | Unique code identifier |
-| `translation` | object | Current locale translation data |
-| `translations` | array | All available locale translations |
+Pagination headers (`X-Total-Count`, `X-Page`, `X-Per-Page`, `X-Total-Pages`) are emitted on the collection. See [Pagination](/api/rest-api/introduction#pagination).
 
-## Translation Object Fields
+## Supported types
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | integer | Translation ID |
-| `themeCustomizationId` | integer | Parent customization ID |
-| `locale` | string | Language locale (e.g., "en") |
-| `options` | string | JSON string with customization options |
+The `type` filter accepts any of these exact strings:
 
-## Customization Types
+| Type                | Purpose                                                            |
+|---------------------|--------------------------------------------------------------------|
+| `image_carousel`    | Hero / banner image carousel on the home page                      |
+| `category_carousel` | Horizontally-scrolling list of categories                          |
+| `product_carousel`  | Horizontally-scrolling list of products                            |
+| `static_content`    | Free-form HTML / Markdown block                                    |
+| `footer_links`      | Footer link columns (privacy, terms, about, customer service, …)   |
+| `services_content`  | "Services" / USP strip (free shipping, 24×7 support, refund policy, …) |
 
-| Type | Description | Options |
-|------|-------------|---------|
-| `image_carousel` | Image slider/carousel | `images` array with link, image, title |
-| `static_content` | HTML/CSS content | `html`, `css` strings |
-| `product_section` | Featured products | `products` array |
-| `category_section` | Featured categories | `categories` array |
+> Unsupported values are accepted by the filter but return an empty array (`[]`) — the validation isn't strict.
 
-## Options Structure
+## Customization Object Fields
 
-Depending on the type, the `options` field contains different data (stored as JSON string):
+Both endpoints return the same shape — the collection wraps an array of these objects, the single endpoint returns one.
 
-**Image Carousel Options:**
-```json
-{
-  "images": [
-    {
-      "link": "https://example.com/product",
-      "image": "storage/theme/1/image.webp",
-      "title": "Get Ready For New Collection"
-    }
-  ]
-}
-```
+| Field          | Type                  | Description                                                                              |
+|----------------|-----------------------|------------------------------------------------------------------------------------------|
+| `id`           | integer               | Customization primary key                                                                |
+| `themeCode`    | string                | Theme this block belongs to (e.g. `default`)                                             |
+| `channelId`    | integer               | Channel that owns this block — pair with `themeCode`                                     |
+| `type`         | string                | One of the [supported types](#supported-types)                                           |
+| `name`         | string                | Admin-facing name                                                                        |
+| `sortOrder`    | integer               | Display order within the home page / footer                                              |
+| `status`       | boolean (0/1)         | Whether the block is published — only published rows are returned                        |
+| `createdAt`, `updatedAt` | string (ISO-8601) | Timestamps                                                                          |
+| `translation`  | object \| null        | Inline translation for the request locale: `{ id, themeCustomizationId, locale, options }` |
+| `translations` | array of objects      | All locale translations as **inline objects** (not IRI strings)                          |
 
-**Static Content Options:**
-```json
-{
-  "css": ".home-offer h1 { display: block; }",
-  "html": "<div class=\"home-offer\"><h1>Special Offer</h1></div>"
-}
-```
+> Both `translation` and `translations[]` are inlined — there are no IRIs to follow on this resource. The `options` field inside each translation is a **JSON string**, not a parsed object — you have to `JSON.parse(translation.options)` on the client.
 
-## Response Headers
+### Shape of the `options` payload (per type)
 
-| Header | Description |
-|--------|-------------|
-| `Content-Type` | `application/json; charset=utf-8` |
-| `X-RateLimit-Limit` | Maximum requests allowed per minute |
-| `X-RateLimit-Remaining` | Remaining requests in current window |
-| `X-RateLimit-Reset` | Unix timestamp when limit resets |
-| `X-Built-With` | `Bagisto` |
-| `Cache-Control` | `no-cache,private` |
+The `options` JSON string varies by `type`. Common shapes:
 
-## Error Responses
+| `type`              | Parsed `options` shape                                                                       |
+|---------------------|----------------------------------------------------------------------------------------------|
+| `image_carousel`    | `{ "images": [{ "link": "...", "image": "storage/theme/.../*.webp", "title": "..." }, …] }`  |
+| `category_carousel` | `{ "filters": { "sort": "asc", "limit": "10", "parent_id": "1" } }`                          |
+| `product_carousel`  | `{ "filters": { … } }` (similar to category)                                                 |
+| `footer_links`      | `{ "column_1": [{ "url": "...", "title": "...", "sort_order": "3" }, …], "column_2": […], … }` |
+| `services_content`  | `{ "services": [{ "icon": "...", "title": "...", "description": "..." }, …] }`               |
+| `static_content`    | `{ "html_content": "<p>…</p>" }`                                                             |
 
-### 401 Unauthorized
+> The client must **parse the JSON string** before using it. The API stores `options` as a TEXT column and returns it verbatim.
 
-```json
-{
-  "message": "Unauthorized",
-  "errors": {
-    "X-STOREFRONT-KEY": [
-      "The X-STOREFRONT-KEY header is missing or invalid"
-    ]
-  }
-}
-```
+## Use Cases
 
-### 400 Bad Request
+- Render the storefront home page in a single round trip: fetch the unfiltered collection, group by `type`, sort by `sortOrder` per group.
+- Render the footer in a focused request: `?type=footer_links` returns just one row whose `options` carries the column data.
+- Build an admin preview of every locale: read all `translations[]` entries side-by-side.
+- Auto-detect new home-page blocks added by store admins by polling the collection — anything with `status=1` will appear.
 
-```json
-{
-  "message": "Invalid parameters",
-  "errors": {
-    "page": [
-      "The page parameter must be a valid integer"
-    ]
-  }
-}
-```
+## Related Resources
+
+- [Channels](/api/rest-api/shop/channels/get-channels) — `channelId` on each customization points at one of these
+- [Categories](/api/rest-api/shop/categories/get-categories) — referenced by `category_carousel` and `product_carousel` filters
+- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas)

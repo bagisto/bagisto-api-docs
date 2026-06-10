@@ -222,9 +222,13 @@ function openGraphiQL(container: Element) {
   // Encode for GraphiQL URL
   const encoded = encodeURIComponent(code)
 
-  // Open GraphiQL in a new window with the query
-  // Replace with your actual GraphiQL endpoint
-  const graphiqlUrl = `/graphql?query=${encoded}`
+  // Open GraphiQL in a new window with the query. Admin pages (under
+  // /api/graphql-api/admin/...) use the dedicated /api/admin/graphiql
+  // playground; shop pages use /api/graphiql.
+  const isAdmin = typeof window !== 'undefined'
+    && /\/graphql-api\/admin(\/|$)/.test(window.location.pathname)
+  const playgroundPath = isAdmin ? '/api/admin/graphiql' : '/api/graphiql'
+  const graphiqlUrl = `${playgroundPath}?query=${encoded}`
 
   window.open(graphiqlUrl, 'graphiql', 'width=1200,height=800')
 }

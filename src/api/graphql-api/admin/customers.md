@@ -5,55 +5,13 @@ examples:
     title: Get All Customers
     description: Retrieve all customers from the admin panel.
     query: |
-      query getCustomers($first: Int, $after: String) {
-        customers(first: $first, after: $after) {
-          edges {
-            node {
-              id
-              email
-              firstName
-              lastName
-              status
-              createdAt
-            }
-          }
-          pageInfo {
-            hasNextPage
-            endCursor
-          }
-        }
-      }
+      # This page documents a legacy Shop GraphQL stub; the actual Admin API
+      # query is `adminCustomers`. See: ./customers/main/list.md
     variables: |
-      {
-        "first": 10
-      }
+      {}
     response: |
-      {
-        "data": {
-          "customers": {
-            "edges": [
-              {
-                "node": {
-                  "id": "1",
-                  "email": "customer@example.com",
-                  "firstName": "John",
-                  "lastName": "Doe",
-                  "status": "active",
-                  "createdAt": "2025-01-01T00:00:00Z"
-                }
-              }
-            ],
-            "pageInfo": {
-              "hasNextPage": true,
-              "endCursor": "YXJyYXljb25uZWN0aW9uOjEw"
-            }
-          }
-        }
-      }
-    commonErrors:
-      - error: UNAUTHORIZED
-        cause: Admin authentication required
-        solution: Provide valid admin credentials
+      {}
+
 ---
 
 # Customers

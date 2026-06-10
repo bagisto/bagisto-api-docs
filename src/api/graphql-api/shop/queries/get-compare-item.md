@@ -26,6 +26,17 @@ examples:
             guestCheckout
             locale
             channel
+            reviews {
+              edges {
+                node {
+                  name
+                  id
+                  title
+                  rating
+                }
+              }
+              totalCount
+            }
           }
           customer {
             id
@@ -64,7 +75,20 @@ examples:
               "formattedMaximumPrice": "$544.00",
               "guestCheckout": "1",
               "locale": null,
-              "channel": null
+              "channel": null,
+              "reviews": {
+                "edges": [
+                  {
+                    "node": {
+                      "name": "Gerson Rivera",
+                      "id": "/api/shop/reviews/8",
+                      "title": "Velvet sofa",
+                      "rating": 4
+                    }
+                  }
+                ],
+                "totalCount": 1
+              }
             },
             "customer": {
               "id": "/api/shop/customers/122",
@@ -120,6 +144,13 @@ Authorization: Bearer <accessToken>
 | `id` | `ID!` | IRI identifier (e.g. `/api/shop/compare-items/606`). |
 | `_id` | `Int!` | Numeric identifier. |
 | `product` | `Product!` | Associated product with id, name, sku, price, description, etc. |
+| `product.reviews` | `ReviewCollection!` | Customer reviews left on the product. |
+| `product.reviews.edges` | `[ReviewEdge!]!` | Review edges. |
+| `product.reviews.edges.node.id` | `ID!` | Review IRI identifier. |
+| `product.reviews.edges.node.name` | `String` | Reviewer's name. |
+| `product.reviews.edges.node.title` | `String` | Review title. |
+| `product.reviews.edges.node.rating` | `Int!` | Rating value given by the customer (1–5). |
+| `product.reviews.totalCount` | `Int!` | Total number of reviews on this product. |
 | `customer` | `Customer!` | Associated customer with id, email, firstName, lastName. |
 | `createdAt` | `String` | Timestamp when the item was added. |
 | `updatedAt` | `String` | Timestamp when the item was last updated. |

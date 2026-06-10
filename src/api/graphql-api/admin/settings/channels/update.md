@@ -1,0 +1,22 @@
+---
+outline: false
+examples:
+  - id: gql
+    title: Update Channel
+    query: |
+      mutation Update($input: updateAdminSettingsChannelInput!) {
+        updateAdminSettingsChannel(input: $input) { adminSettingsChannel { id _id name } }
+      }
+    variables: |
+      { "input": { "id": "/api/admin/settings/channels/2", "name": "United States Store" } }
+    response: |
+      { "data": { "updateAdminSettingsChannel": { "adminSettingsChannel": { "id": "/api/admin/settings/channels/2", "_id": 2, "name": "United States Store" } } } }
+---
+
+# Update Channel (GraphQL)
+
+Use the `translations` map for locale-nested attributes. Top-level scalars broadcast to every locale.
+
+::: tip Prerequisites
+The example uses an illustrative `id` value. Replace it with the id of a channel that exists in your store — use the [`adminSettingsChannels`](./list.md) query to discover valid ids.
+:::

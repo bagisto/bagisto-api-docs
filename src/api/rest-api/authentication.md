@@ -1,6 +1,6 @@
 # Authentication
 
-Complete guide to API authentication methods including customer authentication, admin authentication, OAuth2, and token management using the REST API.
+Complete guide to API authentication methods including customer authentication, admin authentication, and token management using the REST API.
 
 ## Customer Authentication
 
@@ -10,7 +10,7 @@ Register a new customer account.
 
 **Endpoint:**
 ```
-POST /api/customers
+POST /api/shop/customers
 ```
 
 :::tabs
@@ -18,7 +18,7 @@ POST /api/customers
 == cURL
 
 ```bash
-curl -X POST "https://your-domain.com/api/customers" \
+curl -X POST "https://your-domain.com/api/shop/customers" \
   -H "Content-Type: application/json" \
   -d '{
     "first_name": "John",
@@ -33,7 +33,7 @@ curl -X POST "https://your-domain.com/api/customers" \
 == Node.js
 
 ```javascript
-const response = await fetch('https://your-domain.com/api/customers', {
+const response = await fetch('https://your-domain.com/api/shop/customers', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
@@ -58,7 +58,7 @@ console.log(customer);
 import requests
 
 response = requests.post(
-    'https://your-domain.com/api/customers',
+    'https://your-domain.com/api/shop/customers',
     headers={'Content-Type': 'application/json'},
     json={
         'first_name': 'John',
@@ -81,7 +81,7 @@ print(customer)
 ```json
 {
   "@context": "/api/contexts/Customer",
-  "@id": "/api/customers/10",
+  "@id": "/api/shop/customers/10",
   "@type": "Customer",
   "id": 10,
   "first_name": "John",
@@ -99,7 +99,7 @@ Authenticate a customer and receive bearer token.
 
 **Endpoint:**
 ```
-POST /api/customers/login
+POST /api/shop/customer/login
 ```
 
 :::tabs
@@ -107,7 +107,7 @@ POST /api/customers/login
 == cURL
 
 ```bash
-curl -X POST "https://your-domain.com/api/customers/login" \
+curl -X POST "https://your-domain.com/api/shop/customer/login" \
   -H "Content-Type: application/json" \
   -d '{
     "email": "john@example.com",
@@ -118,7 +118,7 @@ curl -X POST "https://your-domain.com/api/customers/login" \
 == Node.js
 
 ```javascript
-const response = await fetch('https://your-domain.com/api/customers/login', {
+const response = await fetch('https://your-domain.com/api/shop/customer/login', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
@@ -140,7 +140,7 @@ console.log('Access Token:', data.access_token);
 import requests
 
 response = requests.post(
-    'https://your-domain.com/api/customers/login',
+    'https://your-domain.com/api/shop/customer/login',
     headers={'Content-Type': 'application/json'},
     json={
         'email': 'john@example.com',
@@ -178,7 +178,7 @@ Verify if authentication token is still valid.
 
 **Endpoint:**
 ```
-POST /api/customers/verify_token
+POST /api/shop/verify-tokens
 ```
 
 :::tabs
@@ -186,7 +186,7 @@ POST /api/customers/verify_token
 == cURL
 
 ```bash
-curl -X POST "https://your-domain.com/api/customers/verify_token" \
+curl -X POST "https://your-domain.com/api/shop/verify-tokens" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json"
 ```
@@ -196,7 +196,7 @@ curl -X POST "https://your-domain.com/api/customers/verify_token" \
 ```javascript
 const token = localStorage.getItem('authToken');
 
-const response = await fetch('https://your-domain.com/api/customers/verify_token', {
+const response = await fetch('https://your-domain.com/api/shop/verify-tokens', {
   method: 'POST',
   headers: {
     'Authorization': `Bearer ${token}`,
@@ -216,7 +216,7 @@ import requests
 token = 'YOUR_ACCESS_TOKEN'
 
 response = requests.post(
-    'https://your-domain.com/api/customers/verify_token',
+    'https://your-domain.com/api/shop/verify-tokens',
     headers={
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json'
@@ -242,84 +242,13 @@ print(f"Token valid: {result['is_valid']}")
 
 ## Admin Authentication
 
-### Admin Login
+Admin API requests authenticate with a pre-issued **Integration token** — there is no admin login endpoint. Generate a token from the **Integration** menu in the admin panel (a store owner can generate tokens here and share them with the sub-admins who need API access), then send it on every admin request:
 
-Authenticate admin user and receive admin token.
-
-**Endpoint:**
 ```
-POST /api/admin/login
+Authorization: Bearer <id>|<token>
 ```
 
-:::tabs
-
-== cURL
-
-```bash
-curl -X POST "https://your-domain.com/api/admin/login" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "admin@example.com",
-    "password": "AdminPassword123!"
-  }'
-```
-
-== Node.js
-
-```javascript
-const response = await fetch('https://your-domain.com/api/admin/login', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    email: 'admin@example.com',
-    password: 'AdminPassword123!'
-  })
-});
-
-const data = await response.json();
-localStorage.setItem('adminToken', data.access_token);
-console.log('Admin Token:', data.access_token);
-```
-
-== Python
-
-```python
-import requests
-
-response = requests.post(
-    'https://your-domain.com/api/admin/login',
-    headers={'Content-Type': 'application/json'},
-    json={
-        'email': 'admin@example.com',
-        'password': 'AdminPassword123!'
-    }
-)
-
-data = response.json()
-print(f"Admin Token: {data['access_token']}")
-```
-
-:::
-
-**Response (200 OK):**
-
-```json
-{
-  "@context": "/api/contexts/Admin",
-  "@type": "Token",
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "token_type": "Bearer",
-  "expires_in": 86400,
-  "admin": {
-    "id": 1,
-    "name": "Administrator",
-    "email": "admin@example.com",
-    "role": "admin"
-  }
-}
-```
+See [Admin Authentication](/api/rest-api/admin/authentication) for the full token lifecycle, IP allowlists, and rate limits.
 
 ## Cart Token Generation
 
@@ -329,7 +258,7 @@ Generate a guest cart token for unauthenticated users.
 
 **Endpoint:**
 ```
-POST /api/carts
+POST /api/shop/cart-tokens
 ```
 
 :::tabs
@@ -337,7 +266,7 @@ POST /api/carts
 == cURL
 
 ```bash
-curl -X POST "https://your-domain.com/api/carts" \
+curl -X POST "https://your-domain.com/api/shop/cart-tokens" \
   -H "Content-Type: application/json" \
   -d '{}'
 ```
@@ -345,7 +274,7 @@ curl -X POST "https://your-domain.com/api/carts" \
 == Node.js
 
 ```javascript
-const response = await fetch('https://your-domain.com/api/carts', {
+const response = await fetch('https://your-domain.com/api/shop/cart-tokens', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
@@ -364,7 +293,7 @@ console.log('Cart Token:', cart.token);
 import requests
 
 response = requests.post(
-    'https://your-domain.com/api/carts',
+    'https://your-domain.com/api/shop/cart-tokens',
     headers={'Content-Type': 'application/json'},
     json={}
 )
@@ -380,230 +309,12 @@ print(f"Cart Token: {cart['token']}")
 ```json
 {
   "@context": "/api/contexts/Cart",
-  "@id": "/api/carts/xyz-token-123",
+  "@id": "/api/shop/cart-tokens/xyz-token-123",
   "@type": "Cart",
   "token": "xyz-token-123",
   "items": [],
   "total": 0,
   "created_at": "2024-01-20T10:30:00Z"
-}
-```
-
-### Refresh Token
-
-Refresh expired authentication token.
-
-**Endpoint:**
-```
-POST /api/refresh_token
-```
-
-:::tabs
-
-== cURL
-
-```bash
-curl -X POST "https://your-domain.com/api/refresh_token" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "refresh_token": "YOUR_REFRESH_TOKEN"
-  }'
-```
-
-== Node.js
-
-```javascript
-const refreshToken = localStorage.getItem('refreshToken');
-
-const response = await fetch('https://your-domain.com/api/refresh_token', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    refresh_token: refreshToken
-  })
-});
-
-const data = await response.json();
-localStorage.setItem('authToken', data.access_token);
-console.log('New Token:', data.access_token);
-```
-
-== Python
-
-```python
-import requests
-
-refresh_token = 'YOUR_REFRESH_TOKEN'
-
-response = requests.post(
-    'https://your-domain.com/api/refresh_token',
-    headers={'Content-Type': 'application/json'},
-    json={'refresh_token': refresh_token}
-)
-
-data = response.json()
-print(f"New Token: {data['access_token']}")
-```
-
-:::
-
-**Response (200 OK):**
-
-```json
-{
-  "@context": "/api/contexts/Token",
-  "@type": "Token",
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.new-token...",
-  "token_type": "Bearer",
-  "expires_in": 86400
-}
-```
-
-## OAuth2 Authentication
-
-### OAuth2 Authorization
-
-Request OAuth2 authorization code.
-
-**Endpoint:**
-```
-GET /api/oauth/authorize
-```
-
-**Query Parameters:**
-- `client_id` - Your OAuth application ID
-- `redirect_uri` - Callback URL after authorization
-- `response_type` - Always "code"
-- `scope` - Requested permissions (optional)
-- `state` - CSRF protection token
-
-:::tabs
-
-== cURL
-
-```bash
-curl -X GET "https://your-domain.com/api/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=https://yourapp.com/callback&response_type=code&state=random-state"
-```
-
-== Node.js
-
-```javascript
-const params = new URLSearchParams({
-  client_id: 'YOUR_CLIENT_ID',
-  redirect_uri: 'https://yourapp.com/callback',
-  response_type: 'code',
-  state: 'random-state-value'
-});
-
-window.location.href = `https://your-domain.com/api/oauth/authorize?${params}`;
-```
-
-== Python
-
-```python
-import requests
-from urllib.parse import urlencode
-
-params = {
-    'client_id': 'YOUR_CLIENT_ID',
-    'redirect_uri': 'https://yourapp.com/callback',
-    'response_type': 'code',
-    'state': 'random-state-value'
-}
-
-auth_url = f"https://your-domain.com/api/oauth/authorize?{urlencode(params)}"
-print(f"Visit: {auth_url}")
-```
-
-:::
-
-**Response (302 Redirect):**
-
-```
-Location: https://yourapp.com/callback?code=AUTH_CODE&state=random-state-value
-```
-
-### OAuth2 Token Exchange
-
-Exchange authorization code for access token.
-
-**Endpoint:**
-```
-POST /api/oauth/token
-```
-
-:::tabs
-
-== cURL
-
-```bash
-curl -X POST "https://your-domain.com/api/oauth/token" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "grant_type": "authorization_code",
-    "code": "AUTH_CODE",
-    "client_id": "YOUR_CLIENT_ID",
-    "client_secret": "YOUR_CLIENT_SECRET",
-    "redirect_uri": "https://yourapp.com/callback"
-  }'
-```
-
-== Node.js
-
-```javascript
-const response = await fetch('https://your-domain.com/api/oauth/token', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    grant_type: 'authorization_code',
-    code: 'AUTH_CODE',
-    client_id: 'YOUR_CLIENT_ID',
-    client_secret: 'YOUR_CLIENT_SECRET',
-    redirect_uri: 'https://yourapp.com/callback'
-  })
-});
-
-const data = await response.json();
-console.log('Access Token:', data.access_token);
-```
-
-== Python
-
-```python
-import requests
-
-response = requests.post(
-    'https://your-domain.com/api/oauth/token',
-    headers={'Content-Type': 'application/json'},
-    json={
-        'grant_type': 'authorization_code',
-        'code': 'AUTH_CODE',
-        'client_id': 'YOUR_CLIENT_ID',
-        'client_secret': 'YOUR_CLIENT_SECRET',
-        'redirect_uri': 'https://yourapp.com/callback'
-    }
-)
-
-data = response.json()
-print(f"Access Token: {data['access_token']}")
-```
-
-:::
-
-**Response (200 OK):**
-
-```json
-{
-  "@context": "/api/contexts/OAuthToken",
-  "@type": "OAuthToken",
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "token_type": "Bearer",
-  "expires_in": 3600,
-  "refresh_token": "refresh-token-xyz"
 }
 ```
 
@@ -615,7 +326,7 @@ Request password reset for customer account.
 
 **Endpoint:**
 ```
-POST /api/forgot_passwords
+POST /api/shop/forgot-passwords
 ```
 
 :::tabs
@@ -623,7 +334,7 @@ POST /api/forgot_passwords
 == cURL
 
 ```bash
-curl -X POST "https://your-domain.com/api/forgot_passwords" \
+curl -X POST "https://your-domain.com/api/shop/forgot-passwords" \
   -H "Content-Type: application/json" \
   -d '{
     "email": "john@example.com"
@@ -633,7 +344,7 @@ curl -X POST "https://your-domain.com/api/forgot_passwords" \
 == Node.js
 
 ```javascript
-const response = await fetch('https://your-domain.com/api/forgot_passwords', {
+const response = await fetch('https://your-domain.com/api/shop/forgot-passwords', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
@@ -653,7 +364,7 @@ console.log(result.message);
 import requests
 
 response = requests.post(
-    'https://your-domain.com/api/forgot_passwords',
+    'https://your-domain.com/api/shop/forgot-passwords',
     headers={'Content-Type': 'application/json'},
     json={'email': 'john@example.com'}
 )
@@ -673,161 +384,9 @@ print(result['message'])
 }
 ```
 
-### Reset Password
-
-Reset customer password with valid reset token.
-
-**Endpoint:**
-```
-POST /api/reset_passwords
-```
-
-:::tabs
-
-== cURL
-
-```bash
-curl -X POST "https://your-domain.com/api/reset_passwords" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "john@example.com",
-    "token": "reset-token-from-email",
-    "password": "NewPassword123!",
-    "password_confirmation": "NewPassword123!"
-  }'
-```
-
-== Node.js
-
-```javascript
-const response = await fetch('https://your-domain.com/api/reset_passwords', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    email: 'john@example.com',
-    token: 'reset-token-from-email',
-    password: 'NewPassword123!',
-    password_confirmation: 'NewPassword123!'
-  })
-});
-
-const result = await response.json();
-console.log(result.message);
-```
-
-== Python
-
-```python
-import requests
-
-response = requests.post(
-    'https://your-domain.com/api/reset_passwords',
-    headers={'Content-Type': 'application/json'},
-    json={
-        'email': 'john@example.com',
-        'token': 'reset-token-from-email',
-        'password': 'NewPassword123!',
-        'password_confirmation': 'NewPassword123!'
-    }
-)
-
-result = response.json()
-print(result['message'])
-```
-
-:::
-
-**Response (200 OK):**
-
-```json
-{
-  "@type": "Message",
-  "message": "Password has been reset successfully"
-}
-```
-
 ### Change Password
 
-Change password for authenticated customer.
-
-**Endpoint:**
-```
-POST /api/customers/change_password
-```
-
-:::tabs
-
-== cURL
-
-```bash
-curl -X POST "https://your-domain.com/api/customers/change_password" \
-  -H "Authorization: Bearer YOUR_CUSTOMER_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "old_password": "OldPassword123!",
-    "new_password": "NewPassword456!",
-    "new_password_confirmation": "NewPassword456!"
-  }'
-```
-
-== Node.js
-
-```javascript
-const token = localStorage.getItem('authToken');
-
-const response = await fetch('https://your-domain.com/api/customers/change_password', {
-  method: 'POST',
-  headers: {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    old_password: 'OldPassword123!',
-    new_password: 'NewPassword456!',
-    new_password_confirmation: 'NewPassword456!'
-  })
-});
-
-const result = await response.json();
-console.log(result.message);
-```
-
-== Python
-
-```python
-import requests
-
-token = 'YOUR_CUSTOMER_TOKEN'
-
-response = requests.post(
-    'https://your-domain.com/api/customers/change_password',
-    headers={
-        'Authorization': f'Bearer {token}',
-        'Content-Type': 'application/json'
-    },
-    json={
-        'old_password': 'OldPassword123!',
-        'new_password': 'NewPassword456!',
-        'new_password_confirmation': 'NewPassword456!'
-    }
-)
-
-result = response.json()
-print(result['message'])
-```
-
-:::
-
-**Response (200 OK):**
-
-```json
-{
-  "@type": "Message",
-  "message": "Password changed successfully"
-}
-```
+There is no standalone change-password endpoint. A logged-in customer changes their password through the **Customer Profile Update** endpoint (`PUT /api/shop/customer-profile-updates/{id}`) by sending the current password alongside the new password.
 
 ## Token Revocation
 
@@ -837,7 +396,7 @@ Invalidate current authentication token.
 
 **Endpoint:**
 ```
-POST /api/customers/logout
+POST /api/shop/customer/logout
 ```
 
 :::tabs
@@ -845,7 +404,7 @@ POST /api/customers/logout
 == cURL
 
 ```bash
-curl -X POST "https://your-domain.com/api/customers/logout" \
+curl -X POST "https://your-domain.com/api/shop/customer/logout" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json"
 ```
@@ -855,7 +414,7 @@ curl -X POST "https://your-domain.com/api/customers/logout" \
 ```javascript
 const token = localStorage.getItem('authToken');
 
-const response = await fetch('https://your-domain.com/api/customers/logout', {
+const response = await fetch('https://your-domain.com/api/shop/customer/logout', {
   method: 'POST',
   headers: {
     'Authorization': `Bearer ${token}`,
@@ -875,7 +434,7 @@ import requests
 token = 'YOUR_ACCESS_TOKEN'
 
 response = requests.post(
-    'https://your-domain.com/api/customers/logout',
+    'https://your-domain.com/api/shop/customer/logout',
     headers={
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json'
@@ -898,65 +457,7 @@ print('Logged out successfully')
 
 ### Admin Logout
 
-Invalidate admin authentication token.
-
-**Endpoint:**
-```
-POST /api/admin/logout
-```
-
-:::tabs
-
-== cURL
-
-```bash
-curl -X POST "https://your-domain.com/api/admin/logout" \
-  -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
-  -H "Content-Type: application/json"
-```
-
-== Node.js
-
-```javascript
-const token = localStorage.getItem('adminToken');
-
-const response = await fetch('https://your-domain.com/api/admin/logout', {
-  method: 'POST',
-  headers: {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  }
-});
-
-localStorage.removeItem('adminToken');
-console.log('Admin logged out');
-```
-
-== Python
-
-```python
-import requests
-
-token = 'YOUR_ADMIN_TOKEN'
-
-response = requests.post(
-    'https://your-domain.com/api/admin/logout',
-    headers={'Authorization': f'Bearer {token}'}
-)
-
-print('Admin logged out')
-```
-
-:::
-
-**Response (200 OK):**
-
-```json
-{
-  "@type": "Message",
-  "message": "Successfully logged out"
-}
-```
+Admin tokens are not logged out over the API. To revoke an admin Integration token, open the **Integration** menu in the admin panel and click **Revoke** (or use the signed one-click link in the lifecycle email). A revoked token stops working immediately.
 
 ## Authentication Headers
 

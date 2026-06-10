@@ -5,7 +5,7 @@ examples:
     title: Delete Product Review
     description: Delete an existing product review.
     request: |
-      DELETE /api/shop/products/1/reviews/1
+      DELETE /api/shop/reviews/1
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -33,7 +33,7 @@ Delete an existing product review. Only the review author can delete their own r
 ## Endpoint
 
 ```
-DELETE /api/shop/products/{productId}/reviews/{reviewId}
+DELETE /api/shop/reviews/{reviewId}
 ```
 
 ## Request Headers

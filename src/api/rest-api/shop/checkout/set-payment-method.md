@@ -5,7 +5,7 @@ examples:
     title: Set Payment Method
     description: Select a payment method for the order.
     request: |
-      POST /api/shop/checkout/payment-method
+      POST /api/shop/checkout-payment-methods
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -43,7 +43,7 @@ Select a payment method for the order checkout.
 ## Endpoint
 
 ```
-POST /api/shop/checkout/payment-method
+POST /api/shop/checkout-payment-methods
 ```
 
 ## Request Headers

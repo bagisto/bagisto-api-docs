@@ -5,47 +5,13 @@ examples:
     title: Update Product Price
     description: Update the price of an existing product.
     query: |
-      mutation updateProduct($id: ID!, $input: UpdateProductInput!) {
-        updateProduct(id: $id, input: $input) {
-          product {
-            id
-            name
-            sku
-            price
-            status
-          }
-          message
-        }
-      }
+      # This page documents a legacy Shop GraphQL stub; the actual Admin API
+      # query is `updateAdminCatalogProduct`. See: ./catalog/products/update.md
     variables: |
-      {
-        "id": "1",
-        "input": {
-          "price": 129.99
-        }
-      }
+      {}
     response: |
-      {
-        "data": {
-          "updateProduct": {
-            "product": {
-              "id": "1",
-              "name": "Product Name",
-              "sku": "PROD-001",
-              "price": 129.99,
-              "status": "active"
-            },
-            "message": "Product updated successfully"
-          }
-        }
-      }
-    commonErrors:
-      - error: PRODUCT_NOT_FOUND
-        cause: Product ID does not exist
-        solution: Verify product ID
-      - error: INVALID_INPUT
-        cause: Invalid input data provided
-        solution: Check input format and values
+      {}
+
 ---
 
 # Update Product

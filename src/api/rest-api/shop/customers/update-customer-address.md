@@ -5,7 +5,7 @@ examples:
     title: Update Customer Address
     description: Update an existing customer address.
     request: |
-      PUT /api/shop/customers/addresses/1
+      PUT /api/shop/customer-addresses/1
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -13,12 +13,16 @@ examples:
       {
         "firstName": "Jane",
         "lastName": "Doe",
-        "address": "789 Pine Rd",
+        "companyName": "Updated Corp.",
+        "vatId": "DE987654321",
+        "email": "jane@example.com",
+        "phone": "9876543210",
+        "address1": "789 Pine Rd",
+        "address2": "Suite 300",
         "city": "Los Angeles",
         "state": "CA",
         "country": "US",
-        "postcode": "90002",
-        "phone": "9876543210"
+        "postcode": "90002"
       }
     response: |
       {
@@ -27,12 +31,16 @@ examples:
             "id": 1,
             "firstName": "Jane",
             "lastName": "Doe",
-            "address": "789 Pine Rd",
+            "companyName": "Updated Corp.",
+            "vatId": "DE987654321",
+            "email": "jane@example.com",
+            "phone": "9876543210",
+            "address1": "789 Pine Rd",
+            "address2": "Suite 300",
             "city": "Los Angeles",
             "state": "CA",
             "country": "US",
-            "postcode": "90002",
-            "phone": "9876543210"
+            "postcode": "90002"
           }
         },
         "message": "Address updated successfully"
@@ -57,7 +65,7 @@ Update an existing address in the customer's address book.
 ## Endpoint
 
 ```
-PUT /api/shop/customers/addresses/{addressId}
+PUT /api/shop/customer-addresses/{addressId}
 ```
 
 ## URL Parameters
@@ -80,12 +88,16 @@ PUT /api/shop/customers/addresses/{addressId}
 {
   "firstName": "Jane",
   "lastName": "Doe",
-  "address": "789 Pine Rd",
+  "companyName": "Updated Corp.",
+  "vatId": "DE987654321",
+  "email": "jane@example.com",
+  "phone": "9876543210",
+  "address1": "789 Pine Rd",
+  "address2": "Suite 300",
   "city": "Los Angeles",
   "state": "CA",
   "country": "US",
-  "postcode": "90002",
-  "phone": "9876543210"
+  "postcode": "90002"
 }
 ```
 
@@ -93,14 +105,19 @@ PUT /api/shop/customers/addresses/{addressId}
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `firstName` | string | Yes | First name |
-| `lastName` | string | Yes | Last name |
-| `address` | string | Yes | Street address |
-| `city` | string | Yes | City |
-| `state` | string | Yes | State/Province |
-| `country` | string | Yes | Country code |
-| `postcode` | string | Yes | Postal code |
+| `firstName` | string | No | First name |
+| `lastName` | string | No | Last name |
+| `companyName` | string | No | Company name |
+| `vatId` | string | No | VAT identification number |
+| `email` | string | No | Email address |
 | `phone` | string | No | Phone number |
+| `address1` | string | No | Street address line 1 |
+| `address2` | string | No | Street address line 2 |
+| `city` | string | No | City |
+| `state` | string | No | State/Province |
+| `country` | string | No | Country code |
+| `postcode` | string | No | Postal code |
+| `defaultAddress` | boolean | No | Set as default address |
 
 ## Response Fields (200 OK)
 
@@ -112,8 +129,7 @@ PUT /api/shop/customers/addresses/{addressId}
 ## Validation Rules
 
 - Address must belong to customer
-- All required fields must be provided
-- Country/State must be valid
+- Country/State must be valid if provided
 - Cannot update other customer's addresses
 
 ## Use Cases
@@ -123,6 +139,7 @@ PUT /api/shop/customers/addresses/{addressId}
 - Change city/state
 - Modify street address
 - Update postal code
+- Update company/VAT details
 
 ## Related Resources
 

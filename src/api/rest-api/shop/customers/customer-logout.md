@@ -5,7 +5,7 @@ examples:
     title: Customer Logout
     description: End the customer's authenticated session.
     request: |
-      POST /api/shop/customers/logout
+      POST /api/shop/customer/logout
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -30,7 +30,7 @@ End the customer's authenticated session and invalidate their token.
 ## Endpoint
 
 ```
-POST /api/shop/customers/logout
+POST /api/shop/customer/logout
 ```
 
 ## Request Headers

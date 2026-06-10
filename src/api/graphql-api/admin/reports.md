@@ -5,37 +5,13 @@ examples:
     title: Get Sales Report
     description: Retrieve sales statistics and report data.
     query: |
-      query getSalesReport($startDate: String, $endDate: String) {
-        salesReport(startDate: $startDate, endDate: $endDate) {
-          totalSales
-          totalOrders
-          totalCustomers
-          averageOrderValue
-        }
-      }
+      # This page documents a legacy Shop GraphQL stub; the actual Admin API
+      # query is `statsAdminReportingSales`. See: ./reporting/sales.md
     variables: |
-      {
-        "startDate": "2025-01-01",
-        "endDate": "2025-12-31"
-      }
+      {}
     response: |
-      {
-        "data": {
-          "salesReport": {
-            "totalSales": 50000.00,
-            "totalOrders": 250,
-            "totalCustomers": 150,
-            "averageOrderValue": 200.00
-          }
-        }
-      }
-    commonErrors:
-      - error: UNAUTHORIZED
-        cause: Admin authentication required
-        solution: Provide valid admin credentials
-      - error: INVALID_DATE_RANGE
-        cause: Invalid date format or range
-        solution: Use ISO 8601 date format (YYYY-MM-DD)
+      {}
+
 ---
 
 # Reports

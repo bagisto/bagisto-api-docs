@@ -74,13 +74,13 @@ The reset email typically contains:
 
 ## Next Steps
 
-After requesting password reset:
-1. Customer receives email with reset link
-2. Customer clicks the link
-3. Customer enters new password
-4. Customer uses [Reset Password](/api/graphql-api/shop/mutations/reset-password) mutation to confirm
+After requesting a password reset:
+1. The customer receives an email with a reset link.
+2. The customer clicks the link and sets a new password **on the web page** the link opens.
+
+There is no reset-password API operation — the reset is completed through the emailed web link. A logged-in customer who knows their current password can change it directly via the profile-update mutation instead.
 
 ## Related Documentation
 
-- [Reset Password](/api/graphql-api/shop/mutations/reset-password)
+- [Update Customer Profile](/api/graphql-api/shop/mutations/update-customer-profile) — change the password while logged in (current + new)
 - [Customer Login](/api/graphql-api/shop/mutations/customer-login)

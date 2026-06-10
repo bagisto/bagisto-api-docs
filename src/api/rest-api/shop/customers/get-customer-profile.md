@@ -5,7 +5,7 @@ examples:
     title: Get Customer Profile
     description: Retrieve the authenticated customer's profile information.
     request: |
-      GET /api/shop/customers/profile
+      GET /api/shop/customer-profile
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     response: |
@@ -41,7 +41,7 @@ Retrieve the authenticated customer's profile information.
 ## Endpoint
 
 ```
-GET /api/shop/customers/profile
+GET /api/shop/customer-profile
 ```
 
 ## Request Headers

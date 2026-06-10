@@ -5,7 +5,7 @@ examples:
     title: Update Customer Profile
     description: Update the authenticated customer's profile information.
     request: |
-      PUT /api/shop/customers/profile
+      PUT /api/shop/customer-profile-updates/{id}
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -54,7 +54,7 @@ Update the authenticated customer's profile information.
 ## Endpoint
 
 ```
-PUT /api/shop/customers/profile
+PUT /api/shop/customer-profile-updates/{id}
 ```
 
 ## Request Headers

@@ -141,11 +141,22 @@ Test queries instantly without any setup:
 
 ## API Endpoints
 
+::: warning Shop and Admin use DIFFERENT GraphQL endpoints (2026-05-28)
+The admin API was moved off the shared `/api/graphql` endpoint and onto a
+dedicated route. Always pick the right endpoint based on which API you're
+calling.
+:::
+
 | Endpoint | Purpose | Authentication |
 |----------|---------|-----------------|
-| `/api/graphql` | Main GraphQL API | Optional (Shop) / Required (Admin) |
-| `/api/graphiql` | GraphiQL Playground | None |
-| `/api/sandbox` | Apollo Sandbox UI | None |
+| `POST /api/graphql` | **Shop** GraphQL API (public + customer) | `X-STOREFRONT-KEY` (+ `Authorization: Bearer` for customer ops) |
+| `POST /api/admin/graphql` | **Admin** GraphQL API | `Authorization: Bearer <integration-token>` only — **no** storefront key |
+| `GET /api/graphiql` | Shop GraphiQL Playground | None |
+| `GET /api/admin/graphiql` | Admin GraphiQL Playground | None |
+| `GET /api/sandbox` | Apollo Sandbox UI | None |
+
+An admin Bearer token sent to `/api/graphql` is **rejected** with 401 — there
+is no back door. Admin clients must use `/api/admin/graphql`.
 
 ## Popular Queries
 

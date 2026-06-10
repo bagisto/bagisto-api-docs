@@ -102,8 +102,18 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { GRAPHQL_PLAYGROUND } from '../config/api.config'
+import { useRoute } from 'vitepress'
+import { GRAPHQL_ENDPOINT, GRAPHQL_ADMIN_ENDPOINT, GRAPHQL_PLAYGROUND, GRAPHQL_ADMIN_PLAYGROUND } from '../config/api.config'
 import { normalizeGraphQLUrl, normalizeStorageUrl } from '../utils/url-normalizer'
+
+// Detect whether the current page is an admin GraphQL page (under
+// /api/graphql-api/admin/...). Admin operations use a dedicated endpoint
+// /api/admin/graphql and authenticate with Authorization: Bearer only — no
+// storefront key is required. Shop operations keep /api/graphql + X-STOREFRONT-KEY.
+const route = useRoute()
+const isAdminPage = computed(() => /\/graphql-api\/admin(\/|$)/.test(route.path))
+const endpointUrl = computed(() => isAdminPage.value ? GRAPHQL_ADMIN_ENDPOINT : GRAPHQL_ENDPOINT)
+const playgroundUrl = computed(() => isAdminPage.value ? GRAPHQL_ADMIN_PLAYGROUND : GRAPHQL_PLAYGROUND)
 
 interface Example {
   id: string
@@ -194,8 +204,11 @@ const generateCurlCode = (): string => {
   if (!selectedExample.value) return ''
   const query = selectedExample.value.query.replace(/"/g, '\\"')
   const variables = selectedExample.value.variables
-  return `curl -X POST https://your-bagisto.com/graphql \\
-  -H "Content-Type: application/json" \\
+  const authHeader = isAdminPage.value
+    ? `\\\n  -H "Authorization: Bearer YOUR_ADMIN_TOKEN" `
+    : `\\\n  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \\\n  -H "Authorization: Bearer YOUR_CUSTOMER_TOKEN" `
+  return `curl -X POST ${endpointUrl.value} \\
+  -H "Content-Type: application/json" ${authHeader}\\
   -d '{
     "query": "${query}",
     "variables": ${variables}
@@ -205,14 +218,19 @@ const generateCurlCode = (): string => {
 // Generate Node.js code
 const generateNodeCode = (): string => {
   if (!selectedExample.value) return ''
+  const headers = isAdminPage.value
+    ? `    'Content-Type': 'application/json',
+    'Authorization': \`Bearer \${adminToken}\`  // pre-issued Integration token`
+    : `    'Content-Type': 'application/json',
+    'X-STOREFRONT-KEY': 'pk_storefront_xxxxxxxxxxxxx',
+    'Authorization': \`Bearer \${accessToken}\``
   return `const query = \`${selectedExample.value.query}\`;
 const variables = ${selectedExample.value.variables};
 
-const response = await fetch('https://your-bagisto.com/graphql', {
+const response = await fetch('${endpointUrl.value}', {
   method: 'POST',
   headers: {
-    'Content-Type': 'application/json',
-    'Authorization': \`Bearer \${accessToken}\`
+${headers}
   },
   body: JSON.stringify({ query, variables })
 });
@@ -251,11 +269,13 @@ GRAPHQL;
 
 $variables = ${selectedExample.value.variables};
 
-$ch = curl_init('https://your-bagisto.com/graphql');
+$ch = curl_init('${endpointUrl.value}');
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    'Content-Type: application/json',
-    'Authorization: Bearer ' . $accessToken
+    'Content-Type: application/json',${isAdminPage.value ? `
+    'Authorization: Bearer ' . $adminToken  // pre-issued Integration token` : `
+    'X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx',
+    'Authorization: Bearer ' . $accessToken`}
 ]);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
     'query' => $query,
@@ -329,20 +349,26 @@ const copyCode = (tabType: 'query' | 'variables' | 'response') => {
         copiedButton.value = null
       }, 2000)
     }).catch(() => {
-      fallbackCopy(codeText)
+      fallbackCopy(codeText, tabType)
     })
   } else {
-    fallbackCopy(codeText)
+    fallbackCopy(codeText, tabType)
   }
 }
 
-const fallbackCopy = (text: string) => {
+const fallbackCopy = (text: string, tabType: string | null = null) => {
   const textarea = document.createElement('textarea')
   textarea.value = text
   document.body.appendChild(textarea)
   textarea.select()
   document.execCommand('copy')
   document.body.removeChild(textarea)
+  if (tabType) {
+    copiedButton.value = tabType
+    setTimeout(() => {
+      copiedButton.value = null
+    }, 2000)
+  }
 }
 
 const runGraphiQL = () => {
@@ -354,7 +380,7 @@ const runGraphiQL = () => {
   const encodedQuery = encodeURIComponent(query)
   const encodedVariables = encodeURIComponent(variables || '{}')
   
-  const graphiQLUrl = `${GRAPHQL_PLAYGROUND}?query=${encodedQuery}&variables=${encodedVariables}`
+  const graphiQLUrl = `${playgroundUrl.value}?query=${encodedQuery}&variables=${encodedVariables}`
   
   window.open(graphiQLUrl, '_blank')
 }

@@ -334,62 +334,46 @@ mutation {
 
 For administrative operations and management tasks.
 
-### Admin Login
+Admin requests authenticate with a pre-issued **Integration token** — there is no login call. The whole flow runs through the **Integration** plugin in the admin panel:
 
-```graphql
-mutation {
-  adminLogin(input: {
-    email: "admin@example.com"
-    password: "AdminPassword123!"
-  }) {
-    accessToken
-    admin {
-      id
-      name
-      email
-      role
-    }
-  }
-}
+1. In the admin panel, open the **Integration** menu (`Admin → Integration`).
+2. Generate an Integration token. A store owner generates tokens here and shares them with the sub-admins who need API access — each token is tied to a specific admin user and inherits that admin's permissions.
+3. Copy the token the moment it is shown — it is displayed **once**.
+4. Send it on every admin request as a Bearer token:
+
+```
+POST /api/admin/graphql
+Authorization: Bearer <id>|<token>
+Content-Type: application/json
 ```
 
-**Response:**
-```json
-{
-  "data": {
-    "adminLogin": {
-      "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-      "admin": {
-        "id": "1",
-        "name": "Admin User",
-        "email": "admin@example.com",
-        "role": "admin"
-      }
-    }
-  }
-}
-```
+Admin GraphQL has its own endpoint (`/api/admin/graphql`), separate from the shop endpoint (`/api/graphql`). It takes the `Authorization` header **only** — the storefront key is not used here.
 
-### Using Admin Token
+See [Admin Authentication](/api/graphql-api/admin/authentication) for token lifecycle, IP allowlists, and rate limits.
+
+### Endpoint
+
+| URL | Headers |
+|-----|---------|
+| `POST /api/admin/graphql` | `Authorization: Bearer <integration-token>` |
+| `GET  /api/admin/graphiql` | Browser-only playground UI |
+
+### Using the Admin Token
 
 ```bash
-curl -X POST https://your-domain.com/api/graphql \
+curl -X POST https://your-domain.com/api/admin/graphql \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer ADMIN_TOKEN" \
+  -H "Authorization: Bearer 5|1dYWpciAn2Ro8dfsabA89ohhduVWWXqicyPyQeIH" \
   -d '{
-    "query": "query { products { edges { node { id name sku } } } }"
+    "query": "query { adminProducts(first: 10) { edges { node { id sku name } } } }"
   }'
 ```
 
-### Admin Logout
+### Revoking a Token
 
-```graphql
-mutation {
-  adminLogout(input: {}) {
-    status
-  }
-}
-```
+Open the **Integration** menu, find the token row, and click
+**Revoke** (or use the signed one-click link in the lifecycle email). A
+revoked token stops working immediately.
 
 ## Authentication Best Practices
 

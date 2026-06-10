@@ -5,7 +5,7 @@ examples:
     title: Get Available Shipping Methods
     description: Retrieve available shipping methods for checkout.
     request: |
-      GET /api/shop/checkout/shipping-methods
+      GET /api/shop/checkout-shipping-methods
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
 
@@ -52,7 +52,7 @@ Retrieve available shipping methods based on address and cart contents.
 ## Endpoint
 
 ```
-POST /api/shop/checkout/shipping-methods
+POST /api/shop/checkout-shipping-methods
 ```
 
 ## Request Headers

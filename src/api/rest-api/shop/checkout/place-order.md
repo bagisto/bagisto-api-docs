@@ -5,7 +5,7 @@ examples:
     title: Place Order
     description: Create an order from the cart.
     request: |
-      POST /api/shop/checkout/order
+      POST /api/shop/checkout-orders
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -52,7 +52,7 @@ Create an order from the shopping cart. This completes the checkout process.
 ## Endpoint
 
 ```
-POST /api/shop/checkout/order
+POST /api/shop/checkout-orders
 ```
 
 ## Request Headers

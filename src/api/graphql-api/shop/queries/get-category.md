@@ -157,6 +157,17 @@ examples:
             }
             totalCount
           }
+          filterableAttributes {
+            edges {
+              node {
+                id
+                _id
+                code
+                adminName
+                type
+              }
+            }
+          }
           createdAt
           updatedAt
           url
@@ -262,6 +273,28 @@ examples:
                 "hasPreviousPage": false
               },
               "totalCount": 2
+            },
+            "filterableAttributes": {
+              "edges": [
+                {
+                  "node": {
+                    "id": "/api/shop/attributes/3",
+                    "_id": 3,
+                    "code": "material",
+                    "adminName": "Material",
+                    "type": "select"
+                  }
+                },
+                {
+                  "node": {
+                    "id": "/api/shop/attributes/1",
+                    "_id": 1,
+                    "code": "color",
+                    "adminName": "Color",
+                    "type": "select"
+                  }
+                }
+              ]
             },
             "createdAt": "2025-09-03T12:43:50+05:30",
             "updatedAt": "2025-09-03T18:26:45+05:30",
@@ -660,6 +693,13 @@ This query returns comprehensive category data including logos, banners, all tra
 | `createdAt` | `DateTime!` | Category creation timestamp. |
 | `updatedAt` | `DateTime!` | Last update timestamp. |
 | `url` | `String` | Full category URL. |
+| `filterableAttributes` | `AttributeCollection!` | Attributes configured for filtering in this category. |
+| `filterableAttributes.edges` | `[Edge!]!` | Attribute edges. |
+| `filterableAttributes.edges.node.id` | `ID!` | Attribute API identifier. |
+| `filterableAttributes.edges.node._id` | `Int!` | Numeric attribute ID. |
+| `filterableAttributes.edges.node.code` | `String!` | Attribute code (e.g., `color`, `size`). |
+| `filterableAttributes.edges.node.adminName` | `String!` | Attribute label shown in admin panel. |
+| `filterableAttributes.edges.node.type` | `String!` | Attribute input type (e.g., `select`, `multiselect`, `boolean`). |
 | `children` | `CategoryCollection!` | Child categories. |
 | `children.edges` | `[Edge!]!` | Child category edges. |
 | `children.edges.node` | `Category!` | Individual child category. |

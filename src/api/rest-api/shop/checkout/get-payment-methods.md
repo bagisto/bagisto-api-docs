@@ -5,7 +5,7 @@ examples:
     title: Get Available Payment Methods
     description: Retrieve available payment methods for checkout.
     request: |
-      GET /api/shop/checkout/payment-methods
+      GET /api/shop/checkout-payment-methods
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
     response: |
@@ -51,7 +51,7 @@ Retrieve available payment methods for checkout.
 ## Endpoint
 
 ```
-GET /api/shop/checkout/payment-methods
+GET /api/shop/checkout-payment-methods
 ```
 
 ## Request Headers

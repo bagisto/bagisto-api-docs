@@ -5,52 +5,13 @@ examples:
     title: Create Simple Product
     description: Create a new simple product with basic information.
     query: |
-      mutation createProduct($input: CreateProductInput!) {
-        createProduct(input: $input) {
-          product {
-            id
-            name
-            sku
-            type
-            price
-            status
-          }
-          message
-        }
-      }
+      # This page documents a legacy Shop GraphQL stub; the actual Admin API
+      # query is `createAdminCatalogProduct`. See: ./catalog/products/create.md
     variables: |
-      {
-        "input": {
-          "name": "New Product",
-          "sku": "NEW-001",
-          "type": "simple",
-          "price": 99.99,
-          "status": "active"
-        }
-      }
+      {}
     response: |
-      {
-        "data": {
-          "createProduct": {
-            "product": {
-              "id": "1",
-              "name": "New Product",
-              "sku": "NEW-001",
-              "type": "simple",
-              "price": 99.99,
-              "status": "active"
-            },
-            "message": "Product created successfully"
-          }
-        }
-      }
-    commonErrors:
-      - error: SKU_ALREADY_EXISTS
-        cause: Product with this SKU already exists
-        solution: Use a unique SKU
-      - error: INVALID_INPUT
-        cause: Required fields are missing
-        solution: Provide all required fields
+      {}
+
 ---
 
 # Create Product

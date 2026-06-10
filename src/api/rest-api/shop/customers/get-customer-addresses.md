@@ -5,7 +5,7 @@ examples:
     title: Get Customer Addresses
     description: Retrieve all saved addresses for the authenticated customer.
     request: |
-      GET /api/shop/customers/addresses
+      GET /api/shop/customer-addresses
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     response: |
@@ -53,7 +53,7 @@ Retrieve all saved addresses for the authenticated customer.
 ## Endpoint
 
 ```
-GET /api/shop/customers/addresses
+GET /api/shop/customer-addresses
 ```
 
 ## Request Headers

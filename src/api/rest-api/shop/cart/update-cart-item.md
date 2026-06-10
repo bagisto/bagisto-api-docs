@@ -5,7 +5,7 @@ examples:
     title: Update Cart Item
     description: Update quantity or attributes of an item in cart.
     request: |
-      PUT /api/shop/cart/items/1
+      PUT /api/shop/update-cart-item
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
 
@@ -50,7 +50,7 @@ Update the quantity or attributes of an item in the shopping cart.
 ## Endpoint
 
 ```
-PUT /api/shop/cart/items/{itemId}
+PUT /api/shop/update-cart-item
 ```
 
 ## Request Headers

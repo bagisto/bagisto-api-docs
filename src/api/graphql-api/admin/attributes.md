@@ -5,55 +5,13 @@ examples:
     title: Get All Attributes
     description: Retrieve all product attributes from the admin panel.
     query: |
-      query getAttributes($first: Int, $after: String) {
-        attributes(first: $first, after: $after) {
-          edges {
-            node {
-              id
-              code
-              name
-              type
-              isRequired
-              isFilterable
-            }
-          }
-          pageInfo {
-            hasNextPage
-            endCursor
-          }
-        }
-      }
+      # This page documents a legacy Shop GraphQL stub; the actual Admin API
+      # query is `adminAttributes`. See: ./catalog/attributes/attributes-listing.md
     variables: |
-      {
-        "first": 10
-      }
+      {}
     response: |
-      {
-        "data": {
-          "attributes": {
-            "edges": [
-              {
-                "node": {
-                  "id": "1",
-                  "code": "color",
-                  "name": "Color",
-                  "type": "select",
-                  "isRequired": true,
-                  "isFilterable": true
-                }
-              }
-            ],
-            "pageInfo": {
-              "hasNextPage": true,
-              "endCursor": "YXJyYXljb25uZWN0aW9uOjEw"
-            }
-          }
-        }
-      }
-    commonErrors:
-      - error: UNAUTHORIZED
-        cause: Admin authentication required
-        solution: Provide valid admin credentials
+      {}
+
 ---
 
 # Attributes

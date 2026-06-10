@@ -166,6 +166,17 @@ examples:
               url
               logoUrl
               bannerUrl
+              filterableAttributes {
+                edges {
+                  node {
+                    id
+                    _id
+                    code
+                    adminName
+                    type
+                  }
+                }
+              }
               translation {
                 name
                 slug
@@ -250,6 +261,9 @@ examples:
                   "url": "https://api-demo.bagisto.com/root",
                   "logoUrl": null,
                   "bannerUrl": null,
+                  "filterableAttributes": {
+                    "edges": []
+                  },
                   "translation": {
                     "name": "Root",
                     "slug": "root",
@@ -345,6 +359,28 @@ examples:
                   "url": "https://api-demo.bagisto.com/electronics",
                   "logoUrl": "https://api-demo.bagisto.com/storage/category/8/Vk59z6w128ExCrY3lwlSYWhVrYenucFhTuick0VD.webp",
                   "bannerUrl": null,
+                  "filterableAttributes": {
+                    "edges": [
+                      {
+                        "node": {
+                          "id": "/api/shop/attributes/1",
+                          "_id": 1,
+                          "code": "color",
+                          "adminName": "Color",
+                          "type": "select"
+                        }
+                      },
+                      {
+                        "node": {
+                          "id": "/api/shop/attributes/2",
+                          "_id": 2,
+                          "code": "size",
+                          "adminName": "Size",
+                          "type": "select"
+                        }
+                      }
+                    ]
+                  },
                   "translation": {
                     "name": "Electronics",
                     "slug": "electronics",
@@ -400,6 +436,19 @@ examples:
                   "url": "https://api-demo.bagisto.com/fashion",
                   "logoUrl": "https://api-demo.bagisto.com/storage/category/22/MDbnYET88gzG1ipz3ClxiKSO2wOybEzESa0o0jHc.webp",
                   "bannerUrl": null,
+                  "filterableAttributes": {
+                    "edges": [
+                      {
+                        "node": {
+                          "id": "/api/shop/attributes/1",
+                          "_id": 1,
+                          "code": "color",
+                          "adminName": "Color",
+                          "type": "select"
+                        }
+                      }
+                    ]
+                  },
                   "translation": {
                     "name": "Fashion",
                     "slug": "fashion",
@@ -455,6 +504,19 @@ examples:
                   "url": "https://api-demo.bagisto.com/furniture",
                   "logoUrl": "https://api-demo.bagisto.com/storage/category/23/GuIZOJY3oW09ku4zqxIfKvtXho9gOnq4eCl0HmOW.webp",
                   "bannerUrl": null,
+                  "filterableAttributes": {
+                    "edges": [
+                      {
+                        "node": {
+                          "id": "/api/shop/attributes/3",
+                          "_id": 3,
+                          "code": "material",
+                          "adminName": "Material",
+                          "type": "select"
+                        }
+                      }
+                    ]
+                  },
                   "translation": {
                     "name": "Furniture",
                     "slug": "furniture",
@@ -932,6 +994,13 @@ This query supports full pagination with cursor-based navigation and includes co
 | `createdAt` | `DateTime!` | Category creation timestamp. |
 | `updatedAt` | `DateTime!` | Last update timestamp. |
 | `url` | `String` | Full category URL. |
+| `filterableAttributes` | `AttributeCollection!` | Attributes configured for filtering in this category. |
+| `filterableAttributes.edges` | `[Edge!]!` | Attribute edges. |
+| `filterableAttributes.edges.node.id` | `ID!` | Attribute API identifier. |
+| `filterableAttributes.edges.node._id` | `Int!` | Numeric attribute ID. |
+| `filterableAttributes.edges.node.code` | `String!` | Attribute code (e.g., `color`, `size`). |
+| `filterableAttributes.edges.node.adminName` | `String!` | Attribute label shown in admin panel. |
+| `filterableAttributes.edges.node.type` | `String!` | Attribute input type (e.g., `select`, `multiselect`, `boolean`). |
 | `children` | `CategoryCollection!` | Child categories. |
 | `children.edges` | `[Edge!]!` | Child category edges. |
 | `children.totalCount` | `Int!` | Total child categories. |

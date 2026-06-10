@@ -5,7 +5,7 @@ examples:
     title: Delete Customer Address
     description: Remove an address from the customer's address book.
     request: |
-      DELETE /api/shop/customers/addresses/1
+      DELETE /api/shop/customer-addresses/1
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     response: |
@@ -32,7 +32,7 @@ Remove an address from the customer's address book.
 ## Endpoint
 
 ```
-DELETE /api/shop/customers/addresses/{addressId}
+DELETE /api/shop/customer-addresses/{addressId}
 ```
 
 ## URL Parameters

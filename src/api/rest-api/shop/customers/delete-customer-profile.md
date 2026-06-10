@@ -5,7 +5,7 @@ examples:
     title: Delete Customer Profile
     description: Delete the authenticated customer's account.
     request: |
-      DELETE /api/shop/customers/profile
+      DELETE /api/shop/customer-profile-deletes/{id}
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     response: |
@@ -29,7 +29,7 @@ Permanently delete the authenticated customer's account.
 ## Endpoint
 
 ```
-DELETE /api/shop/customers/profile
+DELETE /api/shop/customer-profile-deletes/{id}
 ```
 
 ## Request Headers

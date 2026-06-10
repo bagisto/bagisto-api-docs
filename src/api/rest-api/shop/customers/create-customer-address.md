@@ -5,7 +5,7 @@ examples:
     title: Create Customer Address
     description: Add a new address to the customer's address book.
     request: |
-      POST /api/shop/customers/addresses
+      POST /api/shop/customer-addresses
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -13,13 +13,17 @@ examples:
       {
         "firstName": "Jane",
         "lastName": "Doe",
-        "address": "456 Oak Ave",
+        "companyName": "ANC Corporation",
+        "vatId": "GB123456789",
+        "email": "jane@example.com",
+        "phone": "9876543210",
+        "address1": "456 Oak Ave",
+        "address2": "Suite 200",
         "city": "Los Angeles",
         "state": "CA",
         "country": "US",
         "postcode": "90001",
-        "phone": "9876543210",
-        "isDefault": false
+        "defaultAddress": false
       }
     response: |
       {
@@ -28,13 +32,17 @@ examples:
             "id": 2,
             "firstName": "Jane",
             "lastName": "Doe",
-            "address": "456 Oak Ave",
+            "companyName": "ANC Corporation",
+            "vatId": "GB123456789",
+            "email": "jane@example.com",
+            "phone": "9876543210",
+            "address1": "456 Oak Ave",
+            "address2": "Suite 200",
             "city": "Los Angeles",
             "state": "CA",
             "country": "US",
             "postcode": "90001",
-            "phone": "9876543210",
-            "isDefault": false
+            "defaultAddress": false
           }
         },
         "message": "Address created successfully"
@@ -56,7 +64,7 @@ Add a new address to the customer's address book.
 ## Endpoint
 
 ```
-POST /api/shop/customers/addresses
+POST /api/shop/customer-addresses
 ```
 
 ## Request Headers
@@ -73,13 +81,17 @@ POST /api/shop/customers/addresses
 {
   "firstName": "Jane",
   "lastName": "Doe",
-  "address": "456 Oak Ave",
+  "companyName": "ANC Corporation",
+  "vatId": "GB123456789",
+  "email": "jane@example.com",
+  "phone": "9876543210",
+  "address1": "456 Oak Ave",
+  "address2": "Suite 200",
   "city": "Los Angeles",
   "state": "CA",
   "country": "US",
   "postcode": "90001",
-  "phone": "9876543210",
-  "isDefault": false
+  "defaultAddress": false
 }
 ```
 
@@ -89,13 +101,17 @@ POST /api/shop/customers/addresses
 |-----------|------|----------|-------------|
 | `firstName` | string | Yes | First name |
 | `lastName` | string | Yes | Last name |
-| `address` | string | Yes | Street address |
+| `companyName` | string | No | Company name |
+| `vatId` | string | No | VAT identification number |
+| `email` | string | Yes | Email address |
+| `phone` | string | Yes | Phone number |
+| `address1` | string | Yes | Street address line 1 |
+| `address2` | string | No | Street address line 2 |
 | `city` | string | Yes | City |
 | `state` | string | Yes | State/Province |
 | `country` | string | Yes | Country code |
 | `postcode` | string | Yes | Postal code |
-| `phone` | string | No | Phone number |
-| `isDefault` | boolean | No | Set as default address |
+| `defaultAddress` | boolean | No | Set as default address |
 
 ## Response Fields (201 Created)
 
@@ -109,7 +125,7 @@ POST /api/shop/customers/addresses
 - All required fields must be provided
 - Country/State must be valid
 - Phone must be valid format
-- Email must be valid if provided
+- Email must be valid format
 - Maximum 10 addresses per customer
 
 ## Use Cases
