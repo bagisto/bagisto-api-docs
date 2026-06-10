@@ -1,98 +1,1100 @@
-# Bagisto Documentation
+# Bagisto API
 
-> The comprehensive guide to developing with Bagisto e-commerce platform
+> REST + GraphQL API reference for Bagisto, the Laravel open-source e-commerce platform. This index lists every documented endpoint; open a page URL for its exact request and response.
 
-A complete reference for developers building and extending Bagisto stores
+- Site: https://api-docs.bagisto.com
+- Full documentation (single file): https://api-docs.bagisto.com/llms-full.txt
+- Agent skills: `npx skills add bagisto/api-agent-skills`
 
-## Table of Contents
+## GraphQL API
 
-### Getting Started with Bagisto
+- [GraphQL API Overview](/api/graphql-api): Welcome to the Bagisto GraphQL API documentation. This comprehensive guide covers all available endpoints for both customer-facing (Shop) and administrative…
+- [Admin API Reference](/api/graphql-api/admin-api): The Bagisto Admin API provides comprehensive administrative endpoints for managing your e-commerce platform. All Admin API operations require authenticated…
+- [Admin API](/api/graphql-api/admin-coming-soon): The comprehensive Admin API documentation is coming soon. This section will include detailed guides for:
+- [AttributeOption GraphQL API Guide](/api/graphql-api/attribute-option): The AttributeOption GraphQL API provides two primary ways to query attribute options:
+- [Authentication Guide](/api/graphql-api/authentication): Bagisto GraphQL API supports multiple authentication methods to handle different use cases - from guest checkouts to admin operations.
+- [Best Practices & Testing Guide](/api/graphql-api/best-practices): Comprehensive guide for optimizing your Bagisto GraphQL API integration with best practices, performance tips, and testing strategies.
+- [GraphQL API](/api/graphql-api/graphql-api): Bagisto's GraphQL API delivers a modern, flexible approach to e-commerce data access. Built on Laravel Lighthouse, it provides efficient querying capabilities…
+- [Integration Guides](/api/graphql-api/integrations): Complete integration examples for popular programming languages and frameworks to get started with Bagisto GraphQL API.
+- [GraphQL API - Introduction](/api/graphql-api/introduction): Welcome to the Bagisto GraphQL API documentation! This guide will help you build modern, efficient e-commerce applications using our comprehensive GraphQL…
+- [Cursor Pagination Guide](/api/graphql-api/pagination): Bagisto GraphQL API uses cursor-based pagination for efficiently handling large datasets. This guide explains how to implement pagination in your applications.
+- [Interactive Playground Guide](/api/graphql-api/playground): Test and explore the Bagisto GraphQL API using our interactive playgrounds. No authentication required to explore the schema!
+- [GraphQL API Quick Reference](/api/graphql-api/quick-reference): - **List Products** - `GET /graphql` with `query GetProducts`
+- [Bagisto GraphQL API Documentation](/api/graphql-api/README): Complete, developer-friendly GraphQL API documentation for Bagisto e-commerce platform with Shopify-style organization and interactive examples.
+- [Shop API Reference](/api/graphql-api/shop-api): The Bagisto Shop API provides all necessary endpoints for customer-facing e-commerce operations including product browsing, shopping cart management, and…
 
-- [Why Choose Bagisto?](/getting-started/why-choose-bagisto)
-- [Before You Start](/getting-started/before-you-start)
-- [Installation](/getting-started/installation)
-- [Upgrade Guide](/getting-started/upgrade-guide)
-- [Contribution Guide](/getting-started/contribution-guide)
-- [Best Security Practices](/getting-started/best-security-practice)
-- [Deployment](/getting-started/deployment)
-- [LLMs.txt](/getting-started/llms)
+## GraphQL API › Admin
 
-### Architecture Concepts
+- [Attributes](/api/graphql-api/admin/attributes): Retrieve all product attributes from the admin panel.
+- [Admin Authentication](/api/graphql-api/admin/authentication): Every Admin GraphQL request carries the admin Bearer token. This example reads the authenticated admin's own profile to confirm the token works.
+- [Categories](/api/graphql-api/admin/categories): Retrieve all categories from the admin panel.
+- [Customers](/api/graphql-api/admin/customers): Retrieve all customers from the admin panel.
+- [Inventory](/api/graphql-api/admin/inventory): Retrieve inventory information for products.
+- [Orders](/api/graphql-api/admin/orders): Retrieve all orders from the admin panel with pagination.
+- [Products](/api/graphql-api/admin/products): Retrieve all products from the admin panel with pagination.
+- [Promotions](/api/graphql-api/admin/promotions): Retrieve all active promotions from the admin panel.
+- [Reports](/api/graphql-api/admin/reports): Retrieve sales statistics and report data.
 
-- [Overview](/architecture/overview)
-- [Backend](/architecture/backend)
-- [Frontend](/architecture/frontend)
+## GraphQL API › Admin › Catalog
 
-### Package Development
+- [List Products](/api/graphql-api/admin/catalog/products): The canonical admin product listing over GraphQL — a cursor-paginated query returning the full catalog product row, mirroring the admin Catalog → Products…
 
-- [Getting Started](/package-development/getting-started)
-- [Migrations](/package-development/migrations)
-- [Models](/package-development/models)
-- [Repositories](/package-development/repositories)
-- [Routes](/package-development/routes)
-- [Controllers](/package-development/controllers)
-- [Views](/package-development/views)
-- [Localization](/package-development/localization)
-- [DataGrid](/package-development/datagrid)
-- [Menu](/package-development/menu)
-- [Access Control List](/package-development/access-control-list)
-- [System Configuration](/package-development/system-configuration)
+## GraphQL API › Admin › Catalog › Attributes
 
-### Shipping Method Development
+- [Attributes](/api/graphql-api/admin/catalog/attributes): Attributes are the fields a product can carry — `name`, `price`, `color`, `material`, and so on. The Attributes menu lists, creates, edits, and deletes them,…
+- [Catalog Attribute Options — Create / Update / Delete](/api/graphql-api/admin/catalog/attributes/attribute-options): Add a new option to a select/multiselect/checkbox attribute. Mirrors POST /api/admin/catalog/attributes/{attributeId}/options.
+- [Catalog Attribute — Create](/api/graphql-api/admin/catalog/attributes/attributes-create): Create a new product attribute with optional translations and options. Mirrors the REST endpoint POST /api/admin/catalog/attributes.
+- [Catalog Attribute — Delete](/api/graphql-api/admin/catalog/attributes/attributes-delete): Deletes a user-defined attribute. Mirrors DELETE /api/admin/catalog/attributes/{id}.
+- [Catalog Attribute — Detail (GraphQL)](/api/graphql-api/admin/catalog/attributes/attributes-detail): Fetch a single attribute by IRI including all locale translations and — for select/multiselect/checkbox types — all options with their own translations.
+- [Catalog Attributes — Datagrid Listing (GraphQL)](/api/graphql-api/admin/catalog/attributes/attributes-listing): Cursor-paginated query returning the flat attribute list — the GraphQL equivalent of the admin Catalog → Attributes datagrid. Supports filtering by code, type,…
+- [Catalog Attribute — Mass Delete](/api/graphql-api/admin/catalog/attributes/attributes-mass-delete): Delete a batch of user-defined attributes. The whole batch is pre-validated — if any id is a system attribute, no row is deleted. Mirrors POST…
+- [Catalog Attribute — Update](/api/graphql-api/admin/catalog/attributes/attributes-update): Update an existing attribute. `code` is immutable; `type` cannot change while product attribute values reference the attribute. Mirrors PUT…
 
-- [Getting Started](/shipping-method-development/getting-started)
-- [Creating Your First Shipping Method](/shipping-method-development/create-your-first-shipping-method)
-- [Understanding Carrier Configuration](/shipping-method-development/understanding-carrier-configuration)
-- [Understanding Carrier Class](/shipping-method-development/understanding-carrier-class)
-- [Understanding System Configuration](/shipping-method-development/understanding-system-configuration)
+## GraphQL API › Admin › Catalog › Categories
 
-### Payment Method Development
+- [Categories](/api/graphql-api/admin/catalog/categories): Categories are the storefront's browsing tree — the sections customers navigate and products are assigned to. The Categories menu lists them (flat or as a…
+- [Category — Create](/api/graphql-api/admin/catalog/categories/categories-create): Create a new category. File upload for logo/banner is NOT supported in v1. Mirrors POST /api/admin/catalog/categories.
+- [Category — Delete](/api/graphql-api/admin/catalog/categories/categories-delete): Refused for the root category or any category referenced as a channel root. Mirrors DELETE /api/admin/catalog/categories/{id}.
+- [Catalog Category — Detail (GraphQL)](/api/graphql-api/admin/catalog/categories/categories-detail): Fetch a single category by ID including the full translations array (all locales present in the DB) and the list of filterable attribute IDs.
+- [Catalog Categories — Datagrid Listing (GraphQL)](/api/graphql-api/admin/catalog/categories/categories-listing): Cursor-paginated query returning the flat category list — the GraphQL equivalent of the admin Catalog → Categories datagrid. Supports filtering by name,…
+- [Category — Mass Delete](/api/graphql-api/admin/catalog/categories/categories-mass-delete): Bulk-delete a batch of categories. Whole-batch validation — if any id is non-deletable (root, channel root), no row is touched. Mirrors POST…
+- [Category — Mass Update Status](/api/graphql-api/admin/catalog/categories/categories-mass-update-status): Bulk-flip status (enabled/disabled) on a batch of categories. Mirrors POST /api/admin/catalog/categories/mass-update-status.
+- [Catalog Categories — Tree (Nested) (GraphQL)](/api/graphql-api/admin/catalog/categories/categories-tree): Cursor-paginated GraphQL query that returns root category nodes, each carrying its full nested subtree under `children`. Supports locale, status, and rootId…
+- [Category — Update (and Move)](/api/graphql-api/admin/catalog/categories/categories-update): Update a category. Move-by-parent_id is handled here — there is NO separate move mutation. Translatable fields are nested under the locale key. Mirrors PUT…
 
-- [Getting Started](/payment-method-development/getting-started)
-- [Creating Your First Payment Method](/payment-method-development/create-your-first-payment-method)
-- [Understanding Payment Configuration](/payment-method-development/understanding-payment-configuration)
-- [Understanding Payment Class](/payment-method-development/understanding-payment-class)
+## GraphQL API › Admin › Catalog › Families
 
-### Product Type Development
+- [Attribute Families](/api/graphql-api/admin/catalog/families): An attribute family is the **template of fields a product carries**. Every product belongs to exactly one family, and the family decides which attributes (and…
+- [Attribute Family — Create](/api/graphql-api/admin/catalog/families/families-create): Create an attribute family with optional nested groups and per-group custom_attributes. Mirrors POST /api/admin/catalog/families.
+- [Attribute Family — Delete](/api/graphql-api/admin/catalog/families/families-delete): Refused if the family is the last one in the store or if any product is using it. Mirrors DELETE /api/admin/catalog/families/{id}.
+- [Catalog Attribute Family — Detail (GraphQL)](/api/graphql-api/admin/catalog/families/families-detail): Fetch a single attribute family by IRI including all attribute groups and — within each group — all associated attributes with pivot position. The…
+- [Catalog Attribute Families — Datagrid Listing (GraphQL)](/api/graphql-api/admin/catalog/families/families-listing): Cursor-paginated query returning the flat attribute family list — the GraphQL equivalent of the admin Catalog → Attribute Families datagrid. Supports filtering…
+- [Attribute Family — Update](/api/graphql-api/admin/catalog/families/families-update): Update a family, optionally restructuring its attribute groups. Mirrors PUT /api/admin/catalog/families/{id}.
 
-- [Getting Started](/product-type-development/getting-started)
-- [Creating Your First Product Type](/product-type-development/create-your-first-product-type)
-- [Understanding Product Type Configuration](/product-type-development/understanding-product-type-configuration)
-- [Understanding Abstract Type Class](/product-type-development/understanding-abstract-type-class)
-- [Building Your Subscription Product Type](/product-type-development/building-your-subscription-product-type)
+## GraphQL API › Admin › Catalog › Products
 
-### Theme Development
+- [Products](/api/graphql-api/admin/catalog/products): The full Catalog → Products datagrid. Cursor pagination via first / after. All scalar fields (including special-price) resolve over GraphQL; relation blocks…
+- [Catalog Product — Copy](/api/graphql-api/admin/catalog/products/copy): Duplicates an existing product across all sub-resources. Refuses configurable variants.
+- [Catalog Product — Create](/api/graphql-api/admin/catalog/products/create): Step-1 create for a simple product. Only sku, attributeFamilyId and type are submitted; everything else is added later via the Update mutation.
+- [Product Customer-Group Prices — Create](/api/graphql-api/admin/catalog/products/customer-group-prices-create): Adds a new tier-price row to a product. `customer_group_id: null` makes it apply to every group.
+- [Product Customer-Group Prices — Delete](/api/graphql-api/admin/catalog/products/customer-group-prices-delete): Deletes a single tier-price row.
+- [Product Customer-Group Prices — List](/api/graphql-api/admin/catalog/products/customer-group-prices-list): Cursor connection of tier-price rows attached to a product.
+- [Product Customer-Group Prices — Update](/api/graphql-api/admin/catalog/products/customer-group-prices-update): Partially updates a tier-price row.
+- [Catalog Product — Delete](/api/graphql-api/admin/catalog/products/delete): GraphQL counterpart of DELETE /api/admin/catalog/products/{id}. For configurable products, variants cascade.
+- [Product Images — Delete](/api/graphql-api/admin/catalog/products/images-delete): Removes the DB row and the file on storage.
+- [Product Images — Reorder](/api/graphql-api/admin/catalog/products/images-reorder): Update positions of one or more existing images for a product. Each image ID must belong to the product.
+- [Product Images — Upload](/api/graphql-api/admin/catalog/products/images-upload): GraphQL upload is NOT supported — binary file parts are not transportable over JSON GraphQL. Use the REST endpoint.
+- [Product Inventories — List](/api/graphql-api/admin/catalog/products/inventories-list): Cursor connection of per-source inventory rows for a product.
+- [Product Inventories — Bulk Update](/api/graphql-api/admin/catalog/products/inventories-update): Sources with qty=0 are kept but zeroed-out; sources NOT in the payload are left untouched.
+- [Add-Product Search (Create-Order)](/api/graphql-api/admin/catalog/products/list): The slim product search behind the admin Create-Order "Add Product" modal. NOT the product listing — for the full product list with all columns and filters use…
+- [Catalog Products — Mass Delete](/api/graphql-api/admin/catalog/products/mass-delete): GraphQL counterpart of POST /api/admin/catalog/products/mass-delete. Mirrors monolith best-effort semantics — non-existent IDs are silently skipped.
+- [Catalog Products — Mass Update Status](/api/graphql-api/admin/catalog/products/mass-update-status): GraphQL counterpart of POST /api/admin/catalog/products/mass-update-status. Fires catalog.product.update.{before,after} per ID.
+- [Catalog Product — Detail (GraphQL)](/api/graphql-api/admin/catalog/products/products-detail): Fetch a single catalog product by IRI. Type-specific blocks (superAttributes/variants for configurable, bundleOptions for bundle, linkedProducts for grouped,…
+- [Catalog Product — Update](/api/graphql-api/admin/catalog/products/update): Partial update — send only the fields you change. Structural fields (price, weight, status, categories, channels, ...) are named camelCase args on the input;…
 
-- [Getting Started](/theme-development/getting-started)
-- [Creating Store Theme](/theme-development/creating-store-theme)
-- [Creating Admin Theme](/theme-development/creating-admin-theme)
-- [Creating Custom Theme Package](/theme-development/creating-custom-theme-package)
-- [Vite-Powered Theme Assets](/theme-development/vite-powered-theme-assets)
-- [Understanding Layouts](/theme-development/understanding-layouts)
-- [Blade Components](/theme-development/blade-components)
-- [Email Template](/theme-development/email-template)
-- [Validation](/theme-development/validation)
+## GraphQL API › Admin › Cms › Pages
 
-### Performance
+- [CMS Pages](/api/graphql-api/admin/cms/pages): CMS Pages are **static storefront content pages** — About Us, Privacy Policy, custom landing pages, and the like. Each page is served on the storefront at its…
 
-- [Introduction](/performance/introduction)
-- [Configure Elasticsearch](/performance/configure-elasticsearch)
-- [Configure Full Page Cache](/performance/configure-fpc)
-- [Configure Varnish](/performance/configure-varnish)
-- [Configure Laravel Octane](/performance/configure-laravel-octane)
-- [Configure Load Balancing](/performance/configure-load-balancing)
+## GraphQL API › Admin › Cms › Pages › Mutations
 
-### Digging Deeper
+- [CMS Page — Create](/api/graphql-api/admin/cms/pages/mutations/create): Top-level translated fields are broadcast to every locale by the core PageRepository.
+- [CMS Page — Delete](/api/graphql-api/admin/cms/pages/mutations/delete): Deletes a CMS page by IRI.
+- [CMS Pages — Mass Delete](/api/graphql-api/admin/cms/pages/mutations/mass-delete): Bulk-delete CMS pages. Non-existent IDs are silently skipped.
+- [CMS Page — Update](/api/graphql-api/admin/cms/pages/mutations/update): Validation is LOCALE-NESTED. Top-level `locale` names which block is being updated.
 
-- [Introduction](/advanced/introduction)
-- [Understanding Core Class](/advanced/understanding-core-class)
-- [Understanding Indexers](/advanced/understanding-indexers)
-- [Understanding Data Transfer](/advanced/understanding-data-transfer)
-- [Event Listeners](/advanced/event-listeners)
-- [View Render Events](/advanced/view-render-events)
+## GraphQL API › Admin › Cms › Pages › Queries
 
-### Bagisto APIs
+- [CMS Page — Detail](/api/graphql-api/admin/cms/pages/queries/detail): Returns a single CMS page with the full htmlContent body, all translations, and channels. translations and channels are field-selectable connections — query…
+- [CMS Pages — List](/api/graphql-api/admin/cms/pages/queries/list): Cursor-paginated CMS pages listing. translations and channels are field-selectable connections — query them via edges { node { … } }.
 
-- [Introduction](/api/introduction)
-- [Rest API](/api/rest-api)
-- [GraphQL API](/api/graphql-api)
+## GraphQL API › Admin › Configuration
+
+- [Configuration (Admin)](/api/graphql-api/admin/configuration): The admin **Configuration** screen edits Bagisto's store-wide settings — order
+- [Configuration Menu (GraphQL)](/api/graphql-api/admin/configuration/menu): Discover the fields under a slug. include_values is false, so no values are embedded.
+- [Configuration Update (GraphQL)](/api/graphql-api/admin/configuration/update): Bulk-upsert a code → value map under a slug. Returns the re-resolved values.
+- [Configuration Values (GraphQL)](/api/graphql-api/admin/configuration/values): Effective values for every field under sales.order_settings.
+
+## GraphQL API › Admin › Customers
+
+- [Customer Active Cart Items](/api/graphql-api/admin/customers/active-cart-items): Items in the customer's own active storefront cart (carts.is_active = 1).
+- [Customer Addresses](/api/graphql-api/admin/customers/addresses): All saved addresses for a customer — billing/shipping picker on the Create-Order screen.
+- [Create Draft Cart](/api/graphql-api/admin/customers/create-draft-cart): Bootstrap an empty admin draft cart for a customer (Create-Order entry).
+- [Customer Recent Order Items](/api/graphql-api/admin/customers/recent-order-items): Up to 5 most-recent distinct items the customer has ordered.
+- [Customer Wishlist Items](/api/graphql-api/admin/customers/wishlist-items): The customer's wishlist for the Create-Order sidebar.
+
+## GraphQL API › Admin › Customers › Addresses
+
+- [Create Customer Address (GraphQL)](/api/graphql-api/admin/customers/addresses/create): Permission: `customers.addresses.create`.
+- [Delete Customer Address (GraphQL)](/api/graphql-api/admin/customers/addresses/delete): Same ownership guard. Permission: `customers.addresses.delete`.
+- [Customer Address Detail (GraphQL)](/api/graphql-api/admin/customers/addresses/detail)
+- [Update Customer Address (GraphQL)](/api/graphql-api/admin/customers/addresses/update): Cross-customer edits return errors[]. Permission: `customers.addresses.edit`.
+
+## GraphQL API › Admin › Customers › Gdpr
+
+- [Delete GDPR Request (GraphQL)](/api/graphql-api/admin/customers/gdpr/delete): Permission: `customers.gdpr_requests.delete`.
+- [GDPR Request Detail (GraphQL)](/api/graphql-api/admin/customers/gdpr/detail)
+- [Download GDPR Data Export (GraphQL)](/api/graphql-api/admin/customers/gdpr/download-data): Ad-hoc dump (not bound to a request). `password` / `remember_token` stripped from `customer`. Permission: `customers.gdpr_requests.view`.
+- [List GDPR Requests (GraphQL)](/api/graphql-api/admin/customers/gdpr/list)
+- [Process GDPR Request (GraphQL)](/api/graphql-api/admin/customers/gdpr/process): GraphQL input uses `requestId` because API Platform rewrites `id` to `_id` on mutation inputs.
+- [Update GDPR Request (GraphQL)](/api/graphql-api/admin/customers/gdpr/update): Status + message only. Use `createAdminCustomerGdprProcess` for the destructive cascade. Permission: `customers.gdpr_requests.edit`.
+
+## GraphQL API › Admin › Customers › Groups
+
+- [Create Customer Group (GraphQL)](/api/graphql-api/admin/customers/groups/create): Always `is_user_defined=1`. Permission: `customers.groups.create`.
+- [Delete Customer Group (GraphQL)](/api/graphql-api/admin/customers/groups/delete): Refuses for system groups or groups with customers attached. Permission: `customers.groups.delete`.
+- [Customer Group Detail (GraphQL)](/api/graphql-api/admin/customers/groups/detail)
+- [List Customer Groups (GraphQL)](/api/graphql-api/admin/customers/groups/list)
+- [Mass Delete Customer Groups (GraphQL)](/api/graphql-api/admin/customers/groups/mass-delete): Permission: `customers.groups.delete`.
+- [Update Customer Group (GraphQL)](/api/graphql-api/admin/customers/groups/update): System groups (`is_user_defined=0`) only allow `name` updates; other fields return errors[]. Permission: `customers.groups.edit`.
+
+## GraphQL API › Admin › Customers › Impersonate
+
+- [Impersonate Customer (GraphQL)](/api/graphql-api/admin/customers/impersonate/create): The plaintext token is shown once. Token name `admin-impersonate:{adminId}` for audit; abilities include `impersonated-by-admin:{adminId}`. Expires in 1 hour.
+
+## GraphQL API › Admin › Customers › Main
+
+- [Create Customer (GraphQL)](/api/graphql-api/admin/customers/main/create): createAdminCustomer mutation. `send_password` defaults to true and triggers a credentials email.
+- [Delete Customer (GraphQL)](/api/graphql-api/admin/customers/main/delete): Refuses (errors[]) if the customer has any pending/processing orders.
+- [Customer Detail](/api/graphql-api/admin/customers/main/detail): Eager-loads group + counters.
+- [List Customers (Datagrid)](/api/graphql-api/admin/customers/main/list): Cursor pagination. Detail-only fields are null on listing.
+- [Mass Delete Customers (GraphQL)](/api/graphql-api/admin/customers/main/mass-delete): Per-id active-orders guard skips with a reason. Permission: `customers.customers.delete`.
+- [Mass Update Customer Status (GraphQL)](/api/graphql-api/admin/customers/main/mass-update-status): Permission: `customers.customers.edit`.
+- [Update Customer (GraphQL)](/api/graphql-api/admin/customers/main/update): Partial update. Permission: `customers.customers.edit`. Fires `customer.update.*` events.
+
+## GraphQL API › Admin › Customers › Notes
+
+- [Add Customer Note (GraphQL)](/api/graphql-api/admin/customers/notes/create): Append-only. Permission: `customers.customers.edit`.
+
+## GraphQL API › Admin › Customers › Reviews
+
+- [Delete Review (GraphQL)](/api/graphql-api/admin/customers/reviews/delete): Permission: `customers.reviews.delete`.
+- [Customer Review Detail (GraphQL)](/api/graphql-api/admin/customers/reviews/detail)
+- [List Customer Reviews (GraphQL)](/api/graphql-api/admin/customers/reviews/list): Args: `status`, `rating`, `product_id`, `customer_id`, `created_at_from/to`, `sort`, `order` + cursor `first`/`after`.
+- [Mass Delete Reviews (GraphQL)](/api/graphql-api/admin/customers/reviews/mass-delete)
+- [Mass Update Review Status (GraphQL)](/api/graphql-api/admin/customers/reviews/mass-update-status): `value` is a string (`pending|approved|disapproved`). Permission: `customers.reviews.edit`.
+- [Update Review Status (GraphQL)](/api/graphql-api/admin/customers/reviews/update): Status-only. Permission: `customers.reviews.edit`.
+
+## GraphQL API › Admin › Dashboard
+
+- [Dashboard Statistics (GraphQL)](/api/graphql-api/admin/dashboard/stats): Headline KPIs for the top "Overall Details" cards — customers, orders, sales, average order value and unpaid-invoice total, each compared against the previous…
+
+## GraphQL API › Admin › Marketing › Communications
+
+- [Create Marketing Campaign (GraphQL)](/api/graphql-api/admin/marketing/communications/campaigns-create): Mutation: `createAdminMarketingCampaign`.
+- [Delete Marketing Campaign (GraphQL)](/api/graphql-api/admin/marketing/communications/campaigns-delete): Mutation: `deleteAdminMarketingCampaign`.
+- [Marketing Campaign Detail (GraphQL)](/api/graphql-api/admin/marketing/communications/campaigns-detail): Query: `adminMarketingCampaign(id:)`.
+- [List Marketing Campaigns (GraphQL)](/api/graphql-api/admin/marketing/communications/campaigns-list): Query: `adminMarketingCampaigns`. Extra args: `name`, `status`, `marketing_template_id`, `marketing_event_id`, `channel_id`, `customer_group_id`, `sort`,…
+- [Send Marketing Campaign (GraphQL)](/api/graphql-api/admin/marketing/communications/campaigns-send): Mutation: `createAdminMarketingCampaignSend`.
+- [Update Marketing Campaign (GraphQL)](/api/graphql-api/admin/marketing/communications/campaigns-update): Mutation: `updateAdminMarketingCampaign`.
+- [Create Marketing Event (GraphQL)](/api/graphql-api/admin/marketing/communications/events-create): Mutation: `createAdminMarketingEvent`.
+- [Delete Marketing Event (GraphQL)](/api/graphql-api/admin/marketing/communications/events-delete): Mutation: `deleteAdminMarketingEvent`.
+- [Marketing Event Detail (GraphQL)](/api/graphql-api/admin/marketing/communications/events-detail): Query: `adminMarketingEvent(id:)`.
+- [List Marketing Events (GraphQL)](/api/graphql-api/admin/marketing/communications/events-list): Query: `adminMarketingEvents`. Extra args: `name`, `date_from`, `date_to`, `sort`, `order`.
+- [Update Marketing Event (GraphQL)](/api/graphql-api/admin/marketing/communications/events-update): Mutation: `updateAdminMarketingEvent`.
+- [Delete Subscription (GraphQL)](/api/graphql-api/admin/marketing/communications/subscribers-delete): Mutation: `deleteAdminMarketingSubscriber`.
+- [Newsletter Subscriber Detail (GraphQL)](/api/graphql-api/admin/marketing/communications/subscribers-detail): Query: `adminMarketingSubscriber(id:)`.
+- [List Newsletter Subscribers (GraphQL)](/api/graphql-api/admin/marketing/communications/subscribers-list): Query: `adminMarketingSubscribers`. Extra args: `email`, `channel_id`, `is_subscribed`, `sort`, `order`.
+- [Toggle Subscription (GraphQL)](/api/graphql-api/admin/marketing/communications/subscribers-toggle): Mutation: `updateAdminMarketingSubscriber`. Mirrors `is_subscribed` onto the linked customer (if any).
+- [Create Email Template (GraphQL)](/api/graphql-api/admin/marketing/communications/templates-create): Mutation: `createAdminMarketingTemplate`.
+- [Delete Email Template (GraphQL)](/api/graphql-api/admin/marketing/communications/templates-delete): Mutation: `deleteAdminMarketingTemplate`.
+- [Email Template Detail (GraphQL)](/api/graphql-api/admin/marketing/communications/templates-detail): Query: `adminMarketingTemplate(id:)`.
+- [List Email Templates (GraphQL)](/api/graphql-api/admin/marketing/communications/templates-list): Query: `adminMarketingTemplates`. Extra args: `name`, `status`, `sort`, `order`.
+- [Update Email Template (GraphQL)](/api/graphql-api/admin/marketing/communications/templates-update): Mutation: `updateAdminMarketingTemplate`.
+
+## GraphQL API › Admin › Marketing › Promotions
+
+- [Create Cart Rule Coupon (GraphQL)](/api/graphql-api/admin/marketing/promotions/cart-rule-coupons-create): Mutation: `createAdminMarketingCartRuleCoupon`.
+- [Delete Cart Rule Coupon (GraphQL)](/api/graphql-api/admin/marketing/promotions/cart-rule-coupons-delete): Mutation: `deleteAdminMarketingCartRuleCoupon`.
+- [Bulk-Generate Cart Rule Coupons (GraphQL)](/api/graphql-api/admin/marketing/promotions/cart-rule-coupons-generate): Mutation: `createAdminMarketingCartRuleCouponGenerate`.
+- [List Cart Rule Coupons (GraphQL)](/api/graphql-api/admin/marketing/promotions/cart-rule-coupons-list): Query: `adminMarketingCartRuleCoupons(cartRuleId:)`. Cursor pagination.
+- [Mass Delete Cart Rule Coupons (GraphQL)](/api/graphql-api/admin/marketing/promotions/cart-rule-coupons-mass-delete): Mutation: `createAdminMarketingCartRuleCouponMassDelete`. IDs not belonging to `cartRuleId` are silently skipped.
+- [Copy Cart Rule (GraphQL)](/api/graphql-api/admin/marketing/promotions/cart-rules-copy): Mutation: `copyAdminMarketingCartRule`. Duplicates an existing cart rule into a brand-new rule (the API equivalent of the listing's **Copy** action).
+- [Create Cart Rule (GraphQL)](/api/graphql-api/admin/marketing/promotions/cart-rules-create): Mutation: `createAdminMarketingCartRule`.
+- [Delete Cart Rule (GraphQL)](/api/graphql-api/admin/marketing/promotions/cart-rules-delete): Mutation: `deleteAdminMarketingCartRule`.
+- [Cart Rule Detail (GraphQL)](/api/graphql-api/admin/marketing/promotions/cart-rules-detail): Query: `adminMarketingCartRule(id:)`.
+- [List Cart Rules (GraphQL)](/api/graphql-api/admin/marketing/promotions/cart-rules-list): Query: `adminMarketingCartRules` (cursor pagination).
+- [Mass Delete Cart Rules (GraphQL)](/api/graphql-api/admin/marketing/promotions/cart-rules-mass-delete): Mutation: `createAdminMarketingCartRuleMassDelete`.
+- [Update Cart Rule (GraphQL)](/api/graphql-api/admin/marketing/promotions/cart-rules-update): Mutation: `updateAdminMarketingCartRule`.
+- [Create Catalog Rule (GraphQL)](/api/graphql-api/admin/marketing/promotions/catalog-rules-create): Mutation: `createAdminMarketingCatalogRule`.
+- [Delete Catalog Rule (GraphQL)](/api/graphql-api/admin/marketing/promotions/catalog-rules-delete): Mutation: `deleteAdminMarketingCatalogRule`.
+- [Catalog Rule Detail (GraphQL)](/api/graphql-api/admin/marketing/promotions/catalog-rules-detail): Query: `adminMarketingCatalogRule(id:)`.
+- [List Catalog Rules (GraphQL)](/api/graphql-api/admin/marketing/promotions/catalog-rules-list): Query: `adminMarketingCatalogRules` (cursor pagination).
+- [Mass Delete Catalog Rules (GraphQL)](/api/graphql-api/admin/marketing/promotions/catalog-rules-mass-delete): Mutation: `createAdminMarketingCatalogRuleMassDelete`.
+- [Update Catalog Rule (GraphQL)](/api/graphql-api/admin/marketing/promotions/catalog-rules-update): Mutation: `updateAdminMarketingCatalogRule`.
+
+## GraphQL API › Admin › Marketing › Search Seo
+
+- [Create Search Synonym (GraphQL)](/api/graphql-api/admin/marketing/search-seo/search-synonyms-create): Mutation: `createAdminMarketingSearchSynonym`.
+- [Delete Search Synonym (GraphQL)](/api/graphql-api/admin/marketing/search-seo/search-synonyms-delete): Mutation: `deleteAdminMarketingSearchSynonym`.
+- [Search Synonym Detail (GraphQL)](/api/graphql-api/admin/marketing/search-seo/search-synonyms-detail): Query: `adminMarketingSearchSynonym(id:)`.
+- [List Search Synonyms (GraphQL)](/api/graphql-api/admin/marketing/search-seo/search-synonyms-list): Query: `adminMarketingSearchSynonyms`. Extra args: `name`, `terms`, `sort`, `order`.
+- [Mass Delete Search Synonyms (GraphQL)](/api/graphql-api/admin/marketing/search-seo/search-synonyms-mass-delete): Mutation: `createAdminMarketingSearchSynonymMassDelete`.
+- [Update Search Synonym (GraphQL)](/api/graphql-api/admin/marketing/search-seo/search-synonyms-update): Mutation: `updateAdminMarketingSearchSynonym`.
+- [Delete Search Term (GraphQL)](/api/graphql-api/admin/marketing/search-seo/search-terms-delete): Mutation: `deleteAdminMarketingSearchTerm`.
+- [Search Term Detail (GraphQL)](/api/graphql-api/admin/marketing/search-seo/search-terms-detail): Query: `adminMarketingSearchTerm(id:)`.
+- [List Search Terms (GraphQL)](/api/graphql-api/admin/marketing/search-seo/search-terms-list): Query: `adminMarketingSearchTerms`. Extra args: `term`, `channel_id`, `locale`, `sort` (`id`/`term`/`uses`/`results`), `order`.
+- [Mass Delete Search Terms (GraphQL)](/api/graphql-api/admin/marketing/search-seo/search-terms-mass-delete): Mutation: `createAdminMarketingSearchTermMassDelete`.
+- [Update Search Term (GraphQL)](/api/graphql-api/admin/marketing/search-seo/search-terms-update): Mutation: `updateAdminMarketingSearchTerm`. Only `term` + `redirect_url` are editable.
+- [Create Sitemap (GraphQL)](/api/graphql-api/admin/marketing/search-seo/sitemaps-create): Mutation: `createAdminMarketingSitemap`.
+- [Delete Sitemap (GraphQL)](/api/graphql-api/admin/marketing/search-seo/sitemaps-delete): Mutation: `deleteAdminMarketingSitemap`. Removes the DB row and generated XML files.
+- [Sitemap Detail (GraphQL)](/api/graphql-api/admin/marketing/search-seo/sitemaps-detail): Query: `adminMarketingSitemap(id:)`.
+- [Regenerate Sitemap (GraphQL)](/api/graphql-api/admin/marketing/search-seo/sitemaps-generate): Mutation: `createAdminMarketingSitemapGenerate`.
+- [List Sitemaps (GraphQL)](/api/graphql-api/admin/marketing/search-seo/sitemaps-list): Query: `adminMarketingSitemaps`. Extra args: `file_name`, `sort`, `order`.
+- [Update Sitemap (GraphQL)](/api/graphql-api/admin/marketing/search-seo/sitemaps-update): Mutation: `updateAdminMarketingSitemap`.
+- [Create URL Rewrite (GraphQL)](/api/graphql-api/admin/marketing/search-seo/url-rewrites-create): Mutation: `createAdminMarketingUrlRewrite`.
+- [Delete URL Rewrite (GraphQL)](/api/graphql-api/admin/marketing/search-seo/url-rewrites-delete): Mutation: `deleteAdminMarketingUrlRewrite`.
+- [URL Rewrite Detail (GraphQL)](/api/graphql-api/admin/marketing/search-seo/url-rewrites-detail): Query: `adminMarketingUrlRewrite(id:)`.
+- [List URL Rewrites (GraphQL)](/api/graphql-api/admin/marketing/search-seo/url-rewrites-list): Query: `adminMarketingUrlRewrites`. Extra args: `entity_type`, `request_path`, `redirect_type`, `locale`, `sort`, `order`.
+- [Mass Delete URL Rewrites (GraphQL)](/api/graphql-api/admin/marketing/search-seo/url-rewrites-mass-delete): Mutation: `createAdminMarketingUrlRewriteMassDelete`.
+- [Update URL Rewrite (GraphQL)](/api/graphql-api/admin/marketing/search-seo/url-rewrites-update): Mutation: `updateAdminMarketingUrlRewrite`.
+
+## GraphQL API › Admin › Mutations
+
+- [Create Product](/api/graphql-api/admin/mutations/create-product): Create a new simple product with basic information.
+- [Delete Product](/api/graphql-api/admin/mutations/delete-product): Delete a product from the system.
+- [Update Product](/api/graphql-api/admin/mutations/update-product): Update the price of an existing product.
+
+## GraphQL API › Admin › Profile
+
+- [Get Admin Profile](/api/graphql-api/admin/profile/get-profile): Read the authenticated admin's profile. Requires the Bearer token in the Authorization header.
+
+## GraphQL API › Admin › Reporting
+
+- [Reporting — Customers (GraphQL)](/api/graphql-api/admin/reporting/customers): Query: `statsAdminReportingCustomers`.
+- [Reporting — Overview (GraphQL)](/api/graphql-api/admin/reporting/overview): Query: `statsAdminReportingOverview`.
+- [Reporting — Products (GraphQL)](/api/graphql-api/admin/reporting/products): Query: `statsAdminReportingProducts`.
+- [Reporting — Sales (GraphQL)](/api/graphql-api/admin/reporting/sales): Query: `statsAdminReportingSales`.
+
+## GraphQL API › Admin › Sales
+
+- [Sales](/api/graphql-api/admin/sales): The Sales section covers everything about an order after (and during) checkout — browsing and managing orders, building an order from the admin side, and the…
+
+## GraphQL API › Admin › Sales › Bookings
+
+- [Bookings](/api/graphql-api/admin/sales/bookings): The Bookings menu is a read-only list of booking lines produced by orders that contain a booking product. It mirrors the admin **Sales → Bookings** screen.…
+- [Booking Detail](/api/graphql-api/admin/sales/bookings/detail): Fetch a single booking with its sub-type, full booking window, and embedded order / order-item summaries.
+- [List Bookings (Datagrid)](/api/graphql-api/admin/sales/bookings/list): Cursor-paginated bookings datagrid. Every booking column plus the linked order / order-item summary is populated on each row.
+
+## GraphQL API › Admin › Sales › Carts
+
+- [Add Item to Cart](/api/graphql-api/admin/sales/carts/add-item): Add a simple/virtual product. `id` is the resource IRI; `cartId` is forwarded as the raw integer for the processor.
+- [Apply a Coupon](/api/graphql-api/admin/sales/carts/apply-coupon): Apply a cart-rule coupon code to the draft cart. Returns errors[] on unknown/inactive coupon (404 equivalent) or already-applied (422 equivalent).
+- [Get Cart](/api/graphql-api/admin/sales/carts/get-cart): Read a draft cart by IRI. `id` is the resource IRI `/api/admin/carts/{cartId}`.
+- [List Payment Methods](/api/graphql-api/admin/sales/carts/list-payment-methods): List payment methods supported for the draft cart. A shipping method must be selected first.
+- [List Shipping Methods](/api/graphql-api/admin/sales/carts/list-shipping-methods): Returns available shipping rates for a draft cart. Both addresses must be saved first.
+- [Remove Applied Coupon](/api/graphql-api/admin/sales/carts/remove-coupon): Remove the currently-applied coupon from the draft cart. Idempotent.
+- [Remove a Cart Item](/api/graphql-api/admin/sales/carts/remove-item): Remove a single line item from the draft cart.
+- [Save Cart Addresses](/api/graphql-api/admin/sales/carts/save-address): Save billing (and optionally shipping) addresses on the draft cart.
+- [Set Payment Method](/api/graphql-api/admin/sales/carts/set-payment-method): Save the chosen payment method on the draft cart.
+- [Set Shipping Method](/api/graphql-api/admin/sales/carts/set-shipping-method): Save the chosen shipping method on the draft cart.
+- [Update Cart Item Quantities](/api/graphql-api/admin/sales/carts/update-items): Bulk-update line-item quantities. `qty` is a map of cartItemId → new quantity.
+
+## GraphQL API › Admin › Sales › Invoices
+
+- [Invoices](/api/graphql-api/admin/sales/invoices): The Invoices menu is the store-wide list of every invoice that has been generated across all orders, plus the actions you can take on a single invoice. It…
+- [List Invoices](/api/graphql-api/admin/sales/invoices/list): Cursor-paginated invoices listing. Every invoice column is populated on each row — query whichever ones you need.
+- [Mass Update Invoice Status](/api/graphql-api/admin/sales/invoices/mass-update-status): Bulk-set the status of several invoices at once. A manual status override — it does not capture or reverse a payment.
+
+## GraphQL API › Admin › Sales › Orders
+
+- [Orders](/api/graphql-api/admin/sales/orders): The Orders menu is the heart of Sales: browse every order in the store and run every per-order action. From here you can view a single order in full, drive the…
+- [Add Order Comment](/api/graphql-api/admin/sales/orders/add-comment): Add a comment to an order. When `customerNotified` is true, the customer is sent a notification email with the comment.
+- [Cancel Order](/api/graphql-api/admin/sales/orders/cancel): Cancel every cancellable item on an order. Returns the updated order summary.
+- [Create Invoice](/api/graphql-api/admin/sales/orders/create-invoice): Create an invoice for one or more order items.
+- [Create Refund](/api/graphql-api/admin/sales/orders/create-refund): Refund one or more order items, with optional shipping refund and adjustment fee/refund.
+- [Create Shipment](/api/graphql-api/admin/sales/orders/create-shipment): Ship one or more order items from a chosen inventory source.
+- [Get Invoice](/api/graphql-api/admin/sales/orders/get-invoice): Fetch a single invoice with the full totals breakdown, order/customer context, billing & shipping addresses, and embedded line items.
+- [Get Refund](/api/graphql-api/admin/sales/orders/get-refund): Fetch a single refund with the full totals/adjustment breakdown, order/customer context, payment info, billing & shipping addresses, and embedded line items.
+- [Get Shipment](/api/graphql-api/admin/sales/orders/get-shipment): Fetch a single shipment by id, with the order/customer context, both addresses, and the shipped line items inlined.
+- [List Order Comments](/api/graphql-api/admin/sales/orders/list-comments): Cursor-paginated list of an order's comments, newest first.
+- [List Orders](/api/graphql-api/admin/sales/orders/list-orders): Paginated list of all orders across every customer (cursor pagination).
+- [Order Detail](/api/graphql-api/admin/sales/orders/order-detail): Full order-view payload for one order. Nested collections (items, invoices, shipments) are returned as plain JSON arrays (identical shape to REST).
+- [Place Order](/api/graphql-api/admin/sales/orders/place-order): Finalise a fully prepared draft cart into a real order.
+- [Print Invoice (PDF)](/api/graphql-api/admin/sales/orders/print-invoice): Downloading the invoice PDF is a binary stream, which GraphQL cannot return — use the REST endpoint shown here. The example is the equivalent curl.
+- [Refund Preview](/api/graphql-api/admin/sales/orders/refund-preview): Compute refund totals (subtotal, discount, tax, shipping, grandTotal) without saving anything.
+- [Reorder](/api/graphql-api/admin/sales/orders/reorder): Build a fresh admin draft cart from a previous order's items. Returns the new cart ID.
+- [Send Duplicate Invoice](/api/graphql-api/admin/sales/orders/send-duplicate-invoice): Emails a copy of the invoice. The recipient is the email you pass, or the order's customer email when omitted.
+
+## GraphQL API › Admin › Sales › Refunds
+
+- [Refunds](/api/graphql-api/admin/sales/refunds): The Refunds menu is the store-wide, **read-only** list of every refund that has been issued across all orders. It mirrors the admin **Sales → Refunds** screen…
+- [List Refunds (Datagrid)](/api/graphql-api/admin/sales/refunds/list): Cursor-paginated refunds datagrid. Every refund column plus the billing/shipping addresses are populated on each row — only line items and payment info are…
+
+## GraphQL API › Admin › Sales › Shipments
+
+- [Shipments](/api/graphql-api/admin/sales/shipments): The Shipments menu is the store-wide list of every shipment that has been created across all orders. It mirrors the admin **Sales → Shipments** screen.
+- [List Shipments (Datagrid)](/api/graphql-api/admin/sales/shipments/list): Cursor-paginated shipments datagrid. Every shipment column plus the order/customer context and both addresses is populated on each row — only the shipped line…
+
+## GraphQL API › Admin › Sales › Transactions
+
+- [List Transactions (Datagrid)](/api/graphql-api/admin/sales/transactions/list): Cursor-paginated transactions datagrid. Every transaction column plus the raw gateway data blob and the linked order summary is populated on each row.
+
+## GraphQL API › Admin › Settings › Channels
+
+- [Create Channel (GraphQL)](/api/graphql-api/admin/settings/channels/create): Multipart binary upload not yet supported via the API.
+- [Delete Channel (GraphQL)](/api/graphql-api/admin/settings/channels/delete): Refuses if last channel or `app.channel` default.
+- [Channel Detail (GraphQL)](/api/graphql-api/admin/settings/channels/detail)
+- [List Channels (GraphQL)](/api/graphql-api/admin/settings/channels/list)
+- [Update Channel (GraphQL)](/api/graphql-api/admin/settings/channels/update): Use the `translations` map for locale-nested attributes. Top-level scalars broadcast to every locale.
+
+## GraphQL API › Admin › Settings › Currencies
+
+- [Create Currency (GraphQL)](/api/graphql-api/admin/settings/currencies/create): Permission: `settings.currencies.create`.
+- [Delete Currency (GraphQL)](/api/graphql-api/admin/settings/currencies/delete): Refuses if last currency or any channel uses it as base.
+- [Currency Detail (GraphQL)](/api/graphql-api/admin/settings/currencies/detail)
+- [List Currencies (GraphQL)](/api/graphql-api/admin/settings/currencies/list)
+- [Mass Delete Currencies (GraphQL)](/api/graphql-api/admin/settings/currencies/mass-delete)
+- [Update Currency (GraphQL)](/api/graphql-api/admin/settings/currencies/update): `code` is immutable. Permission: `settings.currencies.edit`.
+
+## GraphQL API › Admin › Settings › Data Transfer Imports
+
+- [Index Import (GraphQL)](/api/graphql-api/admin/settings/data-transfer-imports): API Platform GraphQL naming yields `indexAdminSettingsDataTransferImportIndex`. Clients typically alias the field.
+- [Cancel Import (GraphQL)](/api/graphql-api/admin/settings/data-transfer-imports/cancel): API Platform GraphQL naming yields `cancelAdminSettingsDataTransferImportCancel`. Clients typically alias the field.
+- [Create Import (GraphQL)](/api/graphql-api/admin/settings/data-transfer-imports/create): Creating an import requires a file upload, which GraphQL cannot carry. The mutation returns an error directing you to the REST endpoint.
+- [Delete Import (GraphQL)](/api/graphql-api/admin/settings/data-transfer-imports/delete): The example uses an illustrative `id` value. Replace it with the id of a data transfer import that exists in your store — use the…
+- [Import Detail (GraphQL)](/api/graphql-api/admin/settings/data-transfer-imports/detail)
+- [Link Import (GraphQL)](/api/graphql-api/admin/settings/data-transfer-imports/link): API Platform GraphQL naming yields `linkAdminSettingsDataTransferImportLink`. Clients typically alias the field.
+- [List Imports (GraphQL)](/api/graphql-api/admin/settings/data-transfer-imports/list)
+- [Start Import (GraphQL)](/api/graphql-api/admin/settings/data-transfer-imports/start): API Platform GraphQL naming yields `startAdminSettingsDataTransferImportStart`. Clients typically alias the field.
+- [Import Stats (GraphQL)](/api/graphql-api/admin/settings/data-transfer-imports/stats): Returns the current progress of an import without advancing it. The counts (`processedRowsCount`, `invalidRowsCount`, `errorsCount`) reflect how far the import…
+- [Validate Import (GraphQL)](/api/graphql-api/admin/settings/data-transfer-imports/validate): API Platform GraphQL naming yields `validateAdminSettingsDataTransferImportValidate`. Clients typically alias the field.
+
+## GraphQL API › Admin › Settings › Exchange Rates
+
+- [Create Exchange Rate (GraphQL)](/api/graphql-api/admin/settings/exchange-rates/create): Permission: `settings.exchange_rates.create`.
+- [Delete Exchange Rate (GraphQL)](/api/graphql-api/admin/settings/exchange-rates/delete): The example uses an illustrative `id` value. Replace it with the id of a exchange rate that exists in your store — use the…
+- [Exchange Rate Detail (GraphQL)](/api/graphql-api/admin/settings/exchange-rates/detail)
+- [List Exchange Rates (GraphQL)](/api/graphql-api/admin/settings/exchange-rates/list)
+- [Mass Delete Exchange Rates (GraphQL)](/api/graphql-api/admin/settings/exchange-rates/mass-delete)
+- [Update Exchange Rate (GraphQL)](/api/graphql-api/admin/settings/exchange-rates/update): The example uses an illustrative `id` value. Replace it with the id of a exchange rate that exists in your store — use the…
+- [Update Rates (auto-sync) — GraphQL](/api/graphql-api/admin/settings/exchange-rates/update-rates): Refreshes every non-base currency's exchange rate from the store's configured external rate provider — the **Update Rates** action on the Exchange Rates screen.
+
+## GraphQL API › Admin › Settings › Inventory Sources
+
+- [Create Inventory Source (GraphQL)](/api/graphql-api/admin/settings/inventory-sources/create): Permission: `settings.inventory_sources.create`.
+- [Delete Inventory Source (GraphQL)](/api/graphql-api/admin/settings/inventory-sources/delete): Refuses if last source or referenced by `product_inventories`.
+- [Inventory Source Detail (GraphQL)](/api/graphql-api/admin/settings/inventory-sources/detail)
+- [List Inventory Sources (GraphQL)](/api/graphql-api/admin/settings/inventory-sources/list)
+- [Mass Delete Inventory Sources (GraphQL)](/api/graphql-api/admin/settings/inventory-sources/mass-delete)
+- [Update Inventory Source (GraphQL)](/api/graphql-api/admin/settings/inventory-sources/update): The example uses an illustrative `id` value. Replace it with the id of a inventory source that exists in your store — use the…
+
+## GraphQL API › Admin › Settings › Locales
+
+- [Create Locale (GraphQL)](/api/graphql-api/admin/settings/locales/create): Image upload deferred. Permission: `settings.locales.create`.
+- [Delete Locale (GraphQL)](/api/graphql-api/admin/settings/locales/delete): Refuses if last locale or used as a channel default.
+- [Locale Detail (GraphQL)](/api/graphql-api/admin/settings/locales/detail)
+- [List Locales (GraphQL)](/api/graphql-api/admin/settings/locales/list)
+- [Mass Delete Locales (GraphQL)](/api/graphql-api/admin/settings/locales/mass-delete)
+- [Update Locale (GraphQL)](/api/graphql-api/admin/settings/locales/update): The example uses an illustrative `id` value. Replace it with the id of a locale that exists in your store — use the [`adminSettingsLocales`](./list.md) query…
+
+## GraphQL API › Admin › Settings › Roles
+
+- [Create Role (GraphQL)](/api/graphql-api/admin/settings/roles/create)
+- [Delete Role (GraphQL)](/api/graphql-api/admin/settings/roles/delete): Refuses if in use by admins or last role.
+- [Role Detail (GraphQL)](/api/graphql-api/admin/settings/roles/detail)
+- [List Roles (GraphQL)](/api/graphql-api/admin/settings/roles/list)
+- [Update Role (GraphQL)](/api/graphql-api/admin/settings/roles/update)
+
+## GraphQL API › Admin › Settings › Tax Categories
+
+- [Create Tax Category (GraphQL)](/api/graphql-api/admin/settings/tax-categories/create)
+- [Delete Tax Category (GraphQL)](/api/graphql-api/admin/settings/tax-categories/delete): Refuses if tax rates still attached.
+- [Tax Category Detail (GraphQL)](/api/graphql-api/admin/settings/tax-categories/detail)
+- [List Tax Categories (GraphQL)](/api/graphql-api/admin/settings/tax-categories/list)
+- [Update Tax Category (GraphQL)](/api/graphql-api/admin/settings/tax-categories/update): The example uses an illustrative `id` value. Replace it with the id of a tax category that exists in your store — use the…
+
+## GraphQL API › Admin › Settings › Tax Rates
+
+- [Create Tax Rate (GraphQL)](/api/graphql-api/admin/settings/tax-rates/create): Pass `zip_code` when `is_zip=false`; pass `zip_from` + `zip_to` when `is_zip=true`.
+- [Delete Tax Rate (GraphQL)](/api/graphql-api/admin/settings/tax-rates/delete): The example uses an illustrative `id` value. Replace it with the id of a tax rate that exists in your store — use the [`adminSettingsTaxRates`](./list.md)…
+- [Tax Rate Detail (GraphQL)](/api/graphql-api/admin/settings/tax-rates/detail)
+- [List Tax Rates (GraphQL)](/api/graphql-api/admin/settings/tax-rates/list)
+- [Update Tax Rate (GraphQL)](/api/graphql-api/admin/settings/tax-rates/update)
+
+## GraphQL API › Admin › Settings › Themes
+
+- [Create Theme Customization (GraphQL)](/api/graphql-api/admin/settings/themes/create): Multipart binary upload not yet supported.
+- [Delete Theme Customization (GraphQL)](/api/graphql-api/admin/settings/themes/delete)
+- [Theme Customization Detail (GraphQL)](/api/graphql-api/admin/settings/themes/detail)
+- [List Theme Customizations (GraphQL)](/api/graphql-api/admin/settings/themes/list)
+- [Mass Delete Theme Customizations (GraphQL)](/api/graphql-api/admin/settings/themes/mass-delete)
+- [Mass Update Theme Status (GraphQL)](/api/graphql-api/admin/settings/themes/mass-update-status)
+- [Update Theme Customization (GraphQL)](/api/graphql-api/admin/settings/themes/update): The example uses an illustrative `id` value. Replace it with the id of a theme that exists in your store — use the [`adminSettingsThemes`](./list.md) query to…
+
+## GraphQL API › Admin › Settings › Users
+
+- [Create Admin User (GraphQL)](/api/graphql-api/admin/settings/users/create)
+- [Delete Admin User (GraphQL)](/api/graphql-api/admin/settings/users/delete): Refuses self-delete or last-admin.
+- [Delete My Account — GraphQL](/api/graphql-api/admin/settings/users/delete-self): Deletes the **authenticated** admin's own account after re-confirming their password.
+- [Admin User Detail (GraphQL)](/api/graphql-api/admin/settings/users/detail)
+- [List Admin Users (GraphQL)](/api/graphql-api/admin/settings/users/list)
+- [Update Admin User (GraphQL)](/api/graphql-api/admin/settings/users/update): The example uses an illustrative `id` value. Replace it with the id of a user that exists in your store — use the [`adminSettingsUsers`](./list.md) query to…
+
+## GraphQL API › Shop
+
+- [Shop API - Attribute Options](/api/graphql-api/shop/attribute-options): Retrieve attribute options for products in your Bagisto store, including color swatches, size options, and other product variants.
+- [Shop API - Cart](/api/graphql-api/shop/cart): Manage shopping cart operations for both guest and authenticated customers.
+- [Shop API - Categories](/api/graphql-api/shop/categories): Manage and retrieve product categories.
+- [Shop API - Checkout](/api/graphql-api/shop/checkout): Complete the checkout process and create orders.
+- [Shop API - Customers](/api/graphql-api/shop/customers): Manage customer accounts, authentication, and profiles.
+- [Shop API - Orders](/api/graphql-api/shop/orders): Retrieve and manage customer orders.
+- [Shop API - CMS Pages](/api/graphql-api/shop/pages): Retrieve CMS (Content Management System) pages from your Bagisto store, including their HTML content, SEO metadata, and locale-specific translations.
+- [Shop API - Reviews](/api/graphql-api/shop/reviews): Manage and view product reviews and ratings.
+
+## GraphQL API › Shop › Locales › Queries
+
+- [Get Locales](/api/graphql-api/shop/locales/queries/locales): Retrieve all store locales with basic information.
+- [Get Single Locale](/api/graphql-api/shop/locales/queries/single-locale): Retrieve a single locale by ID with basic information.
+
+## GraphQL API › Shop › Mutations
+
+- [Add to Cart](/api/graphql-api/shop/mutations/add-to-cart): Add a simple product to the cart. Simple products only require `productId` and `quantity` — no additional options are needed.
+- [Apply Coupon](/api/graphql-api/shop/mutations/apply-coupon): Apply a valid coupon code to reduce cart total.
+- [Cancel Customer Order](/api/graphql-api/shop/mutations/cancel-customer-order): Cancel a customer order that is in pending status, restoring inventory to stock.
+- [Create Cart](/api/graphql-api/shop/mutations/create-cart): Create a new shopping cart session.
+- [Create Compare Item](/api/graphql-api/shop/mutations/create-compare-item): Add a product to the authenticated customer's comparison list. The customer is auto-detected from the Bearer token.
+- [Create Contact Us](/api/graphql-api/shop/mutations/create-contact-us): Submit a contact us form with name, email, contact number, and message.
+- [Create Customer Address](/api/graphql-api/shop/mutations/create-customer-address): Create a new address for the authenticated customer.
+- [Create Order](/api/graphql-api/shop/mutations/create-order): Convert cart to order with billing and shipping information.
+- [Create Product Review](/api/graphql-api/shop/mutations/create-product-review): Create a basic product review with title, comment, and rating.
+- [Create Review](/api/graphql-api/shop/mutations/create-review): Submit a review and rating for a purchased product.
+- [Create Wishlist Item](/api/graphql-api/shop/mutations/create-wishlist): Add a product to the authenticated customer's wishlist.
+- [Customer Login](/api/graphql-api/shop/mutations/customer-login): Authenticate a customer with email and password.
+- [Customer Logout](/api/graphql-api/shop/mutations/customer-logout): Logout a customer and invalidate their authentication tokens.
+- [Customer Registration](/api/graphql-api/shop/mutations/customer-registration): Register a new customer account with email and password.
+- [Verify Customer Token](/api/graphql-api/shop/mutations/customer-verify-token): Verify a customer's email using a verification token.
+- [Delete All Compare Items](/api/graphql-api/shop/mutations/delete-all-compare-items): Remove all compare items for the authenticated customer. Returns the count of deleted items.
+- [Delete All Wishlist Items](/api/graphql-api/shop/mutations/delete-all-wishlists): Remove all wishlist items for the authenticated customer. Returns the count of deleted items.
+- [Delete Compare Item](/api/graphql-api/shop/mutations/delete-compare-item): Remove a product from the customer's comparison list by its IRI.
+- [Delete Customer Address](/api/graphql-api/shop/mutations/delete-customer-address): Delete a customer address.
+- [Delete Customer Account](/api/graphql-api/shop/mutations/delete-customer-profile): Permanently delete the authenticated customer's account.
+- [Delete Product Review](/api/graphql-api/shop/mutations/delete-product-review): Delete a product review by providing its ID in IRI format.
+- [Delete Wishlist Item](/api/graphql-api/shop/mutations/delete-wishlist): Delete a specific wishlist item by its IRI.
+- [Forgot Password](/api/graphql-api/shop/mutations/forgot-password): Request a password reset email for an account.
+- [Login Customer](/api/graphql-api/shop/mutations/login-customer): Authenticate customer with email and password.
+- [Merge Cart](/api/graphql-api/shop/mutations/merge-cart): Merge a guest cart into the authenticated customer's cart. Pass the guest cart's _id as cartId and the customer's Bearer token in the Authorization header.…
+- [Move Wishlist Item to Cart](/api/graphql-api/shop/mutations/move-wishlist-to-cart): Move a wishlist item to the shopping cart and remove it from the wishlist.
+- [Place Order](/api/graphql-api/shop/mutations/place-order): Create an order from a cart.
+- [Register Customer](/api/graphql-api/shop/mutations/register-customer): Create a new customer account with email and password.
+- [Remove Cart Item](/api/graphql-api/shop/mutations/remove-cart-item): Remove a specific item from the shopping cart.
+- [Remove Coupon](/api/graphql-api/shop/mutations/remove-coupon): Remove an applied coupon code from the cart.
+- [Reorder Customer Order](/api/graphql-api/shop/mutations/reorder-customer-order): Add all items from a previous order to the customer's cart.
+- [Set Checkout Address](/api/graphql-api/shop/mutations/set-billing-address): Set the billing address and use it as the shipping address too by setting useForShipping to true.
+- [Set Payment Method](/api/graphql-api/shop/mutations/set-payment-method): Set the payment method for a cart.
+- [Set Shipping Address](/api/graphql-api/shop/mutations/set-shipping-address): This page has been merged into [Set Checkout Address](/api/graphql-api/shop/mutations/set-billing-address).
+- [Set Shipping Method](/api/graphql-api/shop/mutations/set-shipping-method): Set the shipping method for a checkout.
+- [Toggle Wishlist Item](/api/graphql-api/shop/mutations/toggle-wishlist): Toggle a product in the wishlist. If the product is not in the wishlist, it gets added.
+- [Update Cart Item](/api/graphql-api/shop/mutations/update-cart-item): Modify the quantity of an item in the shopping cart.
+- [Update Customer Address](/api/graphql-api/shop/mutations/update-customer-address): Update an existing customer address.
+- [Update Customer Profile](/api/graphql-api/shop/mutations/update-customer-profile): Update the authenticated customer's profile information.
+- [Update Product Review](/api/graphql-api/shop/mutations/update-product-review): Update basic product review information like title and comment.
+
+## GraphQL API › Shop › Queries
+
+- [Categories](/api/graphql-api/shop/queries/categories): Retrieve categories with pagination using first and after arguments.
+- [Download Downloadable Product](/api/graphql-api/shop/queries/download-downloadable-product): Download the actual purchased downloadable product file. Requires customer authentication. Each download decrements the remaining download count.
+- [Download Invoice](/api/graphql-api/shop/queries/download-invoice): Download a customer invoice as PDF using the downloadUrl with Bearer token authentication.
+- [Get Checkout Addresses](/api/graphql-api/shop/queries/get-addresses): Retrieve the address applied to the current checkout session — either the guest-entered address or the authenticated customer's selected checkout address.
+- [Get Attribute](/api/graphql-api/shop/queries/get-attribute): Retrieve basic attribute information by ID.
+- [Get Attribute Options](/api/graphql-api/shop/queries/get-attribute-options): Retrieve basic attribute options with pagination.
+- [Get Attributes](/api/graphql-api/shop/queries/get-attributes): Retrieve a paginated list of all product attributes with basic information.
+- [Get Booking Slots](/api/graphql-api/shop/queries/get-booking-slots): |
+- [Get Cart](/api/graphql-api/shop/queries/get-cart): Retrieve the current shopping cart with all items.
+- [Get Category](/api/graphql-api/shop/queries/get-category): Retrieve basic information for a single category by its ID.
+- [Get Channel](/api/graphql-api/shop/queries/get-channel): Retrieve basic information for a single channel by its ID.
+- [Get Channels](/api/graphql-api/shop/queries/get-channels): Retrieve all store channels with basic information.
+- [Get Compare Item](/api/graphql-api/shop/queries/get-compare-item): Retrieve a specific compare item by its IRI.
+- [Get Compare Items](/api/graphql-api/shop/queries/get-compare-items): Retrieve paginated compare items for the authenticated customer using cursor-based pagination.
+- [Get Countries](/api/graphql-api/shop/queries/get-countries): Retrieve all available countries with basic information.
+- [Get Country](/api/graphql-api/shop/queries/get-country): Retrieve basic information for a single country by its ID.
+- [Get Country State](/api/graphql-api/shop/queries/get-country-state): Retrieve a single state by ID with basic information.
+- [Get Country States](/api/graphql-api/shop/queries/get-country-states): Retrieve all states for a specific country with basic information.
+- [Get Currencies](/api/graphql-api/shop/queries/get-currencies): Retrieve all store currencies with basic information.
+- [Get Single Currency](/api/graphql-api/shop/queries/get-currency): Retrieve a single currency by ID with basic information.
+- [Get Customer Addresses](/api/graphql-api/shop/queries/get-customer-addresses): Retrieve all saved addresses for the authenticated customer with cursor-based pagination.
+- [Get Customer Downloadable Product](/api/graphql-api/shop/queries/get-customer-downloadable-product): Retrieve details of a specific downloadable product purchase by its IRI identifier.
+- [Get Customer Downloadable Products](/api/graphql-api/shop/queries/get-customer-downloadable-products): Retrieve a paginated list of downloadable product purchases for the authenticated customer using cursor-based pagination.
+- [Get Customer Invoice](/api/graphql-api/shop/queries/get-customer-invoice): Retrieve details of a specific invoice by its IRI identifier.
+- [Get Customer Invoices](/api/graphql-api/shop/queries/get-customer-invoices): Retrieve the invoice for a specific order with detailed invoice line items. Each order has exactly one invoice.
+- [Get Customer Order](/api/graphql-api/shop/queries/get-customer-order): Retrieve details of a specific customer order by its IRI identifier.
+- [Get Customer Order Shipment](/api/graphql-api/shop/queries/get-customer-order-shipment): Retrieve details of a specific shipment by its ID with tracking information and line items.
+- [Get Customer Order Shipments](/api/graphql-api/shop/queries/get-customer-order-shipments): Retrieve all shipments for a specific customer order with tracking details and line items.
+- [Get Customer Orders](/api/graphql-api/shop/queries/get-customer-orders): Retrieve a paginated list of orders for the authenticated customer using cursor-based pagination.
+- [Get Customer Profile](/api/graphql-api/shop/queries/get-customer-profile): Retrieve the authenticated customer's profile information.
+- [Get Customer Review](/api/graphql-api/shop/queries/get-customer-review): Retrieve a specific product review by ID for the authenticated customer.
+- [Get Customer Reviews](/api/graphql-api/shop/queries/get-customer-reviews): Retrieve all product reviews submitted by the authenticated customer with pagination.
+- [Single CMS Page](/api/graphql-api/shop/queries/get-page): Retrieve a single CMS page by its IRI-style ID, including full translation details.
+- [CMS Pages](/api/graphql-api/shop/queries/get-pages): Retrieve all CMS pages with their translation details using cursor-based pagination.
+- [Get Payment Methods](/api/graphql-api/shop/queries/get-payment-methods): Retrieve available payment methods for checkout.
+- [Single Product](/api/graphql-api/shop/queries/get-product): Retrieve product information using the product ID. `isInWishlist` and `isInCompare` indicate whether the signed-in customer has this product in their wishlist…
+- [Product Reviews](/api/graphql-api/shop/queries/get-product-reviews): Retrieve product reviews with basic fields and pagination.
+- [Get Products](/api/graphql-api/shop/queries/get-products): For a signed-in customer, every product carries `isInWishlist` and `isInCompare`, so you can highlight the wishlist / compare icon directly on each product…
+- [Get Shipping Methods](/api/graphql-api/shop/queries/get-shipping-methods): Retrieve available shipping methods for checkout.
+- [Get Wishlist Item](/api/graphql-api/shop/queries/get-wishlist): Retrieve a specific wishlist item by its IRI.
+- [Get Wishlists](/api/graphql-api/shop/queries/get-wishlists): Retrieve paginated wishlist items for the authenticated customer using cursor-based pagination.
+- [Search Products](/api/graphql-api/shop/queries/search-products): Search products by query term with sorting and filtering options.
+- [Get Theme Customisation](/api/graphql-api/shop/queries/single-theme-customisation): Retrieve basic information for a single theme customisation by its ID.
+- [Theme Customizations](/api/graphql-api/shop/queries/theme-customisations): Retrieve theme customizations with basic fields and pagination.
+- [Tree Categories](/api/graphql-api/shop/queries/tree-categories): Retrieve root and child categories with their basic hierarchical structure.
+
+## Overview
+
+- [API Authentication Guide](/api/authentication): Bagisto provides multiple authentication methods to secure your API requests. Choose the authentication method based on the type of API access you need.
+- [Build with AI](/api/build-with-ai): This documentation is built to be consumed by AI coding agents (Claude Code, Cursor, Windsurf, and others) as well as humans. If you're building an app on the…
+- [GraphQL API](/api/graphql-api): Bagisto's GraphQL API delivers a modern, flexible approach to e-commerce data access. Built on Laravel Lighthouse, it provides efficient querying capabilities…
+- [Integration Guides](/api/integrations): Real-world examples and step-by-step guides for integrating Bagisto APIs into your application architecture. Choose the integration pattern that best fits your…
+- [Introduction](/api/introduction): Bagisto provides comprehensive API solutions to help developers integrate and extend the platform's functionality. Whether you're building mobile apps,…
+- [Rate Limiting](/api/rate-limiting): Bagisto APIs implement rate limiting to ensure fair usage and protect infrastructure from abuse. This guide explains how rate limiting works and how to handle…
+- [REST API](/api/rest-api): The Bagisto REST API provides a comprehensive RESTful interface to access all core Bagisto features. Built with Laravel Sanctum authentication, it offers…
+- [Setup & Configuration](/api/setup): Get the Bagisto API up and running in just a few minutes. Choose the installation method that works best for your setup.
+- [Storefront API Key Management Guide](/api/storefront-api-key-management-guide): Bagisto uses **API keys** to authenticate requests to your storefront and shop API endpoints. Think of your API key as a secure password that identifies your…
+
+## REST API
+
+- [Admin API](/api/rest-api/admin-coming-soon): The comprehensive Admin API documentation is coming soon. This section will include detailed guides for:
+- [Authentication](/api/rest-api/authentication): Complete guide to API authentication methods including customer authentication, admin authentication, and token management using the REST API.
+- [REST API Best Practices](/api/rest-api/best-practices): This guide provides best practices and recommendations for building robust, scalable, and secure applications using the Bagisto REST API.
+- [REST API - Introduction](/api/rest-api/introduction): Welcome to the Bagisto REST API documentation! This guide will help you build modern, efficient e-commerce applications using our comprehensive REST API…
+- [Product Management](/api/rest-api/products): Complete guide to product operations including CRUD operations, images, videos, reviews, bundles, and variants using the REST API.
+- [Shop API Resources](/api/rest-api/shop-resources): The Shop API provides comprehensive endpoints for customer-facing e-commerce operations. This resource covers product browsing, catalog management, and basic…
+- [Testing & Debugging REST APIs](/api/rest-api/testing-debugging): This guide covers how to test and debug Bagisto REST API endpoints using various tools and methods.
+
+## REST API › Admin
+
+- [Admin Authentication](/api/rest-api/admin/authentication): Every Admin REST call carries the admin Bearer token. This example reads the authenticated admin's own profile to confirm the token works.
+
+## REST API › Admin › Catalog
+
+- [List Products](/api/rest-api/admin/catalog/products): The canonical admin product listing — paginated, filterable, and sortable, mirroring the Bagisto admin Catalog → Products datagrid. Returns the full product…
+
+## REST API › Admin › Catalog › Attributes
+
+- [Attributes](/api/rest-api/admin/catalog/attributes): Attributes are the fields a product can carry — `name`, `price`, `color`, `material`, and so on. The Attributes menu lists, creates, edits, and deletes them,…
+- [Catalog Attribute Options — Create / Update / Delete](/api/rest-api/admin/catalog/attributes/attribute-options): Adds a new option to a `select`, `multiselect`, or `checkbox` attribute. Returns the full updated attribute detail.
+- [Catalog Attribute — Create](/api/rest-api/admin/catalog/attributes/attributes-create): Creates an attribute with optional translations and options (for select/multiselect/checkbox types). The `code` must be unique, pass the Code rule…
+- [Catalog Attribute — Delete](/api/rest-api/admin/catalog/attributes/attributes-delete): Deletes a user-defined attribute. Returns HTTP 403 for system attributes, HTTP 409 if the attribute is referenced by any attribute family.
+- [Catalog Attribute — Detail](/api/rest-api/admin/catalog/attributes/attributes-detail): Single attribute record including all locale translations and — for select/multiselect/checkbox types — all options, each with their own locale translations.
+- [Catalog Attributes — Datagrid Listing](/api/rest-api/admin/catalog/attributes/attributes-listing): Paginated, filterable, sortable attribute list mirroring the Bagisto admin Catalog → Attributes datagrid. Returns the standard `{ data, meta }` envelope.
+- [Catalog Attribute — Mass Delete](/api/rest-api/admin/catalog/attributes/attributes-mass-delete): Deletes a batch of user-defined attributes. If any ID in the batch belongs to a system attribute, the entire batch is rejected (HTTP 422). Non-existent IDs are…
+- [Catalog Attribute — Update](/api/rest-api/admin/catalog/attributes/attributes-update): Update an attribute. The `code` field cannot be changed. Changing `type` is refused when product attribute values exist. If `options` is supplied, the full set…
+
+## REST API › Admin › Catalog › Categories
+
+- [Categories](/api/rest-api/admin/catalog/categories): Categories are the storefront's browsing tree — the sections customers navigate and products are assigned to. The Categories menu lists them (flat or as a…
+- [Category — Create](/api/rest-api/admin/catalog/categories/categories-create): Mirrors Bagisto admin Catalog → Categories → Create. Validates slug (unique), name, position, attributes. `description` is required when `display_mode` is…
+- [Category — Delete](/api/rest-api/admin/catalog/categories/categories-delete): Refused with HTTP 400 if the category is the root (id=1) or referenced as `channels.root_category_id`.
+- [Catalog Category — Detail](/api/rest-api/admin/catalog/categories/categories-detail): Single category record including the full translations array (all locales present in the DB) and the list of filterable attribute IDs.
+- [Catalog Categories — Datagrid Listing](/api/rest-api/admin/catalog/categories/categories-listing): Paginated, filterable, sortable category list mirroring the Bagisto admin Catalog → Categories datagrid. Returns the standard `{ data, meta }` envelope.
+- [Category — Mass Delete](/api/rest-api/admin/catalog/categories/categories-mass-delete): Deletes a batch of categories. If any ID in the batch is non-deletable (root or a channel root), the entire batch is rejected (HTTP 400). Non-existent IDs are…
+- [Category — Mass Update Status](/api/rest-api/admin/catalog/categories/categories-mass-update-status): Sets the status of a batch of categories to the given value (0 or 1).
+- [Catalog Categories — Tree (Nested)](/api/rest-api/admin/catalog/categories/categories-tree): Full nested category tree. Returns a JSON array of root nodes, each carrying its full subtree under `children`. Supports optional locale, status, and rootId…
+- [Category — Update (and Move)](/api/rest-api/admin/catalog/categories/categories-update): Mirrors Bagisto admin Catalog → Categories → Edit. Validation is LOCALE-NESTED — `<locale>.slug`, `<locale>.name`, `<locale>.description` (when display_mode…
+
+## REST API › Admin › Catalog › Families
+
+- [Attribute Families](/api/rest-api/admin/catalog/families): An attribute family is the **template of fields a product carries**. Every product belongs to exactly one family, and the family decides which attributes (and…
+- [Attribute Family — Create](/api/rest-api/admin/catalog/families/families-create): Creates an attribute family with optional nested attribute groups and per-group `custom_attributes`. `code` must be unique and pass the Code rule.
+- [Attribute Family — Delete](/api/rest-api/admin/catalog/families/families-delete): Refuses with HTTP 400 if the family is the last one in the store, or if any product is still using it.
+- [Catalog Attribute Family — Detail](/api/rest-api/admin/catalog/families/families-detail): Single attribute family record including all attribute groups and — within each group — all associated attributes with their pivot position. Use this to…
+- [Catalog Attribute Families — Datagrid Listing](/api/rest-api/admin/catalog/families/families-listing): Paginated, filterable, sortable attribute family list mirroring the Bagisto admin Catalog → Attribute Families datagrid. Returns the standard `{ data, meta }`…
+- [Attribute Family — Update](/api/rest-api/admin/catalog/families/families-update): Update a family. Inside `attribute_groups`, items keyed by numeric id update existing groups; items keyed by `group_*` create new groups; omitted existing ids…
+
+## REST API › Admin › Catalog › Products
+
+- [Products](/api/rest-api/admin/catalog/products): The full Catalog → Products datagrid. Paginated { data, meta } envelope. Heavy relation blocks and a few EAV-derived fields are null on the listing…
+- [Catalog Product — Copy](/api/rest-api/admin/catalog/products/copy): Duplicates an existing product across all attribute_values, images, inventories, categories and customer_group_prices. Refuses configurable variants. Mirrors…
+- [Catalog Product — Create (step 1)](/api/rest-api/admin/catalog/products/create): Step-1 create for a simple product. Only sku, attribute_family_id and type are submitted; everything else (name, price, inventory, images) is added later via…
+- [Product Customer-Group Prices — Create](/api/rest-api/admin/catalog/products/customer-group-prices-create): Creates a new tier-price row. `customer_group_id: null` makes the price apply to every customer group. The combination `(qty, customer_group_id)` must be…
+- [Product Customer-Group Prices — Delete](/api/rest-api/admin/catalog/products/customer-group-prices-delete): Deletes a single customer-group price row.
+- [Product Customer-Group Prices — List](/api/rest-api/admin/catalog/products/customer-group-prices-list): Lists every customer-group price row attached to the product, in the standard admin `{ data, meta }` envelope.
+- [Product Customer-Group Prices — Update](/api/rest-api/admin/catalog/products/customer-group-prices-update): Partially updates the given tier-price row. The new `(qty, customer_group_id)` combination must remain unique for the product.
+- [Catalog Product — Delete](/api/rest-api/admin/catalog/products/delete): Deletes a catalog product. For configurable products, all variants cascade. No "refuse if in non-completed order" guard — mirrors Bagisto admin behaviour.
+- [Export Products](/api/rest-api/admin/catalog/products/export): Download the products datagrid as a CSV file — the same data the admin Catalog → Products "Export" button produces. Honours the same filters as the listing and…
+- [Product Images — Delete](/api/rest-api/admin/catalog/products/images-delete): Deletes the DB row and removes the file from public storage.
+- [Product Images — Reorder](/api/rest-api/admin/catalog/products/images-reorder): Updates the position of one or more existing images for a product. Each image ID must belong to the product or the request is rejected.
+- [Product Images — Upload](/api/rest-api/admin/catalog/products/images-upload): Multipart upload of a single product image. Allowed mime types — bmp, jpeg, jpg, png, webp.
+- [Product Inventories — List](/api/rest-api/admin/catalog/products/inventories-list): Returns one row per inventory_source that has a product_inventories entry for the product. The envelope `meta.totalQty` is the sum across all sources.
+- [Product Inventories — Bulk Update](/api/rest-api/admin/catalog/products/inventories-update): Mirrors Bagisto monolith `ProductController::updateInventories`. Sources passed with qty=0 are kept but zeroed-out; sources NOT in the payload are left…
+- [Add-Product Search (Create-Order)](/api/rest-api/admin/catalog/products/list): The slim product search behind the admin Create-Order "Add Product" modal. NOT the product listing — for the full product list with all columns and filters use…
+- [Catalog Products — Mass Delete](/api/rest-api/admin/catalog/products/mass-delete): Deletes a batch of catalog products in one call. Non-existent IDs are silently skipped. Mirrors Bagisto monolith `ProductController::massDestroy`.
+- [Catalog Products — Mass Update Status](/api/rest-api/admin/catalog/products/mass-update-status): Bulk-flips the `status` flag of a batch of products to either 0 (disabled) or 1 (enabled). Mirrors Bagisto monolith `ProductController::massUpdate` —…
+- [Catalog Product — Detail](/api/rest-api/admin/catalog/products/products-detail): Single catalog product record with all detail-level fields populated. Type-specific blocks (superAttributes/variants for configurable, bundleOptions for…
+- [Catalog Product — Update](/api/rest-api/admin/catalog/products/update): Partial update — send only the attribute codes you change. Every attribute on the product's family is editable by its code (name, url_key, price, status,…
+
+## REST API › Admin › Cms
+
+- [CMS Page — Create](/api/rest-api/admin/cms/pages-create): Mirrors Bagisto admin CMS → Pages → Create. Top-level translated fields (page_title, html_content, etc.) are broadcast to every locale by the PageRepository.
+- [CMS Page — Delete](/api/rest-api/admin/cms/pages-delete): Deletes a CMS page.
+- [CMS Page — Detail](/api/rest-api/admin/cms/pages-detail): Returns a single CMS page with the full html_content body, all per-locale translations, and assigned channels inlined.
+- [CMS Pages — List](/api/rest-api/admin/cms/pages-list): Paginated, filterable, sortable CMS pages list. Mirrors the admin CMS → Pages datagrid. htmlContent is detail-only (null here).
+- [CMS Pages — Mass Delete](/api/rest-api/admin/cms/pages-mass-delete): Deletes a batch of CMS pages. Non-existent IDs are silently skipped (mirrors monolith).
+- [CMS Page — Update](/api/rest-api/admin/cms/pages-update): Mirrors Bagisto admin CMS → Pages → Edit. Validation is LOCALE-NESTED — `<locale>.url_key`, `<locale>.page_title`, `<locale>.html_content` are required.…
+
+## REST API › Admin › Cms › Pages
+
+- [CMS Pages](/api/rest-api/admin/cms/pages): CMS Pages are **static storefront content pages** — About Us, Privacy Policy, custom landing pages, and the like. Each page is served on the storefront at its…
+- [Export CMS Pages](/api/rest-api/admin/cms/pages/export): Download the CMS pages datagrid as a CSV file — the same data the admin CMS → Pages "Export" button produces. Honours the same filters as the listing and…
+
+## REST API › Admin › Configuration
+
+- [Configuration (Admin)](/api/rest-api/admin/configuration): The admin **Configuration** screen edits Bagisto's store-wide settings — order
+- [Configuration Menu](/api/rest-api/admin/configuration/menu): Discover the fields under a slug (no values embedded).
+- [Configuration Update](/api/rest-api/admin/configuration/update): Bulk-upsert a code → value map under a slug. Returns the re-resolved values.
+- [Configuration Values](/api/rest-api/admin/configuration/values): Effective values for every field under sales.order_settings.
+
+## REST API › Admin › Customers
+
+- [Customer Active Cart Items](/api/rest-api/admin/customers/active-cart-items): Items in the customer's OWN active storefront cart (carts.is_active = 1) — the right-sidebar "Cart Items" panel on the Create-Order screen.
+- [Customer Addresses](/api/rest-api/admin/customers/addresses): All saved addresses for a customer — used by the Create-Order screen's billing / shipping picker.
+- [Create Draft Cart](/api/rest-api/admin/customers/create-draft-cart): Bootstrap an empty admin draft cart (`is_active = false`) for the given customer. Returns the `cartId` the admin uses for the rest of the Create-Order flow.
+- [Customer Recent Order Items](/api/rest-api/admin/customers/recent-order-items): Up to 5 most-recent distinct items the customer has ordered. Right-sidebar panel on the Create-Order screen.
+- [Customer Wishlist Items](/api/rest-api/admin/customers/wishlist-items): The customer's wishlist — the right-sidebar "Wishlist Items" panel on the Create-Order screen.
+
+## REST API › Admin › Customers › Addresses
+
+- [Create Customer Address](/api/rest-api/admin/customers/addresses/create): Create a new address under a customer. Setting `default_address=true` unsets the previous default for that customer.
+- [Delete Customer Address](/api/rest-api/admin/customers/addresses/delete): Same ownership guard as Update. Permission: `customers.addresses.delete`.
+- [Customer Address Detail](/api/rest-api/admin/customers/addresses/detail)
+- [Update Customer Address](/api/rest-api/admin/customers/addresses/update): If the path `customerId` doesn't match the address's `customer_id`, the request returns 403. This prevents cross-customer edits via fabricated URLs.
+
+## REST API › Admin › Customers › Gdpr
+
+- [Delete GDPR Request](/api/rest-api/admin/customers/gdpr/delete): Hard delete. Permission: `customers.gdpr_requests.delete`.
+- [GDPR Request Detail](/api/rest-api/admin/customers/gdpr/detail): The `gdpr_data_request` table is singular — there is **no** `revocation_message` column. Revocation reason rides on the free-form `message` field.
+- [Download GDPR Data Export](/api/rest-api/admin/customers/gdpr/download-data): Ad-hoc data dump (not bound to a GDPR request). Returns every table referencing the customer's id.
+- [List GDPR Requests](/api/rest-api/admin/customers/gdpr/list)
+- [Process GDPR Request](/api/rest-api/admin/customers/gdpr/process): Approves a pending request AND, for `type=delete`, cascades the customer delete via `CustomerRepository::delete`.
+- [Update GDPR Request](/api/rest-api/admin/customers/gdpr/update): Pure metadata write — status + message. Use the /process endpoint for the destructive cascade.
+
+## REST API › Admin › Customers › Groups
+
+- [Create Customer Group](/api/rest-api/admin/customers/groups/create): New groups are always created with `is_user_defined=1`. The API cannot create system groups.
+- [Delete Customer Group](/api/rest-api/admin/customers/groups/delete): - **System group** — refuses if `is_user_defined=0`.
+- [Customer Group Detail](/api/rest-api/admin/customers/groups/detail)
+- [List Customer Groups](/api/rest-api/admin/customers/groups/list): `customersCount` is detail-only — null on listing rows.
+- [Mass Delete Customer Groups](/api/rest-api/admin/customers/groups/mass-delete): System-group + in-use guards skip per-id with a reason. Empty `indices` → 422. Permission: `customers.groups.delete`.
+- [Update Customer Group](/api/rest-api/admin/customers/groups/update): Partial. `code` uniqueness excludes self.
+
+## REST API › Admin › Customers › Impersonate
+
+- [Impersonate Customer](/api/rest-api/admin/customers/impersonate/create): Returns a short-lived Sanctum customer token the admin can use to act as the customer.
+
+## REST API › Admin › Customers › Main
+
+- [Create Customer](/api/rest-api/admin/customers/main/create): Creates a new customer. When `send_password` is true (default) a random password is generated and emailed via…
+- [Delete Customer](/api/rest-api/admin/customers/main/delete): Refuses with HTTP 400 if the customer has any pending/processing orders.
+- [Customer Detail](/api/rest-api/admin/customers/main/detail): Eager-loads `group`, surfaces detail-only counters (`totalAddresses`, `totalOrders`, `totalAmountSpent`).
+- [List Customers (Datagrid)](/api/rest-api/admin/customers/main/list): DataGrid-parity listing. Returns slim rows; detail-only fields (`totalAddresses`, `totalOrders`, `totalAmountSpent`) are null on listing.
+- [Mass Delete Customers](/api/rest-api/admin/customers/main/mass-delete): Customers with active orders are skipped with a reason instead of aborting the batch.
+- [Mass Update Customer Status](/api/rest-api/admin/customers/main/mass-update-status): Sets `status` on every supplied customer. `value` must be `0` or `1`. Fires `customer.update.before/after` per row.
+- [Update Customer](/api/rest-api/admin/customers/main/update): Partial update. Email uniqueness excludes self.
+
+## REST API › Admin › Customers › Notes
+
+- [Add Customer Note](/api/rest-api/admin/customers/notes/create): Append-only — every POST inserts a new row into `customer_notes` (the legacy `customers.notes` text column was dropped in 2023).
+
+## REST API › Admin › Customers › Reviews
+
+- [Delete Review](/api/rest-api/admin/customers/reviews/delete): Fires `customer.review.delete.before/after`. Permission: `customers.reviews.delete`.
+- [Customer Review Detail](/api/rest-api/admin/customers/reviews/detail): Eager-loads product + customer + images. Each image has id/path/url.
+- [List Customer Reviews](/api/rest-api/admin/customers/reviews/list): Reviews are written from the storefront. The admin endpoints are moderation-only — list / detail / status-update / delete.
+- [Mass Delete Reviews](/api/rest-api/admin/customers/reviews/mass-delete): Empty `indices` → 422. Permission: `customers.reviews.delete`.
+- [Mass Update Review Status](/api/rest-api/admin/customers/reviews/mass-update-status): Body: `{ "indices": int[], "value": "pending"|"approved"|"disapproved" }`. `value` is a **string** (unlike Customers where it is `0|1`). Invalid `value` → 422.…
+- [Update Review Status](/api/rest-api/admin/customers/reviews/update): Status-only update. Other fields are silently ignored.
+
+## REST API › Admin › Dashboard
+
+- [Dashboard Statistics](/api/rest-api/admin/dashboard/stats): Headline KPIs for the top "Overall Details" cards — customers, orders, sales, average order value and unpaid-invoice total, each compared against the previous…
+
+## REST API › Admin › Marketing › Communications
+
+- [Create Marketing Campaign](/api/rest-api/admin/marketing/communications/campaigns-create): Permission: `marketing.communications.campaigns.create`.
+- [Delete Marketing Campaign](/api/rest-api/admin/marketing/communications/campaigns-delete): Permission: `marketing.communications.campaigns.delete`.
+- [Marketing Campaign Detail](/api/rest-api/admin/marketing/communications/campaigns-detail): Detail includes embedded `marketingTemplateName`, `marketingEventName`, `channelName`, and `customerGroupCode` (all null on listing rows).
+- [List Marketing Campaigns](/api/rest-api/admin/marketing/communications/campaigns-list): `page`, `per_page` (default 10, cap 50), `name`, `status`, `marketing_template_id`, `marketing_event_id`, `channel_id`, `customer_group_id`, `sort` (`id`,…
+- [Send Marketing Campaign](/api/rest-api/admin/marketing/communications/campaigns-send): Queues the campaign email for every subscriber in its customer group (or guest subscribers when the group code is `guest`).
+- [Update Marketing Campaign](/api/rest-api/admin/marketing/communications/campaigns-update): Permission: `marketing.communications.campaigns.edit`.
+- [Create Marketing Event](/api/rest-api/admin/marketing/communications/events-create): Permission: `marketing.communications.events.create`.
+- [Delete Marketing Event](/api/rest-api/admin/marketing/communications/events-delete): Permission: `marketing.communications.events.delete`.
+- [Marketing Event Detail](/api/rest-api/admin/marketing/communications/events-detail)
+- [List Marketing Events](/api/rest-api/admin/marketing/communications/events-list): `page`, `per_page` (default 10, cap 50), `name` (partial), `date_from`, `date_to`, `sort` (`id`, `name`, `date`), `order`.
+- [Update Marketing Event](/api/rest-api/admin/marketing/communications/events-update): Permission: `marketing.communications.events.edit`.
+- [Delete Subscription](/api/rest-api/admin/marketing/communications/subscribers-delete)
+- [Newsletter Subscriber Detail](/api/rest-api/admin/marketing/communications/subscribers-detail)
+- [List Newsletter Subscribers](/api/rest-api/admin/marketing/communications/subscribers-list): `page`, `per_page` (default 10, cap 50), `email` (partial), `channel_id`, `is_subscribed` (0/1), `sort` (`id`, `email`), `order`.
+- [Toggle Newsletter Subscription](/api/rest-api/admin/marketing/communications/subscribers-toggle): Sets `is_subscribed` for the subscriber row and mirrors the flag onto the linked customer (if any).
+- [Create Email Template](/api/rest-api/admin/marketing/communications/templates-create): Permission: `marketing.communications.email_templates.create`.
+- [Delete Email Template](/api/rest-api/admin/marketing/communications/templates-delete): Permission: `marketing.communications.email_templates.delete`.
+- [Email Template Detail](/api/rest-api/admin/marketing/communications/templates-detail)
+- [List Email Templates](/api/rest-api/admin/marketing/communications/templates-list): `page`, `per_page` (default 10, cap 50), `name` (partial), `status` (`active`/`inactive`/`draft`), `sort` (`id`, `name`), `order`.
+- [Update Email Template](/api/rest-api/admin/marketing/communications/templates-update): Permission: `marketing.communications.email_templates.edit`.
+
+## REST API › Admin › Marketing › Promotions
+
+- [Create Cart Rule Coupon](/api/rest-api/admin/marketing/promotions/cart-rule-coupons-create): Permission: `marketing.promotions.cart_rules.create`.
+- [Delete Cart Rule Coupon](/api/rest-api/admin/marketing/promotions/cart-rule-coupons-delete): Coupons not belonging to `{cartRuleId}` → 404.
+- [Bulk-Generate Cart Rule Coupons](/api/rest-api/admin/marketing/promotions/cart-rule-coupons-generate): Generates `coupon_qty` random codes of the given format and length, optionally with prefix/suffix. Inherits `usage_limit` / `usage_per_customer` / `expired_at`…
+- [List Cart Rule Coupons](/api/rest-api/admin/marketing/promotions/cart-rule-coupons-list): Lists coupons belonging to the parent cart rule. Cross-rule access → 404.
+- [Mass Delete Cart Rule Coupons](/api/rest-api/admin/marketing/promotions/cart-rule-coupons-mass-delete): IDs that don't belong to `{cartRuleId}` are silently skipped (cross-rule isolation).
+- [Copy Cart Rule](/api/rest-api/admin/marketing/promotions/cart-rules-copy): Duplicates an existing cart rule into a brand-new rule. This is the API equivalent of the **Copy** action on the cart rules listing.
+- [Create Cart Rule](/api/rest-api/admin/marketing/promotions/cart-rules-create): Permission: `marketing.promotions.cart_rules.create`.
+- [Delete Cart Rule](/api/rest-api/admin/marketing/promotions/cart-rules-delete): Permission: `marketing.promotions.cart_rules.delete`.
+- [Cart Rule Detail](/api/rest-api/admin/marketing/promotions/cart-rules-detail)
+- [List Cart Rules](/api/rest-api/admin/marketing/promotions/cart-rules-list): Each row carries `couponCode` — the rule's primary coupon code (`null` when the rule has no coupon).
+- [Mass Delete Cart Rules](/api/rest-api/admin/marketing/promotions/cart-rules-mass-delete): Non-existent IDs silently skipped.
+- [Update Cart Rule](/api/rest-api/admin/marketing/promotions/cart-rules-update): Permission: `marketing.promotions.cart_rules.edit`.
+- [Create Catalog Rule](/api/rest-api/admin/marketing/promotions/catalog-rules-create): Permission: `marketing.promotions.catalog_rules.create`.
+- [Delete Catalog Rule](/api/rest-api/admin/marketing/promotions/catalog-rules-delete): Permission: `marketing.promotions.catalog_rules.delete`.
+- [Catalog Rule Detail](/api/rest-api/admin/marketing/promotions/catalog-rules-detail)
+- [List Catalog Rules](/api/rest-api/admin/marketing/promotions/catalog-rules-list)
+- [Mass Delete Catalog Rules](/api/rest-api/admin/marketing/promotions/catalog-rules-mass-delete): Non-existent IDs are silently skipped. Empty `indices` → 422.
+- [Update Catalog Rule](/api/rest-api/admin/marketing/promotions/catalog-rules-update): Re-syncs `channels` + `customer_groups` pivots to the supplied lists.
+
+## REST API › Admin › Marketing › Search Seo
+
+- [Create Search Synonym](/api/rest-api/admin/marketing/search-seo/search-synonyms-create): Permission: `marketing.search_seo.search_synonyms.create`.
+- [Delete Search Synonym](/api/rest-api/admin/marketing/search-seo/search-synonyms-delete): Permission: `marketing.search_seo.search_synonyms.delete`.
+- [Search Synonym Detail](/api/rest-api/admin/marketing/search-seo/search-synonyms-detail)
+- [List Search Synonyms](/api/rest-api/admin/marketing/search-seo/search-synonyms-list): `page`, `per_page` (default 10, cap 50), `name` (partial), `terms` (partial), `sort` (`id`, `name`), `order`.
+- [Mass Delete Search Synonyms](/api/rest-api/admin/marketing/search-seo/search-synonyms-mass-delete): Non-existent IDs silently skipped.
+- [Update Search Synonym](/api/rest-api/admin/marketing/search-seo/search-synonyms-update): Permission: `marketing.search_seo.search_synonyms.edit`.
+- [Delete Search Term](/api/rest-api/admin/marketing/search-seo/search-terms-delete)
+- [Search Term Detail](/api/rest-api/admin/marketing/search-seo/search-terms-detail)
+- [List Search Terms](/api/rest-api/admin/marketing/search-seo/search-terms-list): `page`, `per_page` (default 10, cap 50), `term` (partial), `channel_id`, `locale`, `sort` (`id`, `term`, `uses`, `results`), `order`.
+- [Mass Delete Search Terms](/api/rest-api/admin/marketing/search-seo/search-terms-mass-delete): Non-existent IDs silently skipped.
+- [Update Search Term](/api/rest-api/admin/marketing/search-seo/search-terms-update): Admin can edit the term text and optional redirect URL. Counts (`uses` / `results`) are not editable.
+- [Create Sitemap](/api/rest-api/admin/marketing/search-seo/sitemaps-create): Creating the row does NOT build the XML files. Call `POST /api/admin/marketing/sitemaps/{id}/generate` to (re)build the XML.
+- [Delete Sitemap](/api/rest-api/admin/marketing/search-seo/sitemaps-delete): Removes the DB row and the generated XML files.
+- [Sitemap Detail](/api/rest-api/admin/marketing/search-seo/sitemaps-detail): Detail includes `generatedAt`, `indexFile`, and `generatedSitemaps` (the latter two are detail-only — null in listing rows).
+- [Regenerate Sitemap](/api/rest-api/admin/marketing/search-seo/sitemaps-generate): Walks every public Category / Product / Page and (re)writes the XML files under the public disk. Updates the sitemap row's `generated_at`, index file, and…
+- [List Sitemaps](/api/rest-api/admin/marketing/search-seo/sitemaps-list): `page`, `per_page` (default 10, cap 50), `file_name` (partial), `sort` (`id`, `file_name`), `order`.
+- [Update Sitemap](/api/rest-api/admin/marketing/search-seo/sitemaps-update): Updating `file_name` / `path` does NOT regenerate the XML. Call `POST /sitemaps/{id}/generate` to refresh.
+- [Create URL Rewrite](/api/rest-api/admin/marketing/search-seo/url-rewrites-create): Permission: `marketing.search_seo.url_rewrites.create`.
+- [Delete URL Rewrite](/api/rest-api/admin/marketing/search-seo/url-rewrites-delete): Permission: `marketing.search_seo.url_rewrites.delete`.
+- [URL Rewrite Detail](/api/rest-api/admin/marketing/search-seo/url-rewrites-detail)
+- [List URL Rewrites](/api/rest-api/admin/marketing/search-seo/url-rewrites-list): `page`, `per_page` (default 10, cap 50), `entity_type` (`product`/`category`/`cms_page`), `request_path` (partial), `redirect_type` (`301`/`302`), `locale`,…
+- [Mass Delete URL Rewrites](/api/rest-api/admin/marketing/search-seo/url-rewrites-mass-delete): Non-existent IDs silently skipped.
+- [Update URL Rewrite](/api/rest-api/admin/marketing/search-seo/url-rewrites-update): Permission: `marketing.search_seo.url_rewrites.edit`.
+
+## REST API › Admin › Profile
+
+- [Get Admin Profile](/api/rest-api/admin/profile/get-profile): Return the authenticated admin's profile. Requires the Bearer token in the Authorization header.
+
+## REST API › Admin › Reporting
+
+- [Reporting — Customers](/api/rest-api/admin/reporting/customers): `statistics` shape depends on the chosen `type`.
+- [Reporting — Overview](/api/rest-api/admin/reporting/overview): The Overview endpoint returns a single headline figure across the whole store for the chosen `type`. It is an API convenience aggregation — there is **no**…
+- [Reporting — Products](/api/rest-api/admin/reporting/products): `statistics` shape depends on the chosen `type`.
+- [Reporting — Sales](/api/rest-api/admin/reporting/sales): `statistics` payload is the raw helper aggregate keyed to the chosen `type`.
+
+## REST API › Admin › Sales
+
+- [Sales](/api/rest-api/admin/sales): The Sales section covers everything about an order after (and during) checkout — browsing and managing orders, building an order from the admin side, and the…
+
+## REST API › Admin › Sales › Bookings
+
+- [Bookings](/api/rest-api/admin/sales/bookings): The Bookings menu is a read-only list of booking lines produced by orders that contain a booking product. It mirrors the admin **Sales → Bookings** screen.…
+- [Booking Detail](/api/rest-api/admin/sales/bookings/detail): A single booking with its booking sub-type, time window, and the linked order / order-item summaries.
+- [Export Bookings](/api/rest-api/admin/sales/bookings/export): Download the bookings datagrid as a CSV file — the same data the admin Bookings "Export" button produces. Honours the same filters as the listing.
+- [List Bookings](/api/rest-api/admin/sales/bookings/list): One row per booking line. Every booking column plus the linked order / order-item summary is populated on each row.
+
+## REST API › Admin › Sales › Carts
+
+- [Add Item to Cart](/api/rest-api/admin/sales/carts/add-item): Add a product (any type) to the admin draft cart. Body keys mirror the storefront add-to-cart payload so configurable, bundle, grouped, and downloadable…
+- [Apply a Coupon](/api/rest-api/admin/sales/carts/apply-coupon): Apply a cart-rule coupon code to the draft cart and recollect totals. Returns 404 for an unknown / inactive code, 422 if the same coupon is already applied.
+- [Get Cart](/api/rest-api/admin/sales/carts/get-cart): Read an admin draft cart (items, totals, addresses, selected shipping/payment). Only `is_active = 0` (draft) carts are accessible; storefront carts return 403.
+- [List Payment Methods](/api/rest-api/admin/sales/carts/list-payment-methods): List the payment methods supported for the draft cart. Requires a shipping method to be selected first.
+- [List Shipping Methods](/api/rest-api/admin/sales/carts/list-shipping-methods): Returns the available shipping rates for a draft cart, flattened across carriers. Requires both addresses to already be saved on the cart.
+- [Remove Applied Coupon](/api/rest-api/admin/sales/carts/remove-coupon): Remove the currently-applied coupon (if any) from the draft cart and recollect totals. Idempotent.
+- [Remove a Cart Item](/api/rest-api/admin/sales/carts/remove-item): Remove a single line item from the draft cart. Body carries the cartItemId.
+- [Save Cart Addresses](/api/rest-api/admin/sales/carts/save-address): Set the billing (and shipping unless billing.useForShipping is true) addresses on the draft cart and recollect totals.
+- [Set Payment Method](/api/rest-api/admin/sales/carts/set-payment-method): Save the selected payment method on the draft cart and recollect totals.
+- [Set Shipping Method](/api/rest-api/admin/sales/carts/set-shipping-method): Save the selected shipping method on the draft cart and recollect totals.
+- [Update Cart Item Quantities](/api/rest-api/admin/sales/carts/update-items): Bulk-update line-item quantities. `qty` is a map of cart_item_id → new quantity.
+
+## REST API › Admin › Sales › Invoices
+
+- [Invoices](/api/rest-api/admin/sales/invoices): The Invoices menu is the store-wide list of every invoice that has been generated across all orders, plus the actions you can take on a single invoice. It…
+- [Export Invoices](/api/rest-api/admin/sales/invoices/export): Download the invoices datagrid as a CSV file — the same data the admin Invoices "Export" button produces. Honours the same filters as the listing.
+- [List Invoices](/api/rest-api/admin/sales/invoices/list): Paginated invoices listing. Every invoice column is populated on each row. Returns a `{ data, meta }` envelope.
+- [Mass Update Invoice Status](/api/rest-api/admin/sales/invoices/mass-update-status): Bulk-set the status of several invoices at once. A manual status override — it does not capture or reverse a payment.
+
+## REST API › Admin › Sales › Orders
+
+- [Orders](/api/rest-api/admin/sales/orders): The Orders menu is the heart of Sales: browse every order in the store and run every per-order action. From here you can view a single order in full, drive the…
+- [Add Order Comment](/api/rest-api/admin/sales/orders/add-comment): Add a comment to an order. When `customerNotified` is true, the customer is sent a notification email with the comment.
+- [Cancel Order](/api/rest-api/admin/sales/orders/cancel): Cancel every cancellable item on an order. Returns the updated `OrderDetail` so the client can refresh the order-view screen without a follow-up GET.
+- [Create Invoice](/api/rest-api/admin/sales/orders/create-invoice): Create an invoice for one or more order items. Quantity is validated against `qty_to_invoice`, and a per-SKU error is returned when the requested quantity…
+- [Create Refund](/api/rest-api/admin/sales/orders/create-refund): Refund one or more order items, with optional shipping refund and adjustment fee/refund. Quantity is validated against `qty_to_refund`, and the computed total…
+- [Create Shipment](/api/rest-api/admin/sales/orders/create-shipment): Ship one or more order items from a chosen inventory source. Quantity is validated against `qty_to_ship` and against the available inventory at the chosen…
+- [Export Orders](/api/rest-api/admin/sales/orders/export): Download the orders datagrid as a CSV file — the same data the admin Orders "Export" button produces. Honours the same filters as the listing.
+- [Get Invoice](/api/rest-api/admin/sales/orders/get-invoice): Fetch a single invoice with the full totals breakdown, order/customer context, billing & shipping addresses, and embedded line items.
+- [Get Refund](/api/rest-api/admin/sales/orders/get-refund): Fetch a single refund with the full totals breakdown (incl. adjustments), order/customer context, payment info, billing & shipping addresses, and embedded line…
+- [Get Shipment](/api/rest-api/admin/sales/orders/get-shipment): A single shipment — every column, the order/customer context, both addresses, and the shipped line items.
+- [List Order Comments](/api/rest-api/admin/sales/orders/list-comments): Cursor-friendly list of an order's comments, newest first. Wrapped in the standard `{ data, meta }` admin envelope.
+- [List Orders](/api/rest-api/admin/sales/orders/list-orders): Paginated, filterable list of all orders, returned in the { data, meta } envelope.
+- [Order Detail](/api/rest-api/admin/sales/orders/order-detail): Full order-view payload — every relation embedded inline.
+- [Place Order](/api/rest-api/admin/sales/orders/place-order): Finalise a fully prepared draft cart into a real order.
+- [Print Invoice (PDF)](/api/rest-api/admin/sales/orders/print-invoice): Downloads the invoice as an `application/pdf` binary attachment — the same PDF the admin panel produces.
+- [Refund Preview](/api/rest-api/admin/sales/orders/refund-preview): Computes refund totals (subtotal, discount, tax, shipping, grandTotal) for a hypothetical refund body without saving anything. Same body as Create Refund.
+- [Reorder](/api/rest-api/admin/sales/orders/reorder): Build a fresh admin draft cart from a previous order's items. Returns the new cart ID — the admin can then finalise the order in /admin/sales/orders/create.
+- [Send Duplicate Invoice](/api/rest-api/admin/sales/orders/send-duplicate-invoice): Emails a copy of the invoice. The recipient is the `email` you pass, or the order's customer email when omitted.
+
+## REST API › Admin › Sales › Refunds
+
+- [Refunds](/api/rest-api/admin/sales/refunds): The Refunds menu is the store-wide, **read-only** list of every refund that has been issued across all orders. It mirrors the admin **Sales → Refunds** screen…
+- [Export Refunds](/api/rest-api/admin/sales/refunds/export): Download the refunds datagrid as a CSV file — the same data the admin Refunds "Export" button produces. Honours the same filters as the listing.
+- [List Refunds](/api/rest-api/admin/sales/refunds/list): Paginated refunds listing. Every refund column + billing/shipping addresses are populated per row (line items are detail-only).
+
+## REST API › Admin › Sales › Shipments
+
+- [Shipments](/api/rest-api/admin/sales/shipments): The Shipments menu is the store-wide list of every shipment that has been created across all orders. It mirrors the admin **Sales → Shipments** screen.
+- [Export Shipments](/api/rest-api/admin/sales/shipments/export): Download the shipments datagrid as a CSV file — the same data the admin Shipments "Export" button produces. Honours the same filters as the listing.
+- [List Shipments (Datagrid)](/api/rest-api/admin/sales/shipments/list): One row per shipment. Every column plus the order/customer context and both addresses is populated on each row — only the shipped line items are detail-only.
+
+## REST API › Admin › Sales › Transactions
+
+- [Export Transactions](/api/rest-api/admin/sales/transactions/export): Download the transactions datagrid as a CSV file — the same data the admin Transactions "Export" button produces. Honours the same filters as the listing.
+- [List Transactions](/api/rest-api/admin/sales/transactions/list): One row per payment transaction. Every column plus the raw gateway data blob and the linked order summary is populated on each row.
+
+## REST API › Admin › Settings › Channels
+
+- [Create Channel](/api/rest-api/admin/settings/channels/create): - `code` — unique, alpha-dash.
+- [Delete Channel](/api/rest-api/admin/settings/channels/delete): - **Last channel** — refuses if this is the only channel left.
+- [Channel Detail](/api/rest-api/admin/settings/channels/detail)
+- [List Channels](/api/rest-api/admin/settings/channels/list)
+- [Update Channel](/api/rest-api/admin/settings/channels/update): Code/hostname uniqueness excludes self. Use `translations` map for locale-nested attributes (name, description, home_page_content, footer_content, seo_*,…
+
+## REST API › Admin › Settings › Currencies
+
+- [Create Currency](/api/rest-api/admin/settings/currencies/create): Fires `core.currency.create.before/after`. Permission: `settings.currencies.create`.
+- [Delete Currency](/api/rest-api/admin/settings/currencies/delete): - **Last currency** — refuses if this is the only currency left.
+- [Currency Detail](/api/rest-api/admin/settings/currencies/detail)
+- [List Currencies](/api/rest-api/admin/settings/currencies/list): `page`, `per_page` (default 10, cap 50), `code` (partial), `name` (partial), `symbol` (partial), `sort` (`id`, `code`, `name`), `order` (`asc`/`desc`).
+- [Mass Delete Currencies](/api/rest-api/admin/settings/currencies/mass-delete): Rejects with HTTP 400 if the batch would empty the currencies table OR if any id is a channel `base_currency_id`. Non-existent IDs silently skipped. Empty…
+- [Update Currency](/api/rest-api/admin/settings/currencies/update): Mirrors the monolith — `code` is silently dropped from the update payload. Only `name`, `symbol`, separators, and `currency_position` are editable.
+
+## REST API › Admin › Settings › Data Transfer Imports
+
+- [Index Import](/api/rest-api/admin/settings/data-transfer-imports): Runs the indexing stage of the import. This is the final stage, following the linking stage (see [Link](./link.md)), and makes the imported records searchable…
+- [Cancel Import](/api/rest-api/admin/settings/data-transfer-imports/cancel): Sets state to `cancelled`.
+- [Create Import](/api/rest-api/admin/settings/data-transfer-imports/create): Uploads a source file and creates a new import. The import is created in the `pending` state, ready to be validated and processed.
+- [Delete Import](/api/rest-api/admin/settings/data-transfer-imports/delete): Removes the DB row and best-effort deletes the underlying upload file from storage. Permission: `settings.data_transfer.imports.delete`.
+- [Import Detail](/api/rest-api/admin/settings/data-transfer-imports/detail)
+- [Download Source File](/api/rest-api/admin/settings/data-transfer-imports/download): Downloads the source file that was uploaded for this import. The response is the raw file as a binary attachment — send `Accept: application/octet-stream` and…
+- [Download Error Report](/api/rest-api/admin/settings/data-transfer-imports/download-error-report): Downloads the error report generated for an import. The report lists the rows that failed validation or processing along with the reason. The response is a…
+- [Download Sample Template](/api/rest-api/admin/settings/data-transfer-imports/download-sample): Downloads a ready-made sample template for an importer type, so you can see the expected columns before preparing your own file.
+- [Link Import](/api/rest-api/admin/settings/data-transfer-imports/link): Runs the post-process linking stage of the import. This follows the processing stage (see [Start](./start.md)) and resolves relationships between the imported…
+- [List Data Transfer Imports](/api/rest-api/admin/settings/data-transfer-imports/list): Filters: `code` (entity type), `type` (synonym for code), `action`, `state`, `created_at_from`, `created_at_to`. Sort: `id` (default desc), `state`,…
+- [Start Import](/api/rest-api/admin/settings/data-transfer-imports/start): Processes the next pending batch of rows. Call this repeatedly until there are no pending batches left — each call advances the import and returns progress in…
+- [Import Stats](/api/rest-api/admin/settings/data-transfer-imports/stats): Returns the current progress of an import without advancing it. Use the optional `state` query parameter (e.g. `processed`) to scope the counts to a particular…
+- [Update Import](/api/rest-api/admin/settings/data-transfer-imports/update): Re-saves an import's configuration. The import is reset back to `pending` and any earlier processing counts and error report are cleared. The `{id}` is the…
+- [Validate Import](/api/rest-api/admin/settings/data-transfer-imports/validate): Runs validation over the uploaded file without importing any data. This is the second step of the import lifecycle (after the import is created). The `{id}` is…
+
+## REST API › Admin › Settings › Exchange Rates
+
+- [Create Exchange Rate](/api/rest-api/admin/settings/exchange-rates/create): There is **no** `source_currency` column. The source is the channel's base currency; only the target/rate pair is stored.
+- [Delete Exchange Rate](/api/rest-api/admin/settings/exchange-rates/delete): Returns 200 + message. Permission: `settings.exchange_rates.delete`.
+- [Exchange Rate Detail](/api/rest-api/admin/settings/exchange-rates/detail)
+- [List Exchange Rates](/api/rest-api/admin/settings/exchange-rates/list): Joins `currency_exchange_rates × currencies` so each row carries `targetCurrencyCode` + `targetCurrencyName` inline. Filters: `target_currency`,…
+- [Mass Delete Exchange Rates](/api/rest-api/admin/settings/exchange-rates/mass-delete): Non-existent IDs silently skipped. Empty `indices` → 422. Permission: `settings.exchange_rates.delete`.
+- [Update Exchange Rate](/api/rest-api/admin/settings/exchange-rates/update): Partial-update friendly. Composite-uniqueness excludes self. Permission: `settings.exchange_rates.edit`.
+- [Update Rates (auto-sync)](/api/rest-api/admin/settings/exchange-rates/update-rates): Refreshes every non-base currency's exchange rate from the store's configured external rate provider — the API equivalent of the **Update Rates** button on the…
+
+## REST API › Admin › Settings › Inventory Sources
+
+- [Create Inventory Source](/api/rest-api/admin/settings/inventory-sources/create): Required: `code` (unique alpha-dash), `name`, `contact_name`, `contact_number`, `country`, `state`, `city`, `street`, `postcode`. Optional: `description`,…
+- [Delete Inventory Source](/api/rest-api/admin/settings/inventory-sources/delete): - **Last source** — refuses if this is the only inventory source left (parity with monolith).
+- [Inventory Source Detail](/api/rest-api/admin/settings/inventory-sources/detail)
+- [List Inventory Sources](/api/rest-api/admin/settings/inventory-sources/list): Filters: `code`, `name` (partial), `status` (0/1), `country`. Sort: `id`, `code`, `name`, `priority`, `status`.
+- [Mass Delete Inventory Sources](/api/rest-api/admin/settings/inventory-sources/mass-delete): Pre-validates the whole batch: 400 if delete would leave zero sources OR if any id is referenced by `product_inventories`. Empty `indices` → 422.
+- [Update Inventory Source](/api/rest-api/admin/settings/inventory-sources/update): Partial. `code` uniqueness excludes self. Permission: `settings.inventory_sources.edit`.
+
+## REST API › Admin › Settings › Locales
+
+- [Create Locale](/api/rest-api/admin/settings/locales/create): `logo_path` is accepted only as a path string. Multipart binary upload for locale logos is **not yet supported via the API** — use the admin panel for now.…
+- [Delete Locale](/api/rest-api/admin/settings/locales/delete): - **Last locale** — refuses if this is the only locale left.
+- [Locale Detail](/api/rest-api/admin/settings/locales/detail)
+- [List Locales](/api/rest-api/admin/settings/locales/list): Filters: `code` (partial), `name` (partial), `direction` (`ltr`/`rtl`). Sort: `id`, `code`, `name`.
+- [Mass Delete Locales](/api/rest-api/admin/settings/locales/mass-delete): Per-id guards (last-locale, channel-default) skip with a reason in `skipped`. Empty `indices` → 422. Permission: `settings.locales.delete`.
+- [Update Locale](/api/rest-api/admin/settings/locales/update): Partial. `code` uniqueness excludes self. Image upload deferred. Permission: `settings.locales.edit`.
+
+## REST API › Admin › Settings › Roles
+
+- [Create Role](/api/rest-api/admin/settings/roles/create): Permission: `settings.roles.create`.
+- [Delete Role](/api/rest-api/admin/settings/roles/delete): - **In use** — refuses if any admin (`admins.role_id`) references this role.
+- [Role Detail](/api/rest-api/admin/settings/roles/detail)
+- [List Roles](/api/rest-api/admin/settings/roles/list)
+- [Update Role](/api/rest-api/admin/settings/roles/update)
+
+## REST API › Admin › Settings › Tax Categories
+
+- [Create Tax Category](/api/rest-api/admin/settings/tax-categories/create): Required: `code` (unique), `name`, `description`, `taxrates` (array of tax_rate ids). Permission: `settings.taxes.tax_categories.create`.
+- [Delete Tax Category](/api/rest-api/admin/settings/tax-categories/delete): Mirrors monolith `TaxCategoryController::destroy` — refuses with HTTP 400 if any tax_rates are still attached to the category.
+- [Tax Category Detail](/api/rest-api/admin/settings/tax-categories/detail)
+- [List Tax Categories](/api/rest-api/admin/settings/tax-categories/list)
+- [Update Tax Category](/api/rest-api/admin/settings/tax-categories/update): Code uniqueness excludes self. Re-syncs the `tax_rates` pivot to the supplied list.
+
+## REST API › Admin › Settings › Tax Rates
+
+- [Create Tax Rate](/api/rest-api/admin/settings/tax-rates/create): Body fields differ by `is_zip`:
+- [Delete Tax Rate](/api/rest-api/admin/settings/tax-rates/delete): Tax category pivot cascades automatically. Permission: `settings.taxes.tax_rates.delete`.
+- [Tax Rate Detail](/api/rest-api/admin/settings/tax-rates/detail)
+- [Export Tax Rates (CSV)](/api/rest-api/admin/settings/tax-rates/export): Downloads the Tax Rates list as a CSV file — the API equivalent of the **Export** button on the Tax Rates screen.
+- [List Tax Rates](/api/rest-api/admin/settings/tax-rates/list)
+- [Update Tax Rate](/api/rest-api/admin/settings/tax-rates/update): Partial. `identifier` uniqueness excludes self. Permission: `settings.taxes.tax_rates.edit`.
+
+## REST API › Admin › Settings › Themes
+
+- [Create Theme Customization (Step 1)](/api/rest-api/admin/settings/themes/create): Step-1: name, type, sort_order, channel_id, theme_code. Per-locale `options` are configured via PUT.
+- [Delete Theme Customization](/api/rest-api/admin/settings/themes/delete): Permission: `settings.themes.delete`.
+- [Theme Customization Detail](/api/rest-api/admin/settings/themes/detail)
+- [List Theme Customizations](/api/rest-api/admin/settings/themes/list)
+- [Mass Delete Theme Customizations](/api/rest-api/admin/settings/themes/mass-delete): Empty indices → 422.
+- [Mass Update Theme Status](/api/rest-api/admin/settings/themes/mass-update-status): Body: `{ indices: int[], value: 0|1 }`.
+- [Update Theme Customization](/api/rest-api/admin/settings/themes/update): Pass `locale` + `options` to write per-locale options. Permission: `settings.themes.edit`.
+
+## REST API › Admin › Settings › Users
+
+- [Create Admin User](/api/rest-api/admin/settings/users/create): Required: `name`, `email` (unique), `password` (+ `password_confirmation`), `role_id`. Optional: `status` (`0`/`1`).
+- [Delete Admin User](/api/rest-api/admin/settings/users/delete): - **Self-delete** — refuses if the caller is deleting themselves.
+- [Delete My Account](/api/rest-api/admin/settings/users/delete-self): Deletes the **authenticated** admin's own account after re-confirming their password — the API equivalent of the "delete my account" action on the admin…
+- [Admin User Detail](/api/rest-api/admin/settings/users/detail)
+- [List Admin Users](/api/rest-api/admin/settings/users/list)
+- [Update Admin User](/api/rest-api/admin/settings/users/update): Partial. Permission: `settings.users.edit`.
+
+## REST API › Shop
+
+- [Cart & Checkout](/api/rest-api/shop/cart-checkout): Complete guide to shopping cart management and checkout operations using the REST API. This section covers cart creation, item management, address handling,…
+- [Customer Management](/api/rest-api/shop/customers): Complete guide to customer operations including registration, authentication, profile management, and address management using the REST API.
+
+## REST API › Shop › Attributes
+
+- [Attribute Options](/api/rest-api/shop/attributes/get-attribute-options): Retrieve a paginated, flat list of every attribute option in the system.
+- [Attribute Translations](/api/rest-api/shop/attributes/get-attribute-translations): Retrieve a paginated, flat list of attribute translations across all locales.
+- [Attributes](/api/rest-api/shop/attributes/get-attributes): Retrieve a paginated list of product attributes.
+
+## REST API › Shop › Cart
+
+- [Add to Cart](/api/rest-api/shop/cart/add-to-cart): Add a simple or virtual product. Only productId and quantity are needed.
+- [Apply Coupon](/api/rest-api/shop/cart/apply-coupon): Apply a discount coupon code to the shopping cart.
+- [Create Cart](/api/rest-api/shop/cart/create-cart): Create a new shopping cart.
+- [Get Cart](/api/rest-api/shop/cart/get-cart): Retrieve the current shopping cart with items.
+- [Remove Cart Item](/api/rest-api/shop/cart/remove-cart-item): Remove a product from the shopping cart.
+- [Remove Coupon](/api/rest-api/shop/cart/remove-coupon): Remove a discount coupon code from the shopping cart.
+- [Update Cart Item](/api/rest-api/shop/cart/update-cart-item): Update quantity or attributes of an item in cart.
+
+## REST API › Shop › Categories
+
+- [Categories](/api/rest-api/shop/categories/get-categories): Retrieve a paginated, flat list of active categories with optional parent filtering.
+- [Get Category Tree](/api/rest-api/shop/categories/get-category-tree): Retrieve the active category tree as a nested structure, scoped to a parent.
+
+## REST API › Shop › Channels
+
+- [Channel Translations](/api/rest-api/shop/channels/get-channel-translations): Retrieve a paginated, flat list of channel translations across all locales.
+- [Channels](/api/rest-api/shop/channels/get-channels): Retrieve a paginated list of store channels.
+
+## REST API › Shop › Checkout
+
+- [Get Checkout Addresses](/api/rest-api/shop/checkout/get-addresses): Retrieve the guest / authenticated customer's saved checkout addresses to select as shipping or billing address during checkout.
+- [Get Payment Methods](/api/rest-api/shop/checkout/get-payment-methods): Retrieve available payment methods for checkout.
+- [Get Shipping Methods](/api/rest-api/shop/checkout/get-shipping-methods): Retrieve available shipping methods for checkout.
+- [Place Order](/api/rest-api/shop/checkout/place-order): Create an order from the cart.
+- [Set Billing Address](/api/rest-api/shop/checkout/set-billing-address): Set the billing address for checkout.
+- [Set Payment Method](/api/rest-api/shop/checkout/set-payment-method): Select a payment method for the order.
+- [Set Shipping Address](/api/rest-api/shop/checkout/set-shipping-address): Set the shipping address for checkout.
+- [Set Shipping Method](/api/rest-api/shop/checkout/set-shipping-method): Select a shipping method for the order.
+
+## REST API › Shop › Countries
+
+- [Countries](/api/rest-api/shop/countries/get-countries): Retrieve a paginated list of countries with their inline translations.
+- [Country States](/api/rest-api/shop/countries/get-country-states): Retrieve every state for a single country. Recommended for country/state cascade pickers.
+
+## REST API › Shop › Customer Downloadable Products
+
+- [Get Customer Downloadable Product](/api/rest-api/shop/customer-downloadable-products/get-customer-downloadable-product): Retrieve details of a specific downloadable product purchase by its ID.
+- [Get Customer Downloadable Products](/api/rest-api/shop/customer-downloadable-products/get-customer-downloadable-products): Retrieve all downloadable product purchases for the authenticated customer.
+
+## REST API › Shop › Customer Invoices
+
+- [Download Customer Invoice PDF](/api/rest-api/shop/customer-invoices/download-customer-invoice-pdf): Download an invoice as a PDF file.
+- [Get Customer Invoice](/api/rest-api/shop/customer-invoices/get-customer-invoice): Retrieve details of a specific customer invoice by ID.
+- [Get Customer Invoices](/api/rest-api/shop/customer-invoices/get-customer-invoices): Retrieve all invoices for the authenticated customer's orders.
+
+## REST API › Shop › Customer Orders
+
+- [Get Customer Order](/api/rest-api/shop/customer-orders/get-customer-order): Retrieve details of a specific customer order by ID.
+- [Get Customer Orders](/api/rest-api/shop/customer-orders/get-customer-orders): Retrieve all orders for the authenticated customer.
+
+## REST API › Shop › Customer Reviews
+
+- [Get Customer Review](/api/rest-api/shop/customer-reviews/get-customer-review): Retrieve a specific product review by ID for the authenticated customer.
+- [Get Customer Reviews](/api/rest-api/shop/customer-reviews/get-customer-reviews): Retrieve all product reviews submitted by the authenticated customer.
+
+## REST API › Shop › Customers
+
+- [Change Password](/api/rest-api/shop/customers/change-password): A logged-in customer changes their password by supplying the current password plus a new password and its confirmation.
+- [Create Customer Address](/api/rest-api/shop/customers/create-customer-address): Add a new address to the customer's address book.
+- [Customer Login](/api/rest-api/shop/customers/customer-login): Authenticate a customer with email and password to get a Bearer token for subsequent requests.
+- [Customer Logout](/api/rest-api/shop/customers/customer-logout): End the customer's authenticated session.
+- [Register Customer](/api/rest-api/shop/customers/customer-registration): Create a new customer account with complete profile information.
+- [Verify Customer Token](/api/rest-api/shop/customers/customer-verify-token): Verify if the customer authentication token is still valid.
+- [Delete Customer Address](/api/rest-api/shop/customers/delete-customer-address): Remove an address from the customer's address book.
+- [Delete Customer Profile](/api/rest-api/shop/customers/delete-customer-profile): Delete the authenticated customer's account.
+- [Forgot Password](/api/rest-api/shop/customers/forgot-password): Request a password reset email.
+- [Get Customer Addresses](/api/rest-api/shop/customers/get-customer-addresses): Retrieve all saved addresses for the authenticated customer.
+- [Get Customer Orders](/api/rest-api/shop/customers/get-customer-orders): Retrieve all orders for the authenticated customer.
+- [Get Customer Profile](/api/rest-api/shop/customers/get-customer-profile): Retrieve the authenticated customer's profile information.
+- [Update Customer Address](/api/rest-api/shop/customers/update-customer-address): Update an existing customer address.
+- [Update Customer Profile](/api/rest-api/shop/customers/update-customer-profile): Update the authenticated customer's profile information.
+
+## REST API › Shop › Customers › Mutations
+
+- [Register Customer](/api/rest-api/shop/customers/mutations/register-customer): Create a new customer account.
+
+## REST API › Shop › Locales
+
+- [Get All Locales](/api/rest-api/shop/locales/get-locales): Retrieve all available language locales in the store.
+- [Get Single Locale](/api/rest-api/shop/locales/get-single-locale): Retrieve detailed information for a specific language locale.
+- [Get Locales](/api/rest-api/shop/locales/list): Retrieve all store locales with basic information.
+- [Get Single Locale](/api/rest-api/shop/locales/single): Retrieve a single locale by ID with basic information.
+
+## REST API › Shop › Mutations
+
+- [Add Product to Cart](/api/rest-api/shop/mutations/add-to-cart): Add a simple product with quantity to the shopping cart.
+- [Create Cart](/api/rest-api/shop/mutations/create-cart): Generate a new shopping cart token for guest users.
+
+## REST API › Shop › Product Reviews
+
+- [Create Product Review](/api/rest-api/shop/product-reviews/create-product-review): Create a new product review or rating.
+- [Delete Product Review](/api/rest-api/shop/product-reviews/delete-product-review): Delete an existing product review.
+- [Get Product Review](/api/rest-api/shop/product-reviews/get-product-review): Retrieve detailed information for a specific product review.
+- [Get Product Reviews](/api/rest-api/shop/product-reviews/get-product-reviews): Retrieve paginated list of reviews for a product.
+- [Update Product Review](/api/rest-api/shop/product-reviews/update-product-review): Update an existing product review.
+
+## REST API › Shop › Products
+
+- [Booking Slots](/api/rest-api/shop/products/get-booking-slots): |
+- [Single Product](/api/rest-api/shop/products/get-product): PDP-ready document for a `simple` product. All relations are inlined — no follow-up requests required. `isInWishlist` / `isInCompare` reflect the signed-in…
+- [Products](/api/rest-api/shop/products/get-products): Default paginated list — no filters, default sort, page 1, 30 items.
+- [Product Sub-Resources (`Product` tag)](/api/rest-api/shop/products/product-subresources): |
+- [Product Type Sub-Resources (`Product Types` tag)](/api/rest-api/shop/products/product-type-subresources): |
+- [Search Products](/api/rest-api/shop/products/search-product): Use `?query=` to match against product SKU and name.
+
+## REST API › Shop › Queries
+
+- [Get Product Details](/api/rest-api/shop/queries/get-product): Retrieve detailed information for a specific product.
+- [List Products](/api/rest-api/shop/queries/get-products): Retrieve paginated list of all products from the catalog.
+
+## REST API › Shop › Theme Customizations
+
+- [Theme Customizations](/api/rest-api/shop/theme-customizations/get-theme-customizations): Retrieve a paginated list of every theme customization (carousels, footer links, static content blocks, …).
+
+## Recipes
+
+- [Recipes](/api/recipes): End-to-end walkthroughs that chain real Bagisto API calls into a working flow. Each recipe lists the steps in order and links the endpoint page backing every…
+- [Recipe: Admin Create-Order Flow](/api/recipes/admin-create-order-flow): Place an order for a customer from the admin side — the API equivalent of the admin panel's **Create Order** screen. Every request carries the admin…
+- [Recipe: Build a Storefront](/api/recipes/build-a-storefront): A storefront on the Shop API, from browsing to a placed order. Every request carries the `X-STOREFRONT-KEY` header; customer-scoped steps also carry the…
+- [Recipe: Build an Admin Dashboard](/api/recipes/build-an-admin-dashboard): An admin orders dashboard on the Admin API. Every request carries a pre-issued admin Integration token:
+
