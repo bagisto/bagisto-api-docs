@@ -3,22 +3,42 @@ outline: false
 examples:
   - id: admin-cancel-order
     title: Cancel Order
-    description: Cancel every cancellable item on an order. Returns the updated `OrderDetail`.
+    description: Cancel every cancellable item on an order. Returns the updated order summary.
     query: |
       mutation CancelOrder($input: createAdminCancelOrderInput!) {
         createAdminCancelOrder(input: $input) {
-          adminCancelOrder { id }
+          adminCancelOrder {
+            id
+            orderId
+            incrementId
+            status
+            statusLabel
+            grandTotal
+            success
+            message
+          }
         }
       }
     variables: |
       {
-        "input": { "orderId": 2392 }
+        "input": {
+          "orderId": 2392
+        }
       }
     response: |
       {
         "data": {
           "createAdminCancelOrder": {
-            "adminCancelOrder": { "id": "/api/admin/cancel-orders/2392" }
+            "adminCancelOrder": {
+              "id": "/api/admin/admin_cancel_orders/2392",
+              "orderId": 2392,
+              "incrementId": "2392",
+              "status": "canceled",
+              "statusLabel": "Canceled",
+              "grandTotal": 219,
+              "success": true,
+              "message": "Order canceled successfully."
+            }
           }
         }
       }
@@ -28,9 +48,15 @@ examples:
 
 Cancels every cancellable item on an order. This is the same action as the
 **Cancel** button on the admin order-view screen, with the same eligibility
-gates as REST. The mutation output is the updated order detail shape (use the
-REST `GET /api/admin/orders/{id}` endpoint to refetch the full detail payload if
-needed).
+gates as REST.
+
+::: tip GraphQL returns a summary; REST returns the full detail
+The GraphQL mutation returns a slim order **summary** (`orderId`, `incrementId`,
+`status`, `statusLabel`, `grandTotal`, `success`, `message`). The REST endpoint
+(`POST /api/admin/orders/{id}/cancel`) returns the **full** updated order-detail
+payload. Use REST, or re-query `adminOrderDetail`, when you need the complete
+order after cancelling.
+:::
 
 ::: tip Prerequisites
 The example targets an order with cancellable items. If your order has no items with `qty_to_cancel > 0` (already canceled / fully shipped / closed / fraud) the mutation returns an `errors[]` entry like *"There is nothing to cancel on this order."* — pick an order in `pending` or `processing` state.

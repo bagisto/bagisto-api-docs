@@ -7,18 +7,34 @@ examples:
     query: |
       mutation PlaceOrder($input: createAdminPlaceOrderInput!) {
         createAdminPlaceOrder(input: $input) {
-          adminPlaceOrder { id }
+          adminPlaceOrder {
+            orderId
+            incrementId
+            customerId
+            grandTotal
+            success
+            message
+          }
         }
       }
     variables: |
       {
-        "input": { "cartId": 314 }
+        "input": {
+          "cartId": 314
+        }
       }
     response: |
       {
         "data": {
           "createAdminPlaceOrder": {
-            "adminPlaceOrder": { "id": "/api/admin/place-orders/1284" }
+            "adminPlaceOrder": {
+              "orderId": 1284,
+              "incrementId": "1284",
+              "customerId": 19,
+              "grandTotal": 110,
+              "success": true,
+              "message": "Order placed successfully."
+            }
           }
         }
       }

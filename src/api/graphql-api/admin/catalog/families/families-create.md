@@ -30,7 +30,7 @@ examples:
       {
         "data": {
           "createAdminAttributeFamily": {
-            "adminAttributeFamily": { "id": "/api/admin/attribute_families/4", "_id": 4 }
+            "adminAttributeFamily": { "id": "/api/admin/catalog/families/4", "_id": 4 }
           }
         }
       }

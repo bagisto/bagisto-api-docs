@@ -13,7 +13,7 @@ examples:
     variables: |
       {
         "input": {
-          "id": "/api/admin/attribute_families/4",
+          "id": "/api/admin/catalog/families/4",
           "code": "electronics",
           "name": "Electronics (updated)",
           "attributeGroups": {
@@ -38,7 +38,7 @@ examples:
       {
         "data": {
           "updateAdminAttributeFamily": {
-            "adminAttributeFamily": { "id": "/api/admin/attribute_families/4", "_id": 4 }
+            "adminAttributeFamily": { "id": "/api/admin/catalog/families/4", "_id": 4 }
           }
         }
       }

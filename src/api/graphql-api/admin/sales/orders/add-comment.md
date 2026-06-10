@@ -9,6 +9,10 @@ examples:
         createAdminOrderComment(input: $input) {
           adminOrderComment {
             id
+            orderId
+            comment
+            customerNotified
+            createdAt
           }
         }
       }
@@ -25,7 +29,8 @@ examples:
         "data": {
           "createAdminOrderComment": {
             "adminOrderComment": {
-              "id": "/api/admin/order-comments/17",
+              "id": "/api/admin/admin_order_comments/17",
+              "orderId": 2392,
               "comment": "Customer called to confirm shipping address.",
               "customerNotified": true,
               "createdAt": "2026-05-21 10:14:31"

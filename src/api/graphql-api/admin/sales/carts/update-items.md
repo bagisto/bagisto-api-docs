@@ -7,7 +7,7 @@ examples:
     query: |
       mutation UpdateItems($input: updateItemsAdminCartInput!) {
         updateItemsAdminCart(input: $input) {
-          adminCart { id _id }
+          adminCart { itemsCount grandTotal formattedGrandTotal success message }
         }
       }
     variables: |
@@ -22,7 +22,7 @@ examples:
       {
         "data": {
           "updateItemsAdminCart": {
-            "adminCart": { "id": "/api/admin/carts/314", "_id": 314 }
+            "adminCart": { "itemsCount": 1, "grandTotal": 100, "formattedGrandTotal": "$100.00", "success": true, "message": "Cart items updated." }
           }
         }
       }

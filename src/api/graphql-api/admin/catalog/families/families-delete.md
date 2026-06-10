@@ -12,13 +12,13 @@ examples:
       }
     variables: |
       {
-        "input": { "id": "/api/admin/attribute_families/4" }
+        "input": { "id": "/api/admin/catalog/families/4" }
       }
     response: |
       {
         "data": {
           "deleteAdminAttributeFamily": {
-            "adminAttributeFamily": { "id": "/api/admin/attribute_families/4" }
+            "adminAttributeFamily": { "id": "/api/admin/catalog/families/4" }
           }
         }
       }

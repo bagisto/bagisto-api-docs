@@ -25,6 +25,9 @@ examples:
           locale
           validation
           defaultValue
+          isComparable
+          enableWysiwyg
+          regex
           createdAt
           updatedAt
           translations
@@ -57,6 +60,9 @@ examples:
             "locale": "en",
             "validation": null,
             "defaultValue": null,
+            "isComparable": 0,
+            "enableWysiwyg": 0,
+            "regex": null,
             "createdAt": "2026-01-12T08:15:00+00:00",
             "updatedAt": "2026-04-30T14:20:09+00:00",
             "translations": [
@@ -152,6 +158,9 @@ node, or constructed as `/api/admin/catalog/attributes/{numericId}`.
 | `locale` | `String` | App locale used for top-level scalar fields |
 | `validation` | `String` | Validation rule string (e.g. `numeric`, `email`); `null` if none |
 | `defaultValue` | `String` | Default value; `null` if not configured |
+| `isComparable` | `Int` | `1` if shown in the storefront product-compare table, else `0` |
+| `enableWysiwyg` | `Int` | `1` if a rich-text editor is used for a `textarea` attribute, else `0` |
+| `regex` | `String` | Custom regex pattern, used when `validation` is `regex`; `null` otherwise |
 | `createdAt` | `String` | ISO 8601 creation timestamp |
 | `updatedAt` | `String` | ISO 8601 last-update timestamp |
 | `translations` | scalar (JSON array) | All locale translations — see shape below |
@@ -253,6 +262,9 @@ query AdminCatalogAttribute($id: ID!) {
       "locale": "en",
       "validation": null,
       "defaultValue": null,
+      "isComparable": 0,
+      "enableWysiwyg": 0,
+      "regex": null,
       "createdAt": "2026-01-12T08:15:00+00:00",
       "updatedAt": "2026-04-30T14:20:09+00:00",
       "translations": [

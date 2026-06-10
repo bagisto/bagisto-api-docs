@@ -7,7 +7,7 @@ examples:
     query: |
       mutation SetPayment($input: setPaymentMethodAdminCartInput!) {
         setPaymentMethodAdminCart(input: $input) {
-          adminCart { id }
+          adminCart { itemsCount grandTotal formattedGrandTotal success message }
         }
       }
     variables: |
@@ -22,7 +22,7 @@ examples:
       {
         "data": {
           "setPaymentMethodAdminCart": {
-            "adminCart": { "id": "/api/admin/carts/314" }
+            "adminCart": { "itemsCount": 1, "grandTotal": 100, "formattedGrandTotal": "$100.00", "success": true, "message": "Payment method saved." }
           }
         }
       }

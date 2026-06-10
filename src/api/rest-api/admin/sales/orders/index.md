@@ -15,7 +15,7 @@ An admin can place an order **on behalf of a customer** — the same "Create Ord
 
 | Step | Endpoint |
 |------|----------|
-| Start a draft cart for a customer | `POST /api/admin/customers/{customerId}/draft-carts` |
+| [Start a draft cart for a customer](/api/rest-api/admin/customers/create-draft-cart) | `POST /api/admin/customers/{customerId}/draft-carts` |
 | [Get the draft cart](/api/rest-api/admin/sales/carts/get-cart) | `GET /api/admin/carts/{id}` |
 | [Add an item](/api/rest-api/admin/sales/carts/add-item) · [update](/api/rest-api/admin/sales/carts/update-items) · [remove](/api/rest-api/admin/sales/carts/remove-item) | `.../carts/{id}/items` |
 | [Save addresses](/api/rest-api/admin/sales/carts/save-address) | `POST /api/admin/carts/{id}/addresses` |
@@ -24,6 +24,26 @@ An admin can place an order **on behalf of a customer** — the same "Create Ord
 | [Place the order](/api/rest-api/admin/sales/orders/place-order) | `POST /api/admin/orders/place/{cartId}` |
 
 (There's also [apply](/api/rest-api/admin/sales/carts/apply-coupon) / [remove coupon](/api/rest-api/admin/sales/carts/remove-coupon) on the draft cart.) [Reorder](/api/rest-api/admin/sales/orders/reorder) is a shortcut that seeds a fresh draft cart from an existing order's items.
+
+::: tip Only saleable products can be added
+[Add Item](/api/rest-api/admin/sales/carts/add-item) accepts only products that are in stock and enabled. Adding an out-of-stock or disabled product returns a clear error and **leaves the draft cart intact** so you can add a different product — the cart is never lost. Booking products can't be added to an admin order (no admin Create-Order surface for them).
+:::
+
+## The order lifecycle — which action, in what order
+
+Once an order exists (placed through Create Order above, [Reorder](/api/rest-api/admin/sales/orders/reorder), or the storefront), it moves through a lifecycle. Each action has prerequisites — this is the order they run in and what gates each one.
+
+**1. Invoice — record payment.** [Create Invoice](/api/rest-api/admin/sales/orders/create-invoice) records that payment was collected for some or all of the order's items. An order generally can't be refunded until it has been invoiced (you refund money that was billed). You can invoice part of an order now and the rest later. Not available for orders paid via `paypal_standard` (those are captured by the gateway, not the admin).
+
+**2. Ship — fulfil.** [Create Shipment](/api/rest-api/admin/sales/orders/create-shipment) marks items as dispatched and records the carrier and tracking number. It needs items still awaiting shipment and enough stock at the chosen inventory source. Partial shipments are allowed.
+
+**3. Refund — return money.** [Create Refund](/api/rest-api/admin/sales/orders/create-refund) returns money for invoiced items and/or an arbitrary adjustment. Call [Refund Preview](/api/rest-api/admin/sales/orders/refund-preview) first to see the computed totals without writing anything. Requires something left to refund (an un-refunded invoiced amount or a returnable quantity).
+
+**Cancel — abandon early.** [Cancel Order](/api/rest-api/admin/sales/orders/cancel) is only possible while there is still something to cancel (nothing has been fully invoiced or shipped). A closed or fraud-flagged order can't be cancelled.
+
+**Comments — any time.** [Add Comment](/api/rest-api/admin/sales/orders/add-comment) / [List Comments](/api/rest-api/admin/sales/orders/list-comments) work at any stage; set `customerNotified` to email the customer the note.
+
+Every action refuses with a clear error when its prerequisite isn't met — nothing left to invoice/ship/refund, the order is already closed or flagged, insufficient stock, or a payment method that can't be invoiced. A typical fulfilled order runs **Create → Invoice → Ship** (then an optional **Refund**); an abandoned one runs **Create → Cancel**.
 
 ## Endpoints in this menu
 

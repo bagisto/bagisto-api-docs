@@ -32,6 +32,9 @@ examples:
         "updatedAt": "2026-04-30T14:20:09+00:00",
         "validation": null,
         "defaultValue": null,
+        "isComparable": 0,
+        "enableWysiwyg": 0,
+        "regex": null,
         "translations": [
           { "locale": "en", "name": "Color" },
           { "locale": "fr", "name": "Couleur" }
@@ -131,8 +134,11 @@ following fields:
 | `locale` | string\|null | App locale used for the top-level scalar fields |
 | `createdAt` | string\|null | ISO 8601 creation timestamp |
 | `updatedAt` | string\|null | ISO 8601 last-update timestamp |
-| `validation` | string\|null | Validation rule string (e.g. `numeric`, `email`); `null` if none |
+| `validation` | string\|null | Validation rule string (e.g. `numeric`, `email`, `regex`); `null` if none |
 | `defaultValue` | string\|null | Default value for the attribute; `null` if not configured |
+| `isComparable` | integer | `1` if the attribute is shown in the storefront product-compare table, else `0` |
+| `enableWysiwyg` | integer | `1` if a rich-text (WYSIWYG) editor is used for a `textarea` attribute, else `0` |
+| `regex` | string\|null | Custom regular-expression pattern, used when `validation` is `regex`; `null` otherwise |
 | `translations` | array | All locale translations (see below) |
 | `options` | array\|null | Attribute options for `select`, `multiselect`, `checkbox` types; `null` for all other types |
 
@@ -199,6 +205,9 @@ curl -X GET "https://your-domain.com/api/admin/catalog/attributes/12" \
   "updatedAt": "2026-04-30T14:20:09+00:00",
   "validation": null,
   "defaultValue": null,
+  "isComparable": 0,
+  "enableWysiwyg": 0,
+  "regex": null,
   "translations": [
     { "locale": "en", "name": "Color" },
     { "locale": "fr", "name": "Couleur" }
