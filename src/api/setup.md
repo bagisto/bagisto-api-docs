@@ -69,10 +69,21 @@ Edit `composer.json` and update the `autoload` section:
 
 #### Step 4: Install Dependencies
 
+Install the required API Platform packages, pinned to a consistent, tested set so the install completes cleanly:
+
 ```bash
-# Install required packages
-composer require api-platform/laravel:v4.1.25
-composer require api-platform/graphql:v4.2.3
+composer require \
+  api-platform/laravel:v4.1.25 \
+  api-platform/graphql:v4.2.3 \
+  api-platform/metadata:v4.3.1 \
+  api-platform/serializer:v4.3.1 \
+  api-platform/state:v4.3.1 \
+  api-platform/jsonld:v4.3.1 \
+  api-platform/hydra:v4.3.1 \
+  api-platform/openapi:v4.3.1 \
+  api-platform/json-schema:v4.3.1 \
+  api-platform/json-api:v4.3.1 \
+  api-platform/documentation:v4.3.1
 ```
 
 #### Step 5: Run the installation
@@ -81,7 +92,7 @@ composer dump-autoload
 php artisan bagisto-api-platform:install
 ```
 
-#### Step 9: Environment Setup (Update in the .env)
+#### Step 6: Environment Setup (Update in the .env)
 ```
 STOREFRONT_DEFAULT_RATE_LIMIT=100
 STOREFRONT_CACHE_TTL=60
