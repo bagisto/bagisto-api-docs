@@ -15,7 +15,6 @@ examples:
       {
         "id": 1,
         "incrementId": "1",
-        "orderId": 58,
         "orderIncrementId": "58",
         "state": "paid",
         "emailSent": true,
@@ -75,33 +74,38 @@ examples:
         "customerName": "John Doe",
         "customerEmail": "john.doe@example.com",
 
-        "billingAddress": {
-          "id": 268,
-          "addressType": "order_billing",
-          "firstName": "John",
-          "lastName": "Doe",
-          "companyName": "Acme Trades",
-          "address": "21 Market Street",
-          "city": "Los Angeles",
-          "state": "CA",
-          "country": "US",
-          "postcode": "90001",
-          "email": "john.doe@example.com",
-          "phone": "5551234567"
-        },
-        "shippingAddress": {
-          "id": 267,
-          "addressType": "order_shipping",
-          "firstName": "John",
-          "lastName": "Doe",
-          "companyName": "Acme Trades",
-          "address": "21 Market Street",
-          "city": "Los Angeles",
-          "state": "CA",
-          "country": "US",
-          "postcode": "90001",
-          "email": "john.doe@example.com",
-          "phone": "5551234567"
+        "order": {
+          "id": 58,
+          "addresses": [
+            {
+              "id": 268,
+              "addressType": "order_billing",
+              "firstName": "John",
+              "lastName": "Doe",
+              "companyName": "Acme Trades",
+              "address": "21 Market Street",
+              "city": "Los Angeles",
+              "state": "CA",
+              "country": "US",
+              "postcode": "90001",
+              "email": "john.doe@example.com",
+              "phone": "5551234567"
+            },
+            {
+              "id": 267,
+              "addressType": "order_shipping",
+              "firstName": "John",
+              "lastName": "Doe",
+              "companyName": "Acme Trades",
+              "address": "21 Market Street",
+              "city": "Los Angeles",
+              "state": "CA",
+              "country": "US",
+              "postcode": "90001",
+              "email": "john.doe@example.com",
+              "phone": "5551234567"
+            }
+          ]
         },
         "items": [
           {
@@ -158,8 +162,7 @@ Returns a single invoice with the full totals breakdown, the order/customer cont
 |-------|------|-------------|
 | `id` | Integer | Numeric invoice id. |
 | `incrementId` | String | Human-facing invoice number. |
-| `orderId` | Integer | Id of the parent order. |
-| `orderIncrementId` | String | Human-facing number of the parent order. |
+| `orderIncrementId` | String | Human-facing number of the parent order. (Numeric order id is `order.id`.) |
 | `state` | String | Invoice state — `pending`, `pending_payment`, `paid`, `overdue`. |
 | `emailSent` | Boolean | Whether the invoice email was sent to the customer. |
 | `totalQty` | Integer | Total quantity invoiced. |
@@ -218,9 +221,9 @@ Resolved from the parent order so the invoice can be rendered without a second c
 | `customerName` | String | Customer's full name. |
 | `customerEmail` | String | Customer's email. |
 
-### Addresses (`billingAddress`, `shippingAddress`)
+### Order & addresses (`order`)
 
-Objects with: `id`, `addressType` (`order_billing` / `order_shipping`), `firstName`, `lastName`, `companyName` (nullable), `address`, `city`, `state`, `country`, `postcode`, `email`, `phone`.
+The invoice's billing & shipping addresses live on the order: `order` is `{ id, addresses: [...] }`. Each entry in `order.addresses` has: `id`, `addressType` (`order_billing` / `order_shipping` — distinguishes billing vs shipping), `firstName`, `lastName`, `companyName` (nullable), `address`, `city`, `state`, `country`, `postcode`, `email`, `phone`.
 
 ### Line items (`items`)
 

@@ -13,14 +13,16 @@ examples:
           "items": [
             { "orderItemId": 42, "quantity": 3 },
             { "orderItemId": 43, "quantity": 1 }
-          ]
+          ],
+          "can_create_transaction": true
         }'
     variables: |
       {
         "items": [
           { "orderItemId": 42, "quantity": 3 },
           { "orderItemId": 43, "quantity": 1 }
-        ]
+        ],
+        "can_create_transaction": true
       }
     response: |
       {
@@ -108,20 +110,21 @@ created.
 
 | Field | Type | Required | Notes |
 |-------|------|----------|-------|
-| `items` | array of `{ orderItemId, quantity }` | yes | At least one entry with `quantity > 0`. |
+| `items` | array of `{ orderItemId, quantity }` | yes | At least one entry with `quantity > 0`. Each `quantity` must be ≤ that item's `qty_to_invoice`. |
+| `can_create_transaction` | boolean | no | Default `false`. The admin **Create Transaction** checkbox — when `true`, also records an order transaction for the invoice amount against the order's payment method. |
 
 ## Errors
 
-| HTTP | Lang key | Message |
-|------|----------|---------|
-| 422  | `bagistoapi::app.admin.order.actions.invoice.closed` | Closed orders cannot be invoiced. |
-| 422  | `bagistoapi::app.admin.order.actions.invoice.fraud` | Fraud orders cannot be invoiced. |
-| 422  | `bagistoapi::app.admin.order.actions.invoice.paypal-standard-blocked` | Invoices cannot be created for orders paid through PayPal Standard. |
-| 422  | `bagistoapi::app.admin.order.actions.invoice.nothing-to-invoice` | There is nothing to invoice on this order. |
-| 422  | `bagistoapi::app.admin.order.actions.invoice.no-permission` | You do not have permission to create invoices. |
-| 422  | `bagistoapi::app.admin.order.actions.invoice.items-required` | At least one item with a positive quantity is required. |
-| 422  | `bagistoapi::app.admin.order.actions.invoice.qty-exceeds` | Requested quantity (`:requested`) exceeds available quantity (`:available`) for SKU `:sku`. |
-| 422  | `bagistoapi::app.admin.order.actions.invoice.failed` | Could not create the invoice. |
+| HTTP | Message |
+|------|---------|
+| 422  | Closed orders cannot be invoiced. |
+| 422  | Fraud orders cannot be invoiced. |
+| 422  | Invoices cannot be created for orders paid through PayPal Standard. |
+| 422  | There is nothing to invoice on this order. |
+| 422  | You do not have permission to create invoices. |
+| 422  | At least one item with a positive quantity is required. |
+| 422  | Requested quantity exceeds the available quantity for the given SKU (the message names the SKU and both quantities). |
+| 422  | Could not create the invoice. |
 
 ### Sample 422 response
 

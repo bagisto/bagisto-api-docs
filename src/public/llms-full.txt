@@ -10000,6 +10000,79 @@ examples:
 
 ---
 
+# Set Customer Address as Default (GraphQL)
+URL: /api/graphql-api/admin/customers/addresses/set-default
+
+---
+outline: false
+examples:
+  - id: admin-customer-address-set-default-gql
+    title: Set Address as Default
+    query: |
+      mutation SetDefaultAdminCustomerAddress($input: setDefaultAdminCustomerAddressInput!) {
+        setDefaultAdminCustomerAddress(input: $input) {
+          adminCustomerAddress {
+            id
+            _id
+            customerId
+            firstName
+            lastName
+            address
+            city
+            state
+            country
+            postcode
+            phone
+            defaultAddress
+          }
+        }
+      }
+    variables: |
+      { "input": { "customerId": 14, "id": "/api/admin/customers/14/addresses/27" } }
+    response: |
+      {
+        "data": {
+          "setDefaultAdminCustomerAddress": {
+            "adminCustomerAddress": {
+              "id": "/api/admin/customers/14/addresses/27",
+              "_id": 27,
+              "customerId": 14,
+              "firstName": "Jane",
+              "lastName": "Doe",
+              "address": "742 Evergreen Terrace",
+              "city": "Springfield",
+              "state": "IL",
+              "country": "US",
+              "postcode": "62704",
+              "phone": "+15551234567",
+              "defaultAddress": true
+            }
+          }
+        }
+      }
+---
+
+# Set Customer Address as Default (GraphQL)
+
+Marks the chosen address as the customer's default. All the customer's other addresses have their default flag cleared in the same call.
+
+## Input
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `customerId` | Int! | yes | The customer who owns the address. |
+| `id` | ID! | yes | The address IRI to make default. Must belong to `customerId` (otherwise error). |
+
+Returns the updated address with `defaultAddress: true`.
+
+Permission: `customers.addresses.edit`.
+
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+
+
+
+---
+
 # Update Customer Address (GraphQL)
 URL: /api/graphql-api/admin/customers/addresses/update
 
@@ -10725,6 +10798,85 @@ examples:
 # Add Customer Note (GraphQL)
 
 Append-only. Permission: `customers.customers.edit`.
+
+
+
+---
+
+# List Customer Notes (GraphQL)
+URL: /api/graphql-api/admin/customers/notes/list
+
+---
+outline: false
+examples:
+  - id: admin-customer-notes-list-gql
+    title: List Customer Notes
+    query: |
+      query AdminCustomerNotes($customerId: Int!) {
+        adminCustomerNotes(customerId: $customerId) {
+          edges {
+            node {
+              id
+              _id
+              note
+              customerId
+              customerNotified
+              createdAt
+            }
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        }
+      }
+    variables: |
+      { "customerId": 14 }
+    response: |
+      {
+        "data": {
+          "adminCustomerNotes": {
+            "edges": [
+              {
+                "node": {
+                  "id": "/api/admin/customer_notes/7",
+                  "_id": 7,
+                  "note": "Called the customer about delivery.",
+                  "customerId": 14,
+                  "customerNotified": false,
+                  "createdAt": "2026-06-09 10:15:00"
+                }
+              },
+              {
+                "node": {
+                  "id": "/api/admin/customer_notes/5",
+                  "_id": 5,
+                  "note": "Followed up about return RMA-1023",
+                  "customerId": 14,
+                  "customerNotified": true,
+                  "createdAt": "2026-05-25 10:00:00"
+                }
+              }
+            ],
+            "pageInfo": { "hasNextPage": false, "endCursor": "MQ==" }
+          }
+        }
+      }
+---
+
+# List Customer Notes (GraphQL)
+
+Returns the customer's notes, newest-first, as a cursor-paginated connection.
+
+## Arguments
+
+| Argument | Type | Required | Description |
+|----------|------|----------|-------------|
+| `customerId` | Int! | yes | The customer whose notes to list. Unknown customer → error. |
+
+Each node carries `id`, `_id`, `note`, `customerId`, `customerNotified`, and `createdAt`.
+
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
 
 
 
@@ -13589,6 +13741,188 @@ This mutation validates all product data and applies updates while maintaining i
 | `success` | `Boolean!` | Indicates successful update. |
 | `errors` | `[ErrorMessage!]` | Validation errors if update failed. |
 
+
+
+
+---
+
+# Get Admin Menu (GraphQL)
+URL: /api/graphql-api/admin/navigation/menu
+
+---
+outline: false
+examples:
+  - id: admin-menu-gql
+    title: Get Admin Menu
+    query: |
+      query {
+        getAdminMenu {
+          id
+          tree
+        }
+      }
+    response: |
+      {
+        "data": {
+          "getAdminMenu": {
+            "id": "menu",
+            "tree": [
+              {
+                "key": "dashboard",
+                "label": "Dashboard",
+                "icon": "icon-dashboard",
+                "sort": 1,
+                "permission": "dashboard",
+                "apiResource": { "rest": "/api/admin/dashboard/stats", "graphql": "statsAdminDashboard" },
+                "children": []
+              },
+              {
+                "key": "sales",
+                "label": "Sales",
+                "icon": "icon-sales",
+                "sort": 2,
+                "permission": "sales",
+                "apiResource": null,
+                "children": [
+                  {
+                    "key": "sales.orders",
+                    "label": "Orders",
+                    "icon": null,
+                    "sort": 1,
+                    "permission": "sales.orders",
+                    "apiResource": { "rest": "/api/admin/orders", "graphql": "adminOrders" },
+                    "children": []
+                  },
+                  {
+                    "key": "sales.shipments",
+                    "label": "Shipments",
+                    "icon": null,
+                    "sort": 2,
+                    "permission": "sales.shipments",
+                    "apiResource": { "rest": "/api/admin/shipments", "graphql": "adminShipments" },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "key": "catalog",
+                "label": "Catalog",
+                "icon": "icon-catalog",
+                "sort": 3,
+                "permission": "catalog",
+                "apiResource": null,
+                "children": [
+                  {
+                    "key": "catalog.products",
+                    "label": "Products",
+                    "icon": null,
+                    "sort": 1,
+                    "permission": "catalog.products",
+                    "apiResource": { "rest": "/api/admin/catalog/products", "graphql": "adminCatalogProducts" },
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+---
+
+# Get Admin Menu (GraphQL)
+
+Returns the admin sidebar as a nested tree, filtered to what the authenticated token's role is allowed to see. Use it to build a back-office navigation/sidebar dynamically and to discover which API operation backs each screen.
+
+## Output Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Identifier of the menu payload (`menu`). |
+| `tree` | JSON | The nested menu structure. |
+
+`tree` is returned as a JSON structure — query it as a bare field, not a sub-selection.
+
+Each node in `tree` (and in any nested `children`) carries `key`, `label`, `icon`, `sort`, `permission`, `apiResource`, and `children`. When present, `apiResource` maps the node to its backing endpoint as `{ rest, graphql }`; it is `null` for group headers (parent menus that only contain children) and for panel-only screens that have no API counterpart.
+
+## Permission Filtering
+
+The tree is scoped to the token's role:
+
+- A token whose permission type is `all` sees every menu node.
+- A token with custom permissions sees only the nodes its role permits; menus it cannot access are omitted entirely.
+
+So two admins with different roles will receive different trees from the same operation.
+
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+
+
+
+---
+
+# Get Admin Permissions (GraphQL)
+URL: /api/graphql-api/admin/navigation/permissions
+
+---
+outline: false
+examples:
+  - id: admin-permissions-gql-all
+    title: Full Access Token
+    query: |
+      query {
+        getAdminPermissions {
+          permissionType
+          permissions
+        }
+      }
+    response: |
+      {
+        "data": {
+          "getAdminPermissions": {
+            "permissionType": "all",
+            "permissions": ["*"]
+          }
+        }
+      }
+  - id: admin-permissions-gql-custom
+    title: Custom Access Token
+    query: |
+      query {
+        getAdminPermissions {
+          permissionType
+          permissions
+        }
+      }
+    response: |
+      {
+        "data": {
+          "getAdminPermissions": {
+            "permissionType": "custom",
+            "permissions": ["catalog", "catalog.products", "sales.orders"]
+          }
+        }
+      }
+---
+
+# Get Admin Permissions (GraphQL)
+
+Returns the authenticated token's effective permissions so you can gate UI up front — show or hide buttons, menus and actions without triggering trial-and-error errors.
+
+## Output Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `permissionType` | String | One of `all`, `custom`, or `same_as_web`. |
+| `permissions` | JSON | The granted ACL keys, or `["*"]` for full access. |
+
+`permissionType` semantics:
+
+- `all` — full access. `permissions` is `["*"]`.
+- `custom` — `permissions` lists the explicitly granted ACL keys.
+- `same_as_web` — the token follows the admin's web role; `permissions` lists the keys that role currently grants.
+
+In every case the effective `permissions` are capped by the admin's role — a token can never do more than its owner admin can currently do.
+
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
 
 
 
@@ -32461,6 +32795,161 @@ Authorization: Bearer <accessToken>
 
 ---
 
+# Create Newsletter
+URL: /api/graphql-api/shop/mutations/create-newsletter
+
+---
+outline: false
+examples:
+  - id: create-newsletter-basic
+    title: Subscribe to Newsletter
+    description: Subscribe the authenticated customer to the newsletter on the current channel.
+    query: |
+      mutation createNewsletter($input: createNewsletterInput!) {
+        createNewsletter(input: $input) {
+          newsletter {
+            success
+            message
+          }
+        }
+      }
+    variables: |
+      {
+        "input": {
+          "customerEmail": "jane@example.com"
+        }
+      }
+    response: |
+      {
+        "data": {
+          "createNewsletter": {
+            "newsletter": {
+              "success": true,
+              "message": "You have subscribed to the newsletter successfully."
+            }
+          }
+        }
+      }
+    commonErrors:
+      - error: UNAUTHENTICATED
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+      - error: invalid-email
+        cause: The email address provided is not valid
+        solution: Use a properly formatted email address
+      - error: already-subscribed
+        cause: The email already exists in the subscribers list
+        solution: Use an email that is not already subscribed
+
+  - id: create-newsletter-with-mutation-id
+    title: Subscribe to Newsletter - With Client Mutation ID
+    description: Subscribe and track the mutation with a client-side identifier.
+    query: |
+      mutation createNewsletter($input: createNewsletterInput!) {
+        createNewsletter(input: $input) {
+          newsletter {
+            success
+            message
+          }
+          clientMutationId
+        }
+      }
+    variables: |
+      {
+        "input": {
+          "customerEmail": "john.doe@example.com",
+          "clientMutationId": "newsletter-001"
+        }
+      }
+    response: |
+      {
+        "data": {
+          "createNewsletter": {
+            "newsletter": {
+              "success": true,
+              "message": "You have subscribed to the newsletter successfully."
+            },
+            "clientMutationId": "newsletter-001"
+          }
+        }
+      }
+    commonErrors:
+      - error: UNAUTHENTICATED
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+      - error: validation-error
+        cause: The email field fails server-side validation
+        solution: Provide a valid, non-empty, unique email address
+---
+
+# Create Newsletter
+
+## About
+
+The `createNewsletter` mutation subscribes the authenticated customer to the store newsletter on the current channel. Use this mutation to:
+
+- Add newsletter opt-in to the storefront footer or account page
+- Re-subscribe a customer who previously unsubscribed
+- Capture marketing consent during registration or checkout
+- Track submissions using `clientMutationId`
+
+The subscription is scoped to the current channel.
+
+## Authentication
+
+This mutation requires customer authentication:
+
+- **Authenticated customers**: Provide a valid customer authentication token in the `Authorization` header. Obtain this token via the [Customer Login API](/api/graphql-api/shop/mutations/customer-login).
+
+```
+Authorization: Bearer <accessToken>
+```
+
+## Arguments
+
+| Argument | Type | Required | Description |
+|----------|------|----------|-------------|
+| `input` | `createNewsletterInput!` | ✅ Yes | Input object containing the subscription fields. |
+
+### Input Fields (`createNewsletterInput`)
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `customerEmail` | `String!` | ✅ Yes | Email address to subscribe. Must be valid and unique in the subscribers list. |
+| `clientMutationId` | `String` | ❌ No | Optional client-side identifier for tracking the mutation request. |
+
+## Possible Returns
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `newsletter.success` | `Boolean!` | `true` if the subscription was created successfully. |
+| `newsletter.message` | `String!` | Human-readable confirmation or error message. |
+| `clientMutationId` | `String` | Echoed back from the input if provided. |
+
+## Use Cases
+
+### 1. Storefront Footer Opt-in
+Trigger this mutation when a logged-in customer submits the newsletter form, then display `message` as feedback.
+
+### 2. Account Preferences
+Let customers manage their marketing consent from the account settings page.
+
+## Best Practices
+
+1. **Validate email client-side first** to reduce unnecessary API calls.
+2. **Always read `success`** before showing a success state.
+3. **Handle the already-subscribed case** gracefully — surface the server `message`.
+
+## Related Resources
+
+- [Subscribe to Newsletter (REST)](/api/rest-api/shop/newsletter/subscribe)
+- [Customer Login](/api/graphql-api/shop/mutations/customer-login)
+- [Shop API Overview](/api/graphql-api/shop-api)
+
+
+
+---
+
 # Create Order
 URL: /api/graphql-api/shop/mutations/create-order
 
@@ -48843,6 +49332,63 @@ examples:
         cause: Storefront key is missing or invalid
         solution: Provide a valid X-STOREFRONT-KEY header
 
+  - id: get-customer-addresses-newest-first
+    title: Get Customer Addresses - Newest First
+    description: Sort the address book so the most recently added address appears first by passing sort and order.
+    query: |
+      query getCustomerAddresses($first: Int, $sort: String, $order: String) {
+        getCustomerAddresses(first: $first, sort: $sort, order: $order) {
+          edges {
+            node {
+              id
+              _id
+              firstName
+              city
+              createdAt
+            }
+          }
+          totalCount
+        }
+      }
+    variables: |
+      {
+        "first": 10,
+        "sort": "created_at",
+        "order": "desc"
+      }
+    response: |
+      {
+        "data": {
+          "getCustomerAddresses": {
+            "edges": [
+              {
+                "node": {
+                  "id": "/api/shop/customer-addresses/2830",
+                  "_id": 2830,
+                  "firstName": "John",
+                  "city": "Los Angeles",
+                  "createdAt": "2026-02-05T10:15:00+05:30"
+                }
+              },
+              {
+                "node": {
+                  "id": "/api/shop/customer-addresses/2829",
+                  "_id": 2829,
+                  "firstName": "John",
+                  "city": "Springfield",
+                  "createdAt": "2026-01-28T18:47:54+05:30"
+                }
+              }
+            ],
+            "totalCount": 2
+          }
+        }
+      }
+    commonErrors:
+      - error: Unauthenticated
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+
   - id: get-customer-addresses-paginated
     title: Paginated Addresses (Forward)
     description: Retrieve customer addresses one page at a time using cursor-based pagination.
@@ -49254,6 +49800,8 @@ This query requires a valid customer authentication token in the `Authorization`
 | `after` | String | No | Cursor for forward pagination |
 | `last` | Int | No | Number of addresses to fetch backward |
 | `before` | String | No | Cursor for backward pagination |
+| `sort` | String | No | Column to sort by — `id` (default) or `created_at`. The compound form `created_at-desc` is also accepted. |
+| `order` | String | No | Sort direction — `asc` (default) or `desc`. Use `desc` to return the most recently added addresses first. |
 
 ## Response Fields
 
@@ -57872,6 +58420,72 @@ examples:
         cause: Missing or invalid Bearer token
         solution: Login and provide a valid customer authentication token
 
+  - id: get-wishlists-newest-first
+    title: Get Wishlist Items - Newest First
+    description: Sort the wishlist so the most recently added item appears first by passing sort and order.
+    query: |
+      query GetAllWishlists($first: Int, $sort: String, $order: String) {
+        wishlists(first: $first, sort: $sort, order: $order) {
+          edges {
+            node {
+              id
+              _id
+              product {
+                id
+                name
+                sku
+              }
+              createdAt
+            }
+          }
+          totalCount
+        }
+      }
+    variables: |
+      {
+        "first": 10,
+        "sort": "created_at",
+        "order": "desc"
+      }
+    response: |
+      {
+        "data": {
+          "wishlists": {
+            "edges": [
+              {
+                "node": {
+                  "id": "/api/shop/wishlists/81",
+                  "_id": 81,
+                  "product": {
+                    "id": "/api/shop/products/122",
+                    "name": "Classic Cowboy Hat",
+                    "sku": "COWBOY-HAT-001"
+                  },
+                  "createdAt": "2026-04-06T18:44:55+05:30"
+                }
+              },
+              {
+                "node": {
+                  "id": "/api/shop/wishlists/78",
+                  "_id": 78,
+                  "product": {
+                    "id": "/api/shop/products/2500",
+                    "name": "Mint Axis Unisex Tailored Blazer",
+                    "sku": "MINT-BLAZER-001"
+                  },
+                  "createdAt": "2026-04-06T18:44:50+05:30"
+                }
+              }
+            ],
+            "totalCount": 4
+          }
+        }
+      }
+    commonErrors:
+      - error: UNAUTHENTICATED
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+
   - id: get-wishlists-paginated
     title: Get Wishlist Items - Next Page
     description: Fetch the next page of wishlist items using the endCursor from the previous response.
@@ -57952,6 +58566,10 @@ Authorization: Bearer <accessToken>
 |----------|------|-------------|
 | `first` | `Int` | Number of items to return per page. |
 | `after` | `String` | Cursor for pagination. Use `endCursor` from previous response. |
+| `sort` | `String` | Column to sort by — `id` (default) or `created_at`. The compound form `created_at-desc` (`<column>-<direction>`) is also accepted. |
+| `order` | `String` | Sort direction — `asc` (default) or `desc`. Use `desc` to return the most recently added items first. |
+
+By default the wishlist is returned oldest-first (the order items were added). Pass `sort: "created_at", order: "desc"` to show the newest item at the top.
 
 ## Possible Returns
 
@@ -69737,6 +70355,51 @@ examples:
 
 ---
 
+# Set Customer Address as Default
+URL: /api/rest-api/admin/customers/addresses/set-default
+
+---
+outline: false
+apiType: rest
+examples:
+  - id: admin-customer-address-set-default
+    title: Set Address as Default
+    description: Sets the chosen address as the customer's default and clears the default flag on all their other addresses. Empty body.
+    query: |
+      curl -X POST "https://your-domain.com/api/admin/customers/14/addresses/27/set-default" \
+        -H "Authorization: Bearer <token>" \
+        -H "Content-Type: application/json"
+    response: |
+      { "id": 27, "customerId": 14, "firstName": "Jane", "lastName": "Doe", "address": "742 Evergreen Terrace", "city": "Springfield", "state": "IL", "country": "US", "postcode": "62704", "phone": "+15551234567", "defaultAddress": true }
+---
+
+# Set Customer Address as Default
+
+| Endpoint | Method |
+|----------|--------|
+| `/api/admin/customers/{customerId}/addresses/{id}/set-default` | POST |
+
+Marks the chosen address as the customer's default. All the customer's other addresses have their default flag cleared in the same call. The request body is empty.
+
+## Path Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `customerId` | integer | yes | The customer who owns the address. |
+| `id` | integer | yes | The address to make default. Must belong to `customerId` (otherwise 403). Unknown address → 404. |
+
+## Response
+
+Returns the updated address detail (same shape as the address detail endpoint), with `defaultAddress: true`.
+
+Permission: `customers.addresses.edit`.
+
+All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
+
+
+
+---
+
 # Update Customer Address
 URL: /api/rest-api/admin/customers/addresses/update
 
@@ -70697,6 +71360,70 @@ Notes are append-only. There is no update/delete endpoint — every note is a se
 :::
 
 Permission: `customers.customers.edit`.
+
+
+
+---
+
+# List Customer Notes
+URL: /api/rest-api/admin/customers/notes/list
+
+---
+outline: false
+apiType: rest
+examples:
+  - id: admin-customer-note-list
+    title: List Customer Notes
+    description: Returns the customer's notes, newest first, in the `{ data, meta }` envelope.
+    query: |
+      curl -X GET "https://your-domain.com/api/admin/customers/14/notes?page=1&per_page=10" \
+        -H "Authorization: Bearer <token>"
+    response: |
+      {
+        "data": [
+          { "id": 7, "note": "Called the customer about delivery.", "customerId": 14, "customerNotified": false, "createdAt": "2026-06-09 10:15:00" },
+          { "id": 5, "note": "Followed up about return RMA-1023", "customerId": 14, "customerNotified": true, "createdAt": "2026-05-25 10:00:00" }
+        ],
+        "meta": { "currentPage": 1, "perPage": 2, "lastPage": 1, "total": 2, "from": 1, "to": 2 }
+      }
+---
+
+# List Customer Notes
+
+| Endpoint | Method |
+|----------|--------|
+| `/api/admin/customers/{customerId}/notes` | GET |
+
+The notes that appear on the customer's view screen, returned newest-first.
+
+## Path Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `customerId` | integer | yes | The customer whose notes to list. Unknown customer → 404. |
+
+## Query Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `page` | integer | 1 | Page number. |
+| `per_page` | integer | — | Items per page. |
+
+## Response Fields
+
+Each row in `data`:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Note ID. |
+| `note` | string | The note text. |
+| `customerId` | integer | The customer this note belongs to. |
+| `customerNotified` | boolean | Whether the customer was emailed when the note was added. |
+| `createdAt` | string | When the note was created. |
+
+The `meta` object carries `currentPage`, `perPage`, `lastPage`, `total`, `from`, and `to`.
+
+All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
 
 
 
@@ -73356,6 +74083,210 @@ examples:
 | `/api/admin/marketing/url-rewrites/{id}` | PUT |
 
 Permission: `marketing.search_seo.url_rewrites.edit`.
+
+
+
+---
+
+# Get Admin Menu
+URL: /api/rest-api/admin/navigation/menu
+
+---
+outline: false
+apiType: rest
+examples:
+  - id: admin-menu
+    title: Get Admin Menu
+    description: Returns the admin sidebar as a permission-filtered nested tree for the authenticated token.
+    query: |
+      curl -X GET "https://your-domain.com/api/admin/menu" \
+        -H "Authorization: Bearer <token>"
+    response: |
+      [
+        {
+          "id": "menu",
+          "tree": [
+            {
+              "key": "dashboard",
+              "label": "Dashboard",
+              "icon": "icon-dashboard",
+              "sort": 1,
+              "permission": "dashboard",
+              "apiResource": { "rest": "/api/admin/dashboard/stats", "graphql": "statsAdminDashboard" },
+              "children": []
+            },
+            {
+              "key": "sales",
+              "label": "Sales",
+              "icon": "icon-sales",
+              "sort": 2,
+              "permission": "sales",
+              "apiResource": null,
+              "children": [
+                {
+                  "key": "sales.orders",
+                  "label": "Orders",
+                  "icon": null,
+                  "sort": 1,
+                  "permission": "sales.orders",
+                  "apiResource": { "rest": "/api/admin/orders", "graphql": "adminOrders" },
+                  "children": []
+                },
+                {
+                  "key": "sales.shipments",
+                  "label": "Shipments",
+                  "icon": null,
+                  "sort": 2,
+                  "permission": "sales.shipments",
+                  "apiResource": { "rest": "/api/admin/shipments", "graphql": "adminShipments" },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "key": "catalog",
+              "label": "Catalog",
+              "icon": "icon-catalog",
+              "sort": 3,
+              "permission": "catalog",
+              "apiResource": null,
+              "children": [
+                {
+                  "key": "catalog.products",
+                  "label": "Products",
+                  "icon": null,
+                  "sort": 1,
+                  "permission": "catalog.products",
+                  "apiResource": { "rest": "/api/admin/catalog/products", "graphql": "adminCatalogProducts" },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+---
+
+# Get Admin Menu
+
+| Endpoint | Method |
+|----------|--------|
+| `/api/admin/menu` | GET |
+
+Returns the admin sidebar as a nested tree, filtered to what the authenticated token's role is allowed to see. Use it to build a back-office navigation/sidebar dynamically and to discover which API endpoint backs each screen.
+
+The response is a one-element array. The single element wraps the navigation under `tree` — a nested array of menu nodes.
+
+## Permission Filtering
+
+The tree is scoped to the token's role:
+
+- A token whose permission type is `all` sees every menu node.
+- A token with custom permissions sees only the nodes its role permits; menus it cannot access are omitted entirely.
+
+So two admins with different roles will receive different trees from the same endpoint.
+
+## Response Fields
+
+Each node in `tree` (and in any nested `children`) has the shape:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `key` | string | Unique node identifier (e.g. `sales.orders`). |
+| `label` | string | Human-readable menu title. |
+| `icon` | string \| null | Icon class for top-level menus; `null` for sub-items. |
+| `sort` | integer | Display order among its siblings. |
+| `permission` | string | ACL key controlling visibility of this node. |
+| `apiResource` | object \| null | Maps the menu entry to its API endpoint, or `null`. |
+| `children` | array | Nested child nodes (empty array when there are none). |
+
+When present, `apiResource` carries:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `rest` | string | The REST endpoint backing this screen. |
+| `graphql` | string | The GraphQL operation backing this screen. |
+
+`apiResource` is `null` for group headers (parent menus that only contain children, such as `Sales` or `Catalog`) and for panel-only screens that have no API counterpart (such as Integration).
+
+## Errors
+
+A request without a valid token returns `401 Unauthorized`.
+
+All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
+
+
+
+---
+
+# Get Admin Permissions
+URL: /api/rest-api/admin/navigation/permissions
+
+---
+outline: false
+apiType: rest
+examples:
+  - id: admin-permissions-all
+    title: Full Access Token
+    description: A token whose role grants full access returns the `all` permission type and a single wildcard.
+    query: |
+      curl -X GET "https://your-domain.com/api/admin/permissions" \
+        -H "Authorization: Bearer <token>"
+    response: |
+      [
+        {
+          "id": "permissions",
+          "permissionType": "all",
+          "permissions": ["*"]
+        }
+      ]
+  - id: admin-permissions-custom
+    title: Custom Access Token
+    description: A token with a restricted role returns the `custom` permission type and the explicit list of granted ACL keys.
+    query: |
+      curl -X GET "https://your-domain.com/api/admin/permissions" \
+        -H "Authorization: Bearer <token>"
+    response: |
+      [
+        {
+          "id": "permissions",
+          "permissionType": "custom",
+          "permissions": ["catalog", "catalog.products", "sales.orders"]
+        }
+      ]
+---
+
+# Get Admin Permissions
+
+| Endpoint | Method |
+|----------|--------|
+| `/api/admin/permissions` | GET |
+
+Returns the authenticated token's effective permissions so you can gate UI up front — show or hide buttons, menus and actions without triggering trial-and-error `403` responses.
+
+The response is a one-element array describing the token's access.
+
+## Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Identifier of the permissions payload (`permissions`). |
+| `permissionType` | string | One of `all`, `custom`, or `same_as_web`. |
+| `permissions` | array | The granted ACL keys, or `["*"]` for full access. |
+
+`permissionType` semantics:
+
+- `all` — full access. `permissions` is `["*"]`.
+- `custom` — `permissions` lists the explicitly granted ACL keys.
+- `same_as_web` — the token follows the admin's web role; `permissions` lists the keys that role currently grants.
+
+In every case the effective `permissions` are capped by the admin's role — a token can never do more than its owner admin can currently do.
+
+## Errors
+
+A request without a valid token returns `401 Unauthorized`.
+
+All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
 
 
 
@@ -88369,6 +89300,497 @@ POST /api/shop/checkout-shipping-methods
 
 ---
 
+# Create Compare Item
+URL: /api/rest-api/shop/compare/create
+
+---
+outline: false
+examples:
+  - id: create-compare-item
+    title: Add Product to Compare List
+    description: Add a product to the authenticated customer's comparison list.
+    request: |
+      POST /api/shop/compare-items
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer <accessToken>
+
+      {
+        "productId": 1
+      }
+    response: |
+      {
+        "id": 38,
+        "product": {
+          "id": 1,
+          "sku": "ARCTIC-JACKET-001",
+          "type": "simple",
+          "name": "Arctic Snow Jacket"
+        },
+        "customer": {
+          "id": 122,
+          "firstName": "John",
+          "lastName": "Doe"
+        }
+      }
+    commonErrors:
+      - error: 401 Unauthorized
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+      - error: 404 Not Found
+        cause: Product does not exist
+        solution: Provide a valid productId
+      - error: 422 Validation Error
+        cause: productId is missing or invalid
+        solution: Provide a positive integer productId
+
+---
+
+# Create Compare Item
+
+Add a product to the authenticated customer's comparison list.
+
+## Endpoint
+
+```
+POST /api/shop/compare-items
+```
+
+## Request Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Content-Type` | Yes | application/json |
+| `X-STOREFRONT-KEY` | Yes | Your storefront API key |
+| `Authorization` | Yes | Customer Bearer token (`Bearer <accessToken>`) |
+
+## Request Body
+
+```json
+{
+  "productId": 1
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `productId` | integer | Yes | ID of the product to add to the compare list. |
+
+## Response Fields (201 Created)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | New compare item ID |
+| `product` | object | Associated product details |
+| `customer` | object | Customer who added the item |
+
+::: tip
+The exact response shape follows the package's serialization. Confirm field presence against the live endpoint for your installation.
+:::
+
+## Validation
+
+- `productId` is required and must reference an existing product.
+- A valid customer Bearer token is required.
+
+## Use Cases
+
+- "Add to compare" buttons on product cards
+- Build a side-by-side product comparison list
+
+## Related Resources
+
+- [Get Compare Items](/api/rest-api/shop/compare/list)
+- [Delete Compare Item](/api/rest-api/shop/compare/delete)
+- [Delete All Compare Items](/api/rest-api/shop/compare/delete-all)
+
+
+
+---
+
+# Delete Compare Item
+URL: /api/rest-api/shop/compare/delete
+
+---
+outline: false
+examples:
+  - id: delete-compare-item
+    title: Delete Compare Item
+    description: Remove a single product from the authenticated customer's comparison list by ID.
+    request: |
+      DELETE /api/shop/compare-items/38
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer <accessToken>
+    response: |
+      {
+        "message": "Item removed from compare list successfully"
+      }
+    commonErrors:
+      - error: 401 Unauthorized
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+      - error: 404 Not Found
+        cause: Compare item does not exist or belongs to another customer
+        solution: Provide a valid compare item ID owned by the authenticated customer
+
+---
+
+# Delete Compare Item
+
+Remove a single product from the authenticated customer's comparison list.
+
+## Endpoint
+
+```
+DELETE /api/shop/compare-items/{id}
+```
+
+## Request Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Content-Type` | Yes | application/json |
+| `X-STOREFRONT-KEY` | Yes | Your storefront API key |
+| `Authorization` | Yes | Customer Bearer token (`Bearer <accessToken>`) |
+
+## Path Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | integer | Yes | Compare item ID to delete |
+
+## Response (200 OK)
+
+```json
+{
+  "message": "Item removed from compare list successfully"
+}
+```
+
+::: tip
+Confirm the exact success status (200 with body vs 204 no content) against the live endpoint for your installation.
+:::
+
+## Validation
+
+- The compare item must exist and belong to the authenticated customer.
+
+## Use Cases
+
+- Remove a single product from the comparison page
+- Drop a product from a comparison table
+
+## Related Resources
+
+- [Get Compare Items](/api/rest-api/shop/compare/list)
+- [Delete All Compare Items](/api/rest-api/shop/compare/delete-all)
+
+
+
+---
+
+# Delete All Compare Items
+URL: /api/rest-api/shop/compare/delete-all
+
+---
+outline: false
+examples:
+  - id: delete-all-compare-items
+    title: Delete All Compare Items
+    description: Remove every product from the authenticated customer's comparison list.
+    request: |
+      POST /api/shop/delete-all-compare-items
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer <accessToken>
+
+      {}
+    response: |
+      {
+        "message": "All compare items removed successfully",
+        "deletedCount": 2
+      }
+    commonErrors:
+      - error: 401 Unauthorized
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+
+---
+
+# Delete All Compare Items
+
+Remove every product from the authenticated customer's comparison list in a single request.
+
+## Endpoint
+
+```
+POST /api/shop/delete-all-compare-items
+```
+
+## Request Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Content-Type` | Yes | application/json |
+| `X-STOREFRONT-KEY` | Yes | Your storefront API key |
+| `Authorization` | Yes | Customer Bearer token (`Bearer <accessToken>`) |
+
+## Request Body
+
+No fields are required. Send an empty JSON object:
+
+```json
+{}
+```
+
+## Response Fields (200 OK)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `message` | string | Confirmation message |
+| `deletedCount` | integer | Number of compare items removed |
+
+## Use Cases
+
+- "Clear comparison" action on the compare page
+- Reset a customer's comparison list in one call
+
+## Notes
+
+- Only the authenticated customer's items are removed.
+- Returns `deletedCount: 0` when the comparison list is already empty.
+
+## Related Resources
+
+- [Get Compare Items](/api/rest-api/shop/compare/list)
+- [Delete Compare Item](/api/rest-api/shop/compare/delete)
+
+
+
+---
+
+# Get Compare Item
+URL: /api/rest-api/shop/compare/get
+
+---
+outline: false
+examples:
+  - id: get-compare-item
+    title: Get Single Compare Item
+    description: Retrieve a specific compare item by its ID.
+    request: |
+      GET /api/shop/compare-items/37
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer <accessToken>
+    response: |
+      {
+        "id": 37,
+        "product": {
+          "id": 2500,
+          "sku": "MINT-BLAZER-001",
+          "type": "configurable",
+          "name": "Mint Axis Unisex Tailored Blazer",
+          "shortDescription": "A modern mint blazer with a sharp tailored fit.",
+          "price": "0",
+          "formattedPrice": "$0.00",
+          "minimumPrice": "544",
+          "formattedMinimumPrice": "$544.00",
+          "maximumPrice": "544",
+          "formattedMaximumPrice": "$544.00"
+        },
+        "customer": {
+          "id": 122,
+          "firstName": "John",
+          "lastName": "Doe"
+        },
+        "createdAt": "2026-04-06T18:47:53+05:30",
+        "updatedAt": "2026-04-06T18:47:53+05:30"
+      }
+    commonErrors:
+      - error: 401 Unauthorized
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+      - error: 404 Not Found
+        cause: Compare item does not exist or belongs to another customer
+        solution: Provide a valid compare item ID owned by the authenticated customer
+
+---
+
+# Get Compare Item
+
+Retrieve a single compare item by ID.
+
+## Endpoint
+
+```
+GET /api/shop/compare-items/{id}
+```
+
+## Request Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Content-Type` | Yes | application/json |
+| `X-STOREFRONT-KEY` | Yes | Your storefront API key |
+| `Authorization` | Yes | Customer Bearer token (`Bearer <accessToken>`) |
+
+## Path Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | integer | Yes | Compare item ID |
+
+## Response Fields (200 OK)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Compare item ID |
+| `product` | object | Associated product details |
+| `customer` | object | Customer who added the item |
+| `createdAt` | string | Timestamp when the item was added |
+| `updatedAt` | string | Timestamp when the item was last updated |
+
+## Validation
+
+- The compare item must exist and belong to the authenticated customer.
+
+## Use Cases
+
+- Fetch details for a single compared product
+- Refresh a row in a comparison table
+
+## Related Resources
+
+- [Get Compare Items](/api/rest-api/shop/compare/list)
+- [Create Compare Item](/api/rest-api/shop/compare/create)
+- [Delete Compare Item](/api/rest-api/shop/compare/delete)
+
+
+
+---
+
+# Get Compare Items
+URL: /api/rest-api/shop/compare/list
+
+---
+outline: false
+examples:
+  - id: list-compare-items
+    title: Get Compare Items
+    description: Retrieve the authenticated customer's product comparison list.
+    request: |
+      GET /api/shop/compare-items
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer <accessToken>
+    response: |
+      [
+        {
+          "id": 36,
+          "product": {
+            "id": 2495,
+            "sku": "IVORY-OVERCOAT-001",
+            "type": "configurable",
+            "name": "Ivory Frost Classic Overcoat",
+            "shortDescription": "A sleek ivory overcoat with a tailored fit and soft warmth.",
+            "price": "0",
+            "formattedPrice": "$0.00",
+            "minimumPrice": "500",
+            "formattedMinimumPrice": "$500.00"
+          },
+          "customer": {
+            "id": 122,
+            "firstName": "John",
+            "lastName": "Doe"
+          },
+          "createdAt": "2026-04-06T18:47:53+05:30",
+          "updatedAt": "2026-04-06T18:47:53+05:30"
+        },
+        {
+          "id": 37,
+          "product": {
+            "id": 2500,
+            "sku": "MINT-BLAZER-001",
+            "type": "configurable",
+            "name": "Mint Axis Unisex Tailored Blazer",
+            "shortDescription": "A modern mint blazer with a sharp tailored fit.",
+            "price": "0",
+            "formattedPrice": "$0.00",
+            "minimumPrice": "544",
+            "formattedMinimumPrice": "$544.00"
+          },
+          "customer": {
+            "id": 122,
+            "firstName": "John",
+            "lastName": "Doe"
+          },
+          "createdAt": "2026-04-06T18:47:53+05:30",
+          "updatedAt": "2026-04-06T18:47:53+05:30"
+        }
+      ]
+    commonErrors:
+      - error: 401 Unauthorized
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+
+---
+
+# Get Compare Items
+
+Retrieve the products in the authenticated customer's comparison list.
+
+## Endpoint
+
+```
+GET /api/shop/compare-items
+```
+
+## Request Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Content-Type` | Yes | application/json |
+| `X-STOREFRONT-KEY` | Yes | Your storefront API key |
+| `Authorization` | Yes | Customer Bearer token (`Bearer <accessToken>`) |
+
+## Response Fields (200 OK)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Compare item ID |
+| `product` | object | Associated product (id, sku, type, name, price, formattedPrice, etc.) |
+| `customer` | object | Customer who added the item (id, firstName, lastName) |
+| `createdAt` | string | Timestamp when the item was added |
+| `updatedAt` | string | Timestamp when the item was last updated |
+
+::: tip
+The response is a plain JSON array of compare items. Pagination metadata is exposed via the `X-Total-Count` / `X-Page` / `X-Per-Page` / `X-Total-Pages` response headers.
+:::
+
+## Use Cases
+
+- Display the product comparison page
+- Build comparison tables across saved products
+- Show a compare count in navigation
+
+## Notes
+
+- Compare items are scoped to the authenticated customer (not channel-scoped).
+- Guests cannot have compare lists — a valid customer token is required.
+
+## Related Resources
+
+- [Get Single Compare Item](/api/rest-api/shop/compare/get)
+- [Create Compare Item](/api/rest-api/shop/compare/create)
+- [Delete Compare Item](/api/rest-api/shop/compare/delete)
+- [Delete All Compare Items](/api/rest-api/shop/compare/delete-all)
+
+
+
+---
+
 # Countries
 URL: /api/rest-api/shop/countries/get-countries
 
@@ -92391,6 +93813,48 @@ examples:
       - error: 401 Unauthorized
         cause: Customer not authenticated
         solution: Provide valid Bearer token
+  - id: get-customer-addresses-newest-first
+    title: Get Customer Addresses (newest first)
+    description: Sort the address book so the most recently added address appears first.
+    request: |
+      GET /api/shop/customer-addresses?sort=created_at&order=desc
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+    response: |
+      {
+        "data": {
+          "addresses": [
+            {
+              "id": 2,
+              "firstName": "John",
+              "lastName": "Doe",
+              "address": "456 Oak Ave",
+              "city": "Los Angeles",
+              "state": "CA",
+              "country": "US",
+              "postcode": "90001",
+              "phone": "9876543210",
+              "isDefault": false
+            },
+            {
+              "id": 1,
+              "firstName": "John",
+              "lastName": "Doe",
+              "address": "123 Main St",
+              "city": "New York",
+              "state": "NY",
+              "country": "US",
+              "postcode": "10001",
+              "phone": "1234567890",
+              "isDefault": true
+            }
+          ]
+        }
+      }
+    commonErrors:
+      - error: 401 Unauthorized
+        cause: Customer not authenticated
+        solution: Provide valid Bearer token
 
 ---
 
@@ -92410,6 +93874,15 @@ GET /api/shop/customer-addresses
 |--------|----------|-------------|
 | `X-STOREFRONT-KEY` | Yes | Your storefront API key |
 | `Authorization` | Yes | Bearer token (customer login required) |
+
+## Query Parameters
+
+| Parameter | Required | Default | Description |
+|-----------|----------|---------|-------------|
+| `sort` | No | `id` | Column to sort by — `id` or `created_at`. The compound form `created_at-desc` (`<column>-<direction>`) is also accepted. |
+| `order` | No | `asc` | Sort direction — `asc` or `desc`. Use `desc` to return the most recently added addresses first. |
+
+By default addresses are returned oldest-first (the order they were added). To show the newest address at the top, pass `?sort=created_at&order=desc` (or the shorthand `?sort=created_at-desc`).
 
 ## Response Fields (200 OK)
 
@@ -94475,6 +95948,102 @@ Empty JSON object:
 - [Add Product to Cart](/api/rest-api/shop/mutations/add-to-cart)
 - [Get Cart Details](/api/rest-api/shop/queries/get-cart)
 - [Remove Cart Item](/api/rest-api/shop/mutations/remove-cart-item)
+
+
+
+---
+
+# Subscribe to Newsletter
+URL: /api/rest-api/shop/newsletter/subscribe
+
+---
+outline: false
+examples:
+  - id: subscribe-newsletter
+    title: Subscribe to Newsletter
+    description: Subscribe the authenticated customer to the newsletter on the current channel.
+    request: |
+      POST /api/shop/newsletters
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer <accessToken>
+
+      {
+        "customerEmail": "jane@example.com"
+      }
+    response: |
+      {
+        "success": true,
+        "message": "You have subscribed to the newsletter successfully."
+      }
+    commonErrors:
+      - error: 401 Unauthorized
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+      - error: 422 Validation Error
+        cause: Email is missing, invalid, or already subscribed
+        solution: Provide a valid email that is not already in the subscribers list
+
+---
+
+# Subscribe to Newsletter
+
+Subscribe the authenticated customer to the store newsletter for the current channel.
+
+## Endpoint
+
+```
+POST /api/shop/newsletters
+```
+
+## Request Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Content-Type` | Yes | application/json |
+| `X-STOREFRONT-KEY` | Yes | Your storefront API key |
+| `Authorization` | Yes | Customer Bearer token (`Bearer <accessToken>`) |
+
+## Request Body
+
+```json
+{
+  "customerEmail": "jane@example.com"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `customerEmail` | string | Yes | Email address to subscribe. Must be a valid email and unique in the subscribers list. |
+
+## Response Fields (200 OK)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | `true` when the subscription was created successfully. |
+| `message` | string | Human-readable confirmation or error message. |
+
+## Validation
+
+- `customerEmail` is required and must be a valid email format.
+- The email must not already exist in the subscribers list for the channel.
+- A valid customer Bearer token is required.
+
+## Use Cases
+
+- Newsletter opt-in from the storefront footer or account page
+- Re-subscribe a customer who previously unsubscribed
+- Capture marketing consent at checkout or registration
+
+## Notes
+
+- The subscription is scoped to the current channel (resolved from the storefront key).
+- Field names are camelCase (`customerEmail`).
+
+## Related Resources
+
+- [Contact Us](/api/rest-api/shop/customers)
+- [Create Newsletter (GraphQL)](/api/graphql-api/shop/mutations/create-newsletter)
 
 
 
@@ -97464,6 +99033,715 @@ The `options` JSON string varies by `type`. Common shapes:
 
 ---
 
+# Create Wishlist Item
+URL: /api/rest-api/shop/wishlist/create
+
+---
+outline: false
+examples:
+  - id: create-wishlist
+    title: Add Product to Wishlist
+    description: Add a product to the authenticated customer's wishlist.
+    request: |
+      POST /api/shop/wishlists
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer <accessToken>
+
+      {
+        "productId": 2
+      }
+    response: |
+      {
+        "id": 82,
+        "message": "Item added to wishlist successfully",
+        "product": {
+          "id": 2,
+          "name": "Arctic Snow Jacket",
+          "sku": "ARCTIC-JACKET-001",
+          "type": "simple"
+        }
+      }
+    commonErrors:
+      - error: 401 Unauthorized
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+      - error: 404 Not Found
+        cause: Product does not exist
+        solution: Provide a valid productId
+      - error: 422 Validation Error
+        cause: productId is missing or invalid
+        solution: Provide a positive integer productId
+
+---
+
+# Create Wishlist Item
+
+Add a product to the authenticated customer's wishlist.
+
+## Endpoint
+
+```
+POST /api/shop/wishlists
+```
+
+## Request Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Content-Type` | Yes | application/json |
+| `X-STOREFRONT-KEY` | Yes | Your storefront API key |
+| `Authorization` | Yes | Customer Bearer token (`Bearer <accessToken>`) |
+
+## Request Body
+
+```json
+{
+  "productId": 2
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `productId` | integer | Yes | ID of the product to add to the wishlist. |
+
+## Response Fields (201 Created)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | New wishlist item ID |
+| `message` | string | Confirmation message |
+| `product` | object | Associated product details |
+
+::: tip
+The exact response shape follows the package's serialization. Confirm field presence against the live endpoint for your installation.
+:::
+
+## Validation
+
+- `productId` is required and must reference an existing product.
+- A valid customer Bearer token is required.
+- Adding the same product again is a no-op or returns the existing item (use [Toggle](/api/rest-api/shop/wishlist/toggle) to add/remove).
+
+## Use Cases
+
+- "Add to wishlist" buttons on product pages
+- Save-for-later from cart or category listings
+
+## Related Resources
+
+- [Get Wishlist Items](/api/rest-api/shop/wishlist/list)
+- [Toggle Wishlist Item](/api/rest-api/shop/wishlist/toggle)
+- [Delete Wishlist Item](/api/rest-api/shop/wishlist/delete)
+
+
+
+---
+
+# Delete Wishlist Item
+URL: /api/rest-api/shop/wishlist/delete
+
+---
+outline: false
+examples:
+  - id: delete-wishlist
+    title: Delete Wishlist Item
+    description: Remove a single item from the authenticated customer's wishlist by ID.
+    request: |
+      DELETE /api/shop/wishlists/82
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer <accessToken>
+    response: |
+      {
+        "message": "Item removed from wishlist successfully"
+      }
+    commonErrors:
+      - error: 401 Unauthorized
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+      - error: 404 Not Found
+        cause: Wishlist item does not exist or belongs to another customer
+        solution: Provide a valid wishlist item ID owned by the authenticated customer
+
+---
+
+# Delete Wishlist Item
+
+Remove a single item from the authenticated customer's wishlist.
+
+## Endpoint
+
+```
+DELETE /api/shop/wishlists/{id}
+```
+
+## Request Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Content-Type` | Yes | application/json |
+| `X-STOREFRONT-KEY` | Yes | Your storefront API key |
+| `Authorization` | Yes | Customer Bearer token (`Bearer <accessToken>`) |
+
+## Path Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | integer | Yes | Wishlist item ID to delete |
+
+## Response (200 OK)
+
+```json
+{
+  "message": "Item removed from wishlist successfully"
+}
+```
+
+::: tip
+This delete returns a confirmation message. Confirm the exact success status (200 with body vs 204 no content) against the live endpoint for your installation.
+:::
+
+## Validation
+
+- The wishlist item must exist and belong to the authenticated customer.
+- A valid customer Bearer token is required.
+
+## Use Cases
+
+- Remove a single saved product from the wishlist page
+- Clean up the wishlist after moving an item to cart
+
+## Related Resources
+
+- [Get Wishlist Items](/api/rest-api/shop/wishlist/list)
+- [Delete All Wishlist Items](/api/rest-api/shop/wishlist/delete-all)
+- [Toggle Wishlist Item](/api/rest-api/shop/wishlist/toggle)
+
+
+
+---
+
+# Delete All Wishlist Items
+URL: /api/rest-api/shop/wishlist/delete-all
+
+---
+outline: false
+examples:
+  - id: delete-all-wishlists
+    title: Delete All Wishlist Items
+    description: Remove every wishlist item for the authenticated customer.
+    request: |
+      POST /api/shop/delete-all-wishlists
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer <accessToken>
+
+      {}
+    response: |
+      {
+        "message": "All wishlist items removed successfully",
+        "deletedCount": 4
+      }
+    commonErrors:
+      - error: 401 Unauthorized
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+
+---
+
+# Delete All Wishlist Items
+
+Remove every item from the authenticated customer's wishlist in a single request.
+
+## Endpoint
+
+```
+POST /api/shop/delete-all-wishlists
+```
+
+## Request Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Content-Type` | Yes | application/json |
+| `X-STOREFRONT-KEY` | Yes | Your storefront API key |
+| `Authorization` | Yes | Customer Bearer token (`Bearer <accessToken>`) |
+
+## Request Body
+
+No fields are required. Send an empty JSON object:
+
+```json
+{}
+```
+
+## Response Fields (200 OK)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `message` | string | Confirmation message |
+| `deletedCount` | integer | Number of wishlist items removed |
+
+## Use Cases
+
+- "Clear wishlist" action on the wishlist page
+- Reset a customer's saved products in one call
+
+## Notes
+
+- Only the authenticated customer's items are removed.
+- Returns `deletedCount: 0` when the wishlist is already empty.
+
+## Related Resources
+
+- [Get Wishlist Items](/api/rest-api/shop/wishlist/list)
+- [Delete Wishlist Item](/api/rest-api/shop/wishlist/delete)
+
+
+
+---
+
+# Get Wishlist Items
+URL: /api/rest-api/shop/wishlist/list
+
+---
+outline: false
+examples:
+  - id: list-wishlists
+    title: Get Wishlist Items
+    description: Retrieve the authenticated customer's wishlist items for the current channel.
+    request: |
+      GET /api/shop/wishlists
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer <accessToken>
+    response: |
+      [
+        {
+          "id": 78,
+          "product": {
+            "id": 2500,
+            "name": "Mint Axis Unisex Tailored Blazer",
+            "sku": "MINT-BLAZER-001",
+            "type": "configurable",
+            "price": "0",
+            "baseImageUrl": "https://api-demo.bagisto.com/storage/product/2500/T97yKJVNKlmi6GXoqKl8FNqfM8115Wxo6jw4WhPF.webp"
+          },
+          "customer": {
+            "id": 122,
+            "email": "john.doe@example.com"
+          },
+          "channel": {
+            "id": 1,
+            "code": "default"
+          },
+          "createdAt": "2026-04-06T18:44:50+05:30",
+          "updatedAt": "2026-04-06T18:44:50+05:30"
+        },
+        {
+          "id": 81,
+          "product": {
+            "id": 122,
+            "name": "Classic Cowboy Hat",
+            "sku": "COWBOY-HAT-001",
+            "type": "simple",
+            "price": "149.99",
+            "baseImageUrl": "https://api-demo.bagisto.com/storage/product/122/P9n1dbmgM4UOBT3zUAEGCn4wpKi0GjPGhgS1jZe7.webp"
+          },
+          "customer": {
+            "id": 122,
+            "email": "john.doe@example.com"
+          },
+          "channel": {
+            "id": 1,
+            "code": "default"
+          },
+          "createdAt": "2026-04-06T18:44:55+05:30",
+          "updatedAt": "2026-04-06T18:44:55+05:30"
+        }
+      ]
+    commonErrors:
+      - error: 401 Unauthorized
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+  - id: list-wishlists-newest-first
+    title: Get Wishlist Items (newest first)
+    description: Sort the wishlist so the most recently added item appears first.
+    request: |
+      GET /api/shop/wishlists?sort=created_at&order=desc
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer <accessToken>
+    response: |
+      [
+        {
+          "id": 81,
+          "product": {
+            "id": 122,
+            "name": "Classic Cowboy Hat",
+            "sku": "COWBOY-HAT-001",
+            "type": "simple",
+            "price": "149.99",
+            "baseImageUrl": "https://api-demo.bagisto.com/storage/product/122/P9n1dbmgM4UOBT3zUAEGCn4wpKi0GjPGhgS1jZe7.webp"
+          },
+          "customer": {
+            "id": 122,
+            "email": "john.doe@example.com"
+          },
+          "channel": {
+            "id": 1,
+            "code": "default"
+          },
+          "createdAt": "2026-04-06T18:44:55+05:30",
+          "updatedAt": "2026-04-06T18:44:55+05:30"
+        },
+        {
+          "id": 78,
+          "product": {
+            "id": 2500,
+            "name": "Mint Axis Unisex Tailored Blazer",
+            "sku": "MINT-BLAZER-001",
+            "type": "configurable",
+            "price": "0",
+            "baseImageUrl": "https://api-demo.bagisto.com/storage/product/2500/T97yKJVNKlmi6GXoqKl8FNqfM8115Wxo6jw4WhPF.webp"
+          },
+          "customer": {
+            "id": 122,
+            "email": "john.doe@example.com"
+          },
+          "channel": {
+            "id": 1,
+            "code": "default"
+          },
+          "createdAt": "2026-04-06T18:44:50+05:30",
+          "updatedAt": "2026-04-06T18:44:50+05:30"
+        }
+      ]
+    commonErrors:
+      - error: 401 Unauthorized
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+
+---
+
+# Get Wishlist Items
+
+Retrieve the authenticated customer's wishlist items for the current channel.
+
+## Endpoint
+
+```
+GET /api/shop/wishlists
+```
+
+## Request Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Content-Type` | Yes | application/json |
+| `X-STOREFRONT-KEY` | Yes | Your storefront API key |
+| `Authorization` | Yes | Customer Bearer token (`Bearer <accessToken>`) |
+
+## Query Parameters
+
+| Parameter | Required | Default | Description |
+|-----------|----------|---------|-------------|
+| `sort` | No | `id` | Column to sort by — `id` or `created_at`. The compound form `created_at-desc` (`<column>-<direction>`) is also accepted. |
+| `order` | No | `asc` | Sort direction — `asc` or `desc`. Use `desc` to return the most recently added items first. |
+
+By default the wishlist is returned oldest-first (the order items were added). To show the newest item at the top, pass `?sort=created_at&order=desc` (or the shorthand `?sort=created_at-desc`).
+
+## Response Fields (200 OK)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Wishlist item ID |
+| `product` | object | Associated product (id, name, sku, type, price, baseImageUrl) |
+| `customer` | object | Customer who added the item (id, email) |
+| `channel` | object | Channel where the item was added (id, code) |
+| `createdAt` | string | Timestamp when the item was added |
+| `updatedAt` | string | Timestamp when the item was last updated |
+
+::: tip
+The response is a plain JSON array of wishlist items. Pagination metadata is exposed via the `X-Total-Count` / `X-Page` / `X-Per-Page` / `X-Total-Pages` response headers.
+:::
+
+## Use Cases
+
+- Display the customer's wishlist page
+- Show a wishlist count in navigation
+- Build saved-for-later product lists
+
+## Notes
+
+- Wishlist items are scoped to the customer and the current channel.
+- Guests cannot have wishlists — a valid customer token is required.
+
+## Related Resources
+
+- [Create Wishlist Item](/api/rest-api/shop/wishlist/create)
+- [Toggle Wishlist Item](/api/rest-api/shop/wishlist/toggle)
+- [Move Wishlist Item to Cart](/api/rest-api/shop/wishlist/move-to-cart)
+- [Delete All Wishlist Items](/api/rest-api/shop/wishlist/delete-all)
+
+
+
+---
+
+# Move Wishlist Item to Cart
+URL: /api/rest-api/shop/wishlist/move-to-cart
+
+---
+outline: false
+examples:
+  - id: move-wishlist-to-cart
+    title: Move Wishlist Item to Cart
+    description: Move a wishlist item to the shopping cart and remove it from the wishlist.
+    request: |
+      POST /api/shop/move-wishlist-to-carts
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer <accessToken>
+
+      {
+        "wishlistItemId": 77,
+        "quantity": 2
+      }
+    response: |
+      {
+        "id": 1,
+        "itemsCount": 1,
+        "itemsQty": 2,
+        "subtotal": 1199.98,
+        "grandTotal": 1329.97,
+        "formattedGrandTotal": "$1,329.97",
+        "couponCode": null,
+        "success": true,
+        "message": "Item moved to cart successfully"
+      }
+    commonErrors:
+      - error: 401 Unauthorized
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+      - error: 404 Not Found
+        cause: Wishlist item does not exist or belongs to another customer
+        solution: Use a valid wishlist item ID owned by the authenticated customer
+      - error: 422 Validation Error
+        cause: Quantity is less than 1, or a configurable product requires options
+        solution: Provide a positive quantity and any required product options
+
+  - id: move-wishlist-to-cart-default-qty
+    title: Move Wishlist Item to Cart - Default Quantity
+    description: Move a wishlist item with the default quantity of 1 by omitting the quantity field.
+    request: |
+      POST /api/shop/move-wishlist-to-carts
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer <accessToken>
+
+      {
+        "wishlistItemId": 68
+      }
+    response: |
+      {
+        "id": 1,
+        "itemsCount": 1,
+        "itemsQty": 1,
+        "success": true,
+        "message": "Item moved to cart successfully"
+      }
+    commonErrors:
+      - error: 404 Not Found
+        cause: Wishlist item does not exist
+        solution: Use a valid wishlist item ID
+
+---
+
+# Move Wishlist Item to Cart
+
+Move a product from the customer's wishlist directly into their shopping cart. The item is removed from the wishlist once it is successfully added to the cart.
+
+## Endpoint
+
+```
+POST /api/shop/move-wishlist-to-carts
+```
+
+## Request Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Content-Type` | Yes | application/json |
+| `X-STOREFRONT-KEY` | Yes | Your storefront API key |
+| `Authorization` | Yes | Customer Bearer token (`Bearer <accessToken>`) |
+
+## Request Body
+
+```json
+{
+  "wishlistItemId": 77,
+  "quantity": 2
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `wishlistItemId` | integer | Yes | The numeric ID of the wishlist item to move. |
+| `quantity` | integer | No | Number of units to add to the cart. Defaults to `1`. |
+
+## Response Fields (200 OK)
+
+The response is the updated cart. Key fields include:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Cart ID |
+| `itemsCount` | integer | Number of distinct items in the cart |
+| `itemsQty` | integer | Total quantity across all cart items |
+| `subtotal` | decimal | Items subtotal |
+| `grandTotal` | decimal | Cart grand total |
+| `formattedGrandTotal` | string | Localised grand total |
+| `couponCode` | string | Applied coupon code (if any) |
+| `success` | boolean | `true` when the move succeeded |
+| `message` | string | Confirmation message |
+
+::: tip
+The cart payload mirrors the standard cart response shape. See [Get Cart](/api/rest-api/shop/cart/get-cart) for the full field set; confirm exact values against the live endpoint for your installation.
+:::
+
+## Validation
+
+- `wishlistItemId` must reference a wishlist item owned by the authenticated customer.
+- `quantity` must be a positive integer.
+- Configurable products may require their options to be selected.
+
+## Use Cases
+
+- "Move to Cart" buttons on the wishlist page
+- Convert saved-for-later items into active cart items
+
+## Related Resources
+
+- [Get Wishlist Items](/api/rest-api/shop/wishlist/list)
+- [Get Cart](/api/rest-api/shop/cart/get-cart)
+- [Delete Wishlist Item](/api/rest-api/shop/wishlist/delete)
+
+
+
+---
+
+# Toggle Wishlist Item
+URL: /api/rest-api/shop/wishlist/toggle
+
+---
+outline: false
+examples:
+  - id: toggle-wishlist-add
+    title: Toggle Wishlist - Add
+    description: Toggle a product in the wishlist. If not present, it is added.
+    request: |
+      POST /api/shop/wishlists/toggle
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer <accessToken>
+
+      {
+        "productId": 2
+      }
+    response: |
+      {
+        "id": 82,
+        "message": "Item added to wishlist successfully"
+      }
+    commonErrors:
+      - error: 401 Unauthorized
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+      - error: 404 Not Found
+        cause: Product does not exist
+        solution: Provide a valid productId
+
+  - id: toggle-wishlist-remove
+    title: Toggle Wishlist - Remove
+    description: Toggle a product in the wishlist. If already present, it is removed.
+    request: |
+      POST /api/shop/wishlists/toggle
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer <accessToken>
+
+      {
+        "productId": 2
+      }
+    response: |
+      {
+        "message": "Item removed from wishlist successfully"
+      }
+    commonErrors:
+      - error: 422 Validation Error
+        cause: productId is missing or invalid
+        solution: Provide a positive integer productId
+
+---
+
+# Toggle Wishlist Item
+
+Add a product to the wishlist if it is not present, or remove it if it already is.
+
+## Endpoint
+
+```
+POST /api/shop/wishlists/toggle
+```
+
+## Request Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Content-Type` | Yes | application/json |
+| `X-STOREFRONT-KEY` | Yes | Your storefront API key |
+| `Authorization` | Yes | Customer Bearer token (`Bearer <accessToken>`) |
+
+## Request Body
+
+```json
+{
+  "productId": 2
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `productId` | integer | Yes | ID of the product to toggle in the wishlist. |
+
+## Response Fields (200 OK)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Wishlist item ID (present when the item was added) |
+| `message` | string | Confirmation message indicating whether the item was added or removed |
+
+## Behaviour
+
+- If the product is **not** in the wishlist, it is added and a "added" message is returned.
+- If the product **is** in the wishlist, it is removed and a "removed" message is returned.
+
+## Use Cases
+
+- A single heart/wishlist toggle button on product cards
+- One-tap add/remove without checking current state first
+
+## Related Resources
+
+- [Get Wishlist Items](/api/rest-api/shop/wishlist/list)
+- [Create Wishlist Item](/api/rest-api/shop/wishlist/create)
+- [Delete Wishlist Item](/api/rest-api/shop/wishlist/delete)
+
+
+
+---
+
 # Testing & Debugging REST APIs
 URL: /api/rest-api/testing-debugging
 
@@ -98116,10 +100394,21 @@ Edit `composer.json` and update the `autoload` section:
 
 #### Step 4: Install Dependencies
 
+Install the required API Platform packages, pinned to a consistent, tested set so the install completes cleanly:
+
 ```bash
-# Install required packages
-composer require api-platform/laravel:v4.1.25
-composer require api-platform/graphql:v4.2.3
+composer require \
+  api-platform/laravel:v4.1.25 \
+  api-platform/graphql:v4.2.3 \
+  api-platform/metadata:v4.3.1 \
+  api-platform/serializer:v4.3.1 \
+  api-platform/state:v4.3.1 \
+  api-platform/jsonld:v4.3.1 \
+  api-platform/hydra:v4.3.1 \
+  api-platform/openapi:v4.3.1 \
+  api-platform/json-schema:v4.3.1 \
+  api-platform/json-api:v4.3.1 \
+  api-platform/documentation:v4.3.1
 ```
 
 #### Step 5: Run the installation
@@ -98128,7 +100417,7 @@ composer dump-autoload
 php artisan bagisto-api-platform:install
 ```
 
-#### Step 9: Environment Setup (Update in the .env)
+#### Step 6: Environment Setup (Update in the .env)
 ```
 STOREFRONT_DEFAULT_RATE_LIMIT=100
 STOREFRONT_CACHE_TTL=60

@@ -441,6 +441,19 @@ export default defineConfig(({ command, mode }) => {
                           }
                         ]
                       },
+                      {
+                        text: 'Newsletter',
+                        collapsed: true,
+                        items: [
+                          {
+                            text: 'Mutations',
+                            collapsed: true,
+                            items: [
+                              { text: 'Create Newsletter', link: '/api/graphql-api/shop/mutations/create-newsletter' },
+                            ]
+                          }
+                        ]
+                      },
                 ]
               },
               {
@@ -453,6 +466,14 @@ export default defineConfig(({ command, mode }) => {
                     collapsed: true,
                     items: [
                       { text: 'Get Profile', link: '/api/graphql-api/admin/profile/get-profile' },
+                    ]
+                  },
+                  {
+                    text: 'Navigation',
+                    collapsed: true,
+                    items: [
+                      { text: 'Menu', link: '/api/graphql-api/admin/navigation/menu' },
+                      { text: 'Permissions', link: '/api/graphql-api/admin/navigation/permissions' },
                     ]
                   },
                   {
@@ -665,6 +686,7 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Create Address', link: '/api/graphql-api/admin/customers/addresses/create' },
                           { text: 'Update Address', link: '/api/graphql-api/admin/customers/addresses/update' },
                           { text: 'Delete Address', link: '/api/graphql-api/admin/customers/addresses/delete' },
+                          { text: 'Set as Default', link: '/api/graphql-api/admin/customers/addresses/set-default' },
                         ]
                       },
                       {
@@ -672,6 +694,7 @@ export default defineConfig(({ command, mode }) => {
                         collapsed: true,
                         items: [
                           { text: 'Add Note', link: '/api/graphql-api/admin/customers/notes/create' },
+                          { text: 'List Notes', link: '/api/graphql-api/admin/customers/notes/list' },
                         ]
                       },
                       {
@@ -699,6 +722,7 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           { text: 'List Reviews', link: '/api/graphql-api/admin/customers/reviews/list' },
                           { text: 'Review Detail', link: '/api/graphql-api/admin/customers/reviews/detail' },
+                          { text: 'Review with Images', link: '/api/graphql-api/admin/customers/reviews/review-with-images' },
                           { text: 'Update Status', link: '/api/graphql-api/admin/customers/reviews/update' },
                           { text: 'Delete Review', link: '/api/graphql-api/admin/customers/reviews/delete' },
                           { text: 'Mass Delete', link: '/api/graphql-api/admin/customers/reviews/mass-delete' },
@@ -1190,6 +1214,36 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Place Order', link: '/api/rest-api/shop/checkout/place-order' },
                     ]
                   },
+                  {
+                    text: 'Wishlist',
+                    collapsed: true,
+                    items: [
+                      { text: 'Get Wishlist Items', link: '/api/rest-api/shop/wishlist/list' },
+                      { text: 'Create Wishlist Item', link: '/api/rest-api/shop/wishlist/create' },
+                      { text: 'Toggle Wishlist Item', link: '/api/rest-api/shop/wishlist/toggle' },
+                      { text: 'Delete Wishlist Item', link: '/api/rest-api/shop/wishlist/delete' },
+                      { text: 'Delete All Wishlist Items', link: '/api/rest-api/shop/wishlist/delete-all' },
+                      { text: 'Move Wishlist Item to Cart', link: '/api/rest-api/shop/wishlist/move-to-cart' },
+                    ]
+                  },
+                  {
+                    text: 'Compare',
+                    collapsed: true,
+                    items: [
+                      { text: 'Get Compare Items', link: '/api/rest-api/shop/compare/list' },
+                      { text: 'Get Compare Item', link: '/api/rest-api/shop/compare/get' },
+                      { text: 'Create Compare Item', link: '/api/rest-api/shop/compare/create' },
+                      { text: 'Delete Compare Item', link: '/api/rest-api/shop/compare/delete' },
+                      { text: 'Delete All Compare Items', link: '/api/rest-api/shop/compare/delete-all' },
+                    ]
+                  },
+                  {
+                    text: 'Newsletter',
+                    collapsed: true,
+                    items: [
+                      { text: 'Subscribe to Newsletter', link: '/api/rest-api/shop/newsletter/subscribe' },
+                    ]
+                  },
                 ]
               },
               {
@@ -1202,6 +1256,14 @@ export default defineConfig(({ command, mode }) => {
                     collapsed: true,
                     items: [
                       { text: 'Get Profile', link: '/api/rest-api/admin/profile/get-profile' },
+                    ]
+                  },
+                  {
+                    text: 'Navigation',
+                    collapsed: true,
+                    items: [
+                      { text: 'Menu', link: '/api/rest-api/admin/navigation/menu' },
+                      { text: 'Permissions', link: '/api/rest-api/admin/navigation/permissions' },
                     ]
                   },
                   {
@@ -1416,6 +1478,7 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Create Address', link: '/api/rest-api/admin/customers/addresses/create' },
                           { text: 'Update Address', link: '/api/rest-api/admin/customers/addresses/update' },
                           { text: 'Delete Address', link: '/api/rest-api/admin/customers/addresses/delete' },
+                          { text: 'Set as Default', link: '/api/rest-api/admin/customers/addresses/set-default' },
                         ]
                       },
                       {
@@ -1423,6 +1486,7 @@ export default defineConfig(({ command, mode }) => {
                         collapsed: true,
                         items: [
                           { text: 'Add Note', link: '/api/rest-api/admin/customers/notes/create' },
+                          { text: 'List Notes', link: '/api/rest-api/admin/customers/notes/list' },
                         ]
                       },
                       {
@@ -1450,6 +1514,7 @@ export default defineConfig(({ command, mode }) => {
                         items: [
                           { text: 'List Reviews', link: '/api/rest-api/admin/customers/reviews/list' },
                           { text: 'Review Detail', link: '/api/rest-api/admin/customers/reviews/detail' },
+                          { text: 'Review with Images', link: '/api/rest-api/admin/customers/reviews/review-with-images' },
                           { text: 'Update Status', link: '/api/rest-api/admin/customers/reviews/update' },
                           { text: 'Delete Review', link: '/api/rest-api/admin/customers/reviews/delete' },
                           { text: 'Mass Delete', link: '/api/rest-api/admin/customers/reviews/mass-delete' },

@@ -187,6 +187,72 @@ examples:
         cause: Missing or invalid Bearer token
         solution: Login and provide a valid customer authentication token
 
+  - id: get-wishlists-newest-first
+    title: Get Wishlist Items - Newest First
+    description: Sort the wishlist so the most recently added item appears first by passing sort and order.
+    query: |
+      query GetAllWishlists($first: Int, $sort: String, $order: String) {
+        wishlists(first: $first, sort: $sort, order: $order) {
+          edges {
+            node {
+              id
+              _id
+              product {
+                id
+                name
+                sku
+              }
+              createdAt
+            }
+          }
+          totalCount
+        }
+      }
+    variables: |
+      {
+        "first": 10,
+        "sort": "created_at",
+        "order": "desc"
+      }
+    response: |
+      {
+        "data": {
+          "wishlists": {
+            "edges": [
+              {
+                "node": {
+                  "id": "/api/shop/wishlists/81",
+                  "_id": 81,
+                  "product": {
+                    "id": "/api/shop/products/122",
+                    "name": "Classic Cowboy Hat",
+                    "sku": "COWBOY-HAT-001"
+                  },
+                  "createdAt": "2026-04-06T18:44:55+05:30"
+                }
+              },
+              {
+                "node": {
+                  "id": "/api/shop/wishlists/78",
+                  "_id": 78,
+                  "product": {
+                    "id": "/api/shop/products/2500",
+                    "name": "Mint Axis Unisex Tailored Blazer",
+                    "sku": "MINT-BLAZER-001"
+                  },
+                  "createdAt": "2026-04-06T18:44:50+05:30"
+                }
+              }
+            ],
+            "totalCount": 4
+          }
+        }
+      }
+    commonErrors:
+      - error: UNAUTHENTICATED
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+
   - id: get-wishlists-paginated
     title: Get Wishlist Items - Next Page
     description: Fetch the next page of wishlist items using the endCursor from the previous response.
@@ -267,6 +333,10 @@ Authorization: Bearer <accessToken>
 |----------|------|-------------|
 | `first` | `Int` | Number of items to return per page. |
 | `after` | `String` | Cursor for pagination. Use `endCursor` from previous response. |
+| `sort` | `String` | Column to sort by — `id` (default) or `created_at`. The compound form `created_at-desc` (`<column>-<direction>`) is also accepted. |
+| `order` | `String` | Sort direction — `asc` (default) or `desc`. Use `desc` to return the most recently added items first. |
+
+By default the wishlist is returned oldest-first (the order items were added). Pass `sort: "created_at", order: "desc"` to show the newest item at the top.
 
 ## Possible Returns
 

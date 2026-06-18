@@ -128,6 +128,7 @@
 - [Create Customer Address (GraphQL)](/api/graphql-api/admin/customers/addresses/create): Permission: `customers.addresses.create`.
 - [Delete Customer Address (GraphQL)](/api/graphql-api/admin/customers/addresses/delete): Same ownership guard. Permission: `customers.addresses.delete`.
 - [Customer Address Detail (GraphQL)](/api/graphql-api/admin/customers/addresses/detail)
+- [Set Customer Address as Default (GraphQL)](/api/graphql-api/admin/customers/addresses/set-default): Marks the chosen address as the customer's default. All the customer's other addresses have their default flag cleared in the same call.
 - [Update Customer Address (GraphQL)](/api/graphql-api/admin/customers/addresses/update): Cross-customer edits return errors[]. Permission: `customers.addresses.edit`.
 
 ## GraphQL API › Admin › Customers › Gdpr
@@ -165,6 +166,7 @@
 ## GraphQL API › Admin › Customers › Notes
 
 - [Add Customer Note (GraphQL)](/api/graphql-api/admin/customers/notes/create): Append-only. Permission: `customers.customers.edit`.
+- [List Customer Notes (GraphQL)](/api/graphql-api/admin/customers/notes/list): Returns the customer's notes, newest-first, as a cursor-paginated connection.
 
 ## GraphQL API › Admin › Customers › Reviews
 
@@ -254,6 +256,11 @@
 - [Create Product](/api/graphql-api/admin/mutations/create-product): Create a new simple product with basic information.
 - [Delete Product](/api/graphql-api/admin/mutations/delete-product): Delete a product from the system.
 - [Update Product](/api/graphql-api/admin/mutations/update-product): Update the price of an existing product.
+
+## GraphQL API › Admin › Navigation
+
+- [Get Admin Menu (GraphQL)](/api/graphql-api/admin/navigation/menu): Returns the admin sidebar as a nested tree, filtered to what the authenticated token's role is allowed to see. Use it to build a back-office navigation/sidebar…
+- [Get Admin Permissions (GraphQL)](/api/graphql-api/admin/navigation/permissions): Returns the authenticated token's effective permissions so you can gate UI up front — show or hide buttons, menus and actions without triggering…
 
 ## GraphQL API › Admin › Profile
 
@@ -456,6 +463,7 @@
 - [Create Compare Item](/api/graphql-api/shop/mutations/create-compare-item): Add a product to the authenticated customer's comparison list. The customer is auto-detected from the Bearer token.
 - [Create Contact Us](/api/graphql-api/shop/mutations/create-contact-us): Submit a contact us form with name, email, contact number, and message.
 - [Create Customer Address](/api/graphql-api/shop/mutations/create-customer-address): Create a new address for the authenticated customer.
+- [Create Newsletter](/api/graphql-api/shop/mutations/create-newsletter): Subscribe the authenticated customer to the newsletter on the current channel.
 - [Create Order](/api/graphql-api/shop/mutations/create-order): Convert cart to order with billing and shipping information.
 - [Create Product Review](/api/graphql-api/shop/mutations/create-product-review): Create a basic product review with title, comment, and rating.
 - [Create Review](/api/graphql-api/shop/mutations/create-review): Submit a review and rating for a purchased product.
@@ -656,6 +664,7 @@
 - [Create Customer Address](/api/rest-api/admin/customers/addresses/create): Create a new address under a customer. Setting `default_address=true` unsets the previous default for that customer.
 - [Delete Customer Address](/api/rest-api/admin/customers/addresses/delete): Same ownership guard as Update. Permission: `customers.addresses.delete`.
 - [Customer Address Detail](/api/rest-api/admin/customers/addresses/detail)
+- [Set Customer Address as Default](/api/rest-api/admin/customers/addresses/set-default): Sets the chosen address as the customer's default and clears the default flag on all their other addresses. Empty body.
 - [Update Customer Address](/api/rest-api/admin/customers/addresses/update): If the path `customerId` doesn't match the address's `customer_id`, the request returns 403. This prevents cross-customer edits via fabricated URLs.
 
 ## REST API › Admin › Customers › Gdpr
@@ -693,6 +702,7 @@
 ## REST API › Admin › Customers › Notes
 
 - [Add Customer Note](/api/rest-api/admin/customers/notes/create): Append-only — every POST inserts a new row into `customer_notes` (the legacy `customers.notes` text column was dropped in 2023).
+- [List Customer Notes](/api/rest-api/admin/customers/notes/list): Returns the customer's notes, newest first, in the `{ data, meta }` envelope.
 
 ## REST API › Admin › Customers › Reviews
 
@@ -776,6 +786,11 @@
 - [List URL Rewrites](/api/rest-api/admin/marketing/search-seo/url-rewrites-list): `page`, `per_page` (default 10, cap 50), `entity_type` (`product`/`category`/`cms_page`), `request_path` (partial), `redirect_type` (`301`/`302`), `locale`,…
 - [Mass Delete URL Rewrites](/api/rest-api/admin/marketing/search-seo/url-rewrites-mass-delete): Non-existent IDs silently skipped.
 - [Update URL Rewrite](/api/rest-api/admin/marketing/search-seo/url-rewrites-update): Permission: `marketing.search_seo.url_rewrites.edit`.
+
+## REST API › Admin › Navigation
+
+- [Get Admin Menu](/api/rest-api/admin/navigation/menu): Returns the admin sidebar as a permission-filtered nested tree for the authenticated token.
+- [Get Admin Permissions](/api/rest-api/admin/navigation/permissions): A token whose role grants full access returns the `all` permission type and a single wildcard.
 
 ## REST API › Admin › Profile
 
@@ -1006,6 +1021,14 @@
 - [Set Shipping Address](/api/rest-api/shop/checkout/set-shipping-address): Set the shipping address for checkout.
 - [Set Shipping Method](/api/rest-api/shop/checkout/set-shipping-method): Select a shipping method for the order.
 
+## REST API › Shop › Compare
+
+- [Create Compare Item](/api/rest-api/shop/compare/create): Add a product to the authenticated customer's comparison list.
+- [Delete Compare Item](/api/rest-api/shop/compare/delete): Remove a single product from the authenticated customer's comparison list by ID.
+- [Delete All Compare Items](/api/rest-api/shop/compare/delete-all): Remove every product from the authenticated customer's comparison list.
+- [Get Compare Item](/api/rest-api/shop/compare/get): Retrieve a specific compare item by its ID.
+- [Get Compare Items](/api/rest-api/shop/compare/list): Retrieve the authenticated customer's product comparison list.
+
 ## REST API › Shop › Countries
 
 - [Countries](/api/rest-api/shop/countries/get-countries): Retrieve a paginated list of countries with their inline translations.
@@ -1065,6 +1088,10 @@
 - [Add Product to Cart](/api/rest-api/shop/mutations/add-to-cart): Add a simple product with quantity to the shopping cart.
 - [Create Cart](/api/rest-api/shop/mutations/create-cart): Generate a new shopping cart token for guest users.
 
+## REST API › Shop › Newsletter
+
+- [Subscribe to Newsletter](/api/rest-api/shop/newsletter/subscribe): Subscribe the authenticated customer to the newsletter on the current channel.
+
 ## REST API › Shop › Product Reviews
 
 - [Create Product Review](/api/rest-api/shop/product-reviews/create-product-review): Create a new product review or rating.
@@ -1090,6 +1117,15 @@
 ## REST API › Shop › Theme Customizations
 
 - [Theme Customizations](/api/rest-api/shop/theme-customizations/get-theme-customizations): Retrieve a paginated list of every theme customization (carousels, footer links, static content blocks, …).
+
+## REST API › Shop › Wishlist
+
+- [Create Wishlist Item](/api/rest-api/shop/wishlist/create): Add a product to the authenticated customer's wishlist.
+- [Delete Wishlist Item](/api/rest-api/shop/wishlist/delete): Remove a single item from the authenticated customer's wishlist by ID.
+- [Delete All Wishlist Items](/api/rest-api/shop/wishlist/delete-all): Remove every wishlist item for the authenticated customer.
+- [Get Wishlist Items](/api/rest-api/shop/wishlist/list): Retrieve the authenticated customer's wishlist items for the current channel.
+- [Move Wishlist Item to Cart](/api/rest-api/shop/wishlist/move-to-cart): Move a wishlist item to the shopping cart and remove it from the wishlist.
+- [Toggle Wishlist Item](/api/rest-api/shop/wishlist/toggle): Toggle a product in the wishlist. If not present, it is added.
 
 ## Recipes
 

@@ -8,20 +8,37 @@ examples:
       query adminOrders($first: Int) {
         adminOrders(first: $first) {
           totalCount
-          pageInfo { hasNextPage endCursor }
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
           edges {
+            cursor
             node {
               id
               incrementId
               status
               statusLabel
+              channelId
               channelName
+              isGuest
+              customerId
               customerEmail
               customerName
-              grandTotal
-              formattedGrandTotal
+              paymentTitle
+              couponCode
+              totalItemCount
               totalQtyOrdered
+              orderCurrencyCode
+              grandTotal
+              baseGrandTotal
+              formattedGrandTotal
+              location
               createdAt
+              updatedAt
+              items
             }
           }
         }
@@ -35,21 +52,46 @@ examples:
         "data": {
           "adminOrders": {
             "totalCount": 616,
-            "pageInfo": { "hasNextPage": true, "endCursor": "OQ==" },
+            "pageInfo": {
+              "hasNextPage": true,
+              "hasPreviousPage": false,
+              "startCursor": "MA==",
+              "endCursor": "OQ=="
+            },
             "edges": [
               {
+                "cursor": "MA==",
                 "node": {
                   "id": 2392,
                   "incrementId": "2392",
                   "status": "processing",
                   "statusLabel": "Processing",
+                  "channelId": 1,
                   "channelName": "bagisto store",
+                  "isGuest": false,
+                  "customerId": 19,
                   "customerEmail": "admin@example.com",
                   "customerName": "Test User",
-                  "grandTotal": 4000,
-                  "formattedGrandTotal": "$4,000.00",
+                  "paymentTitle": "Money Transfer",
+                  "couponCode": null,
+                  "totalItemCount": 1,
                   "totalQtyOrdered": 1,
-                  "createdAt": "2026-05-19 13:13:29"
+                  "orderCurrencyCode": "USD",
+                  "grandTotal": 4000,
+                  "baseGrandTotal": 4000,
+                  "formattedGrandTotal": "$4,000.00",
+                  "location": "New York, NY, US",
+                  "createdAt": "2026-05-19 13:13:29",
+                  "updatedAt": "2026-05-19 13:13:30",
+                  "items": [
+                    {
+                      "id": 2694,
+                      "sku": "test65",
+                      "name": "Classic Watch Hand",
+                      "qtyOrdered": 1,
+                      "productImage": "http://localhost:8000/storage/product/2358/example.webp"
+                    }
+                  ]
                 }
               }
             ]
@@ -66,6 +108,8 @@ examples:
         $grand_total_from: Float
         $grand_total_to: Float
         $date_range: String
+        $sort: String
+        $order: String
       ) {
         adminOrders(
           first: $first
@@ -73,15 +117,38 @@ examples:
           grand_total_from: $grand_total_from
           grand_total_to: $grand_total_to
           date_range: $date_range
+          sort: $sort
+          order: $order
         ) {
           totalCount
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
           edges {
             node {
               id
               incrementId
               status
+              statusLabel
+              channelId
+              channelName
+              isGuest
+              customerId
+              customerEmail
+              customerName
+              paymentTitle
+              couponCode
+              totalItemCount
+              totalQtyOrdered
+              orderCurrencyCode
               grandTotal
+              baseGrandTotal
+              formattedGrandTotal
+              location
               createdAt
+              updatedAt
+              items
             }
           }
         }
@@ -92,21 +159,52 @@ examples:
           "status": "processing",
           "grand_total_from": 100,
           "grand_total_to": 5000,
-          "date_range": "this_month"
+          "date_range": "this_month",
+          "sort": "created_at",
+          "order": "desc"
       }
     response: |
       {
         "data": {
           "adminOrders": {
             "totalCount": 12,
+            "pageInfo": {
+              "hasNextPage": true,
+              "endCursor": "OQ=="
+            },
             "edges": [
               {
                 "node": {
                   "id": 2392,
                   "incrementId": "2392",
                   "status": "processing",
+                  "statusLabel": "Processing",
+                  "channelId": 1,
+                  "channelName": "bagisto store",
+                  "isGuest": false,
+                  "customerId": 19,
+                  "customerEmail": "admin@example.com",
+                  "customerName": "Test User",
+                  "paymentTitle": "Money Transfer",
+                  "couponCode": null,
+                  "totalItemCount": 1,
+                  "totalQtyOrdered": 1,
+                  "orderCurrencyCode": "USD",
                   "grandTotal": 4000,
-                  "createdAt": "2026-05-19 13:13:29"
+                  "baseGrandTotal": 4000,
+                  "formattedGrandTotal": "$4,000.00",
+                  "location": "New York, NY, US",
+                  "createdAt": "2026-05-19 13:13:29",
+                  "updatedAt": "2026-05-19 13:13:30",
+                  "items": [
+                    {
+                      "id": 2694,
+                      "sku": "test65",
+                      "name": "Classic Watch Hand",
+                      "qtyOrdered": 1,
+                      "productImage": "http://localhost:8000/storage/product/2358/example.webp"
+                    }
+                  ]
                 }
               }
             ]
@@ -132,9 +230,15 @@ Orders** screen.
 - **Cursor pagination** — pass `first` for the page size and `after` (the
   `endCursor` from the previous page) to advance. `pageInfo.hasNextPage` tells
   you when to stop; `totalCount` is the grand total.
-- Each `node` is a **slim** order row — flat fields only. Heavy relations
-  (full items, invoices, shipments) are not embedded here; fetch a single
-  order's detail for those.
+- Each `node` carries every flat order field shown in the example
+  (`incrementId`, `status`, `statusLabel`, `channelId` / `channelName`,
+  `customerId` / `customerEmail` / `customerName`, `paymentTitle`,
+  `couponCode`, `totalItemCount`, `totalQtyOrdered`, `orderCurrencyCode`,
+  `grandTotal` / `baseGrandTotal` / `formattedGrandTotal`, `location`,
+  `createdAt`, `updatedAt`) plus `items` — a **lightweight preview** JSON array
+  (`id`, `sku`, `name`, `qtyOrdered`, `productImage`) requested **bare** (no
+  sub-selection). Heavy relations (full line items, invoices, shipments) are
+  **not** embedded here — fetch a single order's detail for those.
 - The REST equivalent (`GET /api/admin/orders`) uses offset pagination with a
   `{ data, meta }` envelope instead of cursors.
 
