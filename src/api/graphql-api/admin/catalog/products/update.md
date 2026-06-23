@@ -515,7 +515,7 @@ its `?locale=fr&channel=default` query parameter — see the
 
 `images`, `videos`, `inventories`, and `customerGroupPrices` are **not** handled
 by this mutation — they have dedicated operations. If sent, they are ignored and
-noted in the response `_warnings` array:
+noted in the response `warnings` array:
 
 - Images → [reorder images](/api/graphql-api/admin/catalog/products/images-reorder)
 - Inventories → [update inventories](/api/graphql-api/admin/catalog/products/inventories-update)

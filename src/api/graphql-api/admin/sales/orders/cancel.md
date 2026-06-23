@@ -59,7 +59,7 @@ order after cancelling.
 :::
 
 ::: tip Prerequisites
-The example targets an order with cancellable items. If your order has no items with `qty_to_cancel > 0` (already canceled / fully shipped / closed / fraud) the mutation returns an `errors[]` entry like *"There is nothing to cancel on this order."* — pick an order in `pending` or `processing` state.
+The example targets an order with cancellable items. Only orders that have **not** been invoiced or shipped can be canceled — once an order is invoiced (typically `processing`) it can only be **refunded**, and the mutation returns *"This order has already been invoiced or shipped and can no longer be canceled. You can issue a refund instead."* Pick an order in `pending` state (nothing invoiced yet) to cancel.
 :::
 
 ## Operation
@@ -76,5 +76,6 @@ Each failure returns the `errors[]` array with one of these messages:
 |-----------|----------|---------|
 | Order is `closed` | `bagistoapi::app.admin.order.actions.cancel.closed` | Closed orders cannot be canceled. |
 | Order is `fraud`  | `bagistoapi::app.admin.order.actions.cancel.fraud`  | Fraud orders cannot be canceled. |
-| No item has `qty_to_cancel > 0` | `bagistoapi::app.admin.order.actions.cancel.nothing-to-cancel` | There is nothing to cancel on this order. |
+| Order has invoiced / shipped items (e.g. `processing`) | `bagistoapi::app.admin.order.actions.cancel.already-processed` | This order has already been invoiced or shipped and can no longer be canceled. You can issue a refund instead. |
+| No item has any quantity left to cancel | `bagistoapi::app.admin.order.actions.cancel.nothing-to-cancel` | There is nothing to cancel on this order. |
 | Admin role lacks `sales.orders.cancel` | `bagistoapi::app.admin.order.actions.cancel.no-permission` | You do not have permission to cancel orders. |

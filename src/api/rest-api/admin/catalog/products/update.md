@@ -49,7 +49,7 @@ examples:
           { "id": 43, "name": "Hats", "slug": "hats" },
           { "id": 44, "name": "Winter", "slug": "winter" }
         ],
-        "_warnings": []
+        "warnings": []
       }
   - id: admin-catalog-product-update-downloadable
     title: Downloadable — links & samples
@@ -117,7 +117,7 @@ examples:
             "sortOrder": 1
           }
         ],
-        "_warnings": []
+        "warnings": []
       }
   - id: admin-catalog-product-update-grouped
     title: Grouped — linked products
@@ -149,7 +149,7 @@ examples:
           { "id": 142, "sku": "SP-142", "name": "Cable", "qty": 2, "sortOrder": 1 },
           { "id": 143, "sku": "SP-143", "name": "Adapter", "qty": 1, "sortOrder": 2 }
         ],
-        "_warnings": []
+        "warnings": []
       }
   - id: admin-catalog-product-update-bundle
     title: Bundle — options
@@ -206,7 +206,7 @@ examples:
             ]
           }
         ],
-        "_warnings": []
+        "warnings": []
       }
   - id: admin-catalog-product-update-configurable
     title: Configurable — variants
@@ -254,7 +254,7 @@ examples:
             "status": 1
           }
         ],
-        "_warnings": []
+        "warnings": []
       }
   - id: admin-catalog-product-update-booking-default
     title: Booking — default
@@ -304,7 +304,7 @@ examples:
           "breakTime": 10,
           "slots": [ { "from": "09:00", "to": "17:00" } ]
         },
-        "_warnings": []
+        "warnings": []
       }
   - id: admin-catalog-product-update-booking-appointment
     title: Booking — appointment
@@ -354,7 +354,7 @@ examples:
           "sameSlotAllDays": true,
           "slots": [ { "from": "09:00", "to": "12:00" }, { "from": "14:00", "to": "17:00" } ]
         },
-        "_warnings": []
+        "warnings": []
       }
   - id: admin-catalog-product-update-booking-event
     title: Booking — event
@@ -418,7 +418,7 @@ examples:
             }
           ]
         },
-        "_warnings": []
+        "warnings": []
       }
   - id: admin-catalog-product-update-booking-rental
     title: Booking — rental
@@ -471,7 +471,7 @@ examples:
           "sameSlotAllDays": true,
           "slots": [ { "from": "09:00", "to": "18:00" } ]
         },
-        "_warnings": []
+        "warnings": []
       }
   - id: admin-catalog-product-update-booking-table
     title: Booking — table
@@ -530,7 +530,7 @@ examples:
           "sameSlotAllDays": true,
           "slots": [ { "from": "12:00", "to": "22:00" } ]
         },
-        "_warnings": []
+        "warnings": []
       }
   - id: admin-catalog-product-update-locale
     title: Change locale (?locale=)
@@ -560,7 +560,7 @@ examples:
           { "locale": "en", "name": "Arctic Beanie", "description": "Full text." },
           { "locale": "fr", "name": "Bonnet Arctique", "description": "Texte complet." }
         ],
-        "_warnings": []
+        "warnings": []
       }
     commonErrors:
       - error: Validation (422)
@@ -643,7 +643,7 @@ the full set. See the `examples:` dropdown for the verified payload of each:
 
 `images`, `videos`, `inventories`, and `customer_group_prices` are **not**
 handled by this endpoint — they have dedicated endpoints. If sent, they are
-ignored and noted in the `_warnings` array on the response:
+ignored and noted in the `warnings` array on the response:
 
 - Images → [`POST /api/admin/catalog/products/{id}/images`](/api/rest-api/admin/catalog/products/images-upload)
 - Inventories → [`PUT /api/admin/catalog/products/{productId}/inventories`](/api/rest-api/admin/catalog/products/inventories-update)
@@ -654,7 +654,7 @@ ignored and noted in the `_warnings` array on the response:
 `200 OK` returning the full product detail payload — same shape as
 [`GET /api/admin/catalog/products/{id}`](/api/rest-api/admin/catalog/products/products-detail).
 
-`_warnings` is an array of human-readable strings; it is empty when nothing was
+`warnings` is an array of human-readable strings; it is empty when nothing was
 dropped, and non-empty (naming each dropped sub-resource field and the endpoint
 it should be sent to instead) when sub-resource fields were stripped.
 

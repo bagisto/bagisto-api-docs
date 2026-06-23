@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: gql
     title: Create Import (rejected)
-    description: Creating an import requires a file upload, which GraphQL cannot carry. The mutation returns an error directing you to the REST endpoint.
+    description: Creating an import requires a multipart file upload, which GraphQL cannot carry. The mutation rejects with an error directing you to the REST endpoint.
     query: |
       mutation CreateImport($input: createAdminSettingsDataTransferImportInput!) {
         createAdminSettingsDataTransferImport(input: $input) {
@@ -14,19 +14,36 @@ examples:
         }
       }
     variables: |
-      { "input": { "type": "products", "action": "append" } }
+      {
+        "input": {
+          "type": "products",
+          "action": "append"
+        }
+      }
     response: |
-      { "errors": [{ "message": "Importing files is only supported over the REST API. Use POST /api/admin/settings/data-transfer/imports." }] }
+      {
+        "errors": [
+          {
+            "message": "File upload over GraphQL is not supported. Use the REST endpoint instead.",
+            "path": [
+              "createAdminSettingsDataTransferImport"
+            ]
+          }
+        ],
+        "data": {
+          "createAdminSettingsDataTransferImport": null
+        }
+      }
 ---
 
 # Create Import (GraphQL)
 
-::: warning Use the REST endpoint
-Creating an import requires uploading a file, which cannot be done over GraphQL. The GraphQL `create` mutation returns an error pointing to the REST endpoint.
+::: warning REST only
+Creating an import requires **uploading the source file** (CSV / XLSX / XML) as multipart form data, which cannot be carried over a JSON GraphQL request. The `createAdminSettingsDataTransferImport` mutation always **rejects** with an error pointing to the REST endpoint.
 
-Use the REST [Create Import](/api/rest-api/admin/settings/data-transfer-imports/create) endpoint instead.
+Create the import over REST: [Create Import](/api/rest-api/admin/settings/data-transfer-imports/create).
 :::
 
-Once an import exists, you can validate, start, link, index, and read its stats over GraphQL.
+Once an import row exists (created over REST), you can drive the rest of the lifecycle over GraphQL — [validate](./validate.md), [start](./start.md), [link](./link.md), [index](./index.md), poll [stats](./stats.md), and [cancel](./cancel.md).
 
-Permission: `settings.data_transfer.imports.create`.
+Permission: `settings.data_transfer.imports.create`. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

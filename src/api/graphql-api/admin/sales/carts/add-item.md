@@ -7,7 +7,13 @@ examples:
     query: |
       mutation AddItem($input: addItemAdminCartInput!) {
         addItemAdminCart(input: $input) {
-          adminCart { itemsCount grandTotal formattedGrandTotal success message }
+          adminCart {
+            itemsCount
+            grandTotal
+            formattedGrandTotal
+            success
+            message
+          }
         }
       }
     variables: |
@@ -23,7 +29,13 @@ examples:
       {
         "data": {
           "addItemAdminCart": {
-            "adminCart": { "itemsCount": 1, "grandTotal": 100, "formattedGrandTotal": "$100.00", "success": true, "message": "Item added to cart." }
+            "adminCart": {
+              "itemsCount": 1,
+              "grandTotal": 100,
+              "formattedGrandTotal": "$100.00",
+              "success": true,
+              "message": "Item added to cart."
+            }
           }
         }
       }
@@ -33,7 +45,13 @@ examples:
     query: |
       mutation AddItem($input: addItemAdminCartInput!) {
         addItemAdminCart(input: $input) {
-          adminCart { itemsCount grandTotal formattedGrandTotal success message }
+          adminCart {
+            itemsCount
+            grandTotal
+            formattedGrandTotal
+            success
+            message
+          }
         }
       }
     variables: |
@@ -50,7 +68,13 @@ examples:
       {
         "data": {
           "addItemAdminCart": {
-            "adminCart": { "itemsCount": 1, "grandTotal": 100, "formattedGrandTotal": "$100.00", "success": true, "message": "Item added to cart." }
+            "adminCart": {
+              "itemsCount": 1,
+              "grandTotal": 100,
+              "formattedGrandTotal": "$100.00",
+              "success": true,
+              "message": "Item added to cart."
+            }
           }
         }
       }
@@ -60,7 +84,13 @@ examples:
     query: |
       mutation AddItem($input: addItemAdminCartInput!) {
         addItemAdminCart(input: $input) {
-          adminCart { itemsCount grandTotal formattedGrandTotal success message }
+          adminCart {
+            itemsCount
+            grandTotal
+            formattedGrandTotal
+            success
+            message
+          }
         }
       }
     variables: |
@@ -71,8 +101,20 @@ examples:
           "productId": 2517,
           "quantity": 1,
           "bundleOptions": [
-            { "optionId": 5, "productIds": [10], "quantity": 1 },
-            { "optionId": 6, "productIds": [12], "quantity": 1 }
+            {
+              "optionId": 5,
+              "productIds": [
+                10
+              ],
+              "quantity": 1
+            },
+            {
+              "optionId": 6,
+              "productIds": [
+                12
+              ],
+              "quantity": 1
+            }
           ]
         }
       }
@@ -80,7 +122,13 @@ examples:
       {
         "data": {
           "addItemAdminCart": {
-            "adminCart": { "itemsCount": 1, "grandTotal": 100, "formattedGrandTotal": "$100.00", "success": true, "message": "Item added to cart." }
+            "adminCart": {
+              "itemsCount": 1,
+              "grandTotal": 100,
+              "formattedGrandTotal": "$100.00",
+              "success": true,
+              "message": "Item added to cart."
+            }
           }
         }
       }
@@ -90,7 +138,13 @@ examples:
     query: |
       mutation AddItem($input: addItemAdminCartInput!) {
         addItemAdminCart(input: $input) {
-          adminCart { itemsCount grandTotal formattedGrandTotal success message }
+          adminCart {
+            itemsCount
+            grandTotal
+            formattedGrandTotal
+            success
+            message
+          }
         }
       }
     variables: |
@@ -101,8 +155,14 @@ examples:
           "productId": 2516,
           "quantity": 1,
           "groupedQuantities": [
-            { "productId": 301, "quantity": 1 },
-            { "productId": 302, "quantity": 2 }
+            {
+              "productId": 301,
+              "quantity": 1
+            },
+            {
+              "productId": 302,
+              "quantity": 2
+            }
           ]
         }
       }
@@ -110,7 +170,13 @@ examples:
       {
         "data": {
           "addItemAdminCart": {
-            "adminCart": { "itemsCount": 1, "grandTotal": 100, "formattedGrandTotal": "$100.00", "success": true, "message": "Item added to cart." }
+            "adminCart": {
+              "itemsCount": 1,
+              "grandTotal": 100,
+              "formattedGrandTotal": "$100.00",
+              "success": true,
+              "message": "Item added to cart."
+            }
           }
         }
       }
@@ -120,7 +186,13 @@ examples:
     query: |
       mutation AddItem($input: addItemAdminCartInput!) {
         addItemAdminCart(input: $input) {
-          adminCart { itemsCount grandTotal formattedGrandTotal success message }
+          adminCart {
+            itemsCount
+            grandTotal
+            formattedGrandTotal
+            success
+            message
+          }
         }
       }
     variables: |
@@ -130,14 +202,23 @@ examples:
           "cartId": "314",
           "productId": 2506,
           "quantity": 1,
-          "links": [1, 2]
+          "links": [
+            1,
+            2
+          ]
         }
       }
     response: |
       {
         "data": {
           "addItemAdminCart": {
-            "adminCart": { "itemsCount": 1, "grandTotal": 100, "formattedGrandTotal": "$100.00", "success": true, "message": "Item added to cart." }
+            "adminCart": {
+              "itemsCount": 1,
+              "grandTotal": 100,
+              "formattedGrandTotal": "$100.00",
+              "success": true,
+              "message": "Item added to cart."
+            }
           }
         }
       }

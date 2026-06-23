@@ -8,6 +8,7 @@ examples:
       mutation createAdminReorder($input: createAdminReorderInput!) {
         createAdminReorder(input: $input) {
           adminReorder {
+            _id
             success
             message
             cartId
@@ -16,13 +17,16 @@ examples:
       }
     variables: |
       {
-          "input": { "orderId": "/api/admin/orders/2392" }
+        "input": {
+          "orderId": "/api/admin/orders/2392"
+        }
       }
     response: |
       {
         "data": {
           "createAdminReorder": {
             "adminReorder": {
+              "_id": 2392,
               "success": true,
               "message": "Reorder successful. A new draft cart has been created.",
               "cartId": 314
@@ -62,6 +66,17 @@ This is the same action as the admin Reorder button:
 2. Every item from the order is re-added to that draft cart. Per-item failures
    are swallowed.
 3. Returns `success`, `message`, and the new `cartId`.
+
+::: tip Use `cartId` to continue the order flow
+The new draft cart's id is the **`cartId`** field (e.g. `314`) — use it for the
+follow-up Create-Order calls (`/api/admin/carts/{cartId}/items`, addresses,
+shipping/payment, place-order). `_id` returns the source order's id.
+
+Do **not** select the `id` field on this payload: like other admin action
+results, `adminReorder` is a synthetic result with no resource route, so the
+`id` IRI cannot be generated and selecting it errors. Query
+`cartId` / `_id` / `success` / `message` instead.
+:::
 
 ## Errors
 

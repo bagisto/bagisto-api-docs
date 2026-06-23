@@ -20,7 +20,7 @@ An admin can place an order **on behalf of a customer** — the same "Create Ord
 | [Save addresses](/api/graphql-api/admin/sales/carts/save-address) | `saveAddressAdminCart` mutation |
 | [List](/api/graphql-api/admin/sales/carts/list-shipping-methods) / [set](/api/graphql-api/admin/sales/carts/set-shipping-method) shipping method | `adminCartShippingRates` query / `setShippingMethodAdminCart` mutation |
 | [List](/api/graphql-api/admin/sales/carts/list-payment-methods) / [set](/api/graphql-api/admin/sales/carts/set-payment-method) payment method | `adminCartPaymentMethods` query / `setPaymentMethodAdminCart` mutation |
-| [Place the order](/api/graphql-api/admin/sales/orders/place-order) | `createAdminPlaceOrder` mutation |
+| [Place the order](/api/graphql-api/admin/sales/carts/place-order) | `createAdminPlaceOrder` mutation |
 
 (There's also [apply](/api/graphql-api/admin/sales/carts/apply-coupon) / [remove coupon](/api/graphql-api/admin/sales/carts/remove-coupon) on the draft cart.) [Reorder](/api/graphql-api/admin/sales/orders/reorder) is a shortcut that seeds a fresh draft cart from an existing order's items.
 
@@ -51,7 +51,7 @@ Every action refuses with a clear error when its prerequisite isn't met — noth
 | [List Orders](/api/graphql-api/admin/sales/orders/list-orders) | `adminOrders` query |
 | [Order Detail](/api/graphql-api/admin/sales/orders/order-detail) | `adminOrderDetail` query |
 | [Reorder](/api/graphql-api/admin/sales/orders/reorder) | `createAdminReorder` mutation |
-| [Place Order](/api/graphql-api/admin/sales/orders/place-order) | `createAdminPlaceOrder` mutation |
+| [Place Order](/api/graphql-api/admin/sales/carts/place-order) | `createAdminPlaceOrder` mutation |
 | [Cancel Order](/api/graphql-api/admin/sales/orders/cancel) | `createAdminCancelOrder` mutation |
 | [Add Comment](/api/graphql-api/admin/sales/orders/add-comment) | `createAdminOrderComment` mutation |
 | [List Comments](/api/graphql-api/admin/sales/orders/list-comments) | `adminOrderComments` query |

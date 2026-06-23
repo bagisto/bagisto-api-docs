@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: admin-cms-pages-create
     title: Create a CMS Page
-    description: Top-level translated fields are broadcast to every locale by the core PageRepository.
+    description: Top-level fields are broadcast to every locale at creation.
     query: |
       mutation CreateCmsPage($input: createAdminCmsPageInput!) {
         createAdminCmsPage(input: $input) {
@@ -12,6 +12,36 @@ examples:
             _id
             urlKey
             pageTitle
+            htmlContent
+            metaTitle
+            metaKeywords
+            metaDescription
+            locale
+            previewUrl
+            createdAt
+            updatedAt
+            translations {
+              edges {
+                node {
+                  locale
+                  urlKey
+                  pageTitle
+                  htmlContent
+                  metaTitle
+                  metaKeywords
+                  metaDescription
+                }
+              }
+            }
+            channels {
+              edges {
+                node {
+                  _id
+                  code
+                  name
+                }
+              }
+            }
           }
         }
       }
@@ -21,6 +51,9 @@ examples:
           "urlKey": "about-us",
           "pageTitle": "About Us",
           "htmlContent": "<h1>About Us</h1>",
+          "metaTitle": "About Us",
+          "metaKeywords": "about,us,company",
+          "metaDescription": "Learn more about our company.",
           "channels": [1]
         }
       }
@@ -29,10 +62,38 @@ examples:
         "data": {
           "createAdminCmsPage": {
             "adminCmsPage": {
-              "id": "/api/admin/cms_pages/7",
+              "id": "/api/admin/cms/pages/7",
               "_id": 7,
               "urlKey": "about-us",
-              "pageTitle": "About Us"
+              "pageTitle": "About Us",
+              "htmlContent": "<h1>About Us</h1>",
+              "metaTitle": "About Us",
+              "metaKeywords": "about,us,company",
+              "metaDescription": "Learn more about our company.",
+              "locale": "en",
+              "previewUrl": "https://store.example.com/page/about-us",
+              "createdAt": "2026-06-23T11:49:19+00:00",
+              "updatedAt": "2026-06-23T11:49:19+00:00",
+              "translations": {
+                "edges": [
+                  {
+                    "node": {
+                      "locale": "en",
+                      "urlKey": "about-us",
+                      "pageTitle": "About Us",
+                      "htmlContent": "<h1>About Us</h1>",
+                      "metaTitle": "About Us",
+                      "metaKeywords": "about,us,company",
+                      "metaDescription": "Learn more about our company."
+                    }
+                  }
+                ]
+              },
+              "channels": {
+                "edges": [
+                  { "node": { "_id": 1, "code": "default", "name": "Default" } }
+                ]
+              }
             }
           }
         }
@@ -41,7 +102,7 @@ examples:
 
 # CMS Page — Create
 
-Equivalent to [`POST /api/admin/cms/pages`](/api/rest-api/admin/cms/pages-create).
+Creates a new CMS page. Equivalent to [`POST /api/admin/cms/pages`](/api/rest-api/admin/cms/pages-create).
 
 ## Operation
 
@@ -51,15 +112,31 @@ Equivalent to [`POST /api/admin/cms/pages`](/api/rest-api/admin/cms/pages-create
 
 ## Input
 
+GraphQL input fields are **camelCase**.
+
 | Field | Type | Required | Notes |
 |-------|------|----------|-------|
-| `url_key` | `String!` | yes | Unique slug. |
-| `page_title` | `String!` | yes | |
-| `html_content` | `String!` | yes | |
-| `channels` | `[Int!]!` | yes | |
-| `meta_title`, `meta_keywords`, `meta_description` | `String` | no | |
+| `urlKey` | `String!` | yes | Unique slug (lowercase, hyphen-separated). Serves the page at `/page/{urlKey}`. |
+| `pageTitle` | `String!` | yes | |
+| `htmlContent` | `String!` | yes | Page body (HTML). |
+| `channels` | `[Int!]!` | yes | Non-empty list of channel IDs the page is published to. |
+| `metaTitle` | `String` | no | |
+| `metaKeywords` | `String` | no | |
+| `metaDescription` | `String` | no | |
 
-::: warning Create vs Update payload shape
-**Create** takes flat top-level fields (broadcast to all locales).
-**Update** requires a [locale-nested payload](/api/graphql-api/admin/cms/pages/mutations/update).
-:::
+## Broadcast to every locale
+
+Create takes **flat top-level fields** and **broadcasts them to every configured locale** — the new page starts with the same `pageTitle` / `htmlContent` / `urlKey` / SEO values in each language. Translate individual languages afterwards with [Update](/api/graphql-api/admin/cms/pages/mutations/update) (which is locale-nested).
+
+## Response
+
+The mutation returns the **created page**. All scalars resolve, and `translations` / `channels` are **field-selectable connections** (`{ edges { node { … } } }`) — `translations` carries one entry per configured locale (the broadcast content). Select only what you need.
+
+## Errors
+
+| Condition | Result |
+|-----------|--------|
+| `urlKey`, `pageTitle`, or `htmlContent` missing | validation error |
+| `urlKey` not a valid slug, or already in use | validation error |
+| `channels` empty or contains an unknown ID | validation error |
+| Admin role lacks `cms.create` | permission error |

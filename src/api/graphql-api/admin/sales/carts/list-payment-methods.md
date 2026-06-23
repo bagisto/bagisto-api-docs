@@ -7,7 +7,14 @@ examples:
     query: |
       query AdminCartPaymentMethods($id: Int!) {
         adminCartPaymentMethods(cartId: $id) {
-          edges { node { method methodTitle description sort } }
+          edges {
+            node {
+              method
+              methodTitle
+              description
+              sort
+            }
+          }
         }
       }
     variables: |
@@ -19,8 +26,22 @@ examples:
         "data": {
           "adminCartPaymentMethods": {
             "edges": [
-              { "node": { "method": "cashondelivery", "methodTitle": "Cash On Delivery", "description": "", "sort": 1 } },
-              { "node": { "method": "moneytransfer", "methodTitle": "Money Transfer", "description": "", "sort": 2 } }
+              {
+                "node": {
+                  "method": "cashondelivery",
+                  "methodTitle": "Cash On Delivery",
+                  "description": "",
+                  "sort": 1
+                }
+              },
+              {
+                "node": {
+                  "method": "moneytransfer",
+                  "methodTitle": "Money Transfer",
+                  "description": "",
+                  "sort": 2
+                }
+              }
             ]
           }
         }

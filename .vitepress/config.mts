@@ -74,6 +74,17 @@ export default defineConfig(({ command, mode }) => {
     server: {
       host: '0.0.0.0'
     },
+    resolve: {
+      alias: [
+        {
+          // Override VitePress's sidebar item to lift the depth-5 nesting cap
+          // (deep menus like Marketing > Promotions > Catalog Rules > items).
+          // Matches the relative `./VPSidebarItem.vue` import in VPSidebar.vue.
+          find: /^.*\/VPSidebarItem\.vue$/,
+          replacement: path.resolve(process.cwd(), '.vitepress/theme/components/VPSidebarItem.vue')
+        }
+      ]
+    },
     define: {
       'import.meta.env.VITE_REST_API_URL': JSON.stringify(env.VITE_REST_API_URL),
       'import.meta.env.VITE_GRAPHQL_API_URL': JSON.stringify(env.VITE_GRAPHQL_API_URL)
@@ -586,7 +597,6 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'List Orders', link: '/api/graphql-api/admin/sales/orders/list-orders' },
                           { text: 'Order Detail', link: '/api/graphql-api/admin/sales/orders/order-detail' },
                           { text: 'Reorder', link: '/api/graphql-api/admin/sales/orders/reorder' },
-                          { text: 'Place Order', link: '/api/graphql-api/admin/sales/orders/place-order' },
                           { text: 'Cancel Order', link: '/api/graphql-api/admin/sales/orders/cancel' },
                           { text: 'Add Comment', link: '/api/graphql-api/admin/sales/orders/add-comment' },
                           { text: 'List Comments', link: '/api/graphql-api/admin/sales/orders/list-comments' },
@@ -616,6 +626,7 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Set Shipping Method', link: '/api/graphql-api/admin/sales/carts/set-shipping-method' },
                           { text: 'List Payment Methods', link: '/api/graphql-api/admin/sales/carts/list-payment-methods' },
                           { text: 'Set Payment Method', link: '/api/graphql-api/admin/sales/carts/set-payment-method' },
+                          { text: 'Place Order', link: '/api/graphql-api/admin/sales/carts/place-order' },
                         ]
                       },
                       {
@@ -755,10 +766,12 @@ export default defineConfig(({ command, mode }) => {
                   },
                   {
                     text: 'Settings',
+                    link: '/api/graphql-api/admin/settings/',
                     collapsed: true,
                     items: [
                       {
                         text: 'Locales',
+                        link: '/api/graphql-api/admin/settings/locales/',
                         collapsed: true,
                         items: [
                           { text: 'List', link: '/api/graphql-api/admin/settings/locales/list' },
@@ -771,6 +784,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Currencies',
+                        link: '/api/graphql-api/admin/settings/currencies/',
                         collapsed: true,
                         items: [
                           { text: 'List', link: '/api/graphql-api/admin/settings/currencies/list' },
@@ -783,6 +797,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Exchange Rates',
+                        link: '/api/graphql-api/admin/settings/exchange-rates/',
                         collapsed: true,
                         items: [
                           { text: 'List', link: '/api/graphql-api/admin/settings/exchange-rates/list' },
@@ -796,6 +811,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Inventory Sources',
+                        link: '/api/graphql-api/admin/settings/inventory-sources/',
                         collapsed: true,
                         items: [
                           { text: 'List', link: '/api/graphql-api/admin/settings/inventory-sources/list' },
@@ -808,6 +824,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Channels',
+                        link: '/api/graphql-api/admin/settings/channels/',
                         collapsed: true,
                         items: [
                           { text: 'List', link: '/api/graphql-api/admin/settings/channels/list' },
@@ -819,6 +836,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Admin Users',
+                        link: '/api/graphql-api/admin/settings/users/',
                         collapsed: true,
                         items: [
                           { text: 'List', link: '/api/graphql-api/admin/settings/users/list' },
@@ -831,6 +849,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Roles',
+                        link: '/api/graphql-api/admin/settings/roles/',
                         collapsed: true,
                         items: [
                           { text: 'List', link: '/api/graphql-api/admin/settings/roles/list' },
@@ -842,6 +861,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Themes',
+                        link: '/api/graphql-api/admin/settings/themes/',
                         collapsed: true,
                         items: [
                           { text: 'List', link: '/api/graphql-api/admin/settings/themes/list' },
@@ -855,6 +875,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Tax Categories',
+                        link: '/api/graphql-api/admin/settings/tax-categories/',
                         collapsed: true,
                         items: [
                           { text: 'List', link: '/api/graphql-api/admin/settings/tax-categories/list' },
@@ -866,6 +887,7 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Tax Rates',
+                        link: '/api/graphql-api/admin/settings/tax-rates/',
                         collapsed: true,
                         items: [
                           { text: 'List', link: '/api/graphql-api/admin/settings/tax-rates/list' },
@@ -877,8 +899,10 @@ export default defineConfig(({ command, mode }) => {
                       },
                       {
                         text: 'Data Transfer Imports',
+                        link: '/api/graphql-api/admin/settings/data-transfer-imports/overview',
                         collapsed: true,
                         items: [
+                          { text: 'Overview', link: '/api/graphql-api/admin/settings/data-transfer-imports/overview' },
                           { text: 'List', link: '/api/graphql-api/admin/settings/data-transfer-imports/list' },
                           { text: 'Detail', link: '/api/graphql-api/admin/settings/data-transfer-imports/detail' },
                           { text: 'Create', link: '/api/graphql-api/admin/settings/data-transfer-imports/create' },
@@ -1067,6 +1091,7 @@ export default defineConfig(({ command, mode }) => {
                     link: '/api/graphql-api/admin/configuration/',
                     items: [
                       { text: 'Menu', link: '/api/graphql-api/admin/configuration/menu' },
+                      { text: 'Slugs', link: '/api/graphql-api/admin/configuration/slugs' },
                       { text: 'Values', link: '/api/graphql-api/admin/configuration/values' },
                       { text: 'Update', link: '/api/graphql-api/admin/configuration/update' },
                     ]
@@ -1372,7 +1397,6 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'List Orders', link: '/api/rest-api/admin/sales/orders/list-orders' },
                           { text: 'Order Detail', link: '/api/rest-api/admin/sales/orders/order-detail' },
                           { text: 'Reorder', link: '/api/rest-api/admin/sales/orders/reorder' },
-                          { text: 'Place Order', link: '/api/rest-api/admin/sales/orders/place-order' },
                           { text: 'Cancel Order', link: '/api/rest-api/admin/sales/orders/cancel' },
                           { text: 'Add Comment', link: '/api/rest-api/admin/sales/orders/add-comment' },
                           { text: 'List Comments', link: '/api/rest-api/admin/sales/orders/list-comments' },
@@ -1403,6 +1427,7 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Set Shipping Method', link: '/api/rest-api/admin/sales/carts/set-shipping-method' },
                           { text: 'List Payment Methods', link: '/api/rest-api/admin/sales/carts/list-payment-methods' },
                           { text: 'Set Payment Method', link: '/api/rest-api/admin/sales/carts/set-payment-method' },
+                          { text: 'Place Order', link: '/api/rest-api/admin/sales/carts/place-order' },
                         ]
                       },
                       {
@@ -1864,6 +1889,7 @@ export default defineConfig(({ command, mode }) => {
                     link: '/api/rest-api/admin/configuration/',
                     items: [
                       { text: 'Menu', link: '/api/rest-api/admin/configuration/menu' },
+                      { text: 'Slugs', link: '/api/rest-api/admin/configuration/slugs' },
                       { text: 'Values', link: '/api/rest-api/admin/configuration/values' },
                       { text: 'Update', link: '/api/rest-api/admin/configuration/update' },
                     ]

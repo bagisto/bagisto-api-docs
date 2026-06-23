@@ -3,30 +3,60 @@ outline: false
 examples:
   - id: gql
     title: Validate Import
-    description: API Platform GraphQL naming yields `validateAdminSettingsDataTransferImportValidate`. Clients typically alias the field.
+    description: Runs the validation pass over the uploaded file. The field name follows API Platform naming — clients typically alias it.
     query: |
       mutation ValidateImport($input: validateAdminSettingsDataTransferImportValidateInput!) {
         validateAdminSettingsDataTransferImportValidate(input: $input) {
           adminSettingsDataTransferImportValidate {
-            id
+            _id
+            state
             isValid
+            errorsCount
+            invalidRowsCount
           }
         }
       }
     variables: |
-      { "input": { "importId": 12 } }
+      {
+        "input": {
+          "id": "/api/admin/settings/data-transfer/imports/12/validate",
+          "importId": 12
+        }
+      }
     response: |
-      { "data": { "validateAdminSettingsDataTransferImportValidate": { "adminSettingsDataTransferImportValidate": { "id": 12, "isValid": true } } } }
+      {
+        "data": {
+          "validateAdminSettingsDataTransferImportValidate": {
+            "adminSettingsDataTransferImportValidate": {
+              "_id": 12,
+              "state": "validated",
+              "isValid": true,
+              "errorsCount": 0,
+              "invalidRowsCount": 0
+            }
+          }
+        }
+      }
 ---
 
 # Validate Import (GraphQL)
 
-Runs validation over the uploaded file without importing any data. This is the second step of the import lifecycle (after the import is created).
+Runs validation over the uploaded file **without importing any data**. This is the second step of the import lifecycle — run it after the import is created (over REST), before [start](./start.md).
 
-The response carries an `isValid` flag. When `isValid` is `false`, inspect the import's error counts and download the error report over REST to see which rows failed.
+## Operation
 
-Permission: `settings.data_transfer.imports.edit`.
+| Operation | Type | Purpose |
+|-----------|------|---------|
+| `validateAdminSettingsDataTransferImportValidate` | Mutation | Validate the uploaded file |
+
+## Quirks
+
+- The input takes the import's `importId` **and** an `id` (the validate IRI) — API Platform requires the `id` field on every non-create mutation.
+- The response carries an `isValid` flag. When `isValid` is `false`, read `errorsCount` / `invalidRowsCount`, or download the error report over REST to see which rows failed.
+- Select `_id` for the numeric import id; the payload `id` IRI does not resolve on mutation results.
 
 ::: tip Prerequisites
-The example uses an illustrative `importId`. Replace it with the id of a data transfer import that exists in your store — use the [`adminSettingsDataTransferImports`](./list.md) query to discover valid ids.
+The example uses an illustrative import. Replace it with an import that exists in your store — use the [`adminSettingsDataTransferImports`](./list.md) query to discover valid ids.
 :::
+
+Permission: `settings.data_transfer.imports.edit`. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

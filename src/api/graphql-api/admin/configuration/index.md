@@ -17,6 +17,7 @@ entire Configuration area — current and future:
 | Operation | Type | Purpose |
 |-----------|------|---------|
 | [`menuAdminConfigurationMenu`](./menu) | Query | **Discover** the schema — which fields exist, their type, default, scoping, validation, and options |
+| [`listAdminConfigurationSlug`](./slugs) | Query | **List** every slug (section / group key) to pass to Values and Update |
 | [`valuesAdminConfigurationValues`](./values) | Query | **Read** the current effective values for a slug |
 | [`createAdminConfigurationUpdate`](./update) | Mutation | **Write** new values for a slug |
 

@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: admin-catalog-product-detail
     title: Catalog Product Detail — type-aware (GraphQL)
-    description: Fetch a single catalog product by IRI. Type-specific blocks (superAttributes/variants for configurable, bundleOptions for bundle, linkedProducts for grouped, downloadableLinks/downloadableSamples for downloadable) are null on non-matching types. channels lists every channel with an assigned flag; attributes mirrors the admin edit-screen field set for the product's family (empty fields included). All nested arrays are returned whole — query each as a bare field.
+    description: Fetch a single catalog product by IRI. Every nested block is a field-selectable Relay connection (edges { node }) — images, videos, categories, inventories, customerGroupPrices, translations, channels, attributeValues, and the type-specific blocks (superAttributes/variants, bundleOptions, linkedProducts, downloadableLinks/downloadableSamples, customizableOptions). Type-specific connections are empty on non-matching types. The full computed attributes field set and bookingProduct are REST-only — over GraphQL use the attributeValues connection.
     query: |
       query AdminCatalogProduct($id: ID!) {
         adminCatalogProduct(id: $id) {
@@ -15,6 +15,10 @@ examples:
           status
           price
           formattedPrice
+          specialPrice
+          formattedSpecialPrice
+          specialPriceFrom
+          specialPriceTo
           quantity
           baseImageUrl
           imagesCount
@@ -39,19 +43,282 @@ examples:
           new
           createdAt
           updatedAt
-          translations
-          images
-          categories
-          inventories
-          customerGroupPrices
-          superAttributes
-          variants
-          bundleOptions
-          linkedProducts
-          downloadableLinks
-          downloadableSamples
-          channels
-          attributes
+          translations {
+            edges {
+              node {
+                _id
+                locale
+                name
+                description
+                shortDescription
+                urlKey
+                metaTitle
+                metaDescription
+                metaKeywords
+              }
+            }
+          }
+          images {
+            edges {
+              node {
+                _id
+                type
+                path
+                url
+                position
+              }
+            }
+          }
+          videos {
+            edges {
+              node {
+                _id
+                type
+                path
+                url
+                position
+              }
+            }
+          }
+          categories {
+            edges {
+              node {
+                _id
+                name
+                slug
+              }
+            }
+          }
+          inventories {
+            edges {
+              node {
+                _id
+                sourceId
+                sourceCode
+                qty
+              }
+            }
+          }
+          customerGroupPrices {
+            edges {
+              node {
+                _id
+                customerGroupId
+                qty
+                valueType
+                value
+                uniqueId
+              }
+            }
+          }
+          channels {
+            edges {
+              node {
+                _id
+                code
+                name
+              }
+            }
+          }
+          attributeValues {
+            edges {
+              node {
+                _id
+                attributeId
+                code
+                adminName
+                type
+                isRequired
+                groupCode
+                value
+              }
+            }
+          }
+          superAttributes {
+            edges {
+              node {
+                _id
+                code
+                type
+                adminName
+                options {
+                  edges {
+                    node {
+                      _id
+                      adminName
+                      swatchValue
+                      sortOrder
+                    }
+                  }
+                }
+              }
+            }
+          }
+          variants {
+            edges {
+              node {
+                _id
+                sku
+                name
+                price
+                formattedPrice
+                quantity
+                inStock
+                attributeValues {
+                  edges {
+                    node {
+                      code
+                      adminName
+                      value
+                    }
+                  }
+                }
+              }
+            }
+          }
+          bundleOptions {
+            edges {
+              node {
+                _id
+                label
+                type
+                position
+                isRequired
+                products {
+                  edges {
+                    node {
+                      _id
+                      productId
+                      sku
+                      name
+                      qty
+                      isDefault
+                      sortOrder
+                    }
+                  }
+                }
+              }
+            }
+          }
+          linkedProducts {
+            edges {
+              node {
+                _id
+                associatedProductId
+                sku
+                name
+                qty
+                sortOrder
+              }
+            }
+          }
+          downloadableLinks {
+            edges {
+              node {
+                _id
+                sortOrder
+                downloads
+                price
+                formattedPrice
+                type
+                file
+                fileUrl
+                sampleFile
+                sampleFileUrl
+                sampleType
+                translations {
+                  edges {
+                    node {
+                      _id
+                      locale
+                      title
+                    }
+                  }
+                }
+              }
+            }
+          }
+          downloadableSamples {
+            edges {
+              node {
+                _id
+                sortOrder
+                type
+                file
+                fileUrl
+                translations {
+                  edges {
+                    node {
+                      _id
+                      locale
+                      title
+                    }
+                  }
+                }
+              }
+            }
+          }
+          customizableOptions {
+            edges {
+              node {
+                _id
+                type
+                isRequired
+                sortOrder
+                maxCharacters
+                supportedFileExtensions
+                translations {
+                  edges {
+                    node {
+                      _id
+                      locale
+                      label
+                    }
+                  }
+                }
+                prices {
+                  edges {
+                    node {
+                      _id
+                      label
+                      price
+                      sortOrder
+                    }
+                  }
+                }
+              }
+            }
+          }
+          relatedProducts {
+            edges {
+              node {
+                _id
+                sku
+                type
+                name
+              }
+            }
+          }
+          upSells {
+            edges {
+              node {
+                _id
+                sku
+                type
+                name
+              }
+            }
+          }
+          crossSells {
+            edges {
+              node {
+                _id
+                sku
+                type
+                name
+              }
+            }
+          }
         }
       }
     variables: |
@@ -67,83 +334,80 @@ examples:
             "sku": "SP-001",
             "name": "Classic Watch",
             "type": "simple",
-            "status": 1,
+            "status": "1",
             "price": "99.9900",
             "formattedPrice": "$99.99",
-            "quantity": 42,
+            "specialPrice": null,
+            "formattedSpecialPrice": null,
+            "specialPriceFrom": null,
+            "specialPriceTo": null,
+            "quantity": "42",
             "baseImageUrl": "http://localhost:8000/storage/product/42/image.webp",
-            "imagesCount": 3,
-            "categoryId": 5,
+            "imagesCount": "3",
+            "categoryId": "5",
             "categoryName": "Accessories",
             "channel": "default",
             "locale": "en",
             "attributeFamilyId": 1,
             "attributeFamilyName": "Default",
             "urlKey": "classic-watch",
-            "visibleIndividually": true,
+            "visibleIndividually": "1",
             "shortDescription": "A premium timepiece.",
             "description": "Full HTML description.",
             "metaTitle": null,
             "metaDescription": null,
             "metaKeywords": null,
-            "weight": 0.5,
+            "weight": "0.5",
             "taxCategoryId": null,
-            "manageStock": true,
-            "inStock": true,
-            "featured": false,
-            "new": true,
-            "createdAt": "2026-01-12T08:15:00+00:00",
-            "updatedAt": "2026-04-30T14:20:09+00:00",
-            "translations": [
-              {
-                "locale": "en",
-                "name": "Classic Watch",
-                "description": "Full HTML description.",
-                "shortDescription": "A premium timepiece.",
-                "urlKey": "classic-watch",
-                "metaTitle": null,
-                "metaDescription": null,
-                "metaKeywords": null
-              }
-            ],
-            "images": [
-              {
-                "id": 1,
-                "path": "product/42/img1.webp",
-                "url": "http://localhost/storage/product/42/img1.webp",
-                "sortOrder": 0
-              }
-            ],
-            "categories": [
-              {
-                "id": 5,
-                "name": "Accessories",
-                "slug": "accessories"
-              }
-            ],
-            "inventories": [
-              {
-                "sourceId": 1,
-                "sourceCode": "default",
-                "qty": 42
-              }
-            ],
-            "customerGroupPrices": [],
-            "superAttributes": null,
-            "variants": null,
-            "bundleOptions": null,
-            "linkedProducts": null,
-            "downloadableLinks": null,
-            "downloadableSamples": null,
-            "channels": [
-              { "id": 1, "code": "default", "name": "Default Channel", "assigned": true },
-              { "id": 2, "code": "mobile", "name": "Mobile Channel", "assigned": false }
-            ],
-            "attributes": [
-              { "id": 1, "code": "sku", "adminName": "SKU", "type": "text", "isRequired": true, "valuePerChannel": false, "valuePerLocale": false, "groupCode": "general", "groupName": "General", "value": "SP-001", "options": null },
-              { "id": 23, "code": "color", "adminName": "Color", "type": "select", "isRequired": false, "valuePerChannel": false, "valuePerLocale": false, "groupCode": "general", "groupName": "General", "value": null, "options": [ { "id": 1, "adminName": "Red", "swatchValue": "#ff0000", "sortOrder": 1 } ] },
-              { "id": 25, "code": "meta_title", "adminName": "Meta Title", "type": "textarea", "isRequired": false, "valuePerChannel": true, "valuePerLocale": true, "groupCode": "meta_description", "groupName": "Meta Description", "value": null, "options": null }
-            ]
+            "manageStock": "1",
+            "inStock": "1",
+            "featured": "0",
+            "new": "1",
+            "createdAt": "2026-01-12 08:15:00",
+            "updatedAt": "2026-04-30 14:20:09",
+            "translations": {
+              "edges": [
+                { "node": { "_id": 91, "locale": "en", "name": "Classic Watch", "description": "Full HTML description.", "shortDescription": "A premium timepiece.", "urlKey": "classic-watch", "metaTitle": null, "metaDescription": null, "metaKeywords": null } }
+              ]
+            },
+            "images": {
+              "edges": [
+                { "node": { "_id": 1, "type": "image", "path": "product/42/img1.webp", "url": "http://localhost/storage/product/42/img1.webp", "position": 1 } }
+              ]
+            },
+            "videos": { "edges": [] },
+            "categories": {
+              "edges": [
+                { "node": { "_id": 5, "name": "Accessories", "slug": "accessories" } }
+              ]
+            },
+            "inventories": {
+              "edges": [
+                { "node": { "_id": 12, "sourceId": 1, "sourceCode": "default", "qty": 42 } }
+              ]
+            },
+            "customerGroupPrices": { "edges": [] },
+            "channels": {
+              "edges": [
+                { "node": { "_id": 1, "code": "default", "name": "Default Channel" } }
+              ]
+            },
+            "attributeValues": {
+              "edges": [
+                { "node": { "_id": 1001, "attributeId": 8, "code": "status", "adminName": "Status", "type": "boolean", "isRequired": true, "groupCode": "settings", "value": "1" } },
+                { "node": { "_id": 1002, "attributeId": 11, "code": "price", "adminName": "Price", "type": "price", "isRequired": true, "groupCode": "price", "value": "99.9900" } }
+              ]
+            },
+            "superAttributes": { "edges": [] },
+            "variants": { "edges": [] },
+            "bundleOptions": { "edges": [] },
+            "linkedProducts": { "edges": [] },
+            "downloadableLinks": { "edges": [] },
+            "downloadableSamples": { "edges": [] },
+            "customizableOptions": { "edges": [] },
+            "relatedProducts": { "edges": [] },
+            "upSells": { "edges": [] },
+            "crossSells": { "edges": [] }
           }
         }
       }
@@ -151,9 +415,9 @@ examples:
 
 # Catalog Product — Detail (GraphQL)
 
-GraphQL item query that returns a single catalog product by its IRI, with all
-**detail-level fields populated**, including translations, images, categories,
-inventories, customer group prices, and type-specific blocks.
+GraphQL item query that returns a single catalog product by its IRI. Every nested
+block is a **field-selectable Relay connection** — sub-select exactly the fields
+you need with `edges { node { … } }`.
 
 ## Operation
 
@@ -161,16 +425,15 @@ inventories, customer group prices, and type-specific blocks.
 |-----------|------|
 | `adminCatalogProduct` | Query (item) |
 
+::: tip Overview
+See the [Products overview](/api/graphql-api/admin/catalog/products/) for how this
+menu works, product types, and the create/update flow.
+:::
+
 ## Authentication
 
-Every request must include an admin Bearer token:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain a token via the [`createAdminLogin`](/api/graphql-api/admin/authentication)
-mutation.
+All admin endpoints require an admin Bearer token — see
+[Authentication](/api/graphql-api/admin/authentication).
 
 ## Arguments
 
@@ -178,362 +441,56 @@ mutation.
 |----------|------|----------|-------------|
 | `id` | `ID!` | Yes | API Platform IRI of the product (e.g. `"/api/admin/catalog/products/42"`) |
 
-::: tip Finding the IRI
-The IRI can be taken from the `id` field in any `adminCatalogProducts` edge node,
-or constructed as `/api/admin/catalog/products/{numericId}`. Both forms are
-accepted by the resolver.
+## Response shape
+
+- **Top-level scalars** (`sku`, `name`, `type`, `price`, `formattedPrice`, `quantity`,
+  `inStock`, `status`, `weight`, `urlKey`, `meta*`, `created/updated`, …) are always
+  returned. Eloquent stringifies numeric/boolean scalars over GraphQL, so `status`
+  comes back as `"1"`, `inStock` as `"1"`, etc. — cast client-side.
+- **Connections** — every nested block is a connection you sub-select with
+  `{ edges { node { … } } }`:
+
+| Connection | Node fields | Present for |
+|------------|-------------|-------------|
+| `images` | `_id`, `type`, `path`, `url`, `position` | all |
+| `videos` | `_id`, `type`, `path`, `url`, `position` | all |
+| `categories` | `_id`, `name`, `slug` | all |
+| `inventories` | `_id`, `sourceId`, `sourceCode`, `qty` | all |
+| `customerGroupPrices` | `_id`, `customerGroupId`, `qty`, `valueType`, `value`, `uniqueId` | all |
+| `translations` | `_id`, `locale`, `name`, `description`, `shortDescription`, `urlKey`, `metaTitle`, `metaDescription`, `metaKeywords` | all |
+| `channels` | `_id`, `code`, `name` | all (the product's **assigned** channels) |
+| `attributeValues` | `_id`, `attributeId`, `code`, `adminName`, `type`, `isRequired`, `groupCode`, `value` | all (the stored EAV values) |
+| `superAttributes` | `_id`, `code`, `type`, `adminName`, `options { edges { node { _id adminName swatchValue sortOrder } } }` | `configurable` |
+| `variants` | `_id`, `sku`, `name`, `price`, `formattedPrice`, `quantity`, `inStock`, `attributeValues { edges { node { code adminName value } } }` | `configurable` |
+| `bundleOptions` | `_id`, `label`, `type`, `position`, `isRequired`, `products { edges { node { _id productId sku name qty isDefault sortOrder } } }` | `bundle` |
+| `linkedProducts` | `_id`, `associatedProductId`, `sku`, `name`, `qty`, `sortOrder` | `grouped` |
+| `downloadableLinks` | `_id`, `sortOrder`, `downloads`, `price`, `formattedPrice`, `type`, `file`, `fileUrl`, `sampleFile`, `sampleFileUrl`, `sampleType`, `translations { edges { node { _id locale title } } }` | `downloadable` |
+| `downloadableSamples` | `_id`, `sortOrder`, `type`, `file`, `fileUrl`, `translations { edges { node { _id locale title } } }` | `downloadable` |
+| `customizableOptions` | `_id`, `type`, `isRequired`, `sortOrder`, `maxCharacters`, `supportedFileExtensions`, `translations { edges { node { _id locale label } } }`, `prices { edges { node { _id label price sortOrder } } }` | all |
+| `relatedProducts` / `upSells` / `crossSells` | `_id`, `sku`, `type`, `name` | all |
+
+Type-specific connections (`superAttributes`/`variants`, `bundleOptions`,
+`linkedProducts`, `downloadableLinks`/`downloadableSamples`) return **empty edges**
+on non-matching types — switch on `type` to know which to read.
+
+::: warning attributes and bookingProduct are REST-only
+The full computed **`attributes`** block (the admin edit-screen field set, with
+*empty* family fields shown) and the **`bookingProduct`** block are returned only by
+the REST endpoint `GET /api/admin/catalog/products/{id}`. Over GraphQL, query the
+**`attributeValues`** connection for the product's stored attribute values (one node
+per set value; empty fields are not included), and read booking products via REST.
 :::
-
-## Fields
-
-### Core scalar fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | `ID` | API Platform IRI (e.g. `/api/admin/catalog/products/42`) |
-| `_id` | `Int` | Raw numeric product ID |
-| `sku` | `String` | Product SKU |
-| `name` | `String` | Localised product name |
-| `type` | `String` | Product type (`simple`, `configurable`, `bundle`, `grouped`, `downloadable`, `virtual`, `booking`) |
-| `status` | `Int` | `1` = enabled, `0` = disabled |
-| `price` | `String` | Raw decimal price string (e.g. `"99.9900"`) |
-| `formattedPrice` | `String` | Currency-formatted price (e.g. `"$99.99"`) |
-| `quantity` | `Int` | Total quantity across all inventory sources |
-| `baseImageUrl` | `String` | URL of the base/primary image |
-| `imagesCount` | `Int` | Total number of product images |
-| `categoryId` | `Int` | Primary category ID |
-| `categoryName` | `String` | Primary category display name |
-| `channel` | `String` | Channel code used for value resolution |
-| `locale` | `String` | Locale code used for value resolution |
-| `attributeFamilyId` | `Int` | Attribute family ID |
-| `attributeFamilyName` | `String` | Attribute family display name |
-| `urlKey` | `String` | URL slug (e.g. `classic-watch`) |
-| `visibleIndividually` | `Boolean` | Whether the product appears in storefront listings |
-| `shortDescription` | `String` | Short description (may contain HTML) |
-| `description` | `String` | Full description (may contain HTML) |
-| `metaTitle` | `String` | SEO meta title |
-| `metaDescription` | `String` | SEO meta description |
-| `metaKeywords` | `String` | SEO meta keywords |
-| `weight` | `Float` | Product weight |
-| `taxCategoryId` | `Int` | Tax category ID |
-| `manageStock` | `Boolean` | Whether inventory is managed |
-| `inStock` | `Boolean` | Whether the product is currently in stock |
-| `featured` | `Boolean` | Whether the product is featured |
-| `new` | `Boolean` | Whether the product is marked as new |
-| `createdAt` | `String` | ISO 8601 creation timestamp |
-| `updatedAt` | `String` | ISO 8601 last-updated timestamp |
-
-### Array/scalar fields (plain JSON)
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `translations` | scalar (JSON array\|null) | Per-locale translation rows — see shape below |
-| `images` | scalar (JSON array\|null) | Product image rows — see shape below |
-| `categories` | scalar (JSON array\|null) | Category references — see shape below |
-| `inventories` | scalar (JSON array\|null) | Per-source inventory rows — see shape below |
-| `customerGroupPrices` | scalar (JSON array\|null) | Customer-group price overrides (empty array when none) |
-| `channels` | scalar (JSON array) | Every channel, each flagged `assigned` for this product — see shape below |
-| `attributes` | scalar (JSON array) | The product's attribute-family field set (edit-screen parity) — see shape below |
-
-### Type-specific blocks (null unless type matches)
-
-| Field | Present for type | Description |
-|-------|-----------------|-------------|
-| `superAttributes` | `configurable` | Configurable attributes and their options |
-| `variants` | `configurable` | Variant child products with attribute values |
-| `bundleOptions` | `bundle` | Bundle option groups with selectable products |
-| `linkedProducts` | `grouped` | Linked associated products |
-| `downloadableLinks` | `downloadable` | Download link rows |
-| `downloadableSamples` | `downloadable` | Sample download rows |
-
-### `translations[]` element shape
-
-| Key | Type | Description |
-|-----|------|-------------|
-| `locale` | string | Locale code (e.g. `en`, `fr`) |
-| `name` | string\|null | Translated product name |
-| `description` | string\|null | Translated full description |
-| `shortDescription` | string\|null | Translated short description |
-| `urlKey` | string\|null | Translated URL slug |
-| `metaTitle` | string\|null | Translated SEO meta title |
-| `metaDescription` | string\|null | Translated SEO meta description |
-| `metaKeywords` | string\|null | Translated SEO meta keywords |
-
-### `images[]` element shape
-
-| Key | Type | Description |
-|-----|------|-------------|
-| `id` | integer | Image ID |
-| `path` | string | Storage path relative to the disk root |
-| `url` | string | Full public URL |
-| `sortOrder` | integer | Display order position |
-
-### `categories[]` element shape
-
-| Key | Type | Description |
-|-----|------|-------------|
-| `id` | integer | Category ID |
-| `name` | string | Category display name |
-| `slug` | string | Category URL slug |
-
-### `inventories[]` element shape
-
-| Key | Type | Description |
-|-----|------|-------------|
-| `sourceId` | integer | Inventory source ID |
-| `sourceCode` | string | Inventory source code (e.g. `default`) |
-| `qty` | integer | Quantity at this source |
-
-### `channels[]` element shape
-
-Every channel in the store, with `assigned` indicating whether this product belongs
-to it — mirrors the edit-screen Channels box (all options shown, the product's ticked).
-
-| Key | Type | Description |
-|-----|------|-------------|
-| `id` | integer | Channel ID |
-| `code` | string | Channel code |
-| `name` | string | Channel display name |
-| `assigned` | boolean | `true` if this product is assigned to the channel |
-
-### `attributes[]` element shape
-
-The product's attribute-family field set — the same fields the admin edit screen
-renders (including family-specific ones like `color`, `size`, `brand`,
-`product_number`). Empty fields are present with `value: null`.
-
-| Key | Type | Description |
-|-----|------|-------------|
-| `id` | integer | Attribute ID |
-| `code` | string | Attribute code (e.g. `sku`, `color`, `meta_title`) |
-| `adminName` | string | Field label as shown in the admin |
-| `type` | string | Input type (`text`, `textarea`, `price`, `boolean`, `select`, `multiselect`, `checkbox`, `date`, `datetime`, `image`, `file`) |
-| `isRequired` | boolean | Whether the field is required |
-| `valuePerChannel` | boolean | Whether the value can differ per channel |
-| `valuePerLocale` | boolean | Whether the value can differ per locale |
-| `groupCode` | string | Code of the field group |
-| `groupName` | string | Display name of the field group |
-| `value` | mixed\|null | Resolved value for the requested channel/locale (`null` when unset); for `select` the chosen option ID, for `multiselect`/`checkbox` a comma-separated option-ID list |
-| `options` | array\|null | Selectable options (`id`, `adminName`, `swatchValue`, `sortOrder`) for `select`/`multiselect`/`checkbox`; `null` otherwise |
-
-::: warning Nested data is returned whole
-`translations`, `images`, `categories`, `inventories`, `customerGroupPrices`, `channels`, `attributes`, and the type-specific blocks (`variants` / `bundleOptions` / `linkedProducts` / `downloadableLinks` / `downloadableSamples` / `superAttributes`) are returned as **whole JSON** — query each as a bare field (`attributes`, not `attributes { … }`). The entire array comes back, and it resolves over GraphQL on the detail query.
-:::
-
-## Example Query
-
-```graphql
-query AdminCatalogProduct($id: ID!) {
-  adminCatalogProduct(id: $id) {
-    id
-    _id
-    sku
-    name
-    type
-    status
-    price
-    formattedPrice
-    quantity
-    baseImageUrl
-    imagesCount
-    categoryId
-    categoryName
-    channel
-    locale
-    attributeFamilyId
-    attributeFamilyName
-    urlKey
-    visibleIndividually
-    shortDescription
-    description
-    metaTitle
-    metaDescription
-    metaKeywords
-    weight
-    taxCategoryId
-    manageStock
-    inStock
-    featured
-    new
-    createdAt
-    updatedAt
-    translations
-    images
-    categories
-    inventories
-    customerGroupPrices
-    superAttributes
-    variants
-    bundleOptions
-    linkedProducts
-    downloadableLinks
-    downloadableSamples
-    channels
-    attributes
-  }
-}
-```
-
-```json
-{
-  "id": "/api/admin/catalog/products/42"
-}
-```
-
-## Example Response (simple product)
-
-```json
-{
-  "data": {
-    "adminCatalogProduct": {
-      "id": "/api/admin/catalog/products/42",
-      "_id": 42,
-      "sku": "SP-001",
-      "name": "Classic Watch",
-      "type": "simple",
-      "status": 1,
-      "price": "99.9900",
-      "formattedPrice": "$99.99",
-      "quantity": 42,
-      "baseImageUrl": "http://localhost:8000/storage/product/42/image.webp",
-      "imagesCount": 3,
-      "categoryId": 5,
-      "categoryName": "Accessories",
-      "channel": "default",
-      "locale": "en",
-      "attributeFamilyId": 1,
-      "attributeFamilyName": "Default",
-      "urlKey": "classic-watch",
-      "visibleIndividually": true,
-      "shortDescription": "A premium timepiece.",
-      "description": "Full HTML description.",
-      "metaTitle": null,
-      "metaDescription": null,
-      "metaKeywords": null,
-      "weight": 0.5,
-      "taxCategoryId": null,
-      "manageStock": true,
-      "inStock": true,
-      "featured": false,
-      "new": true,
-      "createdAt": "2026-01-12T08:15:00+00:00",
-      "updatedAt": "2026-04-30T14:20:09+00:00",
-      "translations": [
-        {
-          "locale": "en",
-          "name": "Classic Watch",
-          "description": "Full HTML description.",
-          "shortDescription": "A premium timepiece.",
-          "urlKey": "classic-watch",
-          "metaTitle": null,
-          "metaDescription": null,
-          "metaKeywords": null
-        }
-      ],
-      "images": [
-        {
-          "id": 1,
-          "path": "product/42/img1.webp",
-          "url": "http://localhost/storage/product/42/img1.webp",
-          "sortOrder": 0
-        }
-      ],
-      "categories": [
-        {
-          "id": 5,
-          "name": "Accessories",
-          "slug": "accessories"
-        }
-      ],
-      "inventories": [
-        {
-          "sourceId": 1,
-          "sourceCode": "default",
-          "qty": 42
-        }
-      ],
-      "customerGroupPrices": [],
-      "superAttributes": null,
-      "variants": null,
-      "bundleOptions": null,
-      "linkedProducts": null,
-      "downloadableLinks": null,
-      "downloadableSamples": null,
-      "channels": [
-        { "id": 1, "code": "default", "name": "Default Channel", "assigned": true },
-        { "id": 2, "code": "mobile", "name": "Mobile Channel", "assigned": false }
-      ],
-      "attributes": [
-        {
-          "id": 1,
-          "code": "sku",
-          "adminName": "SKU",
-          "type": "text",
-          "isRequired": true,
-          "valuePerChannel": false,
-          "valuePerLocale": false,
-          "groupCode": "general",
-          "groupName": "General",
-          "value": "SP-001",
-          "options": null
-        },
-        {
-          "id": 23,
-          "code": "color",
-          "adminName": "Color",
-          "type": "select",
-          "isRequired": false,
-          "valuePerChannel": false,
-          "valuePerLocale": false,
-          "groupCode": "general",
-          "groupName": "General",
-          "value": null,
-          "options": [
-            { "id": 1, "adminName": "Red", "swatchValue": "#ff0000", "sortOrder": 1 }
-          ]
-        },
-        {
-          "id": 25,
-          "code": "meta_title",
-          "adminName": "Meta Title",
-          "type": "textarea",
-          "isRequired": false,
-          "valuePerChannel": true,
-          "valuePerLocale": true,
-          "groupCode": "meta_description",
-          "groupName": "Meta Description",
-          "value": null,
-          "options": null
-        }
-      ]
-    }
-  }
-}
-```
-
-## Errors
-
-| Scenario | GraphQL `errors[]` | HTTP Status |
-|----------|-------------------|-------------|
-| Unknown ID | `errors[]` populated or `data.adminCatalogProduct: null` | `200` (GraphQL convention) |
-| Missing auth | `"Unauthenticated"` in `errors[]` | `200` |
 
 ## Notes
 
-- **Type-aware payload.** The six type-specific blocks are always requested in the
-  selection set but are `null` for non-matching product types. Switch on the `type`
-  field to know which block to read.
-- **`id` argument is the IRI, not the integer.** Construct it as
-  `"/api/admin/catalog/products/{_id}"` using the `_id` field from a listing query,
-  or pass the `id` field directly from a listing result.
-- **Same data as the REST detail endpoint.** This query and `GET /api/admin/catalog/products/{id}`
-  return identical data; the REST response uses camelCase JSON, this query returns the
-  same fields with the nested arrays as whole JSON values.
-- **Nested arrays are bare JSON, not sub-selections.** Query `attributes`, `channels`,
-  `translations`, etc. as plain fields — they return the whole array. Plain scalar
-  fields (`id`, `sku`, `name`, `type`, `price`, …) are always returned.
-- **Booking products are accessible.** Even though booking products cannot be added
-  to an admin draft cart, their detail record is fully readable via this query.
-- **Route disambiguation.** The REST endpoint carries a `requirements: ['id' => '\d+']`
-  constraint — the resolver uses the IRI path for lookup, so only numeric IDs
-  (e.g. `/api/admin/catalog/products/42`) are accepted.
+- **Connections, not bare JSON (changed).** Nested data is now field-selectable —
+  query `images { edges { node { url } } }`, not bare `images`. This matches the
+  storefront/Shopify shape; pick only the fields you need.
+- **`id` argument is the IRI.** Construct it as `"/api/admin/catalog/products/{_id}"`
+  from a listing's `_id`, or pass a listing edge's `id` directly.
+- **REST is the flat counterpart.** `GET /api/admin/catalog/products/{id}` returns the
+  same data with every nested block as a flat inline array/object (plus the full
+  `attributes` and `bookingProduct` blocks).
+- **Mutations don't return connections.** `createAdminCatalogProduct` /
+  `updateAdminCatalogProduct` return the product's scalars; re-query
+  `adminCatalogProduct` for the connections.

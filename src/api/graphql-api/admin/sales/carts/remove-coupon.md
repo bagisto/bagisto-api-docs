@@ -7,7 +7,13 @@ examples:
     query: |
       mutation RemoveCoupon($input: removeCouponAdminCartInput!) {
         removeCouponAdminCart(input: $input) {
-          adminCart { itemsCount grandTotal formattedGrandTotal success message }
+          adminCart {
+            itemsCount
+            grandTotal
+            formattedGrandTotal
+            success
+            message
+          }
         }
       }
     variables: |
@@ -21,7 +27,13 @@ examples:
       {
         "data": {
           "removeCouponAdminCart": {
-            "adminCart": { "itemsCount": 1, "grandTotal": 100, "formattedGrandTotal": "$100.00", "success": true, "message": "Coupon removed." }
+            "adminCart": {
+              "itemsCount": 1,
+              "grandTotal": 100,
+              "formattedGrandTotal": "$100.00",
+              "success": true,
+              "message": "Coupon removed."
+            }
           }
         }
       }
@@ -31,6 +43,10 @@ examples:
 
 GraphQL counterpart of `DELETE /api/admin/carts/{id}/coupon`. Mutation field is
 `removeCouponAdminCart`.
+
+::: warning Select cart fields, not `id`
+This mutation returns the updated cart — select `itemsCount`, `grandTotal`, `formattedGrandTotal`, `success`, `message`, etc. Do **not** select `id` (or `_id`): this is an action result with no addressable record, so the auto-generated IRI field is `null` and selecting it errors out the whole payload.
+:::
 
 ::: tip Prerequisites
 The example uses an illustrative cart id. Admin cart endpoints only operate on **draft carts** (`is_active=0`) — storefront carts are rejected by the admin cart guard. Create a draft cart first with the [`createAdminDraftCart`](../../customers/create-draft-cart.md) mutation and use the returned `cartId`.

@@ -21,7 +21,7 @@ An admin can place an order **on behalf of a customer** — the same "Create Ord
 | [Save addresses](/api/rest-api/admin/sales/carts/save-address) | `POST /api/admin/carts/{id}/addresses` |
 | [List](/api/rest-api/admin/sales/carts/list-shipping-methods) / [set](/api/rest-api/admin/sales/carts/set-shipping-method) shipping method | `.../carts/{id}/shipping-methods` |
 | [List](/api/rest-api/admin/sales/carts/list-payment-methods) / [set](/api/rest-api/admin/sales/carts/set-payment-method) payment method | `.../carts/{id}/payment-methods` |
-| [Place the order](/api/rest-api/admin/sales/orders/place-order) | `POST /api/admin/orders/place/{cartId}` |
+| [Place the order](/api/rest-api/admin/sales/carts/place-order) | `POST /api/admin/orders/place/{cartId}` |
 
 (There's also [apply](/api/rest-api/admin/sales/carts/apply-coupon) / [remove coupon](/api/rest-api/admin/sales/carts/remove-coupon) on the draft cart.) [Reorder](/api/rest-api/admin/sales/orders/reorder) is a shortcut that seeds a fresh draft cart from an existing order's items.
 
@@ -52,7 +52,7 @@ Every action refuses with a clear error when its prerequisite isn't met — noth
 | [List Orders](/api/rest-api/admin/sales/orders/list-orders) | `GET /api/admin/orders` |
 | [Order Detail](/api/rest-api/admin/sales/orders/order-detail) | `GET /api/admin/orders/{id}` |
 | [Reorder](/api/rest-api/admin/sales/orders/reorder) | `POST /api/admin/orders/{id}/reorder` |
-| [Place Order](/api/rest-api/admin/sales/orders/place-order) | `POST /api/admin/orders/place/{cartId}` |
+| [Place Order](/api/rest-api/admin/sales/carts/place-order) | `POST /api/admin/orders/place/{cartId}` |
 | [Cancel Order](/api/rest-api/admin/sales/orders/cancel) | `POST /api/admin/orders/{id}/cancel` |
 | [Add Comment](/api/rest-api/admin/sales/orders/add-comment) | `POST /api/admin/orders/{id}/comments` |
 | [List Comments](/api/rest-api/admin/sales/orders/list-comments) | `GET /api/admin/orders/{id}/comments` |

@@ -27,8 +27,11 @@ examples:
       - error: Fraud (422)
         cause: Order is flagged as fraud
         solution: Resolve the fraud flag before retrying
+      - error: Already invoiced / shipped (422)
+        cause: The order has been invoiced or shipped, so it can no longer be canceled
+        solution: Issue a refund instead of canceling
       - error: Nothing to cancel (422)
-        cause: Every item has already been invoiced / shipped / canceled
+        cause: No item has any quantity left to cancel (e.g. already canceled)
         solution: No further cancellation is possible on this order
       - error: No permission (422)
         cause: Admin's role lacks `sales.orders.cancel`
@@ -65,7 +68,8 @@ failure returns **HTTP 422** with the matching message:
 |-----------|----------|---------|
 | Order is `closed` | `bagistoapi::app.admin.order.actions.cancel.closed` | Closed orders cannot be canceled. |
 | Order is `fraud`  | `bagistoapi::app.admin.order.actions.cancel.fraud`  | Fraud orders cannot be canceled. |
-| No item has `qty_to_cancel > 0` | `bagistoapi::app.admin.order.actions.cancel.nothing-to-cancel` | There is nothing to cancel on this order. |
+| Order has invoiced / shipped items (e.g. `processing`) | `bagistoapi::app.admin.order.actions.cancel.already-processed` | This order has already been invoiced or shipped and can no longer be canceled. You can issue a refund instead. |
+| No item has any quantity left to cancel | `bagistoapi::app.admin.order.actions.cancel.nothing-to-cancel` | There is nothing to cancel on this order. |
 | Admin role lacks `sales.orders.cancel` | `bagistoapi::app.admin.order.actions.cancel.no-permission` | You do not have permission to cancel orders. |
 
 ### Sample 422 response

@@ -38,7 +38,17 @@ examples:
               location
               createdAt
               updatedAt
-              items
+              items {
+                edges {
+                  node {
+                    _id
+                    sku
+                    name
+                    qtyOrdered
+                    productImage
+                  }
+                }
+              }
             }
           }
         }
@@ -83,15 +93,19 @@ examples:
                   "location": "New York, NY, US",
                   "createdAt": "2026-05-19 13:13:29",
                   "updatedAt": "2026-05-19 13:13:30",
-                  "items": [
-                    {
-                      "id": 2694,
-                      "sku": "test65",
-                      "name": "Classic Watch Hand",
-                      "qtyOrdered": 1,
-                      "productImage": "http://localhost:8000/storage/product/2358/example.webp"
-                    }
-                  ]
+                  "items": {
+                    "edges": [
+                      {
+                        "node": {
+                          "_id": 2694,
+                          "sku": "test65",
+                          "name": "Classic Watch Hand",
+                          "qtyOrdered": 1,
+                          "productImage": "http://localhost:8000/storage/product/2358/example.webp"
+                        }
+                      }
+                    ]
+                  }
                 }
               }
             ]
@@ -148,7 +162,17 @@ examples:
               location
               createdAt
               updatedAt
-              items
+              items {
+                edges {
+                  node {
+                    _id
+                    sku
+                    name
+                    qtyOrdered
+                    productImage
+                  }
+                }
+              }
             }
           }
         }
@@ -196,15 +220,19 @@ examples:
                   "location": "New York, NY, US",
                   "createdAt": "2026-05-19 13:13:29",
                   "updatedAt": "2026-05-19 13:13:30",
-                  "items": [
-                    {
-                      "id": 2694,
-                      "sku": "test65",
-                      "name": "Classic Watch Hand",
-                      "qtyOrdered": 1,
-                      "productImage": "http://localhost:8000/storage/product/2358/example.webp"
-                    }
-                  ]
+                  "items": {
+                    "edges": [
+                      {
+                        "node": {
+                          "_id": 2694,
+                          "sku": "test65",
+                          "name": "Classic Watch Hand",
+                          "qtyOrdered": 1,
+                          "productImage": "http://localhost:8000/storage/product/2358/example.webp"
+                        }
+                      }
+                    ]
+                  }
                 }
               }
             ]
@@ -235,12 +263,13 @@ Orders** screen.
   `customerId` / `customerEmail` / `customerName`, `paymentTitle`,
   `couponCode`, `totalItemCount`, `totalQtyOrdered`, `orderCurrencyCode`,
   `grandTotal` / `baseGrandTotal` / `formattedGrandTotal`, `location`,
-  `createdAt`, `updatedAt`) plus `items` — a **lightweight preview** JSON array
-  (`id`, `sku`, `name`, `qtyOrdered`, `productImage`) requested **bare** (no
-  sub-selection). Heavy relations (full line items, invoices, shipments) are
-  **not** embedded here — fetch a single order's detail for those.
+  `createdAt`, `updatedAt`) plus `items` — a **lightweight preview connection**.
+  Sub-select it with `items { edges { node { _id sku name qtyOrdered productImage } } }`.
+  Heavy relations (full line items, invoices, shipments) are **not** embedded
+  here — fetch a single order's detail for those.
 - The REST equivalent (`GET /api/admin/orders`) uses offset pagination with a
-  `{ data, meta }` envelope instead of cursors.
+  `{ data, meta }` envelope instead of cursors, and returns `items` as a **flat
+  array** (same fields).
 
 ## Filtering
 
