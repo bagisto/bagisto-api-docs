@@ -22,8 +22,28 @@ examples:
 
 # Mass Delete Customer Groups
 
+Deletes several customer groups in one request. The response reports which ids were `deleted` and which were `skipped` (with a reason).
+
 | Endpoint | Method |
 |----------|--------|
 | `/api/admin/customers/groups/mass-delete` | POST |
 
-System-group + in-use guards skip per-id with a reason. Empty `indices` → 422. Permission: `customers.groups.delete`.
+## Request Body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `indices` | integer[] | yes | Group IDs to delete. Empty → 422. |
+
+## Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `deleted` | integer[] | IDs that were removed. |
+| `skipped` | object[] | `{ id, reason }` for IDs refused (system group or has customers attached). |
+| `message` | string | Summary message. |
+
+System-group + in-use guards skip per-id with a reason rather than failing the whole batch. Permission: `customers.groups.delete`.
+
+::: tip
+For the system-group and in-use delete rules, see the [Customer Groups overview](./index.md).
+:::

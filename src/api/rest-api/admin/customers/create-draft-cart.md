@@ -47,8 +47,21 @@ cart and end up at the cart-keyed write endpoints
 
 The customer is taken from the URL — the request body is empty.
 
+## Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `cartId` | integer | The new draft cart's ID — use it for the rest of the Create-Order flow. |
+| `customerId` | integer | The customer the cart belongs to. |
+| `success` | boolean | Whether the cart was created. |
+| `message` | string | Result message. |
+
 ## Why a separate endpoint and not just one cart-create route
 
 The customer-nested URL keeps fresh Create-Order distinct from Reorder, which
 is important because the two have completely different inputs and side-effects.
 Reorder consumes an existing order id; this endpoint only needs the customer.
+
+::: tip
+For how the Create-Order helper panels fit together, see the [Create-Order Helpers overview](./create-order-helpers/index.md).
+:::

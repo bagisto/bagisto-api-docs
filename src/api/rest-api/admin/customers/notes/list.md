@@ -53,4 +53,8 @@ Each row in `data`:
 
 The `meta` object carries `currentPage`, `perPage`, `lastPage`, `total`, `from`, and `to`.
 
+::: tip
+For how the notes log works (append-only, customer-notify), see the [Notes overview](./index.md).
+:::
+
 All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

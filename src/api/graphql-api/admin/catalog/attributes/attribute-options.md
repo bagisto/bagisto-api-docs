@@ -3,88 +3,138 @@ outline: false
 examples:
   - id: admin-catalog-attribute-option-create
     title: Create Attribute Option
-    description: Add a new option to a select/multiselect/checkbox attribute. Mirrors POST /api/admin/catalog/attributes/{attributeId}/options.
+    description: Add a new option to a select/multiselect/checkbox attribute. The parent attribute is named by attributeId in the input. Returns the created option.
     query: |
-      mutation CreateAttributeOption($input: createAdminAttributeOptionInput!, $attributeId: Int!) {
-        createAdminAttributeOption(input: $input, attributeId: $attributeId) {
-          adminAttribute { id _id }
+      mutation CreateAttributeOption($input: createAdminAttributeOptionInput!) {
+        createAdminAttributeOption(input: $input) {
+          adminAttributeOption {
+            _id
+            attributeId
+            adminName
+            sortOrder
+            swatchValue
+          }
         }
       }
     variables: |
       {
-        "attributeId": 12,
         "input": {
-          "adminName": "Wool",
+          "attributeId": 12,
+          "adminName": "Green",
           "sortOrder": 2,
-          "translations": { "en": { "label": "Wool" }, "fr": { "label": "Laine" } }
+          "swatchValue": "#00FF00",
+          "translations": {
+            "en": { "label": "Green" },
+            "fr": { "label": "Vert" }
+          }
         }
       }
     response: |
       {
         "data": {
           "createAdminAttributeOption": {
-            "adminAttribute": { "id": "/api/admin/attributes/12", "_id": 12 }
+            "adminAttributeOption": {
+              "_id": 45,
+              "attributeId": 12,
+              "adminName": "Green",
+              "sortOrder": 2,
+              "swatchValue": "#00FF00"
+            }
           }
         }
       }
 
   - id: admin-catalog-attribute-option-update
     title: Update Attribute Option
-    description: Partial update of one option. Mirrors PUT /api/admin/catalog/attributes/{attributeId}/options/{optionId}.
+    description: Partial update of one option. Identify it with the option IRI plus attributeId and optionId. Returns the updated option.
     query: |
-      mutation UpdateAttributeOption($input: updateAdminAttributeOptionInput!, $attributeId: Int!, $optionId: Int!) {
-        updateAdminAttributeOption(input: $input, attributeId: $attributeId, optionId: $optionId) {
-          adminAttribute { id _id }
+      mutation UpdateAttributeOption($input: updateAdminAttributeOptionInput!) {
+        updateAdminAttributeOption(input: $input) {
+          adminAttributeOption {
+            _id
+            attributeId
+            adminName
+            sortOrder
+            swatchValue
+          }
         }
       }
     variables: |
       {
-        "attributeId": 12,
-        "optionId": 45,
         "input": {
-          "adminName": "Merino Wool",
+          "id": "/api/admin/catalog/attributes/12/options/45",
+          "attributeId": 12,
+          "optionId": 45,
+          "adminName": "Forest Green",
           "sortOrder": 1,
-          "translations": { "en": { "label": "Merino Wool" } }
+          "swatchValue": "#228B22",
+          "translations": {
+            "en": { "label": "Forest Green" },
+            "fr": { "label": "Vert Forêt" }
+          }
         }
       }
     response: |
       {
         "data": {
           "updateAdminAttributeOption": {
-            "adminAttribute": { "id": "/api/admin/attributes/12", "_id": 12 }
+            "adminAttributeOption": {
+              "_id": 45,
+              "attributeId": 12,
+              "adminName": "Forest Green",
+              "sortOrder": 1,
+              "swatchValue": "#228B22"
+            }
           }
         }
       }
 
   - id: admin-catalog-attribute-option-delete
     title: Delete Attribute Option
-    description: Delete one option. Refused if products still reference the option. Mirrors DELETE /api/admin/catalog/attributes/{attributeId}/options/{optionId}.
+    description: Delete one option, identified by its option IRI plus attributeId and optionId. Refused if products still reference the option. Returns the deleted option snapshot.
     query: |
       mutation DeleteAttributeOption($input: deleteAdminAttributeOptionInput!) {
         deleteAdminAttributeOption(input: $input) {
-          adminAttribute { id }
+          adminAttributeOption {
+            _id
+            attributeId
+            adminName
+            sortOrder
+            swatchValue
+          }
         }
       }
     variables: |
       {
         "input": {
-          "id": "/api/admin/catalog/attributes/12/options/45"
+          "id": "/api/admin/catalog/attributes/12/options/45",
+          "attributeId": 12,
+          "optionId": 45
         }
       }
     response: |
       {
         "data": {
           "deleteAdminAttributeOption": {
-            "adminAttributeOption": { "id": "/api/admin/attribute_options/45" }
+            "adminAttributeOption": {
+              "_id": 45,
+              "attributeId": 12,
+              "adminName": "Green",
+              "sortOrder": 2,
+              "swatchValue": "#00FF00"
+            }
           }
         }
       }
 ---
 
-# Catalog Attribute Options — Create / Update / Delete
+# Catalog Attribute Options — Create / Update / Delete (GraphQL)
 
-GraphQL counterpart to the
-[REST attribute-options endpoints](/api/rest-api/admin/catalog/attributes/attribute-options).
+Options are the selectable values of a `select`, `multiselect`, or `checkbox` attribute (e.g. the Red / Green / Blue values of a "Color" attribute). They cannot be added to any other attribute type. Per-locale labels go under each option's `translations`. All three mutations return the option as `adminAttributeOption`; select its `_id` (the numeric option id) rather than `id`, since the option has no standalone detail route.
+
+::: tip
+See the [Attributes overview](/api/graphql-api/admin/catalog/attributes/) for how attributes, options, and families fit together.
+:::
 
 ## Operations
 
@@ -94,24 +144,26 @@ GraphQL counterpart to the
 | `updateAdminAttributeOption` | Mutation | Partial update of an option |
 | `deleteAdminAttributeOption` | Mutation | Remove an option |
 
-All three mutations carry **extra args** alongside `input`:
-
-- `attributeId: Int!` — required on every mutation
-- `optionId: Int!` — required on update and delete
+Create takes the parent `attributeId: Int!` inside `input`. Update and delete identify the option with three input fields: the option IRI in `input.id` (`/api/admin/catalog/attributes/{attributeId}/options/{optionId}`) plus `attributeId: Int!` and `optionId: Int!`.
 
 ## Input — Create / Update
 
 | Field | Type | Notes |
 |-------|------|-------|
-| `admin_name` | `String` | Internal admin label (required on create) |
-| `sort_order` | `Int` | Display order |
-| `swatch_value` | `String` | Hex color / image path / display text depending on swatch type |
-| `translations` | `JSON` | Map of locale → `{ label }` |
+| `attributeId` | `Int!` | Parent attribute id (required on all three operations) |
+| `id` | `String` | Option IRI — required on update and delete |
+| `optionId` | `Int` | Option id — required on update and delete |
+| `adminName` | `String` | Internal admin label (required on create) |
+| `sortOrder` | `Int` | Display order |
+| `swatchValue` | `String` | Hex color / image path / display text, depending on the parent attribute's swatch type |
+| `translations` | `JSON` | Map of locale to `{ label }` |
 
 ## Errors
 
 | Condition | Message |
 |-----------|---------|
 | Attribute is not `select`/`multiselect`/`checkbox` | `This attribute type does not support options.` |
-| Delete refused — option in use | `This option is used by N product(s) and cannot be deleted.` |
+| Delete refused — option in use by products | `This option is used by N product(s) and cannot be deleted.` |
 | Unknown id | `Attribute option not found.` |
+
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

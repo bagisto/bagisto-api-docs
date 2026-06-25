@@ -35,6 +35,25 @@ All saved addresses for a customer — read-only sub-resource used by the
 |----------|--------|
 | `/api/admin/customers/{customerId}/addresses` | GET |
 
-Returns the standard `{ data, meta }` envelope. Not paginated by the UI but
-wrapped for consistency. 404 if the customer doesn't exist; 401 without an
-admin Bearer token.
+## Response Fields
+
+Returns the standard `{ data, meta }` envelope. Each row in `data`:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Address ID. |
+| `addressType` | string | Address type (e.g. `customer`). |
+| `firstName`, `lastName` | string | Recipient name. |
+| `companyName` | string \| null | Company name. |
+| `address` | string | Street address. |
+| `city`, `state`, `country`, `postcode` | string | Location. |
+| `email` | string \| null | Contact email. |
+| `phone` | string | Contact phone. |
+| `vatId` | string \| null | VAT identifier. |
+| `defaultAddress` | boolean | Whether this is the customer's default address. |
+
+The `meta` object carries `currentPage`, `perPage`, `lastPage`, `total`, `from`, and `to`. Not paginated by the UI but wrapped for consistency. 404 if the customer doesn't exist; 401 without an admin Bearer token.
+
+::: tip
+For default-address semantics and the address-book overview, see the [Addresses overview](./addresses/index.md).
+:::

@@ -4,7 +4,7 @@ apiType: rest
 examples:
   - id: admin-customers-list
     title: List Customers (Datagrid)
-    description: DataGrid-parity listing. Returns slim rows; detail-only fields (`totalAddresses`, `totalOrders`, `totalAmountSpent`) are null on listing.
+    description: DataGrid-parity listing. Each row carries the customer's group as a nested object. Detail-only counters are not part of listing rows.
     query: |
       curl -X GET "https://your-domain.com/api/admin/customers?per_page=10&customer_group_id=2" \
         -H "Authorization: Bearer <token>"
@@ -20,16 +20,16 @@ examples:
             "phone": "+15551234567",
             "gender": "Female",
             "dateOfBirth": "1990-01-01",
-            "customerGroupId": 2,
-            "customerGroupName": "Wholesale",
             "channelId": 1,
             "status": 1,
             "subscribedToNewsLetter": false,
             "isVerified": 1,
             "isSuspended": 0,
-            "totalAddresses": null,
-            "totalOrders": null,
-            "totalAmountSpent": null,
+            "group": {
+              "id": 2,
+              "code": "wholesale",
+              "name": "Wholesale"
+            },
             "createdAt": "2026-05-20 12:00:00",
             "updatedAt": "2026-05-20 12:00:00"
           }
@@ -40,7 +40,13 @@ examples:
 
 # List Customers (Datagrid)
 
-Mirrors the admin **Customers → Customers** datagrid.
+Mirrors the admin **Customers → Customers** datagrid. Each row carries the customer's group as a nested `group` object (`id` / `code` / `name`).
+
+::: tip Overview
+See the [Customers menu overview](/api/rest-api/admin/customers/main/) for the full feature flow.
+:::
+
+All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
 
 ## Endpoint
 

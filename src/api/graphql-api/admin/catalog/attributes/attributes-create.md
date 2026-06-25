@@ -3,23 +3,70 @@ outline: false
 examples:
   - id: admin-catalog-attribute-create
     title: Create Attribute
-    description: Create a new product attribute with optional translations and options. Mirrors the REST endpoint POST /api/admin/catalog/attributes.
+    description: Create a new product attribute with optional translations and options. Returns the full attribute detail.
     query: |
       mutation CreateAttribute($input: createAdminAttributeInput!) {
         createAdminAttribute(input: $input) {
-          adminAttribute { id _id }
+          adminAttribute {
+            id
+            _id
+            code
+            type
+            adminName
+            isRequired
+            isUnique
+            valuePerLocale
+            valuePerChannel
+            isFilterable
+            isConfigurable
+            isVisibleOnFront
+            isUserDefined
+            swatchType
+            position
+            locale
+            validation
+            defaultValue
+            isComparable
+            enableWysiwyg
+            regex
+            createdAt
+            updatedAt
+          }
         }
       }
     variables: |
       {
         "input": {
-          "code": "material",
-          "adminName": "Material",
+          "code": "color",
+          "adminName": "Color",
           "type": "select",
           "isFilterable": true,
-          "translations": { "en": { "name": "Material" }, "fr": { "name": "Matière" } },
+          "isConfigurable": true,
+          "position": 5,
+          "swatchType": "color",
+          "translations": {
+            "en": { "name": "Color" },
+            "fr": { "name": "Couleur" }
+          },
           "options": [
-            { "adminName": "Cotton", "sortOrder": 1, "translations": { "en": { "label": "Cotton" } } }
+            {
+              "adminName": "Red",
+              "sortOrder": 1,
+              "swatchValue": "#FF0000",
+              "translations": { "en": { "label": "Red" }, "fr": { "label": "Rouge" } }
+            },
+            {
+              "adminName": "Green",
+              "sortOrder": 2,
+              "swatchValue": "#00FF00",
+              "translations": { "en": { "label": "Green" }, "fr": { "label": "Vert" } }
+            },
+            {
+              "adminName": "Blue",
+              "sortOrder": 3,
+              "swatchValue": "#0000FF",
+              "translations": { "en": { "label": "Blue" }, "fr": { "label": "Bleu" } }
+            }
           ]
         }
       }
@@ -27,31 +74,44 @@ examples:
       {
         "data": {
           "createAdminAttribute": {
-            "adminAttribute": { "id": "/api/admin/attributes/50", "_id": 50 }
+            "adminAttribute": {
+              "id": "/api/admin/catalog/attributes/50",
+              "_id": 50,
+              "code": "color",
+              "type": "select",
+              "adminName": "Color",
+              "isRequired": 0,
+              "isUnique": 0,
+              "valuePerLocale": 0,
+              "valuePerChannel": 0,
+              "isFilterable": 1,
+              "isConfigurable": 1,
+              "isVisibleOnFront": 1,
+              "isUserDefined": 1,
+              "swatchType": "color",
+              "position": 5,
+              "locale": "en",
+              "validation": null,
+              "defaultValue": null,
+              "isComparable": 0,
+              "enableWysiwyg": 0,
+              "regex": null,
+              "createdAt": "2026-05-22T10:00:00+00:00",
+              "updatedAt": "2026-05-22T10:00:00+00:00"
+            }
           }
         }
       }
 ---
 
-# Catalog Attribute — Create
+# Catalog Attribute — Create (GraphQL)
 
-Creates a new product attribute. Equivalent to
-[`POST /api/admin/catalog/attributes`](/api/rest-api/admin/catalog/attributes/attributes-create).
+Creates a new product attribute. The `code` must be unique and pass the code rule (letters, digits, underscore) and may not be a reserved word. `code`, `adminName`, and `type` are required. For `select`, `multiselect`, and `checkbox` types you may supply `options`; per-locale labels go under each option's `translations`. The mutation returns the full attribute detail.
 
-## Operation
+::: tip
+See the [Attributes overview](/api/graphql-api/admin/catalog/attributes/) for how attributes, options, and families fit together.
+:::
 
-| Operation | Type | Purpose |
-|-----------|------|---------|
-| `createAdminAttribute` | Mutation | Create a new attribute |
+The nested `options` and their `translations` are not returned on the mutation payload — re-query [`adminAttribute`](/api/graphql-api/admin/catalog/attributes/attributes-detail) to read them back.
 
-## Input fields
-
-Same field set as the REST request body — `code`, `admin_name`, `type`,
-`swatch_type`, the boolean flag fields, `validation`, `default_value`,
-`position`, `translations`, `options`. See the
-[REST page](/api/rest-api/admin/catalog/attributes/attributes-create) for the full table.
-
-## Notes
-
-- The mutation returns the attribute IRI (`id`) plus `_id`. For the full detail payload, follow up with the [`adminAttribute`](/api/graphql-api/admin/catalog/attributes/attributes-detail) query or the REST `GET /api/admin/catalog/attributes/{id}` endpoint.
-- Field names in the input are snake_case (`admin_name`, `is_filterable`) — the project's name-converter does NOT remap multi-word camelCase keys onto the create DTO.
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

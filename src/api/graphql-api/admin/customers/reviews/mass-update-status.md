@@ -5,14 +5,43 @@ examples:
     title: Mass Update Review Status
     query: |
       mutation MassUpdate($input: createAdminCustomerReviewMassUpdateStatusInput!) {
-        createAdminCustomerReviewMassUpdateStatus(input: $input) { adminCustomerReviewMassUpdateStatus { updated value message } }
+        createAdminCustomerReviewMassUpdateStatus(input: $input) {
+          adminCustomerReviewMassUpdateStatus {
+            updated
+            value
+            message
+          }
+        }
       }
     variables: |
-      { "input": { "indices": [9, 10], "value": "approved" } }
+      {
+        "input": {
+          "indices": [9, 10],
+          "value": "approved"
+        }
+      }
     response: |
-      { "data": { "createAdminCustomerReviewMassUpdateStatus": { "adminCustomerReviewMassUpdateStatus": { "updated": [9, 10], "value": "approved", "message": "Statuses updated." } } } }
+      {
+        "data": {
+          "createAdminCustomerReviewMassUpdateStatus": {
+            "adminCustomerReviewMassUpdateStatus": {
+              "updated": [9, 10],
+              "value": "approved",
+              "message": "Statuses updated."
+            }
+          }
+        }
+      }
 ---
 
 # Mass Update Review Status (GraphQL)
 
-`value` is a string (`pending|approved|disapproved`). Permission: `customers.reviews.edit`.
+Sets the moderation status on the supplied reviews in one call. `value` is a string — `pending`, `approved` or `disapproved`.
+
+Permission: `customers.reviews.edit`.
+
+::: tip
+See the [Reviews overview](/api/graphql-api/admin/customers/reviews/) for how moderation works.
+:::
+
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

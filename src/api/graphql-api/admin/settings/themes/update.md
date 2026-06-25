@@ -36,7 +36,7 @@ examples:
           "id": "/api/admin/settings/themes/24",
           "locale": "en",
           "options": {
-            "html": "<div class=\"promo\">Season Sale</div><script>track()</script>",
+            "html": "<div class=\"promo\">Season Sale</div><script>track()<\/script>",
             "css": ".promo{font-weight:bold}"
           }
         }

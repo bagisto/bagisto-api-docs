@@ -68,4 +68,8 @@ Returns the customer's notes, newest-first, as a cursor-paginated connection.
 
 Each node carries `id`, `_id`, `note`, `customerId`, `customerNotified`, and `createdAt`.
 
+::: tip Menu overview
+See the [Customer Notes overview](/api/graphql-api/admin/customers/) for how notes appear on the customer screen.
+:::
+
 All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

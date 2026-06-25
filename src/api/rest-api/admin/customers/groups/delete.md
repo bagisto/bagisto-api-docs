@@ -13,6 +13,8 @@ examples:
 
 # Delete Customer Group
 
+Removes a customer group. Returns a confirmation message.
+
 | Endpoint | Method |
 |----------|--------|
 | `/api/admin/customers/groups/{id}` | DELETE |
@@ -22,4 +24,8 @@ examples:
 - **In use** — refuses if `customers().count() > 0`.
 :::
 
-Fires `customer.customer_group.delete.before/after`. Permission: `customers.groups.delete`.
+Permission: `customers.groups.delete`.
+
+::: tip
+For the system-group and in-use delete rules, see the [Customer Groups overview](./index.md).
+:::

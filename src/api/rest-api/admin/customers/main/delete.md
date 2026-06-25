@@ -14,12 +14,18 @@ examples:
 
 # Delete Customer
 
+::: tip Overview
+See the [Customers menu overview](/api/rest-api/admin/customers/main/) for the full feature flow.
+:::
+
+All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
+
 | Endpoint | Method |
 |----------|--------|
 | `/api/admin/customers/{id}` | DELETE |
 
 ::: warning Active orders guard
-`CustomerRepository::haveActiveOrders($customer)` returns true when any order has `status IN ('pending','processing')`. Single delete throws HTTP 400 in that case — mirrors the monolith.
+A customer with any pending or processing order cannot be deleted — the request returns HTTP 400.
 :::
 
 Permission: `customers.customers.delete`.

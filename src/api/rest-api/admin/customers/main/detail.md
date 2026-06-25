@@ -4,7 +4,7 @@ apiType: rest
 examples:
   - id: admin-customer-detail
     title: Customer Detail
-    description: Eager-loads `group`, surfaces detail-only counters (`totalAddresses`, `totalOrders`, `totalAmountSpent`).
+    description: Returns the full customer record with the group as a nested object plus the detail-only counters (`totalAddresses`, `totalOrders`, `totalAmountSpent`).
     query: |
       curl -X GET "https://your-domain.com/api/admin/customers/14" \
         -H "Authorization: Bearer <token>"
@@ -18,13 +18,16 @@ examples:
         "phone": "+15551234567",
         "gender": "Female",
         "dateOfBirth": "1990-01-01",
-        "customerGroupId": 2,
-        "customerGroupName": "Wholesale",
         "channelId": 1,
         "status": 1,
         "subscribedToNewsLetter": false,
         "isVerified": 1,
         "isSuspended": 0,
+        "group": {
+          "id": 2,
+          "code": "wholesale",
+          "name": "Wholesale"
+        },
         "totalAddresses": 2,
         "totalOrders": 5,
         "totalAmountSpent": 489.50,
@@ -35,10 +38,18 @@ examples:
 
 # Customer Detail
 
+Returns one customer with the group as a nested `group` object and the detail-only counters (`totalAddresses`, `totalOrders`, `totalAmountSpent`).
+
+::: tip Overview
+See the [Customers menu overview](/api/rest-api/admin/customers/main/) for the full feature flow.
+:::
+
+All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
+
 ## Endpoint
 
 | Endpoint | Method |
 |----------|--------|
 | `/api/admin/customers/{id}` | GET |
 
-`totalAmountSpent` sums `orders.base_grand_total_invoiced` for this customer.
+`totalAmountSpent` is the total invoiced amount across this customer's orders.

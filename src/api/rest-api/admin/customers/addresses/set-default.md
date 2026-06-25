@@ -10,7 +10,23 @@ examples:
         -H "Authorization: Bearer <token>" \
         -H "Content-Type: application/json"
     response: |
-      { "id": 27, "customerId": 14, "firstName": "Jane", "lastName": "Doe", "address": "742 Evergreen Terrace", "city": "Springfield", "state": "IL", "country": "US", "postcode": "62704", "phone": "+15551234567", "defaultAddress": true }
+      {
+        "id": 27,
+        "customerId": 14,
+        "addressType": "customer",
+        "firstName": "Jane",
+        "lastName": "Doe",
+        "companyName": "Acme Inc.",
+        "address": "742 Evergreen Terrace",
+        "city": "Springfield",
+        "state": "IL",
+        "country": "US",
+        "postcode": "62704",
+        "email": "jane@example.com",
+        "phone": "+15551234567",
+        "vatId": "GB123456789",
+        "defaultAddress": true
+      }
 ---
 
 # Set Customer Address as Default
@@ -33,5 +49,9 @@ Marks the chosen address as the customer's default. All the customer's other add
 Returns the updated address detail (same shape as the address detail endpoint), with `defaultAddress: true`.
 
 Permission: `customers.addresses.edit`.
+
+::: tip
+For default-address semantics and the address-book overview, see the [Addresses overview](./index.md).
+:::
 
 All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

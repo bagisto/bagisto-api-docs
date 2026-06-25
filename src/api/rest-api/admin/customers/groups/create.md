@@ -10,10 +10,20 @@ examples:
         -H "Content-Type: application/json" \
         -d '{ "code": "vip", "name": "VIP" }'
     response: |
-      { "id": 5, "code": "vip", "name": "VIP", "isUserDefined": 1 }
+      {
+        "id": 5,
+        "code": "vip",
+        "name": "VIP",
+        "isUserDefined": 1,
+        "customersCount": null,
+        "createdAt": "2026-06-24 10:15:00",
+        "updatedAt": "2026-06-24 10:15:00"
+      }
 ---
 
 # Create Customer Group
+
+Creates a new customer group. The response is the created group.
 
 | Endpoint | Method |
 |----------|--------|
@@ -30,4 +40,8 @@ examples:
 New groups are always created with `is_user_defined=1`. The API cannot create system groups.
 :::
 
-Fires `customer.customer_group.create.before/after`. Permission: `customers.groups.create`.
+Permission: `customers.groups.create`.
+
+::: tip
+For what customer groups are and the system-group rules, see the [Customer Groups overview](./index.md).
+:::

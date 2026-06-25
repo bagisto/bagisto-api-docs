@@ -1,27 +1,37 @@
 ---
 outline: false
 examples:
-  - id: admin-review-with-images
+  - id: admin-customer-review-with-images-gql
     title: Review with Images
-    description: Returns a single review with its attached images as a field-selectable Relay connection. Query the images via edges { node { … } } and pick exactly the sub-fields you need. The id argument is the IRI of the review.
+    description: A single review with its attached images as a field-selectable Relay connection. Sub-select the images via edges { node { … } }.
     query: |
-      query AdminReview($id: ID!) {
-        adminReview(id: $id) {
+      query AdminCustomerReview($id: ID!) {
+        adminCustomerReview(id: $id) {
           id
           _id
+          title
+          comment
           rating
           status
-          productId
-          customerId
+          name
           createdAt
+          updatedAt
+          product {
+            id
+            name
+            sku
+          }
+          customer {
+            id
+            name
+            email
+          }
           images {
             edges {
               node {
                 id
-                _id
-                type
-                mimeType
                 path
+                url
               }
             }
           }
@@ -29,37 +39,45 @@ examples:
       }
     variables: |
       {
-        "id": "/api/admin/reviews/68"
+        "id": "/api/admin/customers/reviews/21"
       }
     response: |
       {
         "data": {
-          "adminReview": {
-            "id": "/api/admin/reviews/68",
-            "_id": 68,
+          "adminCustomerReview": {
+            "id": "/api/admin/customers/reviews/21",
+            "_id": 21,
+            "title": "Great product",
+            "comment": "Exactly as described.",
             "rating": 5,
             "status": "approved",
-            "productId": 1,
-            "customerId": null,
-            "createdAt": "2026-06-18T16:14:27+05:30",
+            "name": "Jane Doe",
+            "createdAt": "2026-06-01 08:00:00",
+            "updatedAt": "2026-06-20 14:30:00",
+            "product": {
+              "id": 2358,
+              "name": "Classic Watch Hand",
+              "sku": "SP-001"
+            },
+            "customer": {
+              "id": 14,
+              "name": "Jane Doe",
+              "email": "jane@example.com"
+            },
             "images": {
               "edges": [
                 {
                   "node": {
-                    "id": "/api/admin_review_images/1",
-                    "_id": 1,
-                    "type": "image",
-                    "mimeType": "image/png",
-                    "path": "review/68/a.png"
+                    "id": "/api/admin_customer_review_images/4",
+                    "path": "review/21/photo.webp",
+                    "url": "http://localhost:8000/storage/review/21/photo.webp"
                   }
                 },
                 {
                   "node": {
-                    "id": "/api/admin_review_images/2",
-                    "_id": 2,
-                    "type": "image",
-                    "mimeType": "image/jpeg",
-                    "path": "review/68/b.jpg"
+                    "id": "/api/admin_customer_review_images/5",
+                    "path": "review/21/back.jpg",
+                    "url": "http://localhost:8000/storage/review/21/back.jpg"
                   }
                 }
               ]
@@ -69,54 +87,22 @@ examples:
       }
 ---
 
-# Review — with Images
+# Review — with Images (GraphQL)
 
-Equivalent to [`GET /api/admin/reviews/{id}`](/api/rest-api/admin/customers/reviews/review-with-images).
+The same `adminCustomerReview` query, focused on the attached images. A review's `images` are returned as a field-selectable Relay connection — you sub-select them with `images { edges { node { … } } }` and pick exactly the sub-fields you need, rather than receiving an opaque JSON blob. Over REST the same data comes back as a plain JSON array.
 
-::: tip
-This endpoint demonstrates the **field-selectable connection** shape for a nested relation. The review's `images` come back as a Relay connection you sub-select with `edges { node { … } }` — not an opaque JSON blob.
-:::
+The `id` argument is the review IRI (`/api/admin/customers/reviews/{id}`).
 
-## Operation
-
-| Operation | Type |
-|-----------|------|
-| `adminReview(id: ID!)` | Query |
-
-The `id` argument is the **IRI** (`/api/admin/reviews/{id}`). A bare numeric ID is not accepted.
-
-## Fields
-
-| Field | Type | Notes |
-|-------|------|-------|
-| `id` | `ID` | Review IRI. |
-| `_id` | `Int` | Numeric review ID. |
-| `rating` | `Int` | Star rating (1–5). |
-| `status` | `String` | `pending` / `approved` / `disapproved`. |
-| `productId` | `Int` | The reviewed product. |
-| `customerId` | `Int` | Author customer ID (`null` for guest reviews). |
-| `createdAt` | `String` | ISO 8601 timestamp. |
-| `images` | Connection | Attached images — query via `images { edges { node { … } } }`. |
-
-### `images` — connection
-
-A field-selectable Relay connection. Each `node` exposes:
+## Image node fields
 
 | Field | Type | Notes |
 |-------|------|-------|
 | `id` | `ID` | Image IRI. |
-| `_id` | `Int` | Numeric image ID. |
-| `type` | `String` | Attachment type. |
-| `mimeType` | `String` | MIME type (e.g. `image/png`). |
 | `path` | `String` | Storage path of the image. |
+| `url` | `String` | Public URL resolved from the storage path. |
 
-::: tip Field-selectable connections
-`images` is a **Relay connection**, not opaque JSON. Select it with the `edges { node { … } }` syntax and pick exactly the sub-fields you need. Over REST the same data comes back as a plain JSON array — see the [REST page](/api/rest-api/admin/customers/reviews/review-with-images).
+::: tip
+See the [Reviews overview](/api/graphql-api/admin/customers/reviews/) for how moderation works.
 :::
 
-## Errors
-
-| Code | Cause |
-|------|-------|
-| Not found | Review not found. |
-| Unauthorized | Missing or invalid admin Bearer token. |
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

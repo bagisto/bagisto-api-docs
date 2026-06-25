@@ -19,9 +19,26 @@ examples:
 
 # List Customer Groups
 
+Lists the customer groups customers can be segmented into, returned in the `{ data, meta }` envelope.
+
 | Endpoint | Method |
 |----------|--------|
 | `/api/admin/customers/groups` | GET |
+
+## Response Fields
+
+Each row in `data`:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Group ID. |
+| `code` | string | Unique group code. |
+| `name` | string | Display name. |
+| `isUserDefined` | integer | `0` (system group) or `1` (user-defined). |
+| `customersCount` | integer \| null | Detail-only — `null` on listing rows. |
+| `createdAt`, `updatedAt` | string | Timestamps. |
+
+The `meta` object carries `currentPage`, `perPage`, `lastPage`, `total`, `from`, and `to`.
 
 ## Query Parameters
 
@@ -35,3 +52,7 @@ examples:
 | `order` | string | `asc`, `desc`. |
 
 `customersCount` is detail-only — null on listing rows.
+
+::: tip
+For what customer groups are and how they're used, see the [Customer Groups overview](./index.md).
+:::

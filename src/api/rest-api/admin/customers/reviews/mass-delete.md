@@ -15,6 +15,12 @@ examples:
 
 # Mass Delete Reviews
 
+::: tip Overview
+See the [Customer Reviews overview](/api/rest-api/admin/customers/reviews/) for the full feature flow.
+:::
+
+All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
+
 | Endpoint | Method |
 |----------|--------|
 | `/api/admin/customers/reviews/mass-delete` | POST |

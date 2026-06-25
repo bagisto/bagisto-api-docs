@@ -1,24 +1,69 @@
 ---
 outline: false
 examples:
-  - id: gql
-    title: Delete Marketing Campaign
+  - id: delete
+    title: Delete Campaign
+    description: Delete a campaign by id. A successful delete returns no errors; the campaign is removed.
     query: |
-      mutation Delete($input: deleteAdminMarketingCampaignInput!) {
+      mutation DeleteAdminMarketingCampaign(
+        $input: deleteAdminMarketingCampaignInput!
+      ) {
         deleteAdminMarketingCampaign(input: $input) {
-          adminMarketingCampaign { id _id }
+          adminMarketingCampaign {
+            _id
+          }
         }
       }
     variables: |
-      { "input": { "id": "/api/admin/marketing/campaigns/1" } }
+      {
+        "input": {
+          "id": "/api/admin/marketing/campaigns/5"
+        }
+      }
     response: |
-      { "data": { "deleteAdminMarketingCampaign": { "adminMarketingCampaign": { "id": "/api/admin/marketing/campaigns/1", "_id": 1 } } } }
+      {
+        "data": {
+          "deleteAdminMarketingCampaign": {
+            "adminMarketingCampaign": null
+          }
+        }
+      }
 ---
 
-# Delete Marketing Campaign (GraphQL)
+# Delete Campaign
 
-Mutation: `deleteAdminMarketingCampaign`.
+Deletes a campaign — the **Delete** row action on the admin
+**Marketing → Communications → Campaigns** screen.
 
-::: tip Prerequisites
-The example uses an illustrative `id` value. Replace it with the id of a campaign that exists in your store — use the [`adminMarketingCampaigns`](./campaigns-list.md) query to discover valid ids.
+::: tip
+New here? Read the [Campaigns overview](/api/graphql-api/admin/marketing/communications/campaigns/) for what a campaign does and how its fields behave.
 :::
+
+## Operation
+
+| Operation | Type | Purpose |
+|-----------|------|---------|
+| `deleteAdminMarketingCampaign` | Mutation | Delete a campaign |
+
+## Details
+
+- Requires an admin Bearer token and the `marketing.communications.campaigns.delete`
+  permission.
+- Pass the campaign's IRI as `id`. Use the
+  [list](/api/graphql-api/admin/marketing/communications/campaigns-list) query to
+  discover valid ids.
+
+::: warning Confirm success via the absence of `errors`
+The delete mutation returns a success acknowledgement, not the deleted
+campaign's data — `adminMarketingCampaign` resolves to `null` on the payload.
+**Treat a response with no `errors[]` as a successful delete.** If you need a
+confirmation message in the body, use the REST endpoint
+(`DELETE /api/admin/marketing/campaigns/{id}`), which returns
+`{ "message": "Campaign deleted." }`.
+:::
+
+## Input fields
+
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| `id` | ID | Yes | The campaign's IRI |

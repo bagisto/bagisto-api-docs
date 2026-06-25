@@ -8,12 +8,29 @@ examples:
       query adminCustomerWishlistItems($customerId: Int!) {
         adminCustomerWishlistItems(customerId: $customerId) {
           totalCount
-          edges { node { id productId sku name price formattedPrice productImage } }
+          edges {
+            cursor
+            node {
+              id
+              _id
+              productId
+              sku
+              name
+              price
+              formattedPrice
+              productImage
+              additional
+            }
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
         }
       }
     variables: |
       {
-          "customerId": 19
+        "customerId": 19
       }
     response: |
       {
@@ -22,20 +39,41 @@ examples:
             "totalCount": 1,
             "edges": [
               {
+                "cursor": "MA==",
                 "node": {
-                  "id": "/api/admin/.../wishlist-items/88",
-                  "productId": 2358, "sku": "test65",
+                  "id": "/api/admin/customers/19/wishlist-items/88",
+                  "_id": 88,
+                  "productId": 2358,
+                  "sku": "test65",
                   "name": "Classic Watch Hand",
-                  "price": 4000, "formattedPrice": "$4,000.00",
-                  "productImage": "http://localhost:8000/storage/product/2358/example.webp"
+                  "price": 4000,
+                  "formattedPrice": "$4,000.00",
+                  "productImage": "http://localhost:8000/storage/product/2358/example.webp",
+                  "additional": null
                 }
               }
-            ]
+            ],
+            "pageInfo": {
+              "hasNextPage": false,
+              "endCursor": "MA=="
+            }
           }
         }
       }
 ---
 
-# Customer Wishlist Items
+# Customer Wishlist Items (GraphQL)
 
-The customer's full wishlist. Requires admin Bearer token.
+Lists the customer's full wishlist. The admin Create-Order screen shows this in its sidebar so the admin can add wishlisted products to the draft order.
+
+## Arguments
+
+| Argument | Type | Required | Description |
+|----------|------|----------|-------------|
+| `customerId` | Int! | yes | The customer whose wishlist to read. |
+
+::: tip Menu overview
+See the [Customers overview](/api/graphql-api/admin/customers/) for how the Create-Order sidebar panels work.
+:::
+
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

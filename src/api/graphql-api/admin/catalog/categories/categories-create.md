@@ -3,19 +3,34 @@ outline: false
 examples:
   - id: admin-catalog-category-create
     title: Create Category
-    description: Create a new category. File upload for logo/banner is NOT supported in v1. Mirrors POST /api/admin/catalog/categories.
+    description: Create a new category. On create, the translatable fields (slug, name, description) are sent at the top level and broadcast to the configured locales. Logo/banner upload is not supported.
     query: |
       mutation CreateCategory($input: createAdminCategoryInput!) {
         createAdminCategory(input: $input) {
-          adminCategory { id _id }
+          adminCategory {
+            id
+            _id
+            name
+            slug
+            description
+            position
+            status
+            displayMode
+            parentId
+            locale
+            logoUrl
+            bannerUrl
+            createdAt
+            updatedAt
+          }
         }
       }
     variables: |
       {
         "input": {
-          "slug": "apparel",
-          "name": "Apparel",
-          "description": "Men's and women's apparel",
+          "slug": "watches",
+          "name": "Watches",
+          "description": "Wrist and pocket watches",
           "position": 1,
           "attributes": [11, 23],
           "parentId": 1,
@@ -28,32 +43,35 @@ examples:
       {
         "data": {
           "createAdminCategory": {
-            "adminCategory": { "id": "/api/admin/catalog/categories/7", "_id": 7 }
+            "adminCategory": {
+              "id": "/api/admin/catalog/categories/7",
+              "_id": 7,
+              "name": "Watches",
+              "slug": "watches",
+              "description": "Wrist and pocket watches",
+              "position": 1,
+              "status": 1,
+              "displayMode": "products_and_description",
+              "parentId": 1,
+              "locale": "en",
+              "logoUrl": null,
+              "bannerUrl": null,
+              "createdAt": "2026-06-24 08:15:00",
+              "updatedAt": "2026-06-24 08:15:00"
+            }
           }
         }
       }
 ---
 
-# Category — Create
+# Category — Create (GraphQL)
 
-Creates a new category. Equivalent to
-[`POST /api/admin/catalog/categories`](/api/rest-api/admin/catalog/categories/categories-create).
+Creates a new category and returns its detail. On **create**, the translatable values (`slug`, `name`, `description`, optional `metaTitle` / `metaDescription` / `metaKeywords`) are supplied at the **top level** and broadcast to the configured locales — this differs from update, which takes those values **nested under a locale key**. Required: `slug`, `name`, `position`, `attributes` (filterable attribute ids); `description` is required when `displayMode` is `description_only` or `products_and_description`. Logo/banner image upload is not available — set them in the admin panel.
 
-## Operation
+::: tip
+See the [Categories overview](/api/graphql-api/admin/catalog/categories/) for how the menu works.
+:::
 
-| Operation | Type | Purpose |
-|-----------|------|---------|
-| `createAdminCategory` | Mutation | Create a new category |
+The create mutation payload resolves the category's scalar fields. The category's `translations` and `filterableAttributeIds` are not returned here — re-query [`adminCategory`](/api/graphql-api/admin/catalog/categories/categories-detail) for the full detail.
 
-## Input
-
-Same fields as the REST endpoint — `slug`, `name`, `description`, `position`,
-`attributes`, `parent_id`, `display_mode`, `status`, `locale`, and optional SEO
-fields. See the
-[REST page](/api/rest-api/admin/catalog/categories/categories-create) for the
-full field table and validation rules.
-
-## Notes
-
-- **File upload not supported in v1** — `logo_path` / `banner_path` cannot be set via this mutation.
-- Follow up with the [`adminCategory`](/api/graphql-api/admin/catalog/categories/categories-detail) query to load the refreshed detail.
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

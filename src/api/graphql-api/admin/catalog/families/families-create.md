@@ -3,25 +3,33 @@ outline: false
 examples:
   - id: admin-catalog-family-create
     title: Create Attribute Family
-    description: Create an attribute family with optional nested groups and per-group custom_attributes. Mirrors POST /api/admin/catalog/families.
+    description: Create an attribute family with optional nested groups and per-group custom attributes.
     query: |
-      mutation CreateFamily($input: createAdminAttributeFamilyInput!) {
+      mutation CreateAdminAttributeFamily($input: createAdminAttributeFamilyInput!) {
         createAdminAttributeFamily(input: $input) {
-          adminAttributeFamily { id _id }
+          adminAttributeFamily {
+            id
+            _id
+            code
+            name
+          }
         }
       }
     variables: |
       {
         "input": {
-          "code": "electronics",
-          "name": "Electronics",
+          "code": "shirts",
+          "name": "Shirts",
           "attributeGroups": [
             {
               "code": "general",
               "name": "General",
               "column": 1,
               "position": 1,
-              "customAttributes": [ { "id": 1 }, { "id": 2 } ]
+              "customAttributes": [
+                { "id": 1 },
+                { "id": 2 }
+              ]
             }
           ]
         }
@@ -30,35 +38,25 @@ examples:
       {
         "data": {
           "createAdminAttributeFamily": {
-            "adminAttributeFamily": { "id": "/api/admin/catalog/families/4", "_id": 4 }
+            "adminAttributeFamily": {
+              "id": "/api/admin/catalog/families/4",
+              "_id": 4,
+              "code": "shirts",
+              "name": "Shirts"
+            }
           }
         }
       }
 ---
 
-# Attribute Family — Create
+# Attribute Family — Create (GraphQL)
 
-Creates a new attribute family. Equivalent to
-[`POST /api/admin/catalog/families`](/api/rest-api/admin/catalog/families/families-create).
+Creates a new attribute family. A family is the set of attribute groups (and the attributes within each group) that a product of that family is edited against. You may seed the family's structure inline by passing `attributeGroups`, where each group may carry `customAttributes` to attach existing attributes to it. `code` must be unique.
 
-## Operation
+::: tip
+See the [Attribute Families overview](/api/graphql-api/admin/catalog/families/) for how families relate to attributes and products.
+:::
 
-| Operation | Type | Purpose |
-|-----------|------|---------|
-| `createAdminAttributeFamily` | Mutation | Create a new attribute family |
+The mutation payload returns the new family's scalar fields. The `attributeGroups` connection is not resolved on the mutation result — re-query [`adminAttributeFamily`](/api/graphql-api/admin/catalog/families/families-detail) to read the full structure back.
 
-## Input
-
-| Field | Notes |
-|-------|-------|
-| `code` | Snake_case identifier, unique. |
-| `name` | Display name. |
-| `attribute_groups` | Optional array of `{ code, name, column, position, custom_attributes }`. |
-
-See the [REST page](/api/rest-api/admin/catalog/families/families-create) for
-full field semantics.
-
-## Notes
-
-- Follow up with the [`adminAttributeFamily`](/api/graphql-api/admin/catalog/families/families-detail) query to load the refreshed detail.
-- Same `code` validation rules as the REST endpoint.
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
