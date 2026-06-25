@@ -99,6 +99,88 @@ examples:
           }
         }
       }
+  - id: filtered
+    title: Filtered + Sorted
+    description: Narrow by name and permission type and sort by name ascending. Filter args, sorting and pagination all combine in one query. Supplying multiple filters narrows the result (logical AND).
+    query: |
+      query ListRoles(
+        $first: Int
+        $name: String
+        $permission_type: String
+        $sort: String
+        $order: String
+      ) {
+        adminSettingsRoles(
+          first: $first
+          name: $name
+          permission_type: $permission_type
+          sort: $sort
+          order: $order
+        ) {
+          edges {
+            cursor
+            node {
+              id
+              _id
+              name
+              description
+              permissionType
+              permissions
+              createdAt
+              updatedAt
+            }
+          }
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
+          totalCount
+        }
+      }
+    variables: |
+      {
+        "first": 10,
+        "name": "Catalog",
+        "permission_type": "custom",
+        "sort": "name",
+        "order": "asc"
+      }
+    response: |
+      {
+        "data": {
+          "adminSettingsRoles": {
+            "edges": [
+              {
+                "cursor": "MA==",
+                "node": {
+                  "id": "/api/admin/settings/roles/3",
+                  "_id": 3,
+                  "name": "Catalogue manager",
+                  "description": "This is catalogue manager and permissions are added accordingly",
+                  "permissionType": "custom",
+                  "permissions": [
+                    "catalog",
+                    "catalog.products",
+                    "catalog.products.create",
+                    "catalog.products.edit"
+                  ],
+                  "createdAt": "2026-05-13T18:30:58+05:30",
+                  "updatedAt": "2026-05-13T18:30:58+05:30"
+                }
+              }
+            ],
+            "pageInfo": {
+              "hasNextPage": false,
+              "hasPreviousPage": false,
+              "startCursor": "MA==",
+              "endCursor": "MA=="
+            },
+            "totalCount": 1
+          }
+        }
+      }
 ---
 
 # List Roles (GraphQL)
@@ -110,6 +192,33 @@ Returns the paginated list of admin roles. A role is a named permission set assi
 | Operation | Type | Purpose |
 |-----------|------|---------|
 | `adminSettingsRoles` | QueryCollection | List all roles (cursor-paginated) |
+
+## Arguments
+
+All arguments are optional and combine in a single query — filter, sort and paginate together.
+
+### Pagination
+
+| Argument | Description |
+|----------|-------------|
+| `first` | Number of records to return. |
+| `after` | Cursor to fetch the page after (from `pageInfo.endCursor`). |
+
+### Filters
+
+Each filter narrows the result; supplying more than one combines with logical **AND**. They mirror the admin Roles datagrid filters.
+
+| Argument | Type | Match | Example |
+|----------|------|-------|---------|
+| `name` | `String` | Partial (contains). | `"Catalog"` |
+| `permission_type` | `String` | Exact — `all` or `custom`. | `"custom"` |
+
+### Sorting
+
+| Argument | Type | Values |
+|----------|------|--------|
+| `sort` | `String` | `id` (default), `name` |
+| `order` | `String` | `asc`, `desc` (default `desc`) |
 
 ## Quirks
 

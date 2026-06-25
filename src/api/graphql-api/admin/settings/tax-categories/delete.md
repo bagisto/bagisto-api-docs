@@ -8,11 +8,11 @@ examples:
       mutation DeleteAdminSettingsTaxCategory($input: deleteAdminSettingsTaxCategoryInput!) {
         deleteAdminSettingsTaxCategory(input: $input) {
           adminSettingsTaxCategory {
-            id
             _id
             code
             name
             description
+            message
           }
         }
       }
@@ -27,11 +27,11 @@ examples:
         "data": {
           "deleteAdminSettingsTaxCategory": {
             "adminSettingsTaxCategory": {
-              "id": "/api/admin/settings/tax-categories/33",
               "_id": 33,
               "code": "throwaway-del-tc",
               "name": "Throwaway Del TC",
-              "description": "tmp"
+              "description": "tmp",
+              "message": "Tax category deleted successfully."
             }
           }
         }
@@ -54,8 +54,17 @@ Permanently deletes a tax category. The category must have **no tax rates attach
 |-------|----------|---------|
 | `id` | yes | Resource path of the category to delete. |
 
-::: warning Cannot delete a category with attached tax rates
-If the category still has any tax rates attached, the request is refused with *"This tax category still has tax rates attached and cannot be deleted."* You cannot detach rates through the update mutation either — it requires a non-empty `taxrates` list. A category becomes deletable only once it has no attached rates (for example, after the underlying tax rates themselves are removed).
-:::
+## Guards
 
-On success the response returns the deleted category — its `id`, `_id`, `code`, `name`, and `description` resolve to the values it held just before removal, and no `errors` are present. A category must have no tax rates attached before it can be deleted.
+The delete is refused (returns an `errors[]` entry, no record removed) when:
+
+- The category still has **one or more tax rates attached** — *"This tax category still has tax rates attached and cannot be deleted."* You cannot detach rates through the update mutation either (it requires a non-empty `taxrates` list). A category becomes deletable only once it has no attached rates (for example, after the underlying tax rates themselves are removed).
+
+## Notes
+
+- The returned node is an in-memory snapshot of the just-deleted record — its scalar fields (`_id`, `code`, `name`, `description`) still resolve so you can confirm what was removed.
+- Select **`message`** for the success confirmation — it resolves to `"Tax category deleted successfully."` on a successful delete. `message` is `null` on read / list / create / update; a failed delete returns a top-level `errors[]` entry instead.
+- Do **not** select the node's IRI `id` field on this mutation — the IRI cannot be generated for a deleted record and the field resolves with an `errors[]` entry. Select `_id` instead, as shown.
+- Use the [`adminSettingsTaxCategories`](./list.md) query to discover valid ids.
+
+Permissions: `settings.taxes.tax_categories.delete`. See the [Tax Categories overview](./) for behaviour.

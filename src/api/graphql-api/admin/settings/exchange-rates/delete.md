@@ -8,12 +8,12 @@ examples:
       mutation DeleteAdminSettingsExchangeRate($input: deleteAdminSettingsExchangeRateInput!) {
         deleteAdminSettingsExchangeRate(input: $input) {
           adminSettingsExchangeRate {
-            id
             _id
             targetCurrency
             targetCurrencyCode
             targetCurrencyName
             rate
+            message
           }
         }
       }
@@ -28,12 +28,12 @@ examples:
         "data": {
           "deleteAdminSettingsExchangeRate": {
             "adminSettingsExchangeRate": {
-              "id": "/api/admin/settings/exchange-rates/35",
               "_id": 35,
               "targetCurrency": 92,
               "targetCurrencyCode": "QDD",
               "targetCurrencyName": "Audit Demo Currency",
-              "rate": 2.25
+              "rate": 2.25,
+              "message": "Exchange rate deleted successfully."
             }
           }
         }
@@ -58,7 +58,9 @@ Removes a single exchange rate. The currency itself is not affected — only the
 
 ## Notes
 
-- On success the response returns the deleted record so you can confirm exactly which row was removed — `id`, `_id`, `targetCurrency`, `targetCurrencyCode`, `targetCurrencyName`, and `rate` all resolve from the deleted row.
+- The returned node is an in-memory snapshot of the just-deleted record — its scalar fields (`_id`, `targetCurrency`, `targetCurrencyCode`, `targetCurrencyName`, `rate`) still resolve so you can confirm exactly which row was removed.
+- Select **`message`** for the success confirmation — it resolves to `"Exchange rate deleted successfully."` on a successful delete. `message` is `null` on read / list / create / update; a failed delete returns a top-level `errors[]` entry instead.
+- Do **not** select the node's IRI `id` field on this mutation — the IRI cannot be generated for a deleted record and the field resolves with an `errors[]` entry. Select `_id` instead, as shown.
 - An unknown id returns `Exchange rate not found.` (equivalent to HTTP 404).
 
 ::: tip Prerequisites

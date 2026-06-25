@@ -12,6 +12,7 @@ examples:
             code
             action
             state
+            message
           }
         }
       }
@@ -30,7 +31,8 @@ examples:
               "_id": 13,
               "code": "products",
               "action": "append",
-              "state": "validated"
+              "state": "validated",
+              "message": "Import deleted successfully."
             }
           }
         }
@@ -50,7 +52,8 @@ Removes an import job and its uploaded source file. Returns a snapshot of the de
 ## Quirks
 
 - The input takes the import's `id` (its resource IRI).
-- The response echoes the deleted record's `id` / `_id` and scalar fields.
+- The returned node is an in-memory snapshot of the just-deleted record — its `id` / `_id` and scalar fields still resolve so you can confirm what was removed.
+- Select **`message`** for the success confirmation — it resolves to `"Import deleted successfully."` on a successful delete. `message` is `null` on read / list / detail; a failed delete returns a top-level `errors[]` entry instead.
 
 ::: tip Prerequisites
 The example uses an illustrative `id`. Replace it with the id of an import that exists in your store — use the [`adminSettingsDataTransferImports`](./list.md) query to discover valid ids.

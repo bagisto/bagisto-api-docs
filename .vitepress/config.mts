@@ -338,7 +338,31 @@ export default defineConfig(({ command, mode }) => {
                             ]
                           }
                         ]
-                      },    
+                      },
+                      {
+                        text: 'GDPR Requests',
+                        collapsed: true,
+                        link: '/api/graphql-api/shop/gdpr-requests/',
+                        items: [
+                          {
+                            text: 'Queries',
+                            collapsed: true,
+                            items: [
+                              { text: 'List GDPR Requests', link: '/api/graphql-api/shop/gdpr-requests/queries/list-gdpr-requests' },
+                              { text: 'View GDPR Request', link: '/api/graphql-api/shop/gdpr-requests/queries/view-gdpr-request' },
+                            ]
+                          },
+                          {
+                            text: 'Mutations',
+                            collapsed: true,
+                            items: [
+                              { text: 'Raise GDPR Request', link: '/api/graphql-api/shop/gdpr-requests/mutations/create-gdpr-request' },
+                              { text: 'Revoke GDPR Request', link: '/api/graphql-api/shop/gdpr-requests/mutations/revoke-gdpr-request' },
+                              { text: 'Delete GDPR Request', link: '/api/graphql-api/shop/gdpr-requests/mutations/delete-gdpr-request' },
+                            ]
+                          }
+                        ]
+                      },
                       {
                         text: 'Cart',
                         collapsed: true,
@@ -1235,6 +1259,18 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Get Downloadable Product', link: '/api/rest-api/shop/customer-downloadable-products/get-customer-downloadable-product' },
                           { text: 'Get Customer Reviews', link: '/api/rest-api/shop/customer-reviews/get-customer-reviews' },
                           { text: 'Get Customer Review', link: '/api/rest-api/shop/customer-reviews/get-customer-review' },
+                    ]
+                  },
+                  {
+                    text: 'GDPR Requests',
+                    collapsed: true,
+                    link: '/api/rest-api/shop/gdpr-requests/',
+                    items: [
+                          { text: 'List GDPR Requests', link: '/api/rest-api/shop/gdpr-requests/list-gdpr-requests' },
+                          { text: 'View GDPR Request', link: '/api/rest-api/shop/gdpr-requests/view-gdpr-request' },
+                          { text: 'Raise GDPR Request', link: '/api/rest-api/shop/gdpr-requests/create-gdpr-request' },
+                          { text: 'Revoke GDPR Request', link: '/api/rest-api/shop/gdpr-requests/revoke-gdpr-request' },
+                          { text: 'Delete GDPR Request', link: '/api/rest-api/shop/gdpr-requests/delete-gdpr-request' },
                     ]
                   },
                   {

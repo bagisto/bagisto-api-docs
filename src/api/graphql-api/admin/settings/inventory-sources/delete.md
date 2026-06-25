@@ -15,6 +15,7 @@ examples:
             contactEmail
             priority
             status
+            message
           }
         }
       }
@@ -35,7 +36,8 @@ examples:
               "name": "Throwaway GQL Test",
               "contactEmail": "qa@example.com",
               "priority": 1,
-              "status": 1
+              "status": 1,
+              "message": "Inventory source deleted successfully."
             }
           }
         }
@@ -59,6 +61,8 @@ For field meanings and the delete guards, see the [Inventory Sources overview](/
 The `input.id` is the resource IRI. Use the [`adminSettingsInventorySources`](./list.md) query to discover valid ids.
 
 The mutation returns the deleted record under `adminSettingsInventorySource` — its `id` (IRI), `_id` (numeric) and scalar fields all resolve, so you can confirm exactly which source was removed.
+
+Select **`message`** for the success confirmation — it resolves to `"Inventory source deleted successfully."` on a successful delete. `message` is `null` on read / list / create / update; a failed delete returns a top-level `errors[]` entry instead.
 
 ::: warning Delete guards
 A delete is **refused** (error, equivalent to HTTP 422 on REST) when it would remove the **last remaining** inventory source, or when the source is still **referenced by product inventories**. Re-assign or zero out those product quantities first.

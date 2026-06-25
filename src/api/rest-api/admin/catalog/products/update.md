@@ -166,8 +166,8 @@ examples:
               "is_required": "1",
               "sort_order": "1",
               "products": {
-                "p1": { "product_id": 142, "qty": "1", "is_default": "1", "sort_order": "1" },
-                "p2": { "product_id": 143, "qty": "1", "is_default": "0", "sort_order": "2" }
+                "product_1": { "product_id": 142, "qty": "1", "is_default": "1", "sort_order": "1" },
+                "product_2": { "product_id": 143, "qty": "1", "is_default": "0", "sort_order": "2" }
               }
             }
           }
@@ -181,8 +181,8 @@ examples:
             "is_required": "1",
             "sort_order": "1",
             "products": {
-              "p1": { "product_id": 142, "qty": "1", "is_default": "1", "sort_order": "1" },
-              "p2": { "product_id": 143, "qty": "1", "is_default": "0", "sort_order": "2" }
+              "product_1": { "product_id": 142, "qty": "1", "is_default": "1", "sort_order": "1" },
+              "product_2": { "product_id": 143, "qty": "1", "is_default": "0", "sort_order": "2" }
             }
           }
         }
@@ -638,6 +638,28 @@ the full set. See the `examples:` dropdown for the verified payload of each:
 | bundle | `bundle_options` | Keyed map of option groups (`type` ∈ `radio` / `checkbox` / `select` / `multiselect`) each with a `products` map. |
 | configurable | `variants` | Keyed by variant product id (from the create response or detail `variants[].id`). Replace-semantics — send every variant to keep. |
 | booking | `booking` | Object with `type` (`default` / `appointment` / `event` / `rental` / `table`) plus sub-type fields (slots / tickets / pricing). |
+
+### New-row key prefixes
+
+Inside a nested structure a **new** row is keyed by a prefixed marker; a bare or
+numeric key is treated as an existing row id (and fails if it doesn't exist):
+
+| Structure | New-row key prefix |
+|-----------|--------------------|
+| `bundle_options` option group | `option_*` |
+| `bundle_options` → `products` | `product_*` |
+| `links` (grouped) | `link_*` |
+| `downloadable_links` | `link_*` |
+| `downloadable_samples` | `sample_*` |
+| `customizable_options` | `option_*` (its `prices` → `price_*`) |
+| `booking` → `tickets` (event) | `ticket_*` |
+| `variants` (configurable) | the **existing** variant product id (numeric) |
+
+### Custom options are simple/virtual only
+
+`customizable_options` (custom options) are a Bagisto **simple & virtual**-only
+feature — the edit form shows the Custom Options accordion only for those two
+types, and the API ignores the field on any other type.
 
 ## Sub-resources are not updated here
 

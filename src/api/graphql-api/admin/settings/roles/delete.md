@@ -13,6 +13,7 @@ examples:
             description
             permissionType
             permissions
+            message
           }
         }
       }
@@ -32,7 +33,8 @@ examples:
               "name": "Seasonal Staff",
               "description": "Temporary holiday team",
               "permissionType": "all",
-              "permissions": null
+              "permissions": null,
+              "message": "Role deleted successfully."
             }
           }
         }
@@ -53,6 +55,7 @@ Deletes a role and returns a snapshot of the record that was removed, so you can
 
 - `input.id` is the IRI form (`/api/admin/settings/roles/{id}`).
 - The mutation returns a snapshot of the just-deleted role — `id`, `_id`, `name`, `description`, `permissionType`, and `permissions` all resolve (a role with `permissionType: all` has `permissions: null`). The record itself is gone from the store.
+- `message` carries the success confirmation (`Role deleted successfully.`). It resolves only on the delete result — it is `null` on list / detail / create / update.
 
 ## Guards
 

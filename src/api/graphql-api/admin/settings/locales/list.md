@@ -92,6 +92,89 @@ examples:
           }
         }
       }
+  - id: filtered
+    title: Filtered + Sorted
+    description: Narrow by code and direction and sort by name ascending. Filter args, sorting and pagination all combine in one query. Supplying multiple filters narrows the result (logical AND).
+    query: |
+      query AdminLocales(
+        $first: Int
+        $id: String
+        $code: String
+        $name: String
+        $direction: String
+        $sort: String
+        $order: String
+      ) {
+        adminSettingsLocales(
+          first: $first
+          id: $id
+          code: $code
+          name: $name
+          direction: $direction
+          sort: $sort
+          order: $order
+        ) {
+          edges {
+            cursor
+            node {
+              id
+              _id
+              code
+              name
+              direction
+              logoPath
+              logoUrl
+              createdAt
+              updatedAt
+            }
+          }
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
+          totalCount
+        }
+      }
+    variables: |
+      {
+        "first": 10,
+        "code": "en",
+        "direction": "ltr",
+        "sort": "name",
+        "order": "asc"
+      }
+    response: |
+      {
+        "data": {
+          "adminSettingsLocales": {
+            "edges": [
+              {
+                "cursor": "MA==",
+                "node": {
+                  "id": "/api/admin/settings/locales/1",
+                  "_id": 1,
+                  "code": "en",
+                  "name": "English",
+                  "direction": "ltr",
+                  "logoPath": "locales/en.png",
+                  "logoUrl": "http://localhost:8000/storage/locales/en.png",
+                  "createdAt": null,
+                  "updatedAt": null
+                }
+              }
+            ],
+            "pageInfo": {
+              "hasNextPage": false,
+              "hasPreviousPage": false,
+              "startCursor": "MA==",
+              "endCursor": "MA=="
+            },
+            "totalCount": 1
+          }
+        }
+      }
 ---
 
 # List Locales
@@ -103,6 +186,35 @@ Returns every locale configured in the store as a cursor-paginated connection. U
 | Operation | Type | Purpose |
 |-----------|------|---------|
 | `adminSettingsLocales` | QueryCollection | List all locales (cursor-paginated) |
+
+## Arguments
+
+All arguments are optional and combine in a single query — filter, sort and paginate together.
+
+### Pagination
+
+| Argument | Description |
+|----------|-------------|
+| `first` | Number of records to return. |
+| `after` | Cursor to fetch the page after (from `pageInfo.endCursor`). |
+
+### Filters
+
+Each filter narrows the result; supplying more than one combines with logical **AND**. They mirror the admin Locales datagrid filters.
+
+| Argument | Type | Match | Example |
+|----------|------|-------|---------|
+| `id` | `String` | Exact. Single id or a comma-separated list. | `"1"` · `"1,10,35"` |
+| `code` | `String` | Partial (contains). | `"en"` |
+| `name` | `String` | Partial (contains). | `"Eng"` |
+| `direction` | `String` | Exact — `ltr` or `rtl`. | `"rtl"` |
+
+### Sorting
+
+| Argument | Type | Values |
+|----------|------|--------|
+| `sort` | `String` | `id` (default), `code`, `name` |
+| `order` | `String` | `asc`, `desc` (default `desc`) |
 
 ## Notes
 

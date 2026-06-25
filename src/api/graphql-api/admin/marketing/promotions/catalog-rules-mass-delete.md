@@ -19,7 +19,7 @@ examples:
     variables: |
       {
         "input": {
-          "indices": [12, 18]
+          "indices": [12, 18, 9999]
         }
       }
     response: |
@@ -28,8 +28,8 @@ examples:
           "createAdminMarketingCatalogRuleMassDelete": {
             "adminMarketingCatalogRuleMassDelete": {
               "deleted": [12, 18],
-              "skipped": [],
-              "message": "Catalog rules deleted."
+              "skipped": [9999],
+              "message": "Catalog rules deleted successfully."
             }
           }
         }
