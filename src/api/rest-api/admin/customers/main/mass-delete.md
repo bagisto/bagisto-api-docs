@@ -20,6 +20,12 @@ examples:
 
 # Mass Delete Customers
 
+::: tip Overview
+See the [Customers menu overview](/api/rest-api/admin/customers/main/) for the full feature flow.
+:::
+
+All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
+
 | Endpoint | Method |
 |----------|--------|
 | `/api/admin/customers/mass-delete` | POST |

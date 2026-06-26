@@ -4,11 +4,59 @@ examples:
   - id: gql
     title: Admin User Detail
     query: |
-      query A($id: ID!) { adminSettingsUser(id: $id) { id _id name email roleId status } }
+      query AdminSettingsUser($id: ID!) {
+        adminSettingsUser(id: $id) {
+          id
+          _id
+          name
+          email
+          roleId
+          roleName
+          status
+          image
+          imageUrl
+          createdAt
+          updatedAt
+        }
+      }
     variables: |
-      { "id": "/api/admin/settings/users/1" }
+      {
+        "id": "/api/admin/settings/users/3"
+      }
     response: |
-      { "data": { "adminSettingsUser": { "id": "/api/admin/settings/users/1", "_id": 1, "name": "Super Admin", "email": "admin@example.com", "roleId": 1, "status": 1 } } }
+      {
+        "data": {
+          "adminSettingsUser": {
+            "id": "/api/admin/settings/users/3",
+            "_id": 3,
+            "name": "Admin",
+            "email": "admin@example.com",
+            "roleId": 1,
+            "roleName": "Administrator",
+            "status": 1,
+            "image": null,
+            "imageUrl": null,
+            "createdAt": "2026-01-02T17:24:30+05:30",
+            "updatedAt": "2026-06-05T10:40:17+05:30"
+          }
+        }
+      }
 ---
 
-# Admin User Detail (GraphQL)
+# Get Admin User
+
+Returns a single admin user by id, including the assigned role (`roleId` / `roleName`), active `status`, and profile image (`image` path / `imageUrl`).
+
+The `password` and `api_token` values are never returned.
+
+## Operation
+
+| Operation | Type | Purpose |
+|-----------|------|---------|
+| `adminSettingsUser(id: ID!)` | Query | Fetch one admin user |
+
+::: tip Overview
+For field meanings, create/update/delete rules, and delete guards, see the [Users overview](./).
+:::
+
+All admin endpoints require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

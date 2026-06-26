@@ -17,14 +17,19 @@ examples:
             "comment": "Loved it.",
             "rating": 5,
             "status": "pending",
-            "productId": 142,
-            "productSku": "SP-001",
-            "productName": "Classic Watch",
-            "customerId": 14,
-            "customerName": "Jane Doe",
-            "customerEmail": "jane@example.com",
-            "images": null,
-            "createdAt": "2026-05-25 09:00:00"
+            "name": "Jane Doe",
+            "product": {
+              "id": 142,
+              "name": "Classic Watch",
+              "sku": "SP-001"
+            },
+            "customer": {
+              "id": 14,
+              "name": "Jane Doe",
+              "email": "jane@example.com"
+            },
+            "createdAt": "2026-05-25 09:00:00",
+            "updatedAt": "2026-05-25 09:00:00"
           }
         ],
         "meta": { "currentPage": 1, "perPage": 10, "lastPage": 1, "total": 1, "from": 1, "to": 1 }
@@ -32,6 +37,14 @@ examples:
 ---
 
 # List Customer Reviews
+
+Each row carries the reviewed `product` and the `customer` as nested objects. Images are detail-only.
+
+::: tip Overview
+See the [Customer Reviews overview](/api/rest-api/admin/customers/reviews/) for the full feature flow.
+:::
+
+All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
 
 | Endpoint | Method |
 |----------|--------|
@@ -50,4 +63,4 @@ examples:
 | `sort` | string | `id` (default desc), `rating`, `created_at`. |
 | `order` | string | `asc`, `desc`. |
 
-`images` is detail-only — null on listing.
+The reviewed `product` (`id` / `name` / `sku`) and the `customer` (`id` / `name` / `email`, `null` for guest reviews) are nested objects on every row. The `images` array is detail-only — request a single review to see it.

@@ -3,16 +3,22 @@ outline: false
 examples:
   - id: admin-catalog-attribute-mass-delete
     title: Mass Delete Attributes
-    description: Delete a batch of user-defined attributes. The whole batch is pre-validated — if any id is a system attribute, no row is deleted. Mirrors POST /api/admin/catalog/attributes/mass-delete.
+    description: Delete a batch of user-defined attributes in one mutation. The whole batch is pre-validated — if any id is a system attribute, nothing is deleted.
     query: |
       mutation MassDeleteAttributes($input: createAdminAttributeMassDeleteInput!) {
         createAdminAttributeMassDelete(input: $input) {
-          adminAttributeMassDelete { id deleted message }
+          adminAttributeMassDelete {
+            id
+            deleted
+            message
+          }
         }
       }
     variables: |
       {
-        "input": { "indices": [24, 31] }
+        "input": {
+          "indices": [24, 31]
+        }
       }
     response: |
       {
@@ -28,17 +34,13 @@ examples:
       }
 ---
 
-# Catalog Attribute — Mass Delete
+# Catalog Attribute — Mass Delete (GraphQL)
 
-Bulk-deletes a batch of user-defined attributes in a single mutation.
-Equivalent to
-[`POST /api/admin/catalog/attributes/mass-delete`](/api/rest-api/admin/catalog/attributes/attributes-mass-delete).
+Bulk-deletes a batch of user-defined attributes in a single mutation. `indices` is the list of attribute ids to delete. The batch is pre-validated: if any id belongs to a system attribute (`isUserDefined = 0`), the entire batch is rejected and nothing is deleted. Non-existent ids are silently skipped and do not appear in `deleted`.
 
-## Operation
-
-| Operation | Type | Purpose |
-|-----------|------|---------|
-| `createAdminAttributeMassDelete` | Mutation | Delete multiple user-defined attributes at once |
+::: tip
+See the [Attributes overview](/api/graphql-api/admin/catalog/attributes/) for how attributes, options, and families fit together.
+:::
 
 ## Input
 
@@ -46,7 +48,6 @@ Equivalent to
 |-------|------|-------|
 | `indices` | `[Int!]!` | Attribute ids to delete |
 
-## Notes
+A batch containing a system attribute returns an `errors[]` entry `System attributes cannot be deleted.` and no row is touched.
 
-- **All-or-nothing.** If any id is a system attribute, the whole batch fails with an `errors[]` entry `System attributes cannot be deleted.` — no row is touched.
-- Unknown ids are silently skipped — they do not appear in `deleted`.
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

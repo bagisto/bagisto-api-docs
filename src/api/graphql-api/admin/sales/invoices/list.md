@@ -13,7 +13,6 @@ examples:
               id
               _id
               incrementId
-              orderId
               orderIncrementId
               state
               emailSent
@@ -99,7 +98,6 @@ examples:
                   "id": "/api/admin/invoices/560",
                   "_id": 560,
                   "incrementId": "560",
-                  "orderId": 2392,
                   "orderIncrementId": "2392",
                   "state": "paid",
                   "emailSent": true,
@@ -222,7 +220,7 @@ Same field set as [Get Invoice](/api/graphql-api/admin/sales/orders/get-invoice)
 
 | Group | Fields | On listing |
 |-------|--------|:---------:|
-| Identity | `id`, `_id`, `incrementId`, `orderId`, `orderIncrementId`, `state`, `emailSent`, `totalQty` | ✓ |
+| Identity | `id`, `_id`, `incrementId`, `orderIncrementId`, `state`, `emailSent`, `totalQty` | ✓ |
 | Currency codes | `orderCurrencyCode`, `baseCurrencyCode`, `channelCurrencyCode` | ✓ |
 | Totals | `subTotal*`, `grandTotal*`, `taxAmount*`, `discountAmount*`, `shippingAmount*` (each in order + base currency, with `formatted*` and incl-tax variants) | ✓ |
 | Status & timestamps | `transactionId`, `reminders`, `nextReminderAt`, `createdAt`, `updatedAt` | ✓ |

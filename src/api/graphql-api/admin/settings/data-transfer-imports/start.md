@@ -3,35 +3,69 @@ outline: false
 examples:
   - id: gql
     title: Start Import
-    description: API Platform GraphQL naming yields `startAdminSettingsDataTransferImportStart`. Clients typically alias the field.
+    description: Processes the next pending batch of rows. The field name follows API Platform naming — clients typically alias it. Runs against a validated import.
     query: |
       mutation StartImport($input: startAdminSettingsDataTransferImportStartInput!) {
         startAdminSettingsDataTransferImportStart(input: $input) {
           adminSettingsDataTransferImportStart {
-            id
+            _id
             state
             processedRowsCount
+            invalidRowsCount
+            errorsCount
           }
         }
       }
     variables: |
-      { "input": { "importId": 12 } }
+      {
+        "input": {
+          "id": "/api/admin/settings/data-transfer/imports/12/start",
+          "importId": 12
+        }
+      }
     response: |
-      { "data": { "startAdminSettingsDataTransferImportStart": { "adminSettingsDataTransferImportStart": { "id": 12, "state": "processing", "processedRowsCount": 10 } } } }
+      {
+        "data": {
+          "startAdminSettingsDataTransferImportStart": {
+            "adminSettingsDataTransferImportStart": {
+              "_id": 12,
+              "state": "processing",
+              "processedRowsCount": 10,
+              "invalidRowsCount": 0,
+              "errorsCount": 0
+            }
+          }
+        }
+      }
 ---
 
 # Start Import (GraphQL)
 
-Processes the next pending batch of rows. Call this repeatedly until there are no pending batches left — each call advances the import.
+Processes the **next pending batch** of rows. Call it repeatedly — each call advances the import — until [stats](./stats.md) reports `remaining: 0`. Runs only after the import has been [validated](./validate.md).
 
-After the rows are processed, run the [Link](./link.md) stage, then the [Index](./index.md) stage to finish the import.
+> This example runs against a **validated, mid-pipeline** import. A freshly-created import with validation errors returns `There is nothing to import.` instead.
+
+## Operation
+
+| Operation | Type | Purpose |
+|-----------|------|---------|
+| `startAdminSettingsDataTransferImportStart` | Mutation | Process the next batch of rows |
+
+## After processing
+
+When all batches are processed, run the [link](./link.md) stage, then the [index](./index.md) stage to finish the import.
 
 ## Errors
 
 The mutation reports an error when there is nothing left to import, when the import has not been validated, or when asynchronous processing is requested but the queue is not configured.
 
-Permission: `settings.data_transfer.imports.edit`.
+## Quirks
+
+- The input takes the import's `importId` **and** an `id` (the start IRI) — API Platform requires the `id` field on every non-create mutation.
+- Select `_id` for the numeric import id; the payload `id` IRI does not resolve on mutation results.
 
 ::: tip Prerequisites
-The example uses an illustrative `importId`. Replace it with the id of a validated import in your store.
+The example uses an illustrative import. Replace it with a validated import in your store.
 :::
+
+Permission: `settings.data_transfer.imports.edit`. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

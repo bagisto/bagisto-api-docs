@@ -4,7 +4,7 @@ apiType: rest
 examples:
   - id: admin-customer-mass-update-status
     title: Mass Update Customer Status
-    description: Sets `status` on every supplied customer. `value` must be `0` or `1`. Fires `customer.update.before/after` per row.
+    description: Sets `status` on every supplied customer. `value` must be `0` or `1`.
     query: |
       curl -X POST "https://your-domain.com/api/admin/customers/mass-update-status" \
         -H "Authorization: Bearer <token>" \
@@ -15,6 +15,12 @@ examples:
 ---
 
 # Mass Update Customer Status
+
+::: tip Overview
+See the [Customers menu overview](/api/rest-api/admin/customers/main/) for the full feature flow.
+:::
+
+All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
 
 | Endpoint | Method |
 |----------|--------|

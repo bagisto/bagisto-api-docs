@@ -33,6 +33,23 @@ The customer's full wishlist. Right-sidebar panel on the Create-Order screen.
 |----------|--------|
 | `/api/admin/customers/{customerId}/wishlist-items` | GET |
 
-Returns the standard `{ data, meta }` envelope. Each row includes the product
-thumbnail (`productImage`) for the badge. Requires an admin
-Bearer token.
+## Response Fields
+
+Returns the standard `{ data, meta }` envelope. Each row in `data`:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Wishlist item ID. |
+| `productId` | integer | The product. |
+| `sku` | string | Product SKU. |
+| `name` | string | Product name. |
+| `price` | number | Unit price. |
+| `formattedPrice` | string | Currency-formatted unit price. |
+| `productImage` | string \| null | Product thumbnail URL for the badge. |
+| `additional` | object \| null | Extra item attributes. |
+
+Requires an admin Bearer token.
+
+::: tip
+For how the Create-Order helper panels fit together, see the [Create-Order Helpers overview](./create-order-helpers/index.md).
+:::

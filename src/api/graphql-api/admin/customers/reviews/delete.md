@@ -3,20 +3,49 @@ outline: false
 examples:
   - id: admin-customer-review-delete-gql
     title: Delete Review
+    description: The delete response returns a snapshot of the removed review.
     query: |
       mutation Delete($input: deleteAdminCustomerReviewInput!) {
-        deleteAdminCustomerReview(input: $input) { adminCustomerReview { id } }
+        deleteAdminCustomerReview(input: $input) {
+          adminCustomerReview {
+            id
+            _id
+            status
+          }
+        }
       }
     variables: |
-      { "input": { "id": "/api/admin/customers/reviews/9" } }
+      {
+        "input": {
+          "id": "/api/admin/customers/reviews/21"
+        }
+      }
     response: |
-      { "data": { "deleteAdminCustomerReview": { "adminCustomerReview": null } } }
+      {
+        "data": {
+          "deleteAdminCustomerReview": {
+            "adminCustomerReview": {
+              "id": "/api/admin/customers/reviews/21",
+              "_id": 21,
+              "status": "approved"
+            }
+          }
+        }
+      }
 ---
 
 # Delete Review (GraphQL)
 
+Deletes a review. The mutation returns a snapshot of the record that was removed.
+
 Permission: `customers.reviews.delete`.
 
 ::: tip Prerequisites
-The example uses an illustrative `id` value. Replace it with the id of a review that exists in your store — use the [`adminCustomerReviews`](./list.md) query to discover valid ids.
+The example uses an illustrative `id`. Replace it with a review that exists in your store — use [`adminCustomerReviews`](./list.md) to discover valid ids.
 :::
+
+::: tip
+See the [Reviews overview](/api/graphql-api/admin/customers/reviews/) for how moderation works.
+:::
+
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

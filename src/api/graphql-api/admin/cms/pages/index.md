@@ -34,6 +34,21 @@ The two write mutations take **different shapes** (this mirrors the admin form):
 
 Both transports expose the same data and behaviour. The practical difference: GraphQL lets you fetch the page **plus** its `translations` and `channels` in a **single round trip** and pick exactly the fields you need, whereas REST returns the full fixed payload per endpoint.
 
+## Exporting pages (CSV) — REST only
+
+The CMS Pages datagrid **Export** button (a CSV download of the whole filtered table) is available **only over REST**, at [`GET /api/admin/cms/pages/export`](/api/rest-api/admin/cms/pages/export).
+
+There is **no GraphQL export operation** — and there cannot be one. An export is a **binary file stream** (`text/csv` attachment), and GraphQL only returns structured JSON; it has no way to transport a downloadable file. This is a project-wide rule: every datagrid CSV export lives on REST only. To export from a GraphQL-based client, call the REST endpoint directly:
+
+```bash
+curl -X GET "https://your-domain.com/api/admin/cms/pages/export?format=csv" \
+  -H "Authorization: Bearer <id>|<token>" \
+  -H "Accept: text/csv" \
+  --output cms-pages.csv
+```
+
+It honours the same filters as the listing (`id`, `page_title`, `url_key`, `channel`, `locale`) and exports **every matching row**, not just the current page. If you only need the data (not a file), use the [`adminCmsPages`](/api/graphql-api/admin/cms/pages/queries/list) query and build the file client-side.
+
 ## Operations in this menu
 
 | Action | Operation |

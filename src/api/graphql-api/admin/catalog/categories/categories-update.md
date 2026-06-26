@@ -3,11 +3,24 @@ outline: false
 examples:
   - id: admin-catalog-category-update
     title: Update (or Move) Category
-    description: Update a category. Move-by-parent_id is handled here — there is NO separate move mutation. Translatable fields are nested under the locale key. Mirrors PUT /api/admin/catalog/categories/{id}.
+    description: Update a category. Translatable fields are nested under the locale key. Re-parenting and re-positioning (move) are done on this same mutation — there is no separate move operation.
     query: |
       mutation UpdateCategory($input: updateAdminCategoryInput!) {
         updateAdminCategory(input: $input) {
-          adminCategory { id _id }
+          adminCategory {
+            id
+            _id
+            name
+            slug
+            description
+            position
+            status
+            displayMode
+            parentId
+            locale
+            createdAt
+            updatedAt
+          }
         }
       }
     variables: |
@@ -20,9 +33,9 @@ examples:
           "parentId": 1,
           "status": 1,
           "en": {
-            "slug": "apparel",
-            "name": "Apparel",
-            "description": "Men's and women's apparel"
+            "slug": "watches",
+            "name": "Watches",
+            "description": "Wrist and pocket watches"
           }
         }
       }
@@ -30,35 +43,33 @@ examples:
       {
         "data": {
           "updateAdminCategory": {
-            "adminCategory": { "id": "/api/admin/catalog/categories/7", "_id": 7 }
+            "adminCategory": {
+              "id": "/api/admin/catalog/categories/7",
+              "_id": 7,
+              "name": "Watches",
+              "slug": "watches",
+              "description": "Wrist and pocket watches",
+              "position": 2,
+              "status": 1,
+              "displayMode": "products_and_description",
+              "parentId": 1,
+              "locale": "en",
+              "createdAt": "2026-06-24 08:15:00",
+              "updatedAt": "2026-06-24 09:40:00"
+            }
           }
         }
       }
 ---
 
-# Category — Update (and Move)
+# Category — Update (and Move) (GraphQL)
 
-Updates an existing category. Equivalent to
-[`PUT /api/admin/catalog/categories/{id}`](/api/rest-api/admin/catalog/categories/categories-update).
+Updates a category and returns its detail. Unlike create, the translatable values (`slug`, `name`, `description`, optional meta fields) are **nested under a key matching the locale code** (e.g. `"en"`), and `locale` names which block is written. Top-level fields: `id` (the category IRI), `position`, `attributes`, `parentId`, `displayMode`, `status`. **Moving** a category is part of this same mutation — change `parentId` and `position` to re-parent and re-order; there is no separate move operation (this mirrors the admin panel).
 
-::: warning No separate move mutation
-**Move semantics are part of `updateAdminCategory`.** Re-parenting and
-re-positioning are done by supplying `parent_id` and `position` on the
-ordinary update mutation. There is no `moveAdminCategory` — this mirrors the
-Bagisto admin panel, which has no separate move action either.
+::: tip
+See the [Categories overview](/api/graphql-api/admin/catalog/categories/) for how the menu works.
 :::
 
-## Operation
+The update mutation payload resolves the category's scalar fields. The category's `translations` and `filterableAttributeIds` are not returned here — re-query [`adminCategory`](/api/graphql-api/admin/catalog/categories/categories-detail) for the full detail.
 
-| Operation | Type | Purpose |
-|-----------|------|---------|
-| `updateAdminCategory` | Mutation | Update an existing category (also handles moves) |
-
-## Input
-
-Top-level fields: `id` (resource IRI), `locale`, `position`, `attributes`,
-`parent_id`, `status`. Translatable fields (`slug`, `name`, `description`,
-optional `meta_*`) are nested under a key matching the locale code (e.g.
-`"en"`). See the
-[REST page](/api/rest-api/admin/catalog/categories/categories-update) for the
-full schema.
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

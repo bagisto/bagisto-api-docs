@@ -16,9 +16,21 @@ examples:
 
 # Add Customer Note
 
+Appends an internal note to a customer's record. The response is the created note.
+
 | Endpoint | Method |
 |----------|--------|
 | `/api/admin/customers/{customerId}/notes` | POST |
+
+## Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Note ID. |
+| `customerId` | integer | The customer the note belongs to. |
+| `note` | string | The note text. |
+| `customerNotified` | boolean | Whether the customer was emailed this note. |
+| `createdAt` | string | When the note was created. |
 
 ## Request Body
 
@@ -32,3 +44,7 @@ Notes are append-only. There is no update/delete endpoint — every note is a se
 :::
 
 Permission: `customers.customers.edit`.
+
+::: tip
+For how the notes log works, see the [Notes overview](./index.md).
+:::

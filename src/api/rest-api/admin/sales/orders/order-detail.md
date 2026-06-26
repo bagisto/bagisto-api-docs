@@ -27,8 +27,10 @@ examples:
           "id": 19, "email": "admin@example.com", "name": "Test User",
           "group": { "id": 2, "code": "general", "name": "General" }
         },
-        "billingAddress": { "id": 4943, "addressType": "order_billing", "city": "New York", "state": "NY", "country": "US" },
-        "shippingAddress": { "id": 4942, "addressType": "order_shipping", "city": "New York", "state": "NY", "country": "US" },
+        "addresses": [
+          { "id": 4943, "addressType": "order_billing", "city": "New York", "state": "NY", "country": "US" },
+          { "id": 4942, "addressType": "order_shipping", "city": "New York", "state": "NY", "country": "US" }
+        ],
         "items": [
           {
             "id": 2694, "sku": "test65", "type": "simple", "name": "Classic Watch Hand",
@@ -74,8 +76,9 @@ returns the whole screen:
 - Flat order fields + totals (grand / sub / tax / discount / shipping, invoiced
   and refunded variants, **total due**, with `formatted*` strings) plus
   `paymentMethod` / `paymentTitle`.
-- `customer` (with `group`), `billingAddress`, `shippingAddress` (each address
-  includes `vatId`).
+- `customer` (with `group`) and `addresses` — a flat array of the order's
+  billing + shipping addresses; read `addressType` (`order_billing` /
+  `order_shipping`) on each entry to tell them apart (each includes `vatId`).
 - `items` — each with `type` (`simple`, `configurable`, `bundle`,
   `downloadable`, `grouped`, `virtual`) and type-specific data in `additional`,
   `child`, `children`, `downloadableLinks`. Switch on `type` to render.

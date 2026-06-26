@@ -36,6 +36,27 @@ into the draft.
 |----------|--------|
 | `/api/admin/customers/{customerId}/cart-items` | GET |
 
+## Response Fields
+
+Returns the standard `{ data, meta }` envelope. Each row in `data`:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Cart item ID. |
+| `productId` | integer | The product. |
+| `sku` | string | Product SKU. |
+| `type` | string | Product type. |
+| `name` | string | Product name. |
+| `quantity` | integer | Quantity in the cart. |
+| `price` | number | Unit price. |
+| `formattedPrice` | string | Currency-formatted unit price. |
+| `total` | number | Line total. |
+| `formattedTotal` | string | Currency-formatted line total. |
+| `additional` | object \| null | Extra item attributes (options, quantity). |
+
 Returns only **top-level** items (`cart_items.parent_id IS NULL`). Empty `data`
-array when the customer has no active cart. Requires an admin
-Bearer token.
+array when the customer has no active cart. Requires an admin Bearer token.
+
+::: tip
+For how the Create-Order helper panels fit together, see the [Create-Order Helpers overview](./create-order-helpers/index.md).
+:::

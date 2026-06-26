@@ -25,10 +25,45 @@ examples:
       {
         "locale": "en",
         "channels": [1],
-        "en": { "url_key": "about-us", "page_title": "About Us (Updated)", "html_content": "<h1>About Us</h1>" }
+        "en": {
+          "url_key": "about-us",
+          "page_title": "About Us (Updated)",
+          "html_content": "<h1>About Us</h1><p>Welcome back.</p>",
+          "meta_title": "About Us",
+          "meta_keywords": "about,us,company",
+          "meta_description": "Updated description."
+        }
       }
     response: |
-      <Returns 200 — same shape as GET /api/admin/cms/pages/{id}>
+      {
+        "id": 7,
+        "urlKey": "about-us",
+        "pageTitle": "About Us (Updated)",
+        "htmlContent": "<h1>About Us</h1><p>Welcome back.</p>",
+        "metaTitle": "About Us",
+        "metaKeywords": "about,us,company",
+        "metaDescription": "Updated description.",
+        "layout": null,
+        "previewUrl": "https://your-domain.com/page/about-us",
+        "locale": "en",
+        "channel": "default",
+        "createdAt": "2024-04-16T21:44:17+05:30",
+        "updatedAt": "2026-06-23T11:49:19+05:30",
+        "translations": [
+          {
+            "locale": "en",
+            "url_key": "about-us",
+            "page_title": "About Us (Updated)",
+            "html_content": "<h1>About Us</h1><p>Welcome back.</p>",
+            "meta_title": "About Us",
+            "meta_keywords": "about,us,company",
+            "meta_description": "Updated description."
+          }
+        ],
+        "channels": [
+          { "id": 1, "code": "default", "name": "Default" }
+        ]
+      }
     commonErrors:
       - error: Validation (422)
         cause: Missing nested fields, duplicate url_key, or empty channels
@@ -61,7 +96,14 @@ nested blocks:
 
 The top-level `locale` field names which locale block is being updated.
 `url_key` uniqueness excludes the current page (no false-positive collisions
-against itself).
+against itself). Only the named locale changes — other locales are left
+untouched. `channels` **replaces** the page's current channel assignment.
+:::
+
+::: tip Changing `url_key` creates a redirect
+When you change a locale's `url_key`, the store records a **301 redirect**
+from the old slug to the new one, so existing links keep working. Deleting
+the page later removes those redirects.
 :::
 
 ## Endpoint

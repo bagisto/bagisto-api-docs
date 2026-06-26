@@ -3,23 +3,29 @@ outline: false
 examples:
   - id: admin-catalog-category-mass-delete
     title: Mass Delete Categories
-    description: Bulk-delete a batch of categories. Whole-batch validation — if any id is non-deletable (root, channel root), no row is touched. Mirrors POST /api/admin/catalog/categories/mass-delete.
+    description: Bulk-delete a batch of categories. The whole batch is validated up front — if any id is non-deletable (root or a channel root), nothing is deleted.
     query: |
       mutation MassDeleteCategories($input: createAdminCategoryMassDeleteInput!) {
         createAdminCategoryMassDelete(input: $input) {
-          adminCategoryMassDelete { id deleted message }
+          adminCategoryMassDelete {
+            _id
+            deleted
+            message
+          }
         }
       }
     variables: |
       {
-        "input": { "indices": [12, 18] }
+        "input": {
+          "indices": [12, 18]
+        }
       }
     response: |
       {
         "data": {
           "createAdminCategoryMassDelete": {
             "adminCategoryMassDelete": {
-              "id": "/api/admin/category_mass_deletes/1",
+              "_id": 1,
               "deleted": [12, 18],
               "message": "Categories deleted successfully."
             }
@@ -28,16 +34,13 @@ examples:
       }
 ---
 
-# Category — Mass Delete
+# Category — Mass Delete (GraphQL)
 
-Bulk-deletes a batch of categories. Equivalent to
-[`POST /api/admin/catalog/categories/mass-delete`](/api/rest-api/admin/catalog/categories/categories-mass-delete).
+Deletes several categories in one call. `indices` is the list of category ids to delete. The whole batch is **pre-validated**: if any id is the root category or a channel root, the entire batch is rejected with an error and nothing is deleted. Ids that don't exist are silently skipped and do not appear in `deleted`. `deleted` is the list of ids actually removed.
 
-## Operation
-
-| Operation | Type | Purpose |
-|-----------|------|---------|
-| `createAdminCategoryMassDelete` | Mutation | Delete multiple categories at once |
+::: tip
+See the [Categories overview](/api/graphql-api/admin/catalog/categories/) for how the menu works.
+:::
 
 ## Input
 
@@ -45,7 +48,4 @@ Bulk-deletes a batch of categories. Equivalent to
 |-------|------|-------|
 | `indices` | `[Int!]!` | Category ids to delete |
 
-## Notes
-
-- **All-or-nothing.** Any non-deletable id (root, channel root) rejects the entire batch with `errors[]` carrying `Root and channel-root categories cannot be deleted.`
-- Unknown ids are silently skipped — they do not appear in `deleted`.
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

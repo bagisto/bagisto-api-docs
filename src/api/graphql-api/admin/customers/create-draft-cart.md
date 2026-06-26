@@ -66,6 +66,10 @@ auto-generated `id` (IRI) field has no value and selecting it returns
 Distinct from `createAdminReorder` (which seeds the cart from an existing
 order's items).
 
+::: tip Menu overview
+See the [Customers overview](/api/graphql-api/admin/customers/) for how the Create-Order flow fits together.
+:::
+
 ## Errors
 
 | GraphQL `errors[]` cause | Notes |

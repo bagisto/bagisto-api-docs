@@ -1,34 +1,84 @@
 ---
 outline: false
 examples:
-  - id: gql
-    title: Send Marketing Campaign
+  - id: send
+    title: Send Campaign
+    description: Queue a campaign's email template to every subscribed member of its customer group, right now.
     query: |
-      mutation Send($input: createAdminMarketingCampaignSendInput!) {
+      mutation CreateAdminMarketingCampaignSend(
+        $input: createAdminMarketingCampaignSendInput!
+      ) {
         createAdminMarketingCampaignSend(input: $input) {
-          adminMarketingCampaignSend { campaignId queued message }
+          adminMarketingCampaignSend {
+            campaignId
+            queued
+            message
+          }
         }
       }
     variables: |
-      { "input": { "campaignId": 12 } }
+      {
+        "input": {
+          "id": "/api/admin/marketing/campaigns/5"
+        }
+      }
     response: |
-      { "data": { "createAdminMarketingCampaignSend": { "adminMarketingCampaignSend": { "campaignId": 12, "queued": 5, "message": "Campaign queued for 5 recipient(s)." } } } }
+      {
+        "data": {
+          "createAdminMarketingCampaignSend": {
+            "adminMarketingCampaignSend": {
+              "campaignId": 5,
+              "queued": 124,
+              "message": "Campaign queued for 124 recipient(s)."
+            }
+          }
+        }
+      }
 ---
 
-# Send Marketing Campaign (GraphQL)
+# Send Campaign
 
-Mutation: `createAdminMarketingCampaignSend`.
+Sends a campaign now — the **Send** action on the admin
+**Marketing → Communications → Campaigns** screen. It queues the campaign's email
+template to every subscribed member of its customer group.
+
+::: tip
+New here? Read the [Campaigns overview](/api/graphql-api/admin/marketing/communications/campaigns/) for what a campaign does and how its fields behave.
+:::
+
+## Operation
+
+| Operation | Type | Purpose |
+|-----------|------|---------|
+| `createAdminMarketingCampaignSend` | Mutation | Queue a campaign's email to its audience |
+
+## Details
+
+- Requires an admin Bearer token and the `marketing.communications.campaigns.edit`
+  permission.
+- Pass the campaign's IRI (e.g. `/api/admin/marketing/campaigns/5`) as `id`.
+- The send queues the campaign's email template to all subscribed members of its
+  customer group right now, skipping any event-date gate. For a guest group it
+  queues to the guest newsletter subscribers.
+- The response reports `campaignId`, `queued` (the number of recipients queued),
+  and a `message`.
 
 ::: warning Active campaigns only
-Inactive campaigns (`status = 0`) return an error.
+An inactive campaign (`status` = `0`) cannot be sent — the mutation returns a
+`422` error. Activate the campaign first via
+[update](/api/graphql-api/admin/marketing/communications/campaigns-update).
 :::
 
-::: tip Manual triggers ignore date gate
-Bypasses the date-based event gate so admin can do test sends.
-:::
+## Input fields
 
-Permission: `marketing.communications.campaigns.edit`.
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| `id` | ID | Yes | The campaign's IRI |
 
-::: tip Prerequisites
-The example uses an illustrative `id` value. Replace it with the id of a campaign that exists in your store — use the [`adminMarketingCampaigns`](./campaigns-list.md) query to discover valid ids.
-:::
+## Response fields
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `campaignId` | Int | The campaign that was sent |
+| `queued` | Int | Number of recipients queued |
+| `message` | String | Human-readable result message |

@@ -34,7 +34,25 @@ right-sidebar "Recent Order Items" panel on the Create-Order screen.
 |----------|--------|
 | `/api/admin/customers/{customerId}/recent-order-items` | GET |
 
-Mirrors the monolith: distinct `product_id` from `order_items` joined to
-`orders`, `parent_id IS NULL`, ordered by `orders.created_at DESC`, limited
-to 5. Each row carries the product `type` so the client can render
-type-specific UI. Requires an admin Bearer token.
+## Response Fields
+
+Returns the standard `{ data, meta }` envelope. Each row in `data`:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Order item ID. |
+| `productId` | integer | The product. |
+| `sku` | string | Product SKU. |
+| `type` | string | Product type — lets the client render type-specific UI. |
+| `name` | string | Product name. |
+| `price` | number | Unit price. |
+| `formattedPrice` | string | Currency-formatted unit price. |
+| `productImage` | string \| null | Product thumbnail URL. |
+| `additional` | object \| null | Extra item attributes. |
+
+The list is the most-recently ordered products, distinct by product, newest
+first, limited to 5. Requires an admin Bearer token.
+
+::: tip
+For how the Create-Order helper panels fit together, see the [Create-Order Helpers overview](./create-order-helpers/index.md).
+:::

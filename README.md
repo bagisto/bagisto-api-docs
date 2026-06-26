@@ -61,4 +61,22 @@ Before submitting your pull request, please ensure:
 
 - `npm run docs:dev` - Start development server with hot reload
 - `npm run docs:build` - Build documentation for production
+- `npm run docs:preview` - Preview the production build locally
+- `npm run llms:generate` - Regenerate the AI-agent corpus files (see below)
+- `npm run llms:test` - Run the corpus-generator tests
+
+## AI Agent Docs (`llms.txt` / `llms-full.txt`)
+
+This site publishes two machine-readable files for AI agents (and the [Bagisto MCP server](https://github.com/bagisto/mcp)):
+
+- `src/public/llms.txt` — a curated index of every API page.
+- `src/public/llms-full.txt` — the full content of every API page in a single file.
+
+They are generated **directly from the source `src/api/**/*.md` pages** — no prior `docs:build` is required. Whenever you add or edit an API page, regenerate them:
+
+```bash
+npm run llms:generate
+```
+
+Then commit the updated `src/public/llms.txt` + `src/public/llms-full.txt` and deploy, so they go live at `https://api-docs.bagisto.com/llms.txt` and `https://api-docs.bagisto.com/llms-full.txt`. The MCP server picks up the new content on its next refresh/restart.
   

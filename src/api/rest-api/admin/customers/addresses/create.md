@@ -21,10 +21,28 @@ examples:
               "default_address": true
             }'
     response: |
-      { "id": 27, "customerId": 14, "address": "742 Evergreen Terrace", "city": "Springfield", "country": "US", "postcode": "62704", "defaultAddress": true }
+      {
+        "id": 27,
+        "customerId": 14,
+        "addressType": "customer",
+        "firstName": "Jane",
+        "lastName": "Doe",
+        "companyName": null,
+        "address": "742 Evergreen Terrace",
+        "city": "Springfield",
+        "state": "IL",
+        "country": "US",
+        "postcode": "62704",
+        "email": null,
+        "phone": "+15551234567",
+        "vatId": null,
+        "defaultAddress": true
+      }
 ---
 
 # Create Customer Address
+
+Adds a new address to a customer's address book. The response is the created address detail.
 
 | Endpoint | Method |
 |----------|--------|
@@ -39,3 +57,7 @@ Bagisto's `addresses` table renamed `address1 → address` in 2024 and dropped `
 :::
 
 Permission: `customers.addresses.create`.
+
+::: tip
+For default-address semantics and the address-book overview, see the [Addresses overview](./index.md).
+:::

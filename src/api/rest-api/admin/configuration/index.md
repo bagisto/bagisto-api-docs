@@ -17,6 +17,7 @@ entire Configuration area — current and future:
 | Endpoint | Method | Purpose |
 |----------|--------|---------|
 | [`/api/admin/configuration/menu`](./menu) | GET | **Discover** the schema — which fields exist, their type, default, scoping, validation, and options |
+| [`/api/admin/configuration/slugs`](./slugs) | GET | **List** every slug (section / group key) to pass to Values and Update |
 | [`/api/admin/configuration`](./values) | GET | **Read** the current effective values for a slug |
 | [`/api/admin/configuration`](./update) | POST | **Write** new values for a slug |
 

@@ -119,6 +119,63 @@ examples:
         cause: Storefront key is missing or invalid
         solution: Provide a valid X-STOREFRONT-KEY header
 
+  - id: get-customer-addresses-newest-first
+    title: Get Customer Addresses - Newest First
+    description: Sort the address book so the most recently added address appears first by passing sort and order.
+    query: |
+      query getCustomerAddresses($first: Int, $sort: String, $order: String) {
+        getCustomerAddresses(first: $first, sort: $sort, order: $order) {
+          edges {
+            node {
+              id
+              _id
+              firstName
+              city
+              createdAt
+            }
+          }
+          totalCount
+        }
+      }
+    variables: |
+      {
+        "first": 10,
+        "sort": "created_at",
+        "order": "desc"
+      }
+    response: |
+      {
+        "data": {
+          "getCustomerAddresses": {
+            "edges": [
+              {
+                "node": {
+                  "id": "/api/shop/customer-addresses/2830",
+                  "_id": 2830,
+                  "firstName": "John",
+                  "city": "Los Angeles",
+                  "createdAt": "2026-02-05T10:15:00+05:30"
+                }
+              },
+              {
+                "node": {
+                  "id": "/api/shop/customer-addresses/2829",
+                  "_id": 2829,
+                  "firstName": "John",
+                  "city": "Springfield",
+                  "createdAt": "2026-01-28T18:47:54+05:30"
+                }
+              }
+            ],
+            "totalCount": 2
+          }
+        }
+      }
+    commonErrors:
+      - error: Unauthenticated
+        cause: Missing or invalid Bearer token
+        solution: Login and provide a valid customer authentication token
+
   - id: get-customer-addresses-paginated
     title: Paginated Addresses (Forward)
     description: Retrieve customer addresses one page at a time using cursor-based pagination.
@@ -530,6 +587,8 @@ This query requires a valid customer authentication token in the `Authorization`
 | `after` | String | No | Cursor for forward pagination |
 | `last` | Int | No | Number of addresses to fetch backward |
 | `before` | String | No | Cursor for backward pagination |
+| `sort` | String | No | Column to sort by — `id` (default) or `created_at`. The compound form `created_at-desc` is also accepted. |
+| `order` | String | No | Sort direction — `asc` (default) or `desc`. Use `desc` to return the most recently added addresses first. |
 
 ## Response Fields
 

@@ -12,28 +12,63 @@ examples:
       {
         "customerId": 14,
         "customerEmail": "jane@example.com",
-        "generatedAt": "2026-05-25 10:00:00",
+        "generatedAt": "2026-06-24T10:15:00+00:00",
         "data": {
-          "customer": { "id": 14, "first_name": "Jane", "last_name": "Doe", "email": "jane@example.com" },
-          "addresses": [ /* ... */ ],
-          "orders": [ /* with items, addresses, payment */ ],
-          "reviews": [ /* ... */ ],
-          "wishlist": [ /* ... */ ],
-          "notes": [ /* ... */ ]
+          "customer": {
+            "id": 14,
+            "firstName": "Jane",
+            "lastName": "Doe",
+            "email": "jane@example.com"
+          },
+          "addresses": [
+            { "id": 31, "city": "Mountain View", "country": "US", "postcode": "94043" }
+          ],
+          "orders": [
+            { "id": 1042, "incrementId": "1042", "grandTotal": 4000, "status": "completed" }
+          ],
+          "reviews": [
+            { "id": 21, "productId": 2358, "rating": 5, "status": "approved" }
+          ],
+          "wishlist": [
+            { "id": 88, "productId": 2358 }
+          ],
+          "notes": [
+            { "id": 7, "note": "Called the customer about delivery." }
+          ]
         }
       }
 ---
 
 # Download GDPR Data Export
 
+Returns an ad-hoc data dump (not bound to a GDPR request) of everything stored for the customer.
+
+::: tip Overview
+See the [GDPR Requests overview](/api/rest-api/admin/customers/gdpr/) for the full feature flow.
+:::
+
+All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
+
 | Endpoint | Method |
 |----------|--------|
 | `/api/admin/customers/{customerId}/gdpr-download-data` | POST |
 
-::: tip Wider than the storefront GDPR PDF
-The storefront `pdfView` only exports orders + addresses. The admin API extends this to addresses + orders + reviews + wishlist + notes — full GDPR-style export. `password` and `remember_token` are stripped from the `customer` block.
-:::
+## Response fields
 
-Each sub-query is wrapped in try/catch so a missing optional table (e.g. wishlist on a non-storefront install) returns `[]` rather than 500ing.
+| Field | Type | Notes |
+|-------|------|-------|
+| `customerId` | integer | The exported customer. |
+| `customerEmail` | string | |
+| `generatedAt` | string | When the export was produced. |
+| `data.customer` | object | Profile fields. `password` and `remember_token` are never included. |
+| `data.addresses` | array | The customer's saved addresses. |
+| `data.orders` | array | Orders (with items, addresses, payment). |
+| `data.reviews` | array | Product reviews authored by the customer. |
+| `data.wishlist` | array | Wishlist entries. |
+| `data.notes` | array | Admin notes recorded on the customer. |
+
+::: tip Full GDPR export
+This covers addresses, orders, reviews, wishlist, and notes. A sub-section that has no rows returns an empty array.
+:::
 
 Permission: `customers.gdpr_requests.view`.

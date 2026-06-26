@@ -3,46 +3,53 @@ outline: false
 examples:
   - id: admin-catalog-family-delete
     title: Delete Attribute Family
-    description: Refused if the family is the last one in the store or if any product is using it. Mirrors DELETE /api/admin/catalog/families/{id}.
+    description: Delete a family. Refused if it is the last family in the store or any product still uses it.
     query: |
-      mutation DeleteFamily($input: deleteAdminAttributeFamilyInput!) {
+      mutation DeleteAdminAttributeFamily($input: deleteAdminAttributeFamilyInput!) {
         deleteAdminAttributeFamily(input: $input) {
-          adminAttributeFamily { id }
+          adminAttributeFamily {
+            id
+            _id
+            code
+            name
+          }
         }
       }
     variables: |
       {
-        "input": { "id": "/api/admin/catalog/families/4" }
+        "input": {
+          "id": "/api/admin/catalog/families/4"
+        }
       }
     response: |
       {
         "data": {
           "deleteAdminAttributeFamily": {
-            "adminAttributeFamily": { "id": "/api/admin/catalog/families/4" }
+            "adminAttributeFamily": {
+              "id": "/api/admin/catalog/families/4",
+              "_id": 4,
+              "code": "shirts",
+              "name": "Shirts"
+            }
           }
         }
       }
 ---
 
-# Attribute Family — Delete
+# Attribute Family — Delete (GraphQL)
 
-Deletes an attribute family. Equivalent to
-[`DELETE /api/admin/catalog/families/{id}`](/api/rest-api/admin/catalog/families/families-delete).
+Deletes an attribute family. The `id` argument is the family IRI (`/api/admin/catalog/families/{id}`). The mutation returns a snapshot of the deleted family.
 
-::: tip Prerequisites
-The example uses an illustrative `id` value. Replace it with the id of a attribute family that exists in your store — use the [`adminAttributeFamilies`](./families-listing.md) query to discover valid ids.
+Two rules block the delete: the store must always keep at least one family, and a family that any product still belongs to cannot be removed. Reassign or remove those products first.
+
+::: tip
+See the [Attribute Families overview](/api/graphql-api/admin/catalog/families/) for how families relate to attributes and products.
 :::
-
-## Operation
-
-| Operation | Type | Purpose |
-|-----------|------|---------|
-| `deleteAdminAttributeFamily` | Mutation | Delete an attribute family |
-
-## Errors
 
 | Condition | Message |
 |-----------|---------|
 | Family is the last one in the store | `At least one attribute family is required.` |
 | One or more products still use the family | `Cannot delete — attribute family is in use by N product(s).` |
 | Unknown id | `Attribute family not found.` |
+
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

@@ -45,7 +45,7 @@ examples:
                   "title": "Incredible Product!",
                   "rating": 5,
                   "comment": "This jacket is incredibly warm and comfortable. I love wearing it on cold days or when I'm going for a hike. It's also very stylish and looks great with a pair of jeans or chinos.",
-                  "status": 0,
+                  "status": "approved",
                   "createdAt": "2023-11-16T12:23:20+05:30",
                   "updatedAt": "2023-12-01T10:44:45+05:30"
                 },
@@ -59,7 +59,7 @@ examples:
                   "title": "High Quality & Affordable",
                   "rating": 5,
                   "comment": "I can't believe how affordable this jacket is for the quality. It's well-made and looks great. I've already gotten so many compliments on it.",
-                  "status": 0,
+                  "status": "approved",
                   "createdAt": "2023-11-16T12:30:54+05:30",
                   "updatedAt": "2023-11-16T12:31:09+05:30"
                 },
@@ -73,7 +73,7 @@ examples:
                   "title": "Perfect Winter Essential",
                   "rating": 4,
                   "comment": "Great quality and very comfortable. Highly recommend for anyone looking for a warm jacket.",
-                  "status": 0,
+                  "status": "approved",
                   "createdAt": "2023-11-18T08:15:30+05:30",
                   "updatedAt": "2023-11-18T08:15:30+05:30"
                 },
@@ -158,7 +158,7 @@ examples:
 
   - id: get-product-reviews-by-status
     title: Get Product Reviews - Filtered by Status
-    description: Retrieve reviews filtered by approval status. Use "approved" to show published reviews, "pending" for those awaiting moderation, or "rejected" for declined reviews.
+    description: Retrieve reviews filtered by approval status. Use "approved" to show published reviews, "pending" for those awaiting moderation, or "disapproved" for declined reviews.
     query: |
       query productReviewsByStatus($status: String, $first: Int, $after: String) {
         productReviews(status: $status, first: $first, after: $after) {
@@ -233,7 +233,7 @@ examples:
     commonErrors:
       - error: invalid-status
         cause: Status value is not a recognised string
-        solution: Use one of "approved", "pending", or "rejected"
+        solution: Use one of "approved", "pending", or "disapproved"
       - error: invalid-pagination
         cause: Invalid pagination arguments
         solution: Use valid first/after or last/before combinations with max value 100
@@ -442,7 +442,7 @@ examples:
   #       solution: Use rating between 1 and 5
   #     - error: invalid-status
   #       cause: Status value is not valid
-  #       solution: Use status 0 (pending), 1 (approved), or 2 (rejected)
+  #       solution: Use status 0 (pending), 1 (approved), or 2 (disapproved)
 
   # - id: get-product-reviews-complete
   #   title: Get Product Reviews - Complete Details
@@ -581,7 +581,7 @@ examples:
   #       solution: Use rating between 1 and 5
   #     - error: invalid-status
   #       cause: Status value is not valid
-  #       solution: Use status 0 (pending), 1 (approved), or 2 (rejected)
+  #       solution: Use status 0 (pending), 1 (approved), or 2 (disapproved)
 
 ---
 
@@ -602,13 +602,13 @@ The `productReviews` query retrieves a collection of product reviews with filter
 
 This query supports full pagination with cursor-based navigation and flexible filtering options for various use cases.
 
-> **Note:** This query only returns reviews that have been **approved by an admin**. Reviews submitted by customers are set to `pending` by default and will not appear in the results until an admin approves them from the admin panel. `pending` and `rejected` reviews are never visible to storefront users.
+> **Note:** When the `status` argument is **omitted**, this query returns only **approved** reviews — the right default for a storefront product page (customer-submitted reviews start as `pending` until an admin approves them). Passing `status` overrides this default, so you can request `status: "pending"` or `status: "disapproved"` explicitly (e.g. for moderation tooling).
 
 ## Arguments
 
 | Argument | Type | Required | Description |
 |----------|------|----------|-------------|
-| `status` | `String` | ❌ No | Filter by review status (`"pending"`, `"approved"`, `"rejected"`). |
+| `status` | `String` | ❌ No | Filter by review status (`"pending"`, `"approved"`, `"disapproved"`). |
 | `rating` | `Int` | ❌ No | Filter by rating value (1-5 stars). |
 | `first` | `Int` | ❌ No | Number of results to return (forward pagination). Max: 100. |
 | `after` | `String` | ❌ No | Pagination cursor for forward navigation. Use with `first`. |
@@ -625,7 +625,7 @@ This query supports full pagination with cursor-based navigation and flexible fi
 | `title` | `String!` | Review title/headline. |
 | `rating` | `Int!` | Star rating (1-5). |
 | `comment` | `String!` | Review comment/text. |
-| `status` | `String!` | Review approval status (`"pending"`, `"approved"`, `"rejected"`). |
+| `status` | `String!` | Review approval status (`"pending"`, `"approved"`, `"disapproved"`). |
 | `createdAt` | `DateTime!` | Review creation timestamp. |
 | `updatedAt` | `DateTime!` | Last update timestamp. |
 | `pageInfo` | `PageInfo!` | Pagination information. |
@@ -641,7 +641,7 @@ This query supports full pagination with cursor-based navigation and flexible fi
 |--------|-------------|
 | `"pending"` | Awaiting moderation approval |
 | `"approved"` | Published and visible on the storefront |
-| `"rejected"` | Declined and not published |
+| `"disapproved"` | Declined and not published |
 
 ## Use Cases
 
@@ -662,7 +662,7 @@ Use pagination to fetch all reviews for a product and calculate statistics.
 
 ## Best Practices
 
-1. **Filter by Status** - Always filter by `status: "approved"` to show only approved reviews to customers
+1. **Approved by default** - Omitting `status` already returns approved reviews only; pass `status` explicitly only when building moderation tooling
 2. **Show Ratings** - Display the rating prominently alongside the review
 3. **Use Pagination** - Always implement pagination for better performance
 4. **Cache Results** - Cache reviews for better performance as they change infrequently

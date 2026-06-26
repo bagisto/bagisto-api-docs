@@ -3,33 +3,42 @@ outline: false
 examples:
   - id: admin-catalog-family-update
     title: Update Attribute Family
-    description: Update a family, optionally restructuring its attribute groups. Mirrors PUT /api/admin/catalog/families/{id}.
+    description: Update a family, optionally restructuring its attribute groups.
     query: |
-      mutation UpdateFamily($input: updateAdminAttributeFamilyInput!) {
+      mutation UpdateAdminAttributeFamily($input: updateAdminAttributeFamilyInput!) {
         updateAdminAttributeFamily(input: $input) {
-          adminAttributeFamily { id _id }
+          adminAttributeFamily {
+            id
+            _id
+            code
+            name
+          }
         }
       }
     variables: |
       {
         "input": {
           "id": "/api/admin/catalog/families/4",
-          "code": "electronics",
-          "name": "Electronics (updated)",
+          "code": "shirts",
+          "name": "Shirts (updated)",
           "attributeGroups": {
             "11": {
               "code": "general",
               "name": "General",
               "column": 1,
               "position": 1,
-              "customAttributes": [ { "id": 1, "position": 1 } ]
+              "customAttributes": [
+                { "id": 1, "position": 1 }
+              ]
             },
             "group_new_1": {
               "code": "pricing",
               "name": "Pricing",
               "column": 2,
               "position": 2,
-              "customAttributes": [ { "id": 11, "position": 1 } ]
+              "customAttributes": [
+                { "id": 11, "position": 1 }
+              ]
             }
           }
         }
@@ -38,27 +47,27 @@ examples:
       {
         "data": {
           "updateAdminAttributeFamily": {
-            "adminAttributeFamily": { "id": "/api/admin/catalog/families/4", "_id": 4 }
+            "adminAttributeFamily": {
+              "id": "/api/admin/catalog/families/4",
+              "_id": 4,
+              "code": "shirts",
+              "name": "Shirts (updated)"
+            }
           }
         }
       }
 ---
 
-# Attribute Family — Update
+# Attribute Family — Update (GraphQL)
 
-Updates an existing attribute family. Equivalent to
-[`PUT /api/admin/catalog/families/{id}`](/api/rest-api/admin/catalog/families/families-update).
+Updates an existing attribute family. The `id` argument is the family IRI (`/api/admin/catalog/families/{id}`).
 
-## Operation
+The `attributeGroups` field is an **object** keyed by group id: a numeric key (e.g. `"11"`) updates an existing group, while a `group_*` key creates a new group. Existing groups that are omitted from the payload are deleted. Each group value carries `code`, `name`, `column`, `position`, and `customAttributes` (each `{ id, position }`) to attach attributes to it.
 
-| Operation | Type | Purpose |
-|-----------|------|---------|
-| `updateAdminAttributeFamily` | Mutation | Update an existing attribute family |
+::: tip
+See the [Attribute Families overview](/api/graphql-api/admin/catalog/families/) for how families relate to attributes and products.
+:::
 
-## `attribute_groups` semantics
+The mutation payload returns the family's scalar fields. The `attributeGroups` connection is not resolved on the mutation result — re-query [`adminAttributeFamily`](/api/graphql-api/admin/catalog/families/families-detail) to read the updated structure back.
 
-The `attribute_groups` field is an **object** keyed by numeric group ids (to
-update existing groups) or `group_*` placeholders (to create new groups).
-Existing ids that are omitted from the payload are deleted. Each value
-carries `code`, `name`, `column`, `position`, and `custom_attributes` as
-documented on the [REST page](/api/rest-api/admin/catalog/families/families-update).
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

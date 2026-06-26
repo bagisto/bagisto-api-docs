@@ -3,23 +3,30 @@ outline: false
 examples:
   - id: admin-catalog-category-mass-update-status
     title: Mass Update Category Status
-    description: Bulk-flip status (enabled/disabled) on a batch of categories. Mirrors POST /api/admin/catalog/categories/mass-update-status.
+    description: Bulk-set the status (enabled or disabled) on a batch of categories.
     query: |
       mutation MassUpdateCategoryStatus($input: createAdminCategoryMassUpdateStatusInput!) {
         createAdminCategoryMassUpdateStatus(input: $input) {
-          adminCategoryMassUpdateStatus { id updated message }
+          adminCategoryMassUpdateStatus {
+            _id
+            updated
+            message
+          }
         }
       }
     variables: |
       {
-        "input": { "indices": [12, 18], "value": 1 }
+        "input": {
+          "indices": [12, 18],
+          "value": 1
+        }
       }
     response: |
       {
         "data": {
           "createAdminCategoryMassUpdateStatus": {
             "adminCategoryMassUpdateStatus": {
-              "id": "/api/admin/category_mass_update_statuses/1",
+              "_id": 1,
               "updated": [12, 18],
               "message": "Categories status updated successfully."
             }
@@ -28,16 +35,13 @@ examples:
       }
 ---
 
-# Category — Mass Update Status
+# Category — Mass Update Status (GraphQL)
 
-Bulk-flips the status of a batch of categories. Equivalent to
-[`POST /api/admin/catalog/categories/mass-update-status`](/api/rest-api/admin/catalog/categories/categories-mass-update-status).
+Sets the same status on several categories in one call. `indices` is the list of category ids; `value` is `1` to enable or `0` to disable them. `updated` is the list of ids whose status was changed.
 
-## Operation
-
-| Operation | Type | Purpose |
-|-----------|------|---------|
-| `createAdminCategoryMassUpdateStatus` | Mutation | Enable or disable a batch of categories |
+::: tip
+See the [Categories overview](/api/graphql-api/admin/catalog/categories/) for how the menu works.
+:::
 
 ## Input
 
@@ -45,3 +49,5 @@ Bulk-flips the status of a batch of categories. Equivalent to
 |-------|------|-------|
 | `indices` | `[Int!]!` | Category ids to update |
 | `value` | `Int!` | `0` to disable, `1` to enable |
+
+All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

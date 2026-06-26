@@ -34,7 +34,12 @@ examples:
         "metaTitle": "About Us",
         "metaKeywords": "about,us,company",
         "metaDescription": "Learn more about our company.",
+        "layout": null,
+        "previewUrl": "https://your-domain.com/page/about-us",
         "locale": "en",
+        "channel": "default",
+        "createdAt": "2026-06-23T11:49:19+05:30",
+        "updatedAt": "2026-06-23T11:49:19+05:30",
         "translations": [
           { "locale": "en", "url_key": "about-us", "page_title": "About Us", "html_content": "<h1>About Us</h1><p>Welcome.</p>", "meta_title": "About Us", "meta_keywords": "about,us,company", "meta_description": "Learn more about our company." }
         ],
