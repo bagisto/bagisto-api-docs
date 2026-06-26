@@ -27,7 +27,7 @@ examples:
 
 # Create Channel
 
-The create response returns the channel with its assigned `locales` / `currencies` / `inventorySources` as object arrays (these replace the former `localeIds` / `currencyIds` / `inventorySourceIds` id arrays), the `homeSeo` block, and the per-locale `translations`.
+Send the assignments as integer-array inputs named `locales` / `currencies` / `inventory_sources` (snake_case). The create response returns the channel with its assigned `locales` / `currencies` / `inventorySources` as object arrays, the `homeSeo` block, and the per-locale `translations`.
 
 ## Validation
 

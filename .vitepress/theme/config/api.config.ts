@@ -6,10 +6,10 @@
  */
 
 // REST API Base URL
-export const REST_API_URL = import.meta.env.VITE_REST_API_URL || 'http://localhost:8000'
+export const REST_API_URL = import.meta.env.VITE_REST_API_URL || 'https://api-demo.bagisto.com'
 
 // GraphQL API Base URL
-export const GRAPHQL_API_URL = import.meta.env.VITE_GRAPHQL_API_URL || 'http://localhost:8000'
+export const GRAPHQL_API_URL = import.meta.env.VITE_GRAPHQL_API_URL || 'https://api-demo.bagisto.com'
 
 // GraphQL Endpoint (Shop — requires X-STOREFRONT-KEY)
 export const GRAPHQL_ENDPOINT = `${GRAPHQL_API_URL}/api/graphql`

@@ -15,7 +15,7 @@ examples:
           {
             "id": 560,
             "incrementId": "560",
-            "orderId": 2392,
+            "order": { "id": 2392 },
             "orderIncrementId": "2392",
             "state": "paid",
             "emailSent": true,
@@ -147,7 +147,7 @@ Each row carries the full invoice column set, order/customer context, and the bi
 
 | Group | Fields |
 |-------|--------|
-| Identity | `id`, `incrementId`, `orderId`, `orderIncrementId`, `state`, `emailSent`, `totalQty` |
+| Identity | `id`, `incrementId`, `order` (`{ id }`), `orderIncrementId`, `state`, `emailSent`, `totalQty` |
 | Currency codes | `orderCurrencyCode`, `baseCurrencyCode`, `channelCurrencyCode` |
 | Totals | `subTotal*`, `grandTotal*`, `taxAmount*`, `discountAmount*`, `shippingAmount*` — each in order + base currency, with `formatted*` and incl-tax variants |
 | Status & timestamps | `transactionId`, `reminders`, `nextReminderAt`, `createdAt`, `updatedAt` |

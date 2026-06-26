@@ -29,6 +29,6 @@ examples:
 
 Code/hostname uniqueness excludes self. Use the `translations` map for locale-nested attributes (name, description, seo_*, maintenance_mode_text). Top-level scalar fields broadcast to every configured locale via the repository.
 
-The response returns the channel with `locales` / `currencies` / `inventorySources` as object arrays (replacing the former `localeIds` / `currencyIds` / `inventorySourceIds` id arrays), plus the `homeSeo` block and per-locale `translations`. **Omitting** the `locales` / `currencies` / `inventory_sources` arrays preserves the channel's existing assignments; **supplying** any of them replaces that set entirely.
+Send the assignments as integer-array inputs named `locales` / `currencies` / `inventory_sources` (snake_case). The response returns the channel with `locales` / `currencies` / `inventorySources` as object arrays, plus the `homeSeo` block and per-locale `translations`. **Omitting** the `locales` / `currencies` / `inventory_sources` arrays preserves the channel's existing assignments; **supplying** any of them replaces that set entirely.
 
 Permission: `settings.channels.edit`.

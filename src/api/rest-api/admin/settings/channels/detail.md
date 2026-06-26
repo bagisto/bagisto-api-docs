@@ -79,7 +79,7 @@ Returns a single channel by id, including its assigned locales, currencies, inve
 
 ## Notes
 
-- `locales`, `currencies`, and `inventorySources` are arrays of objects (`id` / `code` / `name` / …). **They replace the former `localeIds` / `currencyIds` / `inventorySourceIds` integer arrays** — read the assigned ids from each object's `id`.
+- `locales`, `currencies`, and `inventorySources` are arrays of objects (`id` / `code` / `name` / …) — read the assigned ids from each object's `id`.
 - `homeSeo` is the home-page SEO block (`meta_title` / `meta_keywords` / `meta_description`); each translation carries its own per-locale `homeSeo`.
 - `allowedIps` is a JSON array of IP / CIDR strings (empty when unrestricted).
 - `logo` / `favicon` are the stored relative paths; `logoUrl` / `faviconUrl` are the ready-to-use absolute URLs (`null` when unset).

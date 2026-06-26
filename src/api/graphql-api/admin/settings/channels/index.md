@@ -27,8 +27,8 @@ A **channel** is a storefront. Each channel is a self-contained shopping front w
 | `logo` / `logoUrl`, `favicon` / `faviconUrl` | Branding images — the stored path and the ready-to-use absolute URL. |
 | `translations` | Per-locale values for the translatable fields — a connection of translation objects (`_id` / `locale` / `name` / `description` / `maintenanceModeText` / `homeSeo`). |
 
-::: warning Shape change
-The former `localeIds` / `currencyIds` / `inventorySourceIds` integer arrays have been **replaced** by the `locales` / `currencies` / `inventorySources` **object connections**. The assigned ids are now read as `locales { edges { node { _id } } }` (and the same for currencies / inventory sources), alongside each row's `code` / `name` / etc.
+::: warning Reading the assignments
+A channel's assigned locales, currencies, and inventory sources are exposed as the `locales` / `currencies` / `inventorySources` **object connections**. Read the assigned ids as `locales { edges { node { _id } } }` (and the same for currencies / inventory sources), alongside each row's `code` / `name` / etc.
 :::
 
 The `locales` / `currencies` / `inventorySources` / `translations` connections are detail-only — they come back empty on listing rows. Fetch a single channel to get them populated, sub-selecting `{ edges { node { … } } }`.

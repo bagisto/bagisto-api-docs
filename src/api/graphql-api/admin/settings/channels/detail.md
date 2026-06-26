@@ -213,7 +213,7 @@ Returns a single channel by id. The assigned locales, currencies, inventory sour
 
 ## Notes
 
-- `locales`, `currencies`, and `inventorySources` are connections — sub-select `{ edges { node { … } } }`. **These replace the former `localeIds` / `currencyIds` / `inventorySourceIds` integer arrays**: the assigned ids are now `locales { edges { node { _id } } }` (and likewise for currencies / inventory sources).
+- `locales`, `currencies`, and `inventorySources` are connections — sub-select `{ edges { node { … } } }`. Read the assigned ids as `locales { edges { node { _id } } }` (and likewise for currencies / inventory sources).
 - The home-page SEO triplet is selectable as three flat fields — `seoMetaTitle`, `seoMetaDescription`, `seoMetaKeywords` — read from the channel's `home_seo` block. The raw `homeSeo` object is also available if you prefer the whole block at once. Each translation node carries its own per-locale `homeSeo`.
 - `allowedIps` is a JSON array of IP / CIDR strings (or empty when unrestricted).
 - `logo` / `favicon` are the stored relative paths; `logoUrl` / `faviconUrl` are the ready-to-use absolute URLs. All four are `null` when no image is set.

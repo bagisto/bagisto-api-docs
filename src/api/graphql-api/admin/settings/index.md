@@ -35,6 +35,6 @@ A few behaviours are common to every Settings menu over GraphQL:
 - **Listings are cursor connections.** Every list query returns `edges { cursor node { … } } pageInfo { hasNextPage hasPreviousPage startCursor endCursor } totalCount`. Page with `first` + `after`.
 - **Delete returns a snapshot of what was removed.** A delete mutation returns the just-deleted record, so you can select `id`, `_id` and its fields to confirm exactly what was deleted.
 - **Mass-delete returns a plain id list.** A mass-delete (or mass-update-status) returns `deleted` / `skipped` / `updated` as plain integer arrays, plus a `message` string.
-- **Some fields are JSON, queried bare.** Fields like a channel's `localeIds` / `currencyIds` / `homeSeo` / `translations`, or a tax category's `taxRates`, are returned as whole JSON values — select them by name with **no** sub-selection.
+- **Some fields are JSON, queried bare.** Fields like a channel's `homeSeo` (or a translation node's per-locale `homeSeo`) are returned as whole JSON values — select them by name with **no** sub-selection. A channel's `locales` / `currencies` / `inventorySources` / `translations`, by contrast, are object connections — sub-select `{ edges { node { … } } }`.
 
 All Settings operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

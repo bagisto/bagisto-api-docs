@@ -21,8 +21,7 @@ A row exists for every registered customer — whether they signed up on the sto
 | `firstName` / `lastName` / `email` / `phone` | Identity and contact details. `email` is unique across the store. |
 | `gender` / `dateOfBirth` | Optional profile details. |
 | `status` | Whether the account is enabled. A suspended customer cannot sign in. |
-| `group` | The customer's group, returned on the detail query as a nested object `{ id, code, name }`. |
-| `customerGroupName` | The group name surfaced inline on listing rows. |
+| `group` | The customer's group, returned as a nested object `{ id, code, name }` on both the listing and the detail query (`null` if the customer has no group). |
 | `totalOrders` | Count of the customer's orders. **Detail-only.** |
 | `totalAddresses` | Number of saved addresses. **Detail-only.** |
 | `totalAmountSpent` | Lifetime invoiced spend. **Detail-only.** |
