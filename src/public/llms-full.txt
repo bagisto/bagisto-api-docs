@@ -27610,7 +27610,7 @@ An admin can place an order **on behalf of a customer** — the same "Create Ord
 
 Once an order exists (placed through Create Order above, [Reorder](/api/graphql-api/admin/sales/orders/reorder), or the storefront), it moves through a lifecycle. Each action has prerequisites — this is the order they run in and what gates each one.
 
-**1. Invoice — record payment.** [Create Invoice](/api/graphql-api/admin/sales/orders/create-invoice) records that payment was collected for some or all of the order's items. An order generally can't be refunded until it has been invoiced (you refund money that was billed). You can invoice part of an order now and the rest later. Not available for orders paid via `paypal_standard` (those are captured by the gateway, not the admin).
+**1. Invoice — record payment.** [Create Invoice](/api/graphql-api/admin/sales/orders/create-invoice) records that payment was collected for some or all of the order's items. An order generally can't be refunded until it has been invoiced (you refund money that was billed). You can invoice part of an order now and the rest later. Not available for orders paid via `paypal_standard` (those are captured by the gateway, not the admin). Tick **Create Transaction** (`canCreateTransaction: true`) on the invoice to also record the payment as a transaction in the same step; to record a **partial or later** payment against an existing invoice, use [Create Transaction](/api/graphql-api/admin/sales/transactions/create).
 
 **2. Ship — fulfil.** [Create Shipment](/api/graphql-api/admin/sales/orders/create-shipment) marks items as dispatched and records the carrier and tracking number. It needs items still awaiting shipment and enough stock at the chosen inventory source. Partial shipments are allowed.
 
@@ -27621,6 +27621,13 @@ Once an order exists (placed through Create Order above, [Reorder](/api/graphql-
 **Comments — any time.** [Add Comment](/api/graphql-api/admin/sales/orders/add-comment) / [List Comments](/api/graphql-api/admin/sales/orders/list-comments) work at any stage; set `customerNotified` to email the customer the note.
 
 Every action refuses with a clear error when its prerequisite isn't met — nothing left to invoice/ship/refund, the order is already closed or flagged, insufficient stock, or a payment method that can't be invoiced. A typical fulfilled order runs **Create → Invoice → Ship** (then an optional **Refund**); an abandoned one runs **Create → Cancel**.
+
+::: tip Recording payments as transactions
+A payment can be recorded as a transaction (which then shows in the [Transactions listing](/api/graphql-api/admin/sales/transactions/list)) in two ways:
+
+- **At invoice time** — tick **Create Transaction** on [Create Invoice](/api/graphql-api/admin/sales/orders/create-invoice) by sending `canCreateTransaction: true`. Records the **full** invoice amount in one step.
+- **Any time** — [Create Transaction](/api/graphql-api/admin/sales/transactions/create) (`createAdminTransaction`) records an **arbitrary or partial** payment against an existing invoice.
+:::
 
 ## Operations in this menu
 
@@ -30452,6 +30459,170 @@ Every field is populated on each row — the shipment columns, the order/custome
 ## Listing vs. fetching one
 
 The listing already carries the full payload — fetching a single shipment by id (`adminShipment(id:)`) is only needed when you want the shipped line `items`, or when you already hold a shipment id and want just that record. Typical flow: list with `adminShipments`, read `_id` from the row you want, then fetch the full record.
+
+
+
+---
+
+# Create Transaction
+URL: /api/graphql-api/admin/sales/transactions/create
+
+---
+outline: false
+examples:
+  - id: admin-transactions-create-gql
+    title: Create Transaction
+    description: Record a full or partial payment against an invoice. Returns the created transaction. When the recorded payments reach the invoice total the invoice is marked paid and the order status advances.
+    query: |
+      mutation CreateAdminTransaction($input: createAdminTransactionInput!) {
+        createAdminTransaction(input: $input) {
+          adminTransaction {
+            id
+            _id
+            transactionId
+            invoiceId
+            orderId
+            orderIncrementId
+            amount
+            formattedAmount
+            status
+            type
+            paymentMethod
+            paymentTitle
+            data
+            createdAt
+            updatedAt
+            order
+          }
+        }
+      }
+    variables: |
+      {
+        "input": {
+          "invoiceId": 12,
+          "paymentMethod": "cashondelivery",
+          "amount": 100
+        }
+      }
+    response: |
+      {
+        "data": {
+          "createAdminTransaction": {
+            "adminTransaction": {
+              "id": "/api/admin/transactions/5",
+              "_id": 5,
+              "transactionId": "8f2c1a7b9d0e4f6a3c5b8d1e2f7a9c0b4d6e8f10",
+              "invoiceId": 12,
+              "orderId": 8,
+              "orderIncrementId": "00000000008",
+              "amount": 100,
+              "formattedAmount": "$100.00",
+              "status": "paid",
+              "type": "cashondelivery",
+              "paymentMethod": "cashondelivery",
+              "paymentTitle": "Cash On Delivery",
+              "data": { "paidAmount": 100 },
+              "createdAt": "2026-06-30 10:15:00",
+              "updatedAt": "2026-06-30 10:15:00",
+              "order": {
+                "id": 8,
+                "incrementId": "00000000008",
+                "status": "processing",
+                "customerName": "John Doe",
+                "customerEmail": "john.doe@example.com",
+                "grandTotal": 100,
+                "orderCurrencyCode": "USD"
+              }
+            }
+          }
+        }
+      }
+---
+
+# Create Transaction
+
+The API equivalent of the admin **Sales → Transactions → Create** ("Record Payment") action. Records a manual payment against an invoice and returns the created transaction, which then appears in the [Transactions listing](/api/graphql-api/admin/sales/transactions/list).
+
+Partial payments are supported. Once the cumulative recorded payments for an invoice reach its grand total, the invoice is marked **paid** and the order advances to **completed** (when it already has a shipment) or **processing**.
+
+::: tip Two ways to create a transaction
+This mutation records an **arbitrary or partial** payment you specify (invoice, method, amount). Alternatively, the **Create Transaction** checkbox on [invoice creation](/api/graphql-api/admin/sales/orders/create-invoice) captures the **full** invoice amount in one step using the order's payment method. Both result in a transaction that appears in the Transactions listing.
+:::
+
+## Mutation
+
+`createAdminTransaction(input: createAdminTransactionInput!)`
+
+## Input fields
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `invoiceId` | Int | Yes | The invoice to record the payment against. |
+| `paymentMethod` | String | Yes | Payment method code (e.g. `cashondelivery`, `moneytransfer`). |
+| `amount` | Float | Yes | Amount paid. Must be greater than `0` and cannot push the invoice's cumulative payments above its grand total. |
+
+## Response fields
+
+The mutation returns the created transaction under `adminTransaction`:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` / `_id` | ID / Integer | Resource identifier and numeric transaction id. |
+| `transactionId` | String | Generated transaction reference. |
+| `invoiceId` | Integer | The invoice this payment was recorded against. |
+| `orderId` / `orderIncrementId` | Integer / String | Parent order id and human-facing number. |
+| `amount` / `formattedAmount` | Number / String | Recorded amount, raw and formatted. |
+| `status` | String | Always `paid` for a recorded payment. |
+| `type` / `paymentMethod` | String | The payment method code used. |
+| `paymentTitle` | String | Human-readable payment method title. |
+| `data` | Object | Recorded payment payload — `{ "paidAmount": <amount> }`. |
+| `createdAt` / `updatedAt` | String | Timestamps. |
+| `order` | Object | Slim order summary — `id`, `incrementId`, `status`, `customerName`, `customerEmail`, `grandTotal`, `orderCurrencyCode`. |
+
+## Errors
+
+Business-rule failures are returned in the `errors` array: an unknown invoice, an already-paid invoice, an `amount` ≤ 0, or an amount that would exceed the invoice grand total. Missing or non-numeric input fields are rejected as validation errors.
+
+## Creating a transaction while invoicing (the "Create Transaction" checkbox)
+
+On the order detail page, the admin invoice form has a **Create Transaction** checkbox. Ticking it records the payment automatically at the moment the invoice is created — you don't call this mutation at all.
+
+The API equivalent is **not** a separate transaction call: it's a single flag on the [Create Invoice](/api/graphql-api/admin/sales/orders/create-invoice) mutation. Pass `canCreateTransaction: true` in the invoice input and the invoice's **full** amount is recorded as a transaction against the order's payment method in the same mutation:
+
+```graphql
+mutation CreateAdminInvoice($input: createAdminInvoiceInput!) {
+  createAdminInvoice(input: $input) {
+    adminInvoice {
+      id
+      _id
+      state
+    }
+  }
+}
+```
+
+```json
+{
+  "input": {
+    "orderId": 8,
+    "items": [ { "orderItemId": 42, "quantity": 1 } ],
+    "canCreateTransaction": true
+  }
+}
+```
+
+The resulting transaction then appears in the [Transactions listing](/api/graphql-api/admin/sales/transactions/list), exactly like one created through this mutation.
+
+**Which to use:**
+
+| You want to… | Use |
+|---|---|
+| Record the **full** invoice amount at invoice time (one step) | [Create Invoice](/api/graphql-api/admin/sales/orders/create-invoice) with `canCreateTransaction: true` |
+| Record a **partial** payment, a **later** payment, or a specific **amount/method** against an existing invoice | **This mutation** (`createAdminTransaction`) |
+
+## Permission
+
+`sales.transactions.view`
 
 
 
@@ -101848,7 +102019,7 @@ An admin can place an order **on behalf of a customer** — the same "Create Ord
 
 Once an order exists (placed through Create Order above, [Reorder](/api/rest-api/admin/sales/orders/reorder), or the storefront), it moves through a lifecycle. Each action has prerequisites — this is the order they run in and what gates each one.
 
-**1. Invoice — record payment.** [Create Invoice](/api/rest-api/admin/sales/orders/create-invoice) records that payment was collected for some or all of the order's items. An order generally can't be refunded until it has been invoiced (you refund money that was billed). You can invoice part of an order now and the rest later. Not available for orders paid via `paypal_standard` (those are captured by the gateway, not the admin).
+**1. Invoice — record payment.** [Create Invoice](/api/rest-api/admin/sales/orders/create-invoice) records that payment was collected for some or all of the order's items. An order generally can't be refunded until it has been invoiced (you refund money that was billed). You can invoice part of an order now and the rest later. Not available for orders paid via `paypal_standard` (those are captured by the gateway, not the admin). Send `can_create_transaction: true` on the invoice (the **Create Transaction** checkbox) to also record the payment as a transaction in the same step; to record a **partial or later** payment against an existing invoice, use [Create Transaction](/api/rest-api/admin/sales/transactions/create).
 
 **2. Ship — fulfil.** [Create Shipment](/api/rest-api/admin/sales/orders/create-shipment) marks items as dispatched and records the carrier and tracking number. It needs items still awaiting shipment and enough stock at the chosen inventory source. Partial shipments are allowed.
 
@@ -101859,6 +102030,13 @@ Once an order exists (placed through Create Order above, [Reorder](/api/rest-api
 **Comments — any time.** [Add Comment](/api/rest-api/admin/sales/orders/add-comment) / [List Comments](/api/rest-api/admin/sales/orders/list-comments) work at any stage; set `customerNotified` to email the customer the note.
 
 Every action refuses with a clear error when its prerequisite isn't met — nothing left to invoice/ship/refund, the order is already closed or flagged, insufficient stock, or a payment method that can't be invoiced. A typical fulfilled order runs **Create → Invoice → Ship** (then an optional **Refund**); an abandoned one runs **Create → Cancel**.
+
+::: tip Recording payments as transactions
+A payment can be recorded as a transaction (which then shows in the [Transactions listing](/api/rest-api/admin/sales/transactions/list)) in two ways:
+
+- **At invoice time** — send `can_create_transaction: true` on [Create Invoice](/api/rest-api/admin/sales/orders/create-invoice) (the **Create Transaction** checkbox). Records the **full** invoice amount in one step.
+- **Any time** — [Create Transaction](/api/rest-api/admin/sales/transactions/create) (`POST /api/admin/transactions`) records an **arbitrary or partial** payment against an existing invoice.
+:::
 
 ## Endpoints in this menu
 
@@ -104169,6 +104347,137 @@ For when a shipment row appears and what each field means, see the [Shipments ov
 ## Permission
 
 `sales.shipments.view`
+
+
+
+---
+
+# Create Transaction
+URL: /api/rest-api/admin/sales/transactions/create
+
+---
+outline: false
+apiType: rest
+examples:
+  - id: admin-transactions-create
+    title: Create Transaction
+    description: Record a full or partial payment against an invoice. Returns the created transaction. When the recorded payments reach the invoice total the invoice is marked paid and the order status advances.
+    query: |
+      curl -X POST "https://your-domain.com/api/admin/transactions" \
+        -H "Authorization: Bearer <token>" \
+        -H "Content-Type: application/json" \
+        -H "Accept: application/json" \
+        -d '{
+          "invoiceId": 12,
+          "paymentMethod": "cashondelivery",
+          "amount": 100
+        }'
+    response: |
+      {
+        "id": 5,
+        "transactionId": "8f2c1a7b9d0e4f6a3c5b8d1e2f7a9c0b4d6e8f10",
+        "invoiceId": 12,
+        "orderId": 8,
+        "orderIncrementId": "00000000008",
+        "amount": 100,
+        "formattedAmount": "$100.00",
+        "status": "paid",
+        "type": "cashondelivery",
+        "paymentMethod": "cashondelivery",
+        "paymentTitle": "Cash On Delivery",
+        "data": { "paidAmount": 100 },
+        "createdAt": "2026-06-30 10:15:00",
+        "updatedAt": "2026-06-30 10:15:00",
+        "order": {
+          "id": 8,
+          "incrementId": "00000000008",
+          "status": "processing",
+          "customerName": "John Doe",
+          "customerEmail": "john.doe@example.com",
+          "grandTotal": 100,
+          "orderCurrencyCode": "USD"
+        }
+      }
+---
+
+# Create Transaction
+
+The API equivalent of the admin **Sales → Transactions → Create** ("Record Payment") action. Records a manual payment against an invoice and returns the created transaction, which then appears in the [Transactions listing](/api/rest-api/admin/sales/transactions/list).
+
+Partial payments are supported. Once the cumulative recorded payments for an invoice reach its grand total, the invoice is marked **paid** and the order advances to **completed** (when it already has a shipment) or **processing**.
+
+::: tip Two ways to create a transaction
+This endpoint records an **arbitrary or partial** payment you specify (invoice, method, amount). Alternatively, the **Create Transaction** checkbox on [invoice creation](/api/rest-api/admin/sales/orders/create-invoice) captures the **full** invoice amount in one step using the order's payment method. Both result in a transaction that appears in the Transactions listing.
+:::
+
+## Endpoint
+
+| Endpoint | Method |
+|----------|--------|
+| `/api/admin/transactions` | POST |
+
+## Request Body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `invoiceId` | integer | Yes | The invoice to record the payment against. |
+| `paymentMethod` | string | Yes | Payment method code (e.g. `cashondelivery`, `moneytransfer`). |
+| `amount` | number | Yes | Amount paid. Must be greater than `0` and cannot push the invoice's cumulative payments above its grand total. |
+
+## Response fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | Integer | The created transaction row id. |
+| `transactionId` | String | Generated transaction reference. |
+| `invoiceId` | Integer | The invoice this payment was recorded against. |
+| `orderId` / `orderIncrementId` | Integer / String | Parent order id and human-facing number. |
+| `amount` / `formattedAmount` | Number / String | Recorded amount, raw and formatted. |
+| `status` | String | Always `paid` for a recorded payment. |
+| `type` / `paymentMethod` | String | The payment method code used. |
+| `paymentTitle` | String | Human-readable payment method title. |
+| `data` | Object | Recorded payment payload — `{ "paidAmount": <amount> }`. |
+| `createdAt` / `updatedAt` | String | Timestamps. |
+| `order` | Object | Slim order summary — `id`, `incrementId`, `status`, `customerName`, `customerEmail`, `grandTotal`, `orderCurrencyCode`. |
+
+## Errors
+
+| Status | When |
+|--------|------|
+| `422` | `invoiceId`, `paymentMethod`, or `amount` is missing, or `amount` is not numeric. |
+| `400` | Unknown invoice, the invoice is already fully paid, `amount` ≤ 0, or the amount would exceed the invoice grand total. |
+| `401` | Missing or invalid admin token. |
+| `403` | Admin role lacks the required permission. |
+
+## Creating a transaction while invoicing (the "Create Transaction" checkbox)
+
+On the order detail page, the admin invoice form has a **Create Transaction** checkbox. Ticking it records the payment automatically at the moment the invoice is created — you don't call this endpoint at all.
+
+The API equivalent is **not** a separate transaction call: it's a single flag on [Create Invoice](/api/rest-api/admin/sales/orders/create-invoice). Send `can_create_transaction: true` in the invoice-create body and the invoice's **full** amount is recorded as a transaction against the order's payment method in the same request:
+
+```bash
+curl -X POST "https://your-domain.com/api/admin/orders/8/invoices" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "items": [ { "orderItemId": 42, "quantity": 1 } ],
+    "can_create_transaction": true
+  }'
+```
+
+The resulting transaction then appears in the [Transactions listing](/api/rest-api/admin/sales/transactions/list), exactly like one created through this endpoint.
+
+**Which to use:**
+
+| You want to… | Use |
+|---|---|
+| Record the **full** invoice amount at invoice time (one step) | [Create Invoice](/api/rest-api/admin/sales/orders/create-invoice) with `can_create_transaction: true` |
+| Record a **partial** payment, a **later** payment, or a specific **amount/method** against an existing invoice | **This endpoint** (`POST /api/admin/transactions`) |
+
+## Permission
+
+`sales.transactions.view`
 
 
 

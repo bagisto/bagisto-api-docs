@@ -705,6 +705,7 @@ export default defineConfig(({ command, mode }) => {
                         collapsed: true,
                         items: [
                           { text: 'List Transactions', link: '/api/graphql-api/admin/sales/transactions/list' },
+                          { text: 'Create Transaction', link: '/api/graphql-api/admin/sales/transactions/create' },
                         ]
                       },
                       {
@@ -1561,6 +1562,7 @@ export default defineConfig(({ command, mode }) => {
                         collapsed: true,
                         items: [
                           { text: 'List Transactions', link: '/api/rest-api/admin/sales/transactions/list' },
+                          { text: 'Create Transaction', link: '/api/rest-api/admin/sales/transactions/create' },
                           { text: 'Export Transactions (CSV)', link: '/api/rest-api/admin/sales/transactions/export' },
                         ]
                       },

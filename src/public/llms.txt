@@ -403,6 +403,7 @@
 
 ## GraphQL API › Admin › Sales › Transactions
 
+- [Create Transaction](/api/graphql-api/admin/sales/transactions/create): Record a full or partial payment against an invoice. Returns the created transaction. When the recorded payments reach the invoice total the invoice is marked…
 - [List Transactions (Datagrid)](/api/graphql-api/admin/sales/transactions/list): Cursor-paginated transactions datagrid. Every transaction column plus the raw gateway data blob and the linked order summary is populated on each row.
 
 ## GraphQL API › Admin › Settings
@@ -1104,6 +1105,7 @@
 
 ## REST API › Admin › Sales › Transactions
 
+- [Create Transaction](/api/rest-api/admin/sales/transactions/create): Record a full or partial payment against an invoice. Returns the created transaction. When the recorded payments reach the invoice total the invoice is marked…
 - [Export Transactions](/api/rest-api/admin/sales/transactions/export): Download the transactions datagrid as a CSV file — the same data the admin Transactions "Export" button produces. Honours the same filters as the listing.
 - [List Transactions](/api/rest-api/admin/sales/transactions/list): One row per payment transaction. Every column plus the raw gateway data blob and the linked order summary is populated on each row.
 
