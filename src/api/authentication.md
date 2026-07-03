@@ -44,6 +44,10 @@ Here are common things you can do with Public APIs:
 - 🌍 Get available countries and locales
 - 📮 Retrieve shipping and payment methods (available options)
 
+::: tip Guest checkout — placing an order without login
+The Storefront Key alone is read-only, but a **guest can build a cart and place an order** without a customer account. Create a **Cart Token** (`createCartToken`), then send it as `Authorization: Bearer <cartToken>` alongside the `X-STOREFRONT-KEY` on the cart and checkout calls — no customer login required. See the [Cart workflow](/api/workflows/shop/cart) and [Checkout workflow](/api/workflows/shop/checkout).
+:::
+
 ### How to Use
 
 **1. Get your Storefront Key**

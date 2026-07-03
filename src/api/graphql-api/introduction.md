@@ -10,7 +10,7 @@ GraphQL is a query language and runtime that allows clients to request exactly t
 - 🎯 **Precise Data Fetching** - Request only the fields you need
 - ⚡ **Reduced Bandwidth** - Smaller payloads improve performance
 - 📱 **Mobile Optimized** - Perfect for bandwidth-constrained environments
-- 🔄 **Single Endpoint** - All operations through one `/api/graphql` endpoint
+- 🔄 **Two Endpoints** - Storefront operations through `/api/graphql`, admin operations through `/api/admin/graphql`
 - 📚 **Self-Documenting** - Schema includes inline documentation
 - 🛠️ **Developer Friendly** - Interactive playground included
 
@@ -45,14 +45,21 @@ Two ways to explore the API:
 
 **Interactive GraphQL Playground:**
 ```
+# Storefront
 https://your-domain.com/api/graphiql
+
+# Admin
+https://your-domain.com/api/admin/graphiql
 ```
 
 ## API Endpoints
 
+Bagisto exposes **two separate GraphQL endpoints** — one for the storefront, one for the admin. They do not share a schema: shop operations are not reachable on the admin endpoint, and admin operations are not reachable on the shop endpoint.
+
 | Endpoint | Purpose | Authentication |
 |----------|---------|-----------------|
-| `/api/graphql` | Main GraphQL endpoint | Optional (Shop APIs) / Required (Admin APIs) |
+| `/api/graphql` | Shop (storefront) GraphQL | `X-STOREFRONT-KEY` required; `Authorization: Bearer` added for customer operations |
+| `/api/admin/graphql` | Admin GraphQL | `Authorization: Bearer <id>\|<token>` (Integration token) — no `X-STOREFRONT-KEY` |
 
 ## Authentication Methods
 
@@ -110,6 +117,21 @@ mutation {
   }
 }
 ```
+
+### Admin Authentication
+
+Admin GraphQL uses a **pre-issued Integration token** generated from the **Integration** menu in the admin panel — there is no admin login mutation. POST admin operations to `/api/admin/graphql` with the token in the `Authorization` header, and **no** `X-STOREFRONT-KEY`:
+
+```bash
+curl -X POST https://your-domain.com/api/admin/graphql \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <id>|<token>" \
+  -d '{
+    "query": "query { adminOrders(first: 10) { edges { node { _id status grandTotal } } } }"
+  }'
+```
+
+See the [Admin Authentication](/api/graphql-api/admin/authentication) reference for token issuance, rate limits, and permissions.
 
 ## Making Your First Request
 

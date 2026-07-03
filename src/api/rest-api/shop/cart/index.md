@@ -15,6 +15,10 @@ A cart is identified by a **cart token**. Create a cart to obtain it, then send 
 
 Apply a coupon code to discount the cart, or remove it to revert. The cart totals in the response reflect the coupon immediately.
 
+## Merging a guest cart
+
+When a shopper builds a cart as a guest and then logs in, merge the guest cart into their customer cart so nothing is lost. Call [Merge Cart](/api/rest-api/shop/cart/merge-cart) with the **customer** Bearer token and the guest cart's `cart_id`: items with the same product and type have their quantities added, other items are copied over, the guest cart is deactivated, and the response is the up-to-date customer cart. Merge requires an authenticated customer (`401` for a guest) and a valid guest cart id (`404` otherwise).
+
 ## Operations in this menu
 
 | Operation | Method & Path | Description |
@@ -26,5 +30,6 @@ Apply a coupon code to discount the cart, or remove it to revert. The cart total
 | [Remove Cart Item](/api/rest-api/shop/cart/remove-cart-item) | `DELETE /api/shop/remove-cart-item` | Remove an item from the cart. |
 | [Apply Coupon](/api/rest-api/shop/cart/apply-coupon) | `POST /api/shop/apply-coupon` | Apply a coupon code. |
 | [Remove Coupon](/api/rest-api/shop/cart/remove-coupon) | `DELETE /api/shop/remove-coupon` | Remove the applied coupon. |
+| [Merge Cart](/api/rest-api/shop/cart/merge-cart) | `POST /api/shop/merge-carts` | Merge a guest cart into the customer cart after login. |
 
 All Cart endpoints require the storefront key and a cart token (issued by Create Cart) — see [Authentication](/api/rest-api/authentication).

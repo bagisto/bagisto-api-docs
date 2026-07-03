@@ -6,6 +6,8 @@ outline: false
 
 This documentation is built to be consumed by AI coding agents (Claude Code, Cursor, Windsurf, and others) as well as humans. If you're building an app on the Bagisto API — or extending the API itself — with an AI assistant, point it at the resources below.
 
+**Recommended order for an AI agent:** install the skills below → open [`/llms.txt`](/llms.txt) to map the API → follow the [Workflows](/api/workflows/) for the exact call-sequence → open the linked endpoint page for each request/response shape.
+
 ## `llms.txt` — the machine-readable index
 
 A single file lists every documented endpoint with a one-line description and a link, so an agent can discover the whole API surface in one fetch:
@@ -17,43 +19,52 @@ These follow the [llms.txt convention](https://llmstxt.org). An agent should fet
 
 ## Agent skills
 
-The [`bagisto/api-agent-skills`](https://github.com/bagisto/bagisto-api) repository packages this knowledge as installable **agent skills** — reusable instructions that teach an agent how to install the stack, build apps on the API, and extend the API package.
+The [`bagisto/agent-skills`](https://github.com/bagisto/agent-skills) repository packages Bagisto's build-rules as installable **agent skills** — domain-specific instructions that teach an agent how to build on and extend the API. Install these first, then follow the [Workflows](/api/workflows/) for the call-sequence.
 
-Install all skills into your agent:
-
-```bash
-npx skills add bagisto/api-agent-skills
-```
-
-Install for a specific agent, or a single skill:
+**Building an app that consumes the API:**
 
 ```bash
-npx skills add bagisto/api-agent-skills -a claude-code
-npx skills add bagisto/api-agent-skills --skill "bagisto-api-build-app"
+npx skills add bagisto/agent-skills --skill "bagisto-api-shop"
+npx skills add bagisto/agent-skills --skill "bagisto-api-admin"
 ```
+
+**Extending the API itself (custom endpoints):**
+
+```bash
+npx skills add bagisto/agent-skills --skill "bagisto-api-develop"
+npx skills add bagisto/agent-skills --skill "pest-testing"
+```
+
+**Everything:**
+
+```bash
+npx skills add bagisto/agent-skills
+```
+
+Target a specific agent with `-a claude-code` or `-a cursor`.
 
 | Skill | Use it to |
 |-------|-----------|
-| `bagisto-api-install` | Install Bagisto + the API package |
-| `bagisto-api-build-app` | Build a storefront / admin / mobile / custom UI on the API |
-| `bagisto-api-develop` | Add or extend an endpoint in the API package |
-| `bagisto-api-dev-cycle` | Run the package's tests, lint, and cache cycle |
-| `bagisto-api-code-review` | Review a change to the package |
-| `bagisto-api-git` | Branch / stage / prepare a PR |
+| `bagisto-api-shop` | Build a storefront / customer app on the Shop API |
+| `bagisto-api-admin` | Build an admin / back-office app on the Admin API |
+| `bagisto-api-develop` | Add or extend a REST/GraphQL endpoint in the API package |
+| `pest-testing` | Write the REST + GraphQL tests that lock both transports |
 
-## Optional: local docs MCP server
+::: tip Grouped skills
+The API skills live under `skills/api-platform-development/` and share a `reference/` tree. Installing one pulls the shared reference automatically, so prefer installing the pack (or the grouped skill) over copying a single file.
+:::
 
-The skills repo also ships an **optional** local [MCP](https://modelcontextprotocol.io) server that lets an agent search this documentation on demand — no hosting required. It indexes the API pages locally and exposes `search_api_docs`, `list_endpoints`, and `get_doc` tools.
+## Optional: docs MCP server
 
-```bash
-claude mcp add bagisto-api -- node /absolute/path/to/api-agent-skills/mcp/src/index.mjs
-```
+Bagisto also provides an **optional** [MCP](https://modelcontextprotocol.io) server that lets an agent search this documentation on demand. It indexes the API pages and exposes tools like `search_api_docs`, `list_endpoints`, and `get_doc`.
 
-You don't need the MCP server to build with AI — `llms.txt` and `llms-full.txt` cover the same need statically. See the [`mcp/README.md`](https://github.com/bagisto/bagisto-api) in the skills repo for setup.
+- **Repository:** [`bagisto/mcp`](https://github.com/bagisto/mcp) — setup and the exact `claude mcp add` command are in the repo README.
+
+You don't need the MCP server to build with AI — [`/llms.txt`](/llms.txt) and [`/llms-full.txt`](/llms-full.txt) cover the same need statically.
 
 ## How an agent should use these docs
 
 1. Fetch [`/llms.txt`](/llms.txt) to discover the endpoint you need.
 2. Open that endpoint's page for the exact request body, response shape, and errors — **never guess a payload**.
-3. For end-to-end flows, follow the [Recipes](/api/recipes/) — ordered walkthroughs that chain real endpoint calls.
+3. For end-to-end flows, follow the [Workflows](/api/workflows/) — ordered walkthroughs that chain real endpoint calls.
 4. Mind the GraphQL rules: select **result fields** (`cartId`, `orderId`, `success`) on action mutations — not `id`; inputs are camelCase; the Shop and Admin GraphQL endpoints are separate.
