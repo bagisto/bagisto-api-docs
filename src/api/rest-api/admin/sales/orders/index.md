@@ -33,7 +33,7 @@ An admin can place an order **on behalf of a customer** — the same "Create Ord
 
 Once an order exists (placed through Create Order above, [Reorder](/api/rest-api/admin/sales/orders/reorder), or the storefront), it moves through a lifecycle. Each action has prerequisites — this is the order they run in and what gates each one.
 
-**1. Invoice — record payment.** [Create Invoice](/api/rest-api/admin/sales/orders/create-invoice) records that payment was collected for some or all of the order's items. An order generally can't be refunded until it has been invoiced (you refund money that was billed). You can invoice part of an order now and the rest later. Not available for orders paid via `paypal_standard` (those are captured by the gateway, not the admin).
+**1. Invoice — record payment.** [Create Invoice](/api/rest-api/admin/sales/orders/create-invoice) records that payment was collected for some or all of the order's items. An order generally can't be refunded until it has been invoiced (you refund money that was billed). You can invoice part of an order now and the rest later. Not available for orders paid via `paypal_standard` (those are captured by the gateway, not the admin). Send `can_create_transaction: true` on the invoice (the **Create Transaction** checkbox) to also record the payment as a transaction in the same step; to record a **partial or later** payment against an existing invoice, use [Create Transaction](/api/rest-api/admin/sales/transactions/create).
 
 **2. Ship — fulfil.** [Create Shipment](/api/rest-api/admin/sales/orders/create-shipment) marks items as dispatched and records the carrier and tracking number. It needs items still awaiting shipment and enough stock at the chosen inventory source. Partial shipments are allowed.
 
@@ -44,6 +44,13 @@ Once an order exists (placed through Create Order above, [Reorder](/api/rest-api
 **Comments — any time.** [Add Comment](/api/rest-api/admin/sales/orders/add-comment) / [List Comments](/api/rest-api/admin/sales/orders/list-comments) work at any stage; set `customerNotified` to email the customer the note.
 
 Every action refuses with a clear error when its prerequisite isn't met — nothing left to invoice/ship/refund, the order is already closed or flagged, insufficient stock, or a payment method that can't be invoiced. A typical fulfilled order runs **Create → Invoice → Ship** (then an optional **Refund**); an abandoned one runs **Create → Cancel**.
+
+::: tip Recording payments as transactions
+A payment can be recorded as a transaction (which then shows in the [Transactions listing](/api/rest-api/admin/sales/transactions/list)) in two ways:
+
+- **At invoice time** — send `can_create_transaction: true` on [Create Invoice](/api/rest-api/admin/sales/orders/create-invoice) (the **Create Transaction** checkbox). Records the **full** invoice amount in one step.
+- **Any time** — [Create Transaction](/api/rest-api/admin/sales/transactions/create) (`POST /api/admin/transactions`) records an **arbitrary or partial** payment against an existing invoice.
+:::
 
 ## Endpoints in this menu
 

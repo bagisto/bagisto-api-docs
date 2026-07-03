@@ -14,6 +14,7 @@ examples:
     variables: |
       {
         "input": {
+          "customerId": 14,
           "id": "/api/admin/customers/14/addresses/27"
         }
       }
@@ -29,7 +30,7 @@ examples:
 
 # Delete Customer Address (GraphQL)
 
-Removes an address from a customer's address book. The same ownership guard applies — the address must belong to the customer. On success the deleted record is no longer addressable, so the `adminCustomerAddress` payload comes back `null`.
+Removes an address from a customer's address book. `customerId` is **required** and must own the address — omitting it or passing a different customer returns `errors[]`. On success the deleted record is no longer addressable, so the `adminCustomerAddress` payload comes back `null`.
 
 Permission: `customers.addresses.delete`.
 

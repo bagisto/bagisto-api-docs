@@ -54,6 +54,10 @@ Here are common things you can do with Public APIs:
 - 🌍 Get available countries and locales
 - 📮 Retrieve shipping and payment methods (available options)
 
+::: tip Guest checkout — placing an order without login
+The Storefront Key alone is read-only, but a **guest can build a cart and place an order** without a customer account. Create a **Cart Token** (`createCartToken`), then send it as `Authorization: Bearer <cartToken>` alongside the `X-STOREFRONT-KEY` on the cart and checkout calls — no customer login required. See the [Cart workflow](/api/workflows/shop/cart) and [Checkout workflow](/api/workflows/shop/checkout).
+:::
+
 ### How to Use
 
 **1. Get your Storefront Key**
@@ -402,6 +406,8 @@ outline: false
 
 This documentation is built to be consumed by AI coding agents (Claude Code, Cursor, Windsurf, and others) as well as humans. If you're building an app on the Bagisto API — or extending the API itself — with an AI assistant, point it at the resources below.
 
+**Recommended order for an AI agent:** install the skills below → open [`/llms.txt`](/llms.txt) to map the API → follow the [Workflows](/api/workflows/) for the exact call-sequence → open the linked endpoint page for each request/response shape.
+
 ## `llms.txt` — the machine-readable index
 
 A single file lists every documented endpoint with a one-line description and a link, so an agent can discover the whole API surface in one fetch:
@@ -413,45 +419,54 @@ These follow the [llms.txt convention](https://llmstxt.org). An agent should fet
 
 ## Agent skills
 
-The [`bagisto/api-agent-skills`](https://github.com/bagisto/bagisto-api) repository packages this knowledge as installable **agent skills** — reusable instructions that teach an agent how to install the stack, build apps on the API, and extend the API package.
+The [`bagisto/agent-skills`](https://github.com/bagisto/agent-skills) repository packages Bagisto's build-rules as installable **agent skills** — domain-specific instructions that teach an agent how to build on and extend the API. Install these first, then follow the [Workflows](/api/workflows/) for the call-sequence.
 
-Install all skills into your agent:
-
-```bash
-npx skills add bagisto/api-agent-skills
-```
-
-Install for a specific agent, or a single skill:
+**Building an app that consumes the API:**
 
 ```bash
-npx skills add bagisto/api-agent-skills -a claude-code
-npx skills add bagisto/api-agent-skills --skill "bagisto-api-build-app"
+npx skills add bagisto/agent-skills --skill "bagisto-api-shop"
+npx skills add bagisto/agent-skills --skill "bagisto-api-admin"
 ```
+
+**Extending the API itself (custom endpoints):**
+
+```bash
+npx skills add bagisto/agent-skills --skill "bagisto-api-develop"
+npx skills add bagisto/agent-skills --skill "pest-testing"
+```
+
+**Everything:**
+
+```bash
+npx skills add bagisto/agent-skills
+```
+
+Target a specific agent with `-a claude-code` or `-a cursor`.
 
 | Skill | Use it to |
 |-------|-----------|
-| `bagisto-api-install` | Install Bagisto + the API package |
-| `bagisto-api-build-app` | Build a storefront / admin / mobile / custom UI on the API |
-| `bagisto-api-develop` | Add or extend an endpoint in the API package |
-| `bagisto-api-dev-cycle` | Run the package's tests, lint, and cache cycle |
-| `bagisto-api-code-review` | Review a change to the package |
-| `bagisto-api-git` | Branch / stage / prepare a PR |
+| `bagisto-api-shop` | Build a storefront / customer app on the Shop API |
+| `bagisto-api-admin` | Build an admin / back-office app on the Admin API |
+| `bagisto-api-develop` | Add or extend a REST/GraphQL endpoint in the API package |
+| `pest-testing` | Write the REST + GraphQL tests that lock both transports |
 
-## Optional: local docs MCP server
+::: tip Grouped skills
+The API skills live under `skills/api-platform-development/` and share a `reference/` tree. Installing one pulls the shared reference automatically, so prefer installing the pack (or the grouped skill) over copying a single file.
+:::
 
-The skills repo also ships an **optional** local [MCP](https://modelcontextprotocol.io) server that lets an agent search this documentation on demand — no hosting required. It indexes the API pages locally and exposes `search_api_docs`, `list_endpoints`, and `get_doc` tools.
+## Optional: docs MCP server
 
-```bash
-claude mcp add bagisto-api -- node /absolute/path/to/api-agent-skills/mcp/src/index.mjs
-```
+Bagisto also provides an **optional** [MCP](https://modelcontextprotocol.io) server that lets an agent search this documentation on demand. It indexes the API pages and exposes tools like `search_api_docs`, `list_endpoints`, and `get_doc`.
 
-You don't need the MCP server to build with AI — `llms.txt` and `llms-full.txt` cover the same need statically. See the [`mcp/README.md`](https://github.com/bagisto/bagisto-api) in the skills repo for setup.
+- **Repository:** [`bagisto/mcp`](https://github.com/bagisto/mcp) — setup and the exact `claude mcp add` command are in the repo README.
+
+You don't need the MCP server to build with AI — [`/llms.txt`](/llms.txt) and [`/llms-full.txt`](/llms-full.txt) cover the same need statically.
 
 ## How an agent should use these docs
 
 1. Fetch [`/llms.txt`](/llms.txt) to discover the endpoint you need.
 2. Open that endpoint's page for the exact request body, response shape, and errors — **never guess a payload**.
-3. For end-to-end flows, follow the [Recipes](/api/recipes/) — ordered walkthroughs that chain real endpoint calls.
+3. For end-to-end flows, follow the [Workflows](/api/workflows/) — ordered walkthroughs that chain real endpoint calls.
 4. Mind the GraphQL rules: select **result fields** (`cartId`, `orderId`, `success`) on action mutations — not `id`; inputs are camelCase; the Shop and Admin GraphQL endpoints are separate.
 
 
@@ -11109,6 +11124,7 @@ examples:
     variables: |
       {
         "input": {
+          "customerId": 14,
           "id": "/api/admin/customers/14/addresses/27"
         }
       }
@@ -11124,7 +11140,7 @@ examples:
 
 # Delete Customer Address (GraphQL)
 
-Removes an address from a customer's address book. The same ownership guard applies — the address must belong to the customer. On success the deleted record is no longer addressable, so the `adminCustomerAddress` payload comes back `null`.
+Removes an address from a customer's address book. `customerId` is **required** and must own the address — omitting it or passing a different customer returns `errors[]`. On success the deleted record is no longer addressable, so the `adminCustomerAddress` payload comes back `null`.
 
 Permission: `customers.addresses.delete`.
 
@@ -11370,7 +11386,7 @@ examples:
 
 # Update Customer Address (GraphQL)
 
-Updates an existing customer address. Send only the fields you want to change. The address must belong to the `customerId` passed in — cross-customer edits return `errors[]`.
+Updates an existing customer address. Send only the fields you want to change. `customerId` is **required** and must own the address — omitting it or passing a different customer returns `errors[]`.
 
 Permission: `customers.addresses.edit`.
 
@@ -27610,7 +27626,7 @@ An admin can place an order **on behalf of a customer** — the same "Create Ord
 
 Once an order exists (placed through Create Order above, [Reorder](/api/graphql-api/admin/sales/orders/reorder), or the storefront), it moves through a lifecycle. Each action has prerequisites — this is the order they run in and what gates each one.
 
-**1. Invoice — record payment.** [Create Invoice](/api/graphql-api/admin/sales/orders/create-invoice) records that payment was collected for some or all of the order's items. An order generally can't be refunded until it has been invoiced (you refund money that was billed). You can invoice part of an order now and the rest later. Not available for orders paid via `paypal_standard` (those are captured by the gateway, not the admin).
+**1. Invoice — record payment.** [Create Invoice](/api/graphql-api/admin/sales/orders/create-invoice) records that payment was collected for some or all of the order's items. An order generally can't be refunded until it has been invoiced (you refund money that was billed). You can invoice part of an order now and the rest later. Not available for orders paid via `paypal_standard` (those are captured by the gateway, not the admin). Tick **Create Transaction** (`canCreateTransaction: true`) on the invoice to also record the payment as a transaction in the same step; to record a **partial or later** payment against an existing invoice, use [Create Transaction](/api/graphql-api/admin/sales/transactions/create).
 
 **2. Ship — fulfil.** [Create Shipment](/api/graphql-api/admin/sales/orders/create-shipment) marks items as dispatched and records the carrier and tracking number. It needs items still awaiting shipment and enough stock at the chosen inventory source. Partial shipments are allowed.
 
@@ -27621,6 +27637,13 @@ Once an order exists (placed through Create Order above, [Reorder](/api/graphql-
 **Comments — any time.** [Add Comment](/api/graphql-api/admin/sales/orders/add-comment) / [List Comments](/api/graphql-api/admin/sales/orders/list-comments) work at any stage; set `customerNotified` to email the customer the note.
 
 Every action refuses with a clear error when its prerequisite isn't met — nothing left to invoice/ship/refund, the order is already closed or flagged, insufficient stock, or a payment method that can't be invoiced. A typical fulfilled order runs **Create → Invoice → Ship** (then an optional **Refund**); an abandoned one runs **Create → Cancel**.
+
+::: tip Recording payments as transactions
+A payment can be recorded as a transaction (which then shows in the [Transactions listing](/api/graphql-api/admin/sales/transactions/list)) in two ways:
+
+- **At invoice time** — tick **Create Transaction** on [Create Invoice](/api/graphql-api/admin/sales/orders/create-invoice) by sending `canCreateTransaction: true`. Records the **full** invoice amount in one step.
+- **Any time** — [Create Transaction](/api/graphql-api/admin/sales/transactions/create) (`createAdminTransaction`) records an **arbitrary or partial** payment against an existing invoice.
+:::
 
 ## Operations in this menu
 
@@ -30452,6 +30475,170 @@ Every field is populated on each row — the shipment columns, the order/custome
 ## Listing vs. fetching one
 
 The listing already carries the full payload — fetching a single shipment by id (`adminShipment(id:)`) is only needed when you want the shipped line `items`, or when you already hold a shipment id and want just that record. Typical flow: list with `adminShipments`, read `_id` from the row you want, then fetch the full record.
+
+
+
+---
+
+# Create Transaction
+URL: /api/graphql-api/admin/sales/transactions/create
+
+---
+outline: false
+examples:
+  - id: admin-transactions-create-gql
+    title: Create Transaction
+    description: Record a full or partial payment against an invoice. Returns the created transaction. When the recorded payments reach the invoice total the invoice is marked paid and the order status advances.
+    query: |
+      mutation CreateAdminTransaction($input: createAdminTransactionInput!) {
+        createAdminTransaction(input: $input) {
+          adminTransaction {
+            id
+            _id
+            transactionId
+            invoiceId
+            orderId
+            orderIncrementId
+            amount
+            formattedAmount
+            status
+            type
+            paymentMethod
+            paymentTitle
+            data
+            createdAt
+            updatedAt
+            order
+          }
+        }
+      }
+    variables: |
+      {
+        "input": {
+          "invoiceId": 12,
+          "paymentMethod": "cashondelivery",
+          "amount": 100
+        }
+      }
+    response: |
+      {
+        "data": {
+          "createAdminTransaction": {
+            "adminTransaction": {
+              "id": "/api/admin/transactions/5",
+              "_id": 5,
+              "transactionId": "8f2c1a7b9d0e4f6a3c5b8d1e2f7a9c0b4d6e8f10",
+              "invoiceId": 12,
+              "orderId": 8,
+              "orderIncrementId": "00000000008",
+              "amount": 100,
+              "formattedAmount": "$100.00",
+              "status": "paid",
+              "type": "cashondelivery",
+              "paymentMethod": "cashondelivery",
+              "paymentTitle": "Cash On Delivery",
+              "data": { "paidAmount": 100 },
+              "createdAt": "2026-06-30 10:15:00",
+              "updatedAt": "2026-06-30 10:15:00",
+              "order": {
+                "id": 8,
+                "incrementId": "00000000008",
+                "status": "processing",
+                "customerName": "John Doe",
+                "customerEmail": "john.doe@example.com",
+                "grandTotal": 100,
+                "orderCurrencyCode": "USD"
+              }
+            }
+          }
+        }
+      }
+---
+
+# Create Transaction
+
+The API equivalent of the admin **Sales → Transactions → Create** ("Record Payment") action. Records a manual payment against an invoice and returns the created transaction, which then appears in the [Transactions listing](/api/graphql-api/admin/sales/transactions/list).
+
+Partial payments are supported. Once the cumulative recorded payments for an invoice reach its grand total, the invoice is marked **paid** and the order advances to **completed** (when it already has a shipment) or **processing**.
+
+::: tip Two ways to create a transaction
+This mutation records an **arbitrary or partial** payment you specify (invoice, method, amount). Alternatively, the **Create Transaction** checkbox on [invoice creation](/api/graphql-api/admin/sales/orders/create-invoice) captures the **full** invoice amount in one step using the order's payment method. Both result in a transaction that appears in the Transactions listing.
+:::
+
+## Mutation
+
+`createAdminTransaction(input: createAdminTransactionInput!)`
+
+## Input fields
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `invoiceId` | Int | Yes | The invoice to record the payment against. |
+| `paymentMethod` | String | Yes | Payment method code (e.g. `cashondelivery`, `moneytransfer`). |
+| `amount` | Float | Yes | Amount paid. Must be greater than `0` and cannot push the invoice's cumulative payments above its grand total. |
+
+## Response fields
+
+The mutation returns the created transaction under `adminTransaction`:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` / `_id` | ID / Integer | Resource identifier and numeric transaction id. |
+| `transactionId` | String | Generated transaction reference. |
+| `invoiceId` | Integer | The invoice this payment was recorded against. |
+| `orderId` / `orderIncrementId` | Integer / String | Parent order id and human-facing number. |
+| `amount` / `formattedAmount` | Number / String | Recorded amount, raw and formatted. |
+| `status` | String | Always `paid` for a recorded payment. |
+| `type` / `paymentMethod` | String | The payment method code used. |
+| `paymentTitle` | String | Human-readable payment method title. |
+| `data` | Object | Recorded payment payload — `{ "paidAmount": <amount> }`. |
+| `createdAt` / `updatedAt` | String | Timestamps. |
+| `order` | Object | Slim order summary — `id`, `incrementId`, `status`, `customerName`, `customerEmail`, `grandTotal`, `orderCurrencyCode`. |
+
+## Errors
+
+Business-rule failures are returned in the `errors` array: an unknown invoice, an already-paid invoice, an `amount` ≤ 0, or an amount that would exceed the invoice grand total. Missing or non-numeric input fields are rejected as validation errors.
+
+## Creating a transaction while invoicing (the "Create Transaction" checkbox)
+
+On the order detail page, the admin invoice form has a **Create Transaction** checkbox. Ticking it records the payment automatically at the moment the invoice is created — you don't call this mutation at all.
+
+The API equivalent is **not** a separate transaction call: it's a single flag on the [Create Invoice](/api/graphql-api/admin/sales/orders/create-invoice) mutation. Pass `canCreateTransaction: true` in the invoice input and the invoice's **full** amount is recorded as a transaction against the order's payment method in the same mutation:
+
+```graphql
+mutation CreateAdminInvoice($input: createAdminInvoiceInput!) {
+  createAdminInvoice(input: $input) {
+    adminInvoice {
+      id
+      _id
+      state
+    }
+  }
+}
+```
+
+```json
+{
+  "input": {
+    "orderId": 8,
+    "items": [ { "orderItemId": 42, "quantity": 1 } ],
+    "canCreateTransaction": true
+  }
+}
+```
+
+The resulting transaction then appears in the [Transactions listing](/api/graphql-api/admin/sales/transactions/list), exactly like one created through this mutation.
+
+**Which to use:**
+
+| You want to… | Use |
+|---|---|
+| Record the **full** invoice amount at invoice time (one step) | [Create Invoice](/api/graphql-api/admin/sales/orders/create-invoice) with `canCreateTransaction: true` |
+| Record a **partial** payment, a **later** payment, or a specific **amount/method** against an existing invoice | **This mutation** (`createAdminTransaction`) |
+
+## Permission
+
+`sales.transactions.view`
 
 
 
@@ -42512,7 +42699,7 @@ GraphQL is a query language and runtime that allows clients to request exactly t
 - 🎯 **Precise Data Fetching** - Request only the fields you need
 - ⚡ **Reduced Bandwidth** - Smaller payloads improve performance
 - 📱 **Mobile Optimized** - Perfect for bandwidth-constrained environments
-- 🔄 **Single Endpoint** - All operations through one `/api/graphql` endpoint
+- 🔄 **Two Endpoints** - Storefront operations through `/api/graphql`, admin operations through `/api/admin/graphql`
 - 📚 **Self-Documenting** - Schema includes inline documentation
 - 🛠️ **Developer Friendly** - Interactive playground included
 
@@ -42547,14 +42734,21 @@ Two ways to explore the API:
 
 **Interactive GraphQL Playground:**
 ```
+# Storefront
 https://your-domain.com/api/graphiql
+
+# Admin
+https://your-domain.com/api/admin/graphiql
 ```
 
 ## API Endpoints
 
+Bagisto exposes **two separate GraphQL endpoints** — one for the storefront, one for the admin. They do not share a schema: shop operations are not reachable on the admin endpoint, and admin operations are not reachable on the shop endpoint.
+
 | Endpoint | Purpose | Authentication |
 |----------|---------|-----------------|
-| `/api/graphql` | Main GraphQL endpoint | Optional (Shop APIs) / Required (Admin APIs) |
+| `/api/graphql` | Shop (storefront) GraphQL | `X-STOREFRONT-KEY` required; `Authorization: Bearer` added for customer operations |
+| `/api/admin/graphql` | Admin GraphQL | `Authorization: Bearer <id>\|<token>` (Integration token) — no `X-STOREFRONT-KEY` |
 
 ## Authentication Methods
 
@@ -42612,6 +42806,21 @@ mutation {
   }
 }
 ```
+
+### Admin Authentication
+
+Admin GraphQL uses a **pre-issued Integration token** generated from the **Integration** menu in the admin panel — there is no admin login mutation. POST admin operations to `/api/admin/graphql` with the token in the `Authorization` header, and **no** `X-STOREFRONT-KEY`:
+
+```bash
+curl -X POST https://your-domain.com/api/admin/graphql \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <id>|<token>" \
+  -d '{
+    "query": "query { adminOrders(first: 10) { edges { node { _id status grandTotal } } } }"
+  }'
+```
+
+See the [Admin Authentication](/api/graphql-api/admin/authentication) reference for token issuance, rate limits, and permissions.
 
 ## Making Your First Request
 
@@ -81730,248 +81939,6 @@ async function makeRequest(url, apiKey) {
 
 ---
 
-# Recipes
-URL: /api/recipes
-
----
-outline: false
----
-
-# Recipes
-
-End-to-end walkthroughs that chain real Bagisto API calls into a working flow. Each recipe lists the steps in order and links the endpoint page backing every step — so you (or an AI agent) can implement the flow in any framework.
-
-| Recipe | What it builds |
-|--------|----------------|
-| [Build a Storefront](/api/recipes/build-a-storefront) | Catalog browsing, cart, and checkout on the Shop API |
-| [Build an Admin Dashboard](/api/recipes/build-an-admin-dashboard) | Order listing, detail, and actions on the Admin API |
-| [Admin Create-Order Flow](/api/recipes/admin-create-order-flow) | Placing an order for a customer from the admin side |
-
-::: tip Building with an AI agent?
-See [Build with AI](/api/build-with-ai) for the `llms.txt` index, the agent skills, and the optional docs MCP server.
-:::
-
-
-
----
-
-# Recipe: Admin Create-Order Flow
-URL: /api/recipes/admin-create-order-flow
-
----
-outline: false
----
-
-# Recipe: Admin Create-Order Flow
-
-Place an order for a customer from the admin side — the API equivalent of the admin panel's **Create Order** screen. Every request carries the admin Integration token:
-
-```
-Authorization: Bearer <id>|<token>
-```
-
-The flow builds a **draft cart**, fills it, then places it. Do the steps in order — the sequence is enforced (you can't set a shipping method before addresses, etc.).
-
-## The 6 steps (REST)
-
-| # | Step | Call |
-|---|------|------|
-| 1 | Create a draft cart for the customer | `POST /api/admin/customers/{customerId}/draft-carts` → returns `cartId` |
-| 2 | Add items | `POST /api/admin/carts/{cartId}/items` |
-| 3 | Save billing + shipping addresses | `POST /api/admin/carts/{cartId}/addresses` |
-| 4 | List then set a shipping method | `GET` then `POST /api/admin/carts/{cartId}/shipping-methods` |
-| 5 | List then set a payment method | `GET` then `POST /api/admin/carts/{cartId}/payment-methods` |
-| 6 | Place the order | `POST /api/admin/orders/place/{cartId}` → returns `orderId` |
-
-Open the Sales → Orders pages for the exact request bodies. Add-item bodies are **product-type-specific** (configurable / grouped / bundle / downloadable need their option selections). Booking products are not supported in admin Create-Order (matches the admin panel).
-
-## GraphQL variant — select result fields, never `id`
-
-The draft-cart and cart-write operations are **actions**, not fetchable resources, so they have **no selectable `id`**. Select the result fields instead, or the query returns an internal-server error.
-
-Step 1 — create the draft cart (select `cartId`, not `id`):
-
-```graphql
-mutation CreateDraftCart($input: createAdminDraftCartInput!) {
-  createAdminDraftCart(input: $input) {
-    adminDraftCart {
-      cartId
-      customerId
-      success
-      message
-    }
-  }
-}
-```
-
-```json
-{
-  "input": {
-    "customerId": 1
-  }
-}
-```
-
-Step 6 — place the order (select `orderId`, not `id`):
-
-```graphql
-mutation PlaceOrder($input: createAdminPlaceOrderInput!) {
-  createAdminPlaceOrder(input: $input) {
-    adminPlaceOrder {
-      orderId
-      incrementId
-      grandTotal
-      success
-      message
-    }
-  }
-}
-```
-
-```json
-{
-  "input": {
-    "cartId": 42
-  }
-}
-```
-
-The intermediate cart mutations (add item, save addresses, set shipping/payment method) likewise return the updated cart payload — select the cart's contents and the `success` / `message` fields, not `id`.
-
-## Why `id` is not selectable here
-
-Fetchable resources — a customer, a product, a placed order — have a `GET /…/{id}` route, so GraphQL can resolve their `id`. Action operations (create-draft-cart, cart writes, place-order) have no such route, so there is no `id` to return. Read the action's result fields (`cartId`, `orderId`, `status`, `success`, `message`) instead.
-
-## Status codes to handle
-
-`200/201` success · `401` unauthenticated · `403` forbidden · `404` cart/customer not found · `409` wrong step order (e.g. shipping before addresses) · `422` validation (e.g. below minimum order amount, unsupported payment method).
-
-
-
----
-
-# Recipe: Build a Storefront
-URL: /api/recipes/build-a-storefront
-
----
-outline: false
----
-
-# Recipe: Build a Storefront
-
-A storefront on the Shop API, from browsing to a placed order. Every request carries the `X-STOREFRONT-KEY` header; customer-scoped steps also carry the customer's `Authorization: Bearer <token>`.
-
-Open each linked page for the exact request body and response shape.
-
-## 1. Authenticate the storefront
-
-Every Shop API request sends your storefront key:
-
-```
-X-STOREFRONT-KEY: <key>
-```
-
-For customer-scoped actions (their cart, account, orders), first log the customer in and keep the returned token:
-
-- [Customer Login](/api/rest-api/shop/customers/customer-login) — `POST /api/shop/customers/login` → `data.token`. Send it as `Authorization: Bearer <token>` on later calls.
-- New customers: [Customer Registration](/api/rest-api/shop/customers/customer-registration).
-
-## 2. Browse the catalog
-
-1. [Get Categories](/api/rest-api/shop/categories/get-categories) — build the navigation.
-2. **List / search products** — paginated with `?page=`, `?per_page=`, `?query=`, `?sort=`, and category / price / attribute filters.
-3. **Product detail** — fetch a single product for its price, images, and type-specific data (variants, bundle options, downloadable links, grouped items).
-
-## 3. Cart
-
-1. [Create / Get Cart](/api/rest-api/shop/cart/create-cart) — start or load the cart.
-2. [Add to Cart](/api/rest-api/shop/cart/add-to-cart) — `POST /api/shop/cart/items`, body `{ productId, quantity, ... }`. **The extra fields depend on the product type** (configurable products need their selected options; grouped / bundle / downloadable need their selections) — open the page for the exact shape per type.
-3. [Update Cart Item](/api/rest-api/shop/cart/update-cart-item) · [Remove Cart Item](/api/rest-api/shop/cart/remove-cart-item).
-4. [Apply Coupon](/api/rest-api/shop/cart/apply-coupon) · [Remove Coupon](/api/rest-api/shop/cart/remove-coupon).
-
-## 4. Checkout (in order — the sequence is enforced)
-
-1. [Set Billing Address](/api/rest-api/shop/checkout/set-billing-address)
-2. [Set Shipping Address](/api/rest-api/shop/checkout/set-shipping-address)
-3. [Get Shipping Methods](/api/rest-api/shop/checkout/get-shipping-methods) → [Set Shipping Method](/api/rest-api/shop/checkout/set-shipping-method)
-4. [Get Payment Methods](/api/rest-api/shop/checkout/get-payment-methods) → [Set Payment Method](/api/rest-api/shop/checkout/set-payment-method)
-5. [Place Order](/api/rest-api/shop/checkout/place-order)
-
-## 5. Post-order
-
-- [Get Customer Orders](/api/rest-api/shop/customer-orders/get-customer-orders) and the single order for the confirmation screen.
-- [Get Customer Invoices](/api/rest-api/shop/customer-invoices/get-customer-invoices) for downloadable invoices.
-
-## GraphQL variant
-
-Every step above has a GraphQL equivalent at `POST /api/graphql` (see the Shop GraphQL section). When mutating the cart or placing the order, **select the result fields** the mutation returns (cart contents, order id, `success`, `message`) — the cart/checkout mutations are actions, so don't select an `id` on them.
-
-## Status codes to handle
-
-`200/201` success · `401` unauthenticated (missing key/token) · `403` forbidden · `400` bad input · `404` not found · `422` validation (e.g. quantity exceeds stock).
-
-
-
----
-
-# Recipe: Build an Admin Dashboard
-URL: /api/recipes/build-an-admin-dashboard
-
----
-outline: false
----
-
-# Recipe: Build an Admin Dashboard
-
-An admin orders dashboard on the Admin API. Every request carries a pre-issued admin Integration token:
-
-```
-Authorization: Bearer <id>|<token>
-```
-
-## 1. List orders
-
-[List Orders](/api/rest-api/admin/sales/orders) — `GET /api/admin/orders`. Returns the `{ data, meta }` envelope:
-
-```json
-{
-  "data": [ /* order rows */ ],
-  "meta": { "currentPage": 1, "perPage": 10, "lastPage": 14, "total": 137 }
-}
-```
-
-Drive the table with `?page=` and `?per_page=` (default 10, cap 50) plus the listing filters (status, channel, customer, email, grand-total range, date range). Read the page-count headers (`X-Total-Count`, `X-Page`, `X-Per-Page`, `X-Total-Pages`) for pagination UI.
-
-## 2. Order detail
-
-[Order Detail](/api/rest-api/admin/sales/orders) — `GET /api/admin/orders/{id}`. Returns the full order: customer, addresses, type-aware items, invoices, shipments, refunds, payment, and totals — everything the order-view screen needs, no follow-up calls.
-
-## 3. Run an action
-
-From the order view, call the action endpoints (each has its own eligibility rules — open the page):
-
-- [Cancel Order](/api/rest-api/admin/sales/orders/cancel) — `POST /api/admin/orders/{id}/cancel`
-- [Create Invoice](/api/rest-api/admin/sales/orders/create-invoice) — `POST /api/admin/orders/{id}/invoices`
-- [Create Shipment](/api/rest-api/admin/sales/orders/create-shipment) — `POST /api/admin/orders/{id}/shipments`
-- [Create Refund](/api/rest-api/admin/sales/orders/create-refund) — `POST /api/admin/orders/{id}/refunds`
-- [Add Order Comment](/api/rest-api/admin/sales/orders/add-comment) — `POST /api/admin/orders/{id}/comments`
-
-## 4. Other admin menus
-
-The same list → detail → action pattern (and the `{ data, meta }` envelope) applies across every admin menu — Catalog, Customers, Marketing, CMS, Settings. Browse the Admin API section or [`/llms.txt`](/llms.txt) for the full set.
-
-## GraphQL variant
-
-The same data is available at `POST /api/admin/graphql` (admin GraphQL is a separate endpoint and takes the admin token). Order actions are mutations — **select the result fields** they return (`orderId`, `incrementId`, `status`, `success`, `message`), not `id`.
-
-## Status codes to handle
-
-`200/201` success · `401` unauthenticated · `403` forbidden (permission) · `400` bad input · `404` not found · `422` validation / ineligible action.
-
-
-
----
-
 # REST API
 URL: /api/rest-api
 
@@ -86477,6 +86444,158 @@ referential integrity, add the guard at the application layer.
 
 ---
 
+# Downloadable Products — Download File
+URL: /api/rest-api/admin/catalog/products/downloadable-download
+
+---
+outline: false
+apiType: rest
+examples:
+  - id: admin-catalog-downloadable-download
+    title: Download a Stored Downloadable File
+    description: Streams the stored file for a product attribute (a downloadable product's file/sample attribute) as a binary attachment.
+    query: |
+      curl -X GET "https://your-domain.com/api/admin/catalog/products/12/downloadable/26/download" \
+        -H "Authorization: Bearer <token>" \
+        -H "Accept: application/octet-stream" \
+        -o downloaded-file.zip
+    response: |
+      (binary file stream — application/octet-stream attachment)
+---
+
+# Downloadable Products — Download File
+
+Streams the stored file for a given product attribute (the file behind a downloadable product's file/sample attribute) as a binary attachment.
+
+::: warning REST only — binary
+Returns a binary stream, not JSON. Send `Accept: application/octet-stream`. No GraphQL counterpart (binary streams aren't expressible over GraphQL).
+:::
+
+## Endpoint
+
+| Endpoint | Method |
+|----------|--------|
+| `/api/admin/catalog/products/{productId}/downloadable/{attributeId}/download` | GET |
+
+## Path parameters
+
+| Parameter | Type | Notes |
+|-----------|------|-------|
+| `productId` | integer | Product ID. |
+| `attributeId` | integer | Attribute ID whose stored file path should be streamed. |
+
+## Response
+
+`200 OK` — the file as an `application/octet-stream` attachment.
+
+## Errors
+
+| HTTP | Cause |
+|------|-------|
+| `401 Unauthorized` | Missing or invalid admin Bearer token. |
+| `403 Forbidden` | Admin role lacks `catalog.products.view`. |
+| `404 Not Found` | No stored file for the given product / attribute. |
+
+
+
+---
+
+# Downloadable Products — Upload Link / Sample File
+URL: /api/rest-api/admin/catalog/products/downloadable-upload
+
+---
+outline: false
+apiType: rest
+examples:
+  - id: admin-catalog-downloadable-link-upload
+    title: Upload a Downloadable Link File
+    description: Multipart upload of the binary file for a file-type downloadable link. Returns the stored path to use on the product update.
+    query: |
+      curl -X POST "https://your-domain.com/api/admin/catalog/products/12/downloadable-links/upload" \
+        -H "Authorization: Bearer <token>" \
+        -F "file=@/path/to/user-manual.zip"
+    variables: |
+      multipart/form-data:
+        file: <binary file>
+    response: |
+      {
+        "type": "link",
+        "path": "product_downloadable_links/12/abc123.zip",
+        "name": "user-manual.zip",
+        "url": "/storage/product_downloadable_links/12/abc123.zip"
+      }
+  - id: admin-catalog-downloadable-sample-upload
+    title: Upload a Downloadable Sample File
+    description: Multipart upload of the binary file for a file-type downloadable sample. Returns the stored path to use on the product update.
+    query: |
+      curl -X POST "https://your-domain.com/api/admin/catalog/products/12/downloadable-samples/upload" \
+        -H "Authorization: Bearer <token>" \
+        -F "file=@/path/to/preview.zip"
+    variables: |
+      multipart/form-data:
+        file: <binary file>
+    response: |
+      {
+        "type": "sample",
+        "path": "product_downloadable_samples/12/def456.zip",
+        "name": "preview.zip",
+        "url": "/storage/product_downloadable_samples/12/def456.zip"
+      }
+---
+
+# Downloadable Products — Upload Link / Sample File
+
+Uploads the binary file for a **file-type** downloadable link or sample and returns its stored `path`.
+
+::: tip How the two-step flow works
+This endpoint only **stores the file** and returns its `path`. You then attach that path to the link/sample on the [product update](/api/rest-api/admin/catalog/products/update): set `downloadable_links[link_x][file] = <path>` and `type = file` (or `downloadable_samples[sample_x][file]`). URL-type links/samples don't need this — set their `url` directly on the update.
+:::
+
+::: warning REST only
+Binary file parts are not transportable over JSON GraphQL — these endpoints are REST-only.
+:::
+
+## Endpoints
+
+| Endpoint | Method |
+|----------|--------|
+| `/api/admin/catalog/products/{productId}/downloadable-links/upload` | POST |
+| `/api/admin/catalog/products/{productId}/downloadable-samples/upload` | POST |
+
+## Content type
+
+`multipart/form-data` — required.
+
+## Form fields
+
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| `file` | file | yes | The binary file to store (max 128 MB). |
+
+## Response
+
+`201 Created`
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `type` | string | `link` or `sample`. |
+| `path` | string | Storage-relative file path — use this on the product update. |
+| `name` | string | Original file name. |
+| `url` | string \| null | URL if the storage disk exposes one, otherwise `null`. |
+
+## Errors
+
+| HTTP | Cause |
+|------|-------|
+| `401 Unauthorized` | Missing or invalid admin Bearer token. |
+| `403 Forbidden` | Admin role lacks `catalog.products.edit`. |
+| `404 Not Found` | Product not found. |
+| `422 Unprocessable Entity` | Missing file, or file too large. |
+
+
+
+---
+
 # Export Products
 URL: /api/rest-api/admin/catalog/products/export
 
@@ -88437,6 +88556,140 @@ it should be sent to instead) when sub-resource fields were stripped.
 | `403 Forbidden` | Admin role lacks `catalog.products.edit`. |
 | `404 Not Found` | Product not found. |
 | `422 Unprocessable Entity` | Validation failure (duplicate SKU / url_key, invalid boolean, special_price ≥ price, invalid date range). |
+
+
+
+---
+
+# Product Videos — Delete
+URL: /api/rest-api/admin/catalog/products/videos-delete
+
+---
+outline: false
+apiType: rest
+examples:
+  - id: admin-catalog-product-video-delete
+    title: Delete a Product Video
+    description: Removes the video's DB row and its file from public storage.
+    query: |
+      curl -X DELETE "https://your-domain.com/api/admin/catalog/products/12/videos/8" \
+        -H "Authorization: Bearer <token>" \
+        -H "Accept: application/json"
+    response: |
+      {
+        "id": 8,
+        "success": true,
+        "message": "Product video deleted successfully."
+      }
+---
+
+# Product Videos — Delete
+
+Deletes the DB row and removes the file from public storage. Also available over GraphQL as `deleteAdminCatalogProductVideo`.
+
+## Endpoint
+
+| Endpoint | Method |
+|----------|--------|
+| `/api/admin/catalog/products/{productId}/videos/{id}` | DELETE |
+
+## Path parameters
+
+| Parameter | Type | Notes |
+|-----------|------|-------|
+| `productId` | integer | Parent product ID. |
+| `id` | integer | Video ID (must belong to the product). |
+
+## Response
+
+`200 OK` — `{ id, success, message }`.
+
+## Errors
+
+| HTTP | Cause |
+|------|-------|
+| `401 Unauthorized` | Missing or invalid admin Bearer token. |
+| `403 Forbidden` | Admin role lacks `catalog.products.edit`. |
+| `404 Not Found` | Video (or its parent product) not found, or the video does not belong to the product. |
+
+
+
+---
+
+# Product Videos — Upload
+URL: /api/rest-api/admin/catalog/products/videos-upload
+
+---
+outline: false
+apiType: rest
+examples:
+  - id: admin-catalog-product-video-upload
+    title: Upload a Product Video
+    description: Multipart upload of a single product video. Allowed types — mp4, webm, ogg, mov.
+    query: |
+      curl -X POST "https://your-domain.com/api/admin/catalog/products/12/videos" \
+        -H "Authorization: Bearer <token>" \
+        -F "video=@/path/to/clip.mp4" \
+        -F "position=1"
+    variables: |
+      multipart/form-data:
+        video: <binary file>
+        position: 1
+    response: |
+      {
+        "id": 8,
+        "productId": 12,
+        "path": "product/12/xyz789.mp4",
+        "position": 1,
+        "url": "/storage/product/12/xyz789.mp4"
+      }
+---
+
+# Product Videos — Upload
+
+Uploads a new video for the given product.
+
+::: warning REST only — GraphQL upload not supported
+Binary file parts are **not transportable over JSON GraphQL.** The GraphQL `createAdminCatalogProductVideo` mutation exists as a placeholder only and rejects with 422. Use this REST endpoint for video upload.
+:::
+
+## Endpoint
+
+| Endpoint | Method |
+|----------|--------|
+| `/api/admin/catalog/products/{productId}/videos` | POST |
+
+## Content type
+
+`multipart/form-data` — required.
+
+## Form fields
+
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| `video` | file | yes | One of mp4, webm, ogg, mov (max 100 MB). |
+| `position` | integer | no | Sort position; appended to the end if omitted. |
+
+## Response
+
+`201 Created`
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `id` | integer | New `product_videos.id`. |
+| `productId` | integer | Parent product ID (echoed). |
+| `path` | string | Storage-relative file path. |
+| `position` | integer | Sort position. |
+| `url` | string | Public URL. |
+
+## Errors
+
+| HTTP | Cause |
+|------|-------|
+| `401 Unauthorized` | Missing or invalid admin Bearer token. |
+| `403 Forbidden` | Admin role lacks `catalog.products.edit`. |
+| `404 Not Found` | Product not found. |
+| `422 Unprocessable Entity` | Missing file, invalid type, or oversized payload. |
 
 
 
@@ -101848,7 +102101,7 @@ An admin can place an order **on behalf of a customer** — the same "Create Ord
 
 Once an order exists (placed through Create Order above, [Reorder](/api/rest-api/admin/sales/orders/reorder), or the storefront), it moves through a lifecycle. Each action has prerequisites — this is the order they run in and what gates each one.
 
-**1. Invoice — record payment.** [Create Invoice](/api/rest-api/admin/sales/orders/create-invoice) records that payment was collected for some or all of the order's items. An order generally can't be refunded until it has been invoiced (you refund money that was billed). You can invoice part of an order now and the rest later. Not available for orders paid via `paypal_standard` (those are captured by the gateway, not the admin).
+**1. Invoice — record payment.** [Create Invoice](/api/rest-api/admin/sales/orders/create-invoice) records that payment was collected for some or all of the order's items. An order generally can't be refunded until it has been invoiced (you refund money that was billed). You can invoice part of an order now and the rest later. Not available for orders paid via `paypal_standard` (those are captured by the gateway, not the admin). Send `can_create_transaction: true` on the invoice (the **Create Transaction** checkbox) to also record the payment as a transaction in the same step; to record a **partial or later** payment against an existing invoice, use [Create Transaction](/api/rest-api/admin/sales/transactions/create).
 
 **2. Ship — fulfil.** [Create Shipment](/api/rest-api/admin/sales/orders/create-shipment) marks items as dispatched and records the carrier and tracking number. It needs items still awaiting shipment and enough stock at the chosen inventory source. Partial shipments are allowed.
 
@@ -101859,6 +102112,13 @@ Once an order exists (placed through Create Order above, [Reorder](/api/rest-api
 **Comments — any time.** [Add Comment](/api/rest-api/admin/sales/orders/add-comment) / [List Comments](/api/rest-api/admin/sales/orders/list-comments) work at any stage; set `customerNotified` to email the customer the note.
 
 Every action refuses with a clear error when its prerequisite isn't met — nothing left to invoice/ship/refund, the order is already closed or flagged, insufficient stock, or a payment method that can't be invoiced. A typical fulfilled order runs **Create → Invoice → Ship** (then an optional **Refund**); an abandoned one runs **Create → Cancel**.
+
+::: tip Recording payments as transactions
+A payment can be recorded as a transaction (which then shows in the [Transactions listing](/api/rest-api/admin/sales/transactions/list)) in two ways:
+
+- **At invoice time** — send `can_create_transaction: true` on [Create Invoice](/api/rest-api/admin/sales/orders/create-invoice) (the **Create Transaction** checkbox). Records the **full** invoice amount in one step.
+- **Any time** — [Create Transaction](/api/rest-api/admin/sales/transactions/create) (`POST /api/admin/transactions`) records an **arbitrary or partial** payment against an existing invoice.
+:::
 
 ## Endpoints in this menu
 
@@ -104169,6 +104429,137 @@ For when a shipment row appears and what each field means, see the [Shipments ov
 ## Permission
 
 `sales.shipments.view`
+
+
+
+---
+
+# Create Transaction
+URL: /api/rest-api/admin/sales/transactions/create
+
+---
+outline: false
+apiType: rest
+examples:
+  - id: admin-transactions-create
+    title: Create Transaction
+    description: Record a full or partial payment against an invoice. Returns the created transaction. When the recorded payments reach the invoice total the invoice is marked paid and the order status advances.
+    query: |
+      curl -X POST "https://your-domain.com/api/admin/transactions" \
+        -H "Authorization: Bearer <token>" \
+        -H "Content-Type: application/json" \
+        -H "Accept: application/json" \
+        -d '{
+          "invoiceId": 12,
+          "paymentMethod": "cashondelivery",
+          "amount": 100
+        }'
+    response: |
+      {
+        "id": 5,
+        "transactionId": "8f2c1a7b9d0e4f6a3c5b8d1e2f7a9c0b4d6e8f10",
+        "invoiceId": 12,
+        "orderId": 8,
+        "orderIncrementId": "00000000008",
+        "amount": 100,
+        "formattedAmount": "$100.00",
+        "status": "paid",
+        "type": "cashondelivery",
+        "paymentMethod": "cashondelivery",
+        "paymentTitle": "Cash On Delivery",
+        "data": { "paidAmount": 100 },
+        "createdAt": "2026-06-30 10:15:00",
+        "updatedAt": "2026-06-30 10:15:00",
+        "order": {
+          "id": 8,
+          "incrementId": "00000000008",
+          "status": "processing",
+          "customerName": "John Doe",
+          "customerEmail": "john.doe@example.com",
+          "grandTotal": 100,
+          "orderCurrencyCode": "USD"
+        }
+      }
+---
+
+# Create Transaction
+
+The API equivalent of the admin **Sales → Transactions → Create** ("Record Payment") action. Records a manual payment against an invoice and returns the created transaction, which then appears in the [Transactions listing](/api/rest-api/admin/sales/transactions/list).
+
+Partial payments are supported. Once the cumulative recorded payments for an invoice reach its grand total, the invoice is marked **paid** and the order advances to **completed** (when it already has a shipment) or **processing**.
+
+::: tip Two ways to create a transaction
+This endpoint records an **arbitrary or partial** payment you specify (invoice, method, amount). Alternatively, the **Create Transaction** checkbox on [invoice creation](/api/rest-api/admin/sales/orders/create-invoice) captures the **full** invoice amount in one step using the order's payment method. Both result in a transaction that appears in the Transactions listing.
+:::
+
+## Endpoint
+
+| Endpoint | Method |
+|----------|--------|
+| `/api/admin/transactions` | POST |
+
+## Request Body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `invoiceId` | integer | Yes | The invoice to record the payment against. |
+| `paymentMethod` | string | Yes | Payment method code (e.g. `cashondelivery`, `moneytransfer`). |
+| `amount` | number | Yes | Amount paid. Must be greater than `0` and cannot push the invoice's cumulative payments above its grand total. |
+
+## Response fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | Integer | The created transaction row id. |
+| `transactionId` | String | Generated transaction reference. |
+| `invoiceId` | Integer | The invoice this payment was recorded against. |
+| `orderId` / `orderIncrementId` | Integer / String | Parent order id and human-facing number. |
+| `amount` / `formattedAmount` | Number / String | Recorded amount, raw and formatted. |
+| `status` | String | Always `paid` for a recorded payment. |
+| `type` / `paymentMethod` | String | The payment method code used. |
+| `paymentTitle` | String | Human-readable payment method title. |
+| `data` | Object | Recorded payment payload — `{ "paidAmount": <amount> }`. |
+| `createdAt` / `updatedAt` | String | Timestamps. |
+| `order` | Object | Slim order summary — `id`, `incrementId`, `status`, `customerName`, `customerEmail`, `grandTotal`, `orderCurrencyCode`. |
+
+## Errors
+
+| Status | When |
+|--------|------|
+| `422` | `invoiceId`, `paymentMethod`, or `amount` is missing, or `amount` is not numeric. |
+| `400` | Unknown invoice, the invoice is already fully paid, `amount` ≤ 0, or the amount would exceed the invoice grand total. |
+| `401` | Missing or invalid admin token. |
+| `403` | Admin role lacks the required permission. |
+
+## Creating a transaction while invoicing (the "Create Transaction" checkbox)
+
+On the order detail page, the admin invoice form has a **Create Transaction** checkbox. Ticking it records the payment automatically at the moment the invoice is created — you don't call this endpoint at all.
+
+The API equivalent is **not** a separate transaction call: it's a single flag on [Create Invoice](/api/rest-api/admin/sales/orders/create-invoice). Send `can_create_transaction: true` in the invoice-create body and the invoice's **full** amount is recorded as a transaction against the order's payment method in the same request:
+
+```bash
+curl -X POST "https://your-domain.com/api/admin/orders/8/invoices" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "items": [ { "orderItemId": 42, "quantity": 1 } ],
+    "can_create_transaction": true
+  }'
+```
+
+The resulting transaction then appears in the [Transactions listing](/api/rest-api/admin/sales/transactions/list), exactly like one created through this endpoint.
+
+**Which to use:**
+
+| You want to… | Use |
+|---|---|
+| Record the **full** invoice amount at invoice time (one step) | [Create Invoice](/api/rest-api/admin/sales/orders/create-invoice) with `can_create_transaction: true` |
+| Record a **partial** payment, a **later** payment, or a specific **amount/method** against an existing invoice | **This endpoint** (`POST /api/admin/transactions`) |
+
+## Permission
+
+`sales.transactions.view`
 
 
 
@@ -112077,6 +112468,10 @@ A cart is identified by a **cart token**. Create a cart to obtain it, then send 
 
 Apply a coupon code to discount the cart, or remove it to revert. The cart totals in the response reflect the coupon immediately.
 
+## Merging a guest cart
+
+When a shopper builds a cart as a guest and then logs in, merge the guest cart into their customer cart so nothing is lost. Call [Merge Cart](/api/rest-api/shop/cart/merge-cart) with the **customer** Bearer token and the guest cart's `cart_id`: items with the same product and type have their quantities added, other items are copied over, the guest cart is deactivated, and the response is the up-to-date customer cart. Merge requires an authenticated customer (`401` for a guest) and a valid guest cart id (`404` otherwise).
+
 ## Operations in this menu
 
 | Operation | Method & Path | Description |
@@ -112088,6 +112483,7 @@ Apply a coupon code to discount the cart, or remove it to revert. The cart total
 | [Remove Cart Item](/api/rest-api/shop/cart/remove-cart-item) | `DELETE /api/shop/remove-cart-item` | Remove an item from the cart. |
 | [Apply Coupon](/api/rest-api/shop/cart/apply-coupon) | `POST /api/shop/apply-coupon` | Apply a coupon code. |
 | [Remove Coupon](/api/rest-api/shop/cart/remove-coupon) | `DELETE /api/shop/remove-coupon` | Remove the applied coupon. |
+| [Merge Cart](/api/rest-api/shop/cart/merge-cart) | `POST /api/shop/merge-carts` | Merge a guest cart into the customer cart after login. |
 
 All Cart endpoints require the storefront key and a cart token (issued by Create Cart) — see [Authentication](/api/rest-api/authentication).
 
@@ -113628,6 +114024,146 @@ GET /api/shop/cart
 - [Add to Cart](/api/rest-api/shop/cart/add-to-cart)
 - [Update Cart Item](/api/rest-api/shop/cart/update-cart-item)
 - [Remove Cart Item](/api/rest-api/shop/cart/remove-cart-item)
+
+
+
+---
+
+# Merge Cart
+URL: /api/rest-api/shop/cart/merge-cart
+
+---
+outline: false
+examples:
+  - id: merge-cart
+    title: Merge Guest Cart into Customer Cart
+    description: After a guest logs in, merge the guest cart's items into the authenticated customer's cart. Send the customer's Bearer token and the guest cart's id.
+    request: |
+      POST /api/shop/merge-carts
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer 867|DlQxl04kMnUjSpduZpd2gaVWX8oi3vvGY3RZn4pE
+
+      {
+        "cart_id": 6884
+      }
+    response: |
+      {
+        "data": {
+          "id": 6885,
+          "cartToken": "6885",
+          "customerId": 1533,
+          "channelId": 1,
+          "itemsCount": 1,
+          "itemsQty": 1,
+          "items": [
+            {
+              "id": 7763,
+              "cartId": 6885,
+              "productId": 1,
+              "name": "Coastal Breeze Men's Blue Zipper Hoodie",
+              "sku": "COASTALBREEZEMENSHOODIE",
+              "quantity": 1,
+              "price": 100,
+              "total": 100,
+              "type": "simple",
+              "formattedPrice": "$100.00",
+              "formattedTotal": "$100.00"
+            }
+          ],
+          "subtotal": 100,
+          "grandTotal": 100,
+          "taxAmount": 0,
+          "discountAmount": 0,
+          "couponCode": null,
+          "formattedSubtotal": "$100.00",
+          "formattedGrandTotal": "$100.00",
+          "success": true,
+          "message": "Cart merged successfully."
+        }
+      }
+    commonErrors:
+      - error: 401 Unauthorized
+        cause: No customer Bearer token — merge requires an authenticated customer
+        solution: Log the customer in first and send the customer token in the Authorization header
+      - error: 404 Not Found
+        cause: The guest cart id does not exist
+        solution: Pass the id of a valid, active guest cart
+
+---
+
+# Merge Cart
+
+Merge a **guest cart** into the **authenticated customer's cart**. This is used when a shopper adds items to a cart as a guest and then logs in — the guest cart's items are moved into the customer's own cart so nothing is lost.
+
+## Endpoint
+
+```
+POST /api/shop/merge-carts
+```
+
+## Request Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Content-Type` | Yes | application/json |
+| `X-STOREFRONT-KEY` | Yes | Your storefront API key |
+| `Authorization` | Yes | The **customer** Bearer token (from customer login) — not the cart token |
+
+## Request Body
+
+```json
+{
+  "cart_id": 6884
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `cart_id` | integer | Yes | The id of the guest cart to merge into the customer cart |
+
+## How the merge works
+
+1. **Auth is required** — the request must carry a customer Bearer token. A guest (no token) is rejected with `401`.
+2. **The guest cart is looked up by `cart_id`** — an unknown id returns `404`.
+3. The items are merged into the customer's **active** cart (one is created if the customer has none):
+   - An item already in the customer cart with the **same product and type** has its **quantities added together**.
+   - Any other item is **copied** into the customer cart (a configurable product's selected-variant child is copied too).
+4. The **guest cart is deactivated** after the merge.
+5. Invalid items are pruned (a deleted product, or a configurable item missing its variant), then **totals are recalculated**.
+6. The response is the full, up-to-date **customer cart**.
+
+## Response Fields (201 Created)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | The merged (customer) cart id |
+| `cartToken` | string | Cart token identifier |
+| `customerId` | integer | Owner customer id |
+| `channelId` | integer | Sales channel id |
+| `itemsCount` | integer | Distinct item count |
+| `itemsQty` | integer | Total quantity across items |
+| `items` | array | The merged line items |
+| `subtotal` | decimal | Subtotal before tax and discount |
+| `grandTotal` | decimal | Final total |
+| `taxAmount` | decimal | Tax total |
+| `discountAmount` | decimal | Discount total |
+| `couponCode` | string \| null | Applied coupon, if any |
+| `formattedSubtotal` | string | Subtotal with currency symbol |
+| `formattedGrandTotal` | string | Grand total with currency symbol |
+| `success` | boolean | Whether the merge succeeded |
+| `message` | string | Result message |
+
+## Notes
+
+- Send the **customer** token, not the guest cart token — the guest cart is identified by the `cart_id` in the body.
+- After a successful merge the guest cart is inactive; continue with the returned customer cart through checkout.
+
+## Related Resources
+
+- [Create Cart](/api/rest-api/shop/cart/create-cart)
+- [Get Cart](/api/rest-api/shop/cart/get-cart)
+- [Cart workflow](/api/workflows/shop/cart)
 
 
 
@@ -128010,20 +128546,6 @@ php artisan config:clear
 3. Check `.htaccess` file is present in your web root
 4. Verify `APP_URL` in `.env` matches your domain
 
-### Permission Denied Errors
-
-**Error**: `Permission denied` on file operations
-
-**Solution**:
-```bash
-# Set proper permissions
-chmod -R 775 storage bootstrap/cache
-chmod -R 755 public
-
-# If using Docker/VM
-chown -R www-data:www-data storage bootstrap
-```
-
 ### Database Connection Errors
 
 **Error**: `SQLSTATE[HY000]: General error: 1030 Got error`
@@ -128038,10 +128560,14 @@ chown -R www-data:www-data storage bootstrap
 
 **Error**: `429 Too Many Requests`
 
-**Solutions**:
-1. Check rate limit configuration: `php artisan config:show bagisto-api`
-2. Update rate limit in `.env`: `BAGISTO_API_RATE_LIMIT=200`
-3. Clear rate limit cache: `php artisan cache:forget rate_limit`
+Rate limits are **per credential**, not a global `.env` value:
+
+- **Storefront (Shop API)** — each Storefront Key carries its own limit. Raise it when generating the key with `--rate-limit` (default 100/min, up to 5000, or `null` for unlimited), or rotate to a higher-limit key:
+  ```bash
+  php artisan bagisto-api:generate-key --name="High-Traffic App" --rate-limit=1000
+  ```
+  See [API Key Management](./storefront-api-key-management-guide) and the [Rate Limiting Guide](./rate-limiting).
+- **Admin API** — each Integration token has a per-minute and per-day limit set in the **Integration** menu of the admin panel. Edit the token there (or issue a new one) to change its limits.
 
 ### CORS Errors in Browser
 
@@ -128055,14 +128581,14 @@ chown -R www-data:www-data storage bootstrap
 
 ## Performance Optimization
 
-Ensure the application is running in a production environment and that APP_DEBUG is set to false.
+Ensure the application is running in a production environment and that `APP_DEBUG` is set to `false`.
 
 ```bash
-# Clear cached configuration and other optimized files
-php artisan optimize:clear
+# Clear the API Platform metadata cache (run after adding or changing an endpoint)
+php artisan bagisto-api-platform:clear-cache
 
-# Rebuild and optimize caches
-php artisan optimize
+# Rebuild + warm all caches for fast responses (run after every deploy or endpoint change)
+php artisan bagisto-api-platform:optimize
 ```
 
 ## What's Next?
@@ -128736,3 +129262,1163 @@ curl -X GET 'https://your-domain.com/api/shop/products' \
 - ⚡ [GraphQL API Guide](./graphql-api/introduction.html) - Discover GraphQL capabilities
 - 🚀 [Integration Guides](./integrations) - Real-world integration examples
 - 📈 [Rate Limit Headers](./rate-limiting#headers) - Understanding rate limit response headers
+
+
+---
+
+# Workflows
+URL: /api/workflows
+
+---
+outline: false
+---
+
+# Workflows
+
+A workflow is the ordered sequence of Bagisto API calls a client fires to complete a feature — and which call depends on which. Each page shows the dependency flow as a diagram, then links the endpoint page backing every step. Bagisto has no server-side workflow primitive; "workflow" here means the client call-sequence, framework-agnostic.
+
+## How to read a workflow page
+
+Every flow page uses the same blocks:
+
+1. **Agent-ask inputs** — values the agent must ask you for. Today that is the **server URL** and the **storefront key**.
+2. **Prerequisites** — what must exist first (key, cart token, auth).
+3. **Dependency diagram** — a Mermaid flow you can follow top to bottom.
+4. **Ordered call table** — step, endpoint (linked), what it depends on.
+5. **End-to-end example** — the happy path, REST and GraphQL.
+6. **Customize** — link to extend the flow.
+
+## Shop
+
+| Workflow | What it builds |
+|----------|----------------|
+| [Build a Storefront](/api/workflows/shop/build-a-storefront) | Catalog, cart, and checkout end to end |
+| [Cart](/api/workflows/shop/cart) | Guest/customer cart, add/update items, coupons, merge on login |
+| [Checkout](/api/workflows/shop/checkout) | Addresses, shipping, payment methods, place order |
+
+## Admin
+
+| Workflow | What it builds |
+|----------|----------------|
+| [Build an Admin Dashboard](/api/workflows/admin/build-an-admin-dashboard) | The complete blueprint — every admin menu mapped to its API |
+| [Create-Order Flow](/api/workflows/admin/create-order-flow) | Placing an order for a customer (sequential draft-cart state machine) |
+| [Product Management](/api/workflows/admin/product-management) | Create/edit products — 7 types, two-step create, image/inventory/price panels |
+| [Order Fulfillment Actions](/api/workflows/admin/order-fulfillment-actions) | Invoice, ship, refund, cancel — per-order eligibility guards |
+| [Customers (Impersonate & GDPR)](/api/workflows/admin/customers) | Impersonation token and GDPR delete/download flows |
+| [Marketing](/api/workflows/admin/marketing) | Promotions, communications, search & SEO — rule reindex, campaigns, coupons, sitemaps |
+| [Configuration](/api/workflows/admin/configuration) | Slug-scoped store settings via three generic endpoints |
+
+## Customization
+
+Extending the API itself (adding or changing endpoints) — see [Customization](/api/workflows/customization/).
+
+::: tip Building with an AI agent?
+See [Build with AI](/api/build-with-ai) for the `llms.txt` index, the agent skills, and the optional docs MCP server.
+:::
+
+
+
+---
+
+# Admin Workflows
+URL: /api/workflows/admin
+
+---
+outline: false
+---
+
+# Admin Workflows
+
+The back-office call-sequences — how a client drives the Admin API (`/api/admin/*` REST + `POST /api/admin/graphql`) to rebuild any admin-panel screen. The Admin API mirrors the admin panel **menu-for-menu**.
+
+## Agent-ask inputs
+
+- **Integration token** — ask the user for a pre-issued admin Integration token (generated in the admin panel's Integration menu). Send it as `Authorization: Bearer <id>|<token>`. There is no admin login; the agent never mints this token.
+- **Server URL** — ask the user for their Bagisto server's base URL (e.g. `https://store.example.com`) and prefix every endpoint path with it. Never assume localhost or a demo domain.
+
+## The core pattern: list → detail → action
+
+Almost every admin screen is the same shape:
+
+- **List** — `GET /api/admin/<resource>` → a `{ data, meta }` envelope. Drive tables with `?page=` + `?per_page=` (default 10, cap 50) + the screen's filters. Page-count headers: `X-Total-Count`, `X-Page`, `X-Per-Page`, `X-Total-Pages`.
+- **Detail** — `GET /api/admin/<resource>/{id}` → the full record with relations embedded (no follow-up calls).
+- **Action** — `POST` / `PUT` / `DELETE` for create/update/delete plus per-record actions (cancel order, create invoice, mass-update, …). Each action has its own eligibility rules and permission gate — a forbidden action returns **403**.
+
+## Start here
+
+- **[Build an Admin Dashboard](/api/workflows/admin/build-an-admin-dashboard)** — the complete blueprint: every admin menu (Sales, Catalog, Customers, Marketing, CMS, Settings, Configuration, Dashboard/Reporting) mapped to its API. Read this for the whole picture.
+
+## Complicated flows (with theory)
+
+| Workflow | Why it needs its own page |
+|----------|---------------------------|
+| [Create-Order Flow](/api/workflows/admin/create-order-flow) | A strict sequential draft-cart state machine (409 on wrong step), booking-blocked, non-saleable guard, action-results have no selectable `id`. |
+| [Product Management](/api/workflows/admin/product-management) | Attributes → families → product schema chain, two-step create (7 types, `super_attributes`), partial-update wipe traps, image/inventory/price sub-panels. |
+| [Order Fulfillment Actions](/api/workflows/admin/order-fulfillment-actions) | Invoice/ship/refund/cancel eligibility guards, PayPal-invoice block, per-SKU qty, inventory-at-source, `canCreateTransaction`. |
+| [Customers (Impersonate & GDPR)](/api/workflows/admin/customers) | Impersonate issues a short-lived customer token; GDPR process cascades a delete; download-data dumps every related table. |
+| [Marketing](/api/workflows/admin/marketing) | Catalog-rule reindex timeout on a `sync` queue, campaign send (recipient resolution + status guard), coupon generate, sitemap sync-generate. |
+| [Configuration](/api/workflows/admin/configuration) | Generic slug-scoped schema/values/update, anti-scope-escape, server-side validation, file-upload REST-only. |
+
+## GraphQL — the must-know rules
+
+- **Separate endpoint:** `POST /api/admin/graphql`, admin token only, **no** storefront key (the shop and admin GraphQL endpoints don't share a schema).
+- **Result-field / `id` rule (most common mistake):** fetchable resources (order, product, customer…) expose `id` + `_id`; **action / result mutations** (cancel, create invoice/shipment/refund, place order, cart writes, mass-actions) return a **result object** — select the documented result fields (`success`, `message`, `orderId`, `cartId`, …), not a generic `id`.
+- **Inputs are camelCase** (`customerId`, `orderId`, `indices`). Custom list filters are explicit per-query args (use the names the endpoint page shows — not auto-discoverable).
+- **Collections use cursor pagination** (`first` / `after` / `edges { node }` / `pageInfo`); REST uses the `{ data, meta }` envelope instead.
+- **Nested lists** (order items, invoice items, addresses) are often **plain JSON**, not connections — query them as bare fields (`items { sku qtyOrdered }`), following the endpoint's docs example.
+
+## How to read a flow page
+
+Intent → Agent-ask inputs → the flow/diagram → ordered calls (links to the exact endpoint pages) → theory/gotchas. Flow pages own the sequence and the non-obvious behavior; endpoint detail lives on the linked API pages.
+
+
+
+---
+
+# Build an Admin Dashboard
+URL: /api/workflows/admin/build-an-admin-dashboard
+
+---
+outline: false
+---
+
+# Build an Admin Dashboard
+
+The **complete admin blueprint** — every admin-panel menu mapped to its Admin API. The API mirrors the admin panel menu-for-menu, so any back-office screen can be rebuilt from it. Use this as the map; for the two flows with real sequencing/structure gotchas, see [Create-Order](/api/workflows/admin/create-order-flow) and [Product Management](/api/workflows/admin/product-management).
+
+Every request carries the admin Integration token:
+
+```
+Authorization: Bearer <id>|<token>
+```
+
+## Agent-ask inputs
+
+- **Integration token** — ask the user; generated in the admin panel's Integration menu. No admin login; never mint it.
+- **Server URL** — ask the user for their Bagisto server's base URL (e.g. `https://store.example.com`) and prefix every endpoint path with it. Never assume localhost or a demo domain.
+
+## The pattern behind every screen
+
+**list → detail → action** — a `{ data, meta }` listing (`?page` + `?per_page` + filters), a detail GET with relations embedded, then create/update/delete + per-record actions (each permission-gated → `403` if the token's role lacks it). See the [Admin Workflows overview](/api/workflows/admin/) for the envelope, pagination headers, and GraphQL rules.
+
+## 1. Dashboard & Reporting
+
+- **[Dashboard](/api/rest-api/admin/dashboard/)** — the headline stats behind the admin home (`?type=` picks a stat group; `?start`/`?end`/`?channel` bound the window).
+- **[Reporting](/api/rest-api/admin/reporting/)** — sales / customers / products report groups, a table "view details" mode, and CSV export.
+
+## 2. Sales
+
+The order lifecycle and its documents:
+
+- **[Orders](/api/rest-api/admin/sales/orders/)** — list + detail (customer, addresses, type-aware items, invoices, shipments, refunds, payment, totals — all embedded), plus per-order **actions**: cancel, create invoice / shipment / refund, add comment. Eligibility + gotchas: fulfillment actions each have their own guards.
+- **[Invoices](/api/rest-api/admin/sales/invoices/)** · **[Shipments](/api/rest-api/admin/sales/shipments/)** · **[Refunds](/api/rest-api/admin/sales/refunds/)** — the document datagrids (list, detail, export; invoice print PDF + mass-update-status).
+- **[Transactions](/api/rest-api/admin/sales/transactions/list)** — payment records; includes Record-Payment create.
+- **[Bookings](/api/rest-api/admin/sales/bookings/)** — bookable-product reservations (read-only).
+- **[Create-Order flow →](/api/workflows/admin/create-order-flow)** — place an order for a customer through a draft cart.
+
+## 3. Catalog
+
+- **[Products](/api/rest-api/admin/catalog/products/)** — the datagrid, CRUD, copy, mass-actions, export, and the image/inventory/price sub-panels. The two-step create + partial-update traps live in **[Product Management →](/api/workflows/admin/product-management)**.
+- **[Categories](/api/rest-api/admin/catalog/categories/)** — flat datagrid + nested tree; CRUD (move = update with `parent_id`+`position`); mass-actions; root-category delete guards.
+- **[Attributes](/api/rest-api/admin/catalog/attributes/)** — the dynamic fields + their options sub-resource; system-attribute + in-use guards.
+- **[Attribute Families](/api/rest-api/admin/catalog/families/)** — attribute groupings chosen at product-create; last-family / product-attached delete guards.
+
+## 4. Customers
+
+- **[Customers](/api/rest-api/admin/customers/)** — list/detail/CRUD, addresses, notes, **impersonate** ("login as customer" → a short-lived customer token), mass-actions; groups; reviews moderation; GDPR requests. Delete is guarded when the customer has active orders.
+
+## 5. Marketing
+
+- **[Marketing](/api/rest-api/admin/marketing/)** — Cart Rules (+ coupons: single/bulk-generate/mass-delete), Catalog Rules, Email Templates, Events, Campaigns (+ send), Newsletter Subscribers, Search Terms, Search Synonyms, URL Rewrites, Sitemaps (+ generate).
+
+## 6. CMS
+
+- **[CMS Pages](/api/rest-api/admin/cms/pages/)** — list/detail/CRUD + mass-delete. Create broadcasts to every locale; update is **locale-nested**.
+
+## 7. Settings
+
+Reference data and access control — mostly straight CRUD (+ mass-delete where the panel has it), each with its own delete guards (last-of-kind, in-use):
+
+- **[Currencies](/api/rest-api/admin/settings/currencies/list)** · **[Locales](/api/rest-api/admin/settings/locales/list)** · **[Exchange Rates](/api/rest-api/admin/settings/exchange-rates/list)** · **[Channels](/api/rest-api/admin/settings/channels/list)**
+- **[Inventory Sources](/api/rest-api/admin/settings/inventory-sources/list)** · **[Tax Rates](/api/rest-api/admin/settings/tax-rates/list)** · **[Tax Categories](/api/rest-api/admin/settings/tax-categories/list)**
+- **[Users](/api/rest-api/admin/settings/users/list)** · **[Roles](/api/rest-api/admin/settings/roles/list)** · **[Themes](/api/rest-api/admin/settings/themes/list)** · **[Data Transfer Imports](/api/rest-api/admin/settings/data-transfer-imports/)**
+
+## 8. Configuration
+
+- **[Configuration](/api/rest-api/admin/configuration/)** — the whole `core_config` key/value store via three generic endpoints (menu schema, read values by slug, update by slug). Writes are scoped to the slug — a key outside it is rejected.
+
+## GraphQL variant
+
+Every menu is available at `POST /api/admin/graphql` (admin token, no storefront key). Remember the **result-field / `id` rule** on action + mass-action mutations (select `success` / `message` / `orderId` / … — not a generic `id`). Details in the [Admin Workflows overview](/api/workflows/admin/#graphql-the-must-know-rules).
+
+## Status codes to handle
+
+`200/201` success · `401` unauthenticated · `403` forbidden (permission) · `400` bad input / guard · `404` not found · `409` wrong step order (Create-Order) · `422` validation / ineligible action.
+
+
+
+---
+
+# Configuration (Admin)
+URL: /api/workflows/admin/configuration
+
+---
+outline: false
+---
+
+# Configuration (Admin)
+
+The store's flat key/value settings — everything under **Configuration** in the admin (general, catalog, sales, customer, email, payment, shipping, …). Unlike the rest of the admin API, Configuration is **not one endpoint per screen**: its schema is registered at runtime by every installed package, so the API exposes **three generic endpoints** that work across any current or future section. Everything is keyed by a **slug** — a dotted section path like `sales.order_settings` or `general.content`.
+
+## Agent-ask inputs
+
+- **Integration token** — ask the user; send as `Authorization: Bearer <id>|<token>`. Needs the configuration permission (else `403`).
+- **Server URL** — ask the user for their Bagisto server's base URL (e.g. `https://store.example.com`) and prefix every endpoint path with it. Never assume localhost or a demo domain.
+
+## The three endpoints
+
+| Operation | REST | GraphQL field |
+|-----------|------|---------------|
+| Menu (schema) | [GET configuration/menu](/api/rest-api/admin/configuration/menu) | `menuAdminConfigurationMenu` |
+| Slugs (discovery) | [GET configuration/slugs](/api/rest-api/admin/configuration/slugs) | `listAdminConfigurationSlug` |
+| Values | [GET configuration?slug=…](/api/rest-api/admin/configuration/values) | `valuesAdminConfigurationValues` |
+| Update | [POST configuration](/api/rest-api/admin/configuration/update) | `createAdminConfigurationUpdate` |
+
+## Flow: schema → values → update
+
+```mermaid
+flowchart TD
+  menu[GET configuration/menu<br/>section/group/field tree] --> vals[GET configuration?slug=section.group<br/>current values map]
+  vals --> form[Render form pre-filled from values]
+  form --> upd[POST configuration<br/>slug + values map]
+  upd --> back[Returns freshly-resolved values<br/>re-render, no follow-up GET]
+```
+
+- **Menu** returns the whole tree (sections → groups → fields), each field with its `code`, `type`, `title`, default, validation, and whether it's channel-/locale-based — build the config nav AND know which input control each field needs. `?slug=<section>` scopes to one node; `?include_values=true` (+ `?channel=`/`?locale=`) embeds values so one call renders a populated form.
+- **Slugs** lists every registered slug so you can discover what to pass to Values/Update without trial-and-error.
+- **Values** returns a flat `{ dottedCode: stringValue }` map for a slug (falling back to each field's default). **The slug is required** — the endpoint refuses to dump the whole table.
+- **Update** writes a `values` map for a slug and returns the freshly-resolved values.
+
+## Field types → controls
+
+`boolean` → toggle · `select`/`multiselect` → dropdown(s) from the field's options · `text`/`textarea`/`password` → inputs · `image`/`file` → upload · `color` → colour picker · `type: "custom"` (`customView`) → **read-only over the API** (route the user to the admin panel).
+
+**Channel- / locale-based fields** vary per storefront context — add channel/locale switchers, and pass the matching `?channel=`/`?locale=` (or `channel`/`locale` keys in the update body) on read and write.
+
+## Two hard rules when writing config
+
+1. **Every key must start with the slug.** On update, every key in `values` must be prefixed with that request's `slug.` (slug `sales.order_settings` → keys like `sales.order_settings.reorder.admin`). The server **refuses any key that escapes the slug** (`400`) — this prevents overwriting an unrelated section. Build keys from the slug you're editing, never a hand-typed path.
+2. **File/image fields are REST-only.** Config `image`/`file` fields upload via a **multipart** `POST /api/admin/configuration` with the file in the `values[<dotted.code>]` part. The GraphQL update rejects file-type fields — use REST for any screen with an upload. Scalar-only updates work over either transport.
+
+Validation is **server-side** from each field's own rule (not trusted from the client) — a bad value returns `422` with the offending field; show it inline.
+
+## Status codes to handle
+
+`200` read/update OK · `400` missing `slug` or a key escaping the slug · `401` unauthenticated · `403` permission · `422` field validation failed (or a file field sent over GraphQL — use REST).
+
+
+
+---
+
+# Admin Create-Order Flow
+URL: /api/workflows/admin/create-order-flow
+
+---
+outline: false
+---
+
+# Admin Create-Order Flow
+
+Place an order for a customer from the admin side — the API equivalent of the admin panel's **Create Order** screen. Every request carries the admin Integration token:
+
+```
+Authorization: Bearer <id>|<token>
+```
+
+The flow builds a **draft cart**, fills it, then places it. It is a **strict sequential state machine** keyed by a draft cart the admin owns (`is_active = 0`) — do the steps in order, or a step returns `409` naming what's missing.
+
+## Agent-ask inputs
+
+- **Integration token** — ask the user; send as `Authorization: Bearer <id>|<token>`. Placing an order needs the order-create permission (else `403`).
+- **Server URL** — ask the user for their Bagisto server's base URL (e.g. `https://store.example.com`) and prefix every endpoint path with it. Never assume localhost or a demo domain.
+
+## Flow
+
+```mermaid
+flowchart TD
+  cust[Pick customer<br/>GET /customers] --> draft[POST draft-carts<br/>returns cartId, is_active=0]
+  draft --> items[POST carts/id/items<br/>add products]
+  items --> coupon[Optional: apply coupon<br/>POST or DELETE carts/id/coupon]
+  coupon --> addr[POST carts/id/addresses<br/>billing + shipping]
+  addr --> shipm[GET then POST<br/>carts/id/shipping-methods]
+  shipm --> paym[GET then POST<br/>carts/id/payment-methods]
+  paym --> place[POST orders/place/cartId<br/>returns orderId]
+```
+
+Coupon is optional — apply it after items are in the cart, or skip straight to addresses.
+
+## The 6 steps (REST)
+
+| # | Step | Call |
+|---|------|------|
+| 1 | Create a draft cart for the customer | `POST /api/admin/customers/{customerId}/draft-carts` → returns `cartId` |
+| 2 | Add items | `POST /api/admin/carts/{cartId}/items` |
+| 3 | Save billing + shipping addresses | `POST /api/admin/carts/{cartId}/addresses` |
+| 4 | List then set a shipping method | `GET` then `POST /api/admin/carts/{cartId}/shipping-methods` |
+| 5 | List then set a payment method | `GET` then `POST /api/admin/carts/{cartId}/payment-methods` |
+| 6 | Place the order | `POST /api/admin/orders/place/{cartId}` → returns `orderId` |
+
+Open the Sales → Orders pages for the exact request bodies. Read the draft cart any time with `GET /api/admin/carts/{cartId}` (items, totals, addresses, selected methods).
+
+## Theory & gotchas
+
+- **Sequence is enforced (409).** Calling a step before its prerequisite returns `409` with a message naming what's missing (shipping needs addresses; payment needs shipping; place needs the whole chain). Gate the UI on each prerequisite to avoid round-trips.
+- **Draft-only (403).** These cart endpoints operate only on `is_active = 0` draft carts. Point them at a storefront (active) cart and they return `403`.
+- **Add-item is product-type-specific.** The body forwards to add-product, so every type works (simple/configurable/bundle/grouped/downloadable/virtual) — configurable/grouped/bundle/downloadable need their option selections. Update qty with `PUT /carts/{cartId}/items` (`{ qty: { itemId: newQty } }`); remove with `DELETE /carts/{cartId}/items` (`{ cartItemId }`).
+- **Booking is blocked (400).** Core ships no booking partial in Create-Order, so booking products are rejected — matches the admin panel.
+- **Non-saleable is rejected up front (400)** and the draft cart is **preserved** so you can add a different product. (Adding a non-saleable item and letting totals collect would delete the empty cart — the guard prevents that.)
+- **Place accepts only `cashondelivery` / `moneytransfer` (422).** The admin Create-Order screen hardcodes this same restriction; other payment methods are rejected at place time (you can still *list* all supported methods).
+- **Addresses** take camelCase keys (`{ billing: { …, useForShipping }, shipping? }`). Prefill from the customer's book: `GET /api/admin/customers/{customerId}/addresses`.
+
+## Adding items — where they come from (Step 2 in depth)
+
+Adding items is the richest step. The admin doesn't just type SKUs — the Create-Order screen offers **five ways to find products for the chosen customer**, and each feeds the same add-item call (`POST /api/admin/carts/{cartId}/items`).
+
+**1. Search the catalog.** [`GET /api/admin/products`](/api/rest-api/admin/catalog/products/list) is the slim Add-Product search (sku / name / price / image / saleable) — the search box on the screen. This is a *different* endpoint from the Products datagrid; it's the picker. Find the product, then add it.
+
+**2–5. Pull from the customer's context.** Four read-only panels surface products the customer already showed interest in, so the admin can one-click add them:
+
+| Panel | Endpoint |
+|-------|----------|
+| Customer's active (storefront) cart items | `GET /api/admin/customers/{customerId}/cart-items` |
+| Wishlist items | `GET /api/admin/customers/{customerId}/wishlist-items` |
+| Recent order items (last ~5 ordered products) | `GET /api/admin/customers/{customerId}/recent-order-items` |
+| Compare items | `GET /api/admin/customers/{customerId}/compare-items` |
+
+Each panel returns product rows (id, sku, name, price, image); take the product id and add it via the add-item call. Surface all five as tabs/panels next to the cart so the admin can build the order from search **and** the customer's own cart/wishlist/recent/compare lists.
+
+**Add / update / remove:**
+
+- Add: `POST /api/admin/carts/{cartId}/items` — the body forwards to add-product, so every type works (configurable / grouped / bundle / downloadable need their option selections).
+- Update qty: `PUT /api/admin/carts/{cartId}/items` (`{ qty: { itemId: newQty } }`).
+- Remove: `DELETE /api/admin/carts/{cartId}/items` (`{ cartItemId }`).
+
+## GraphQL variant — select result fields, never `id`
+
+The draft-cart and cart-write operations are **actions**, not fetchable resources, so they have **no selectable `id`**. Select the result fields instead, or the query returns an internal-server error.
+
+Step 1 — create the draft cart (select `cartId`, not `id`):
+
+```graphql
+mutation CreateDraftCart($input: createAdminDraftCartInput!) {
+  createAdminDraftCart(input: $input) {
+    adminDraftCart {
+      cartId
+      customerId
+      success
+      message
+    }
+  }
+}
+```
+
+```json
+{
+  "input": {
+    "customerId": 1
+  }
+}
+```
+
+Step 6 — place the order (select `orderId`, not `id`):
+
+```graphql
+mutation PlaceOrder($input: createAdminPlaceOrderInput!) {
+  createAdminPlaceOrder(input: $input) {
+    adminPlaceOrder {
+      orderId
+      incrementId
+      grandTotal
+      success
+      message
+    }
+  }
+}
+```
+
+```json
+{
+  "input": {
+    "cartId": 42
+  }
+}
+```
+
+The intermediate cart mutations (add item, save addresses, set shipping/payment method) likewise return the updated cart payload — select the cart's contents and the `success` / `message` fields, not `id`.
+
+## Why `id` is not selectable here
+
+Fetchable resources — a customer, a product, a placed order — have a `GET /…/{id}` route, so GraphQL can resolve their `id`. Action operations (create-draft-cart, cart writes, place-order) have no such route, so there is no `id` to return. Read the action's result fields (`cartId`, `orderId`, `status`, `success`, `message`) instead.
+
+## Status codes to handle
+
+`200/201` success · `401` unauthenticated · `403` forbidden · `404` cart/customer not found · `409` wrong step order (e.g. shipping before addresses) · `422` validation (e.g. below minimum order amount, unsupported payment method).
+
+
+
+---
+
+# Customers — Impersonate & GDPR (Admin)
+URL: /api/workflows/admin/customers
+
+---
+outline: false
+---
+
+# Customers — Impersonate & GDPR (Admin)
+
+Most of the Customers menu is straight CRUD — customers, groups, review moderation, notes, addresses — covered in the [blueprint](/api/workflows/admin/build-an-admin-dashboard#4-customers). Two flows need explaining because they don't map to a simple call: **impersonation** (the headless version of "login as customer") and **GDPR** (approving a request can cascade a delete, and the data download dumps every related table).
+
+## Agent-ask inputs
+
+- **Integration token** — ask the user; send as `Authorization: Bearer <id>|<token>`. Impersonate and GDPR need their permissions (customer-edit, GDPR-view/edit/delete), else the call returns 403.
+- **Server URL** — ask the user for their Bagisto server's base URL (e.g. `https://store.example.com`) and prefix every endpoint path with it. Never assume localhost or a demo domain.
+
+## Impersonate ("Login as Customer")
+
+The admin panel's "Login as Customer" does a session login and redirects to the storefront — which can't translate to a stateless API. Instead, [impersonate](/api/rest-api/admin/customers/impersonate/create) issues a **short-lived customer token** that the client then uses to act as that customer against the Shop API.
+
+```mermaid
+flowchart LR
+  admin[Admin calls impersonate] --> tok[Customer token returned<br/>expires in 1 hour]
+  tok --> shop[Use as Bearer on /api/shop/*<br/>acting as the customer]
+```
+
+`POST /api/admin/customers/{customerId}/impersonate` returns the customer token plus the customer's id, email, and name, the impersonating admin's id, and an expiry. The plaintext token is shown once.
+
+That token behaves exactly like a storefront login token: send it as `Authorization: Bearer <token>` alongside the storefront key on Shop API calls. It expires in one hour and carries an audit marker naming the admin who issued it. So "login as customer" becomes "get a customer token" — the correct headless translation. Requires the customer-edit permission.
+
+## GDPR data requests
+
+The queue has a [list](/api/rest-api/admin/customers/gdpr/list) and a [detail](/api/rest-api/admin/customers/gdpr/detail) view, plus status updates and two actions. A request has a type (update or delete) and a status (pending, processing, declined, approved, or revoked).
+
+### Update status
+
+[Update](/api/rest-api/admin/customers/gdpr/update) (a PUT) is a pure metadata change — it sets the status and an optional message, and fires the status-update email listener. Use it for moves like pending → processing or pending → declined. An invalid status is rejected with 422.
+
+### Process (the destructive action)
+
+[Process](/api/rest-api/admin/customers/gdpr/process) (`POST /gdpr-requests/{id}/process`) is where a request is actually carried out:
+
+- A **delete** request is approved **and cascades a real customer delete** — it runs the core delete so the GDPR module's own listeners fire.
+- An **update** request is marked approved but **leaves the customer untouched**. The request only carries a free-form message describing what to change; apply the actual edit through the normal customer-update endpoint afterward.
+
+Processing an already-approved or revoked request is refused with 422. Over GraphQL the input field is `requestId` (the plain `id` is shadowed on mutation inputs). Requires the GDPR-edit permission.
+
+### Download data
+
+[Download data](/api/rest-api/admin/customers/gdpr/download-data) (`POST /customers/{customerId}/gdpr-download-data`) is ad-hoc — it isn't tied to a request. It returns the customer's full footprint (profile, addresses, orders, reviews, wishlist, notes) with the password and remember-token stripped. Requires the GDPR-view permission.
+
+### Delete
+
+[Delete](/api/rest-api/admin/customers/gdpr/delete) removes the request row (a hard delete). Requires the GDPR-delete permission.
+
+## Gotcha: deleting a customer with active orders
+
+The plain customer delete is guarded — a customer with pending or processing orders can't be deleted, and the call returns 400. The GDPR delete-request path runs that same core delete, so the same guard applies. Resolve or cancel the customer's active orders first.
+
+## GraphQL notes
+
+Impersonate, GDPR process, and download-data are action / result mutations — select the documented result fields (the token, the customer id, `requestId`, `success`, and so on), not a generic `id`. See the [result-field rule](/api/workflows/admin/#graphql-the-must-know-rules).
+
+## Status codes to handle
+
+200 / 201 success · 400 delete guard (active orders) · 401 unauthenticated · 403 permission · 404 not found · 422 invalid status or an already-processed GDPR request.
+
+
+
+---
+
+# Marketing (Admin)
+URL: /api/workflows/admin/marketing
+
+---
+outline: false
+---
+
+# Marketing (Admin)
+
+The Marketing menu spans three groups — **Promotions** (discount rules + coupons), **Communications** (email templates, events, campaigns, newsletter subscribers), and **Search & SEO** (sitemaps, URL rewrites, search terms, search synonyms). Most are straight CRUD; this page covers the parts with real gotchas — the discount-rule reindex, the campaign send, coupon generation, and sitemap generation.
+
+## Agent-ask inputs
+
+- **Integration token** — ask the user; send as `Authorization: Bearer <id>|<token>`. Each action is permission-gated (else `403`).
+- **Server URL** — ask the user for their Bagisto server's base URL (e.g. `https://store.example.com`) and prefix every endpoint path with it. Never assume localhost or a demo domain.
+
+## Promotions
+
+Two discount-rule types plus coupons:
+
+- **[Catalog Rules](/api/rest-api/admin/marketing/promotions/catalog-rules-create)** — apply a discount to matching products in the catalog (price shown pre-cart). CRUD + mass-delete; `channels` + `customer_groups` + `conditions` JSON.
+- **[Cart Rules](/api/rest-api/admin/marketing/promotions/cart-rules-create)** — discount applied in the cart; CRUD + copy + mass-delete. `coupon_type` 0 (no coupon) / 1 (specific coupon).
+- **Cart Rule Coupons** (sub-resource of a cart rule) — [single create](/api/rest-api/admin/marketing/promotions/cart-rule-coupons-create), [bulk generate](/api/rest-api/admin/marketing/promotions/cart-rule-coupons-generate), [mass-delete](/api/rest-api/admin/marketing/promotions/cart-rule-coupons-mass-delete).
+
+### Gotcha: catalog-rule create/update triggers a full price reindex
+
+Creating or updating a catalog rule fires a **price-index recalculation across every affected product**. That job is designed to run **out-of-band on a queue worker** — but on a store running `QUEUE_CONNECTION=sync` it runs **inline inside the request** and can take tens of seconds on a large catalog, blowing past the HTTP timeout and returning a generic 500 **even though the rule was already saved** (query it back and it's there). This is not an API bug — it's the store's queue configuration.
+
+**Handle it:** the store should run `QUEUE_CONNECTION=redis` (or `database`) with a persistent `queue:work` worker, so create returns `201` instantly and the reindex runs in the background. If the client sees a timeout, re-query the rule ([detail](/api/rest-api/admin/marketing/promotions/catalog-rules-detail)) before retrying — a retry would create a duplicate.
+
+### Coupon bulk-generate
+
+`cart-rule-coupons/generate` takes `{ length (4–30), format (alphabetic|alphanumeric|numeric), prefix?, suffix?, coupon_qty (1–100) }` and returns the generated codes. Use it to hand out unique codes for a specific-coupon cart rule.
+
+## Communications
+
+- **[Email Templates](/api/rest-api/admin/marketing/communications/templates-create)** — reusable HTML bodies (`status` active/inactive/draft). CRUD.
+- **[Events](/api/rest-api/admin/marketing/communications/events-create)** — scheduled marketing events (a date-triggered anchor for campaigns). CRUD.
+- **[Campaigns](/api/rest-api/admin/marketing/communications/campaigns-create)** — an email blast to a customer group. CRUD + **[send](/api/rest-api/admin/marketing/communications/campaigns-send)**.
+- **[Newsletter Subscribers](/api/rest-api/admin/marketing/communications/subscribers-list)** — read + toggle subscription + delete (subscriptions originate on the storefront; no admin create).
+
+### Gotcha: campaign send
+
+`POST /api/admin/marketing/campaigns/{id}/send` triggers the blast **now** — it mirrors the scheduled `campaign:process` for a single campaign but **skips the event date gate** (manual send = send now). Recipients resolve from the campaign's customer group: subscribed customers, or the guest subscribers list when the group is `guest`; the list is de-duped and each email is **queued**. An **inactive campaign (`status=0`) is refused with `422`**. Zero recipients is success, not an error. Returns `{ campaignId, queued, message }`.
+
+## Search & SEO
+
+- **[Sitemaps](/api/rest-api/admin/marketing/search-seo/sitemaps-create)** — CRUD + **[generate](/api/rest-api/admin/marketing/search-seo/sitemaps-generate)**.
+- **[URL Rewrites](/api/rest-api/admin/marketing/search-seo/url-rewrites-create)** — 301/302 redirects; CRUD + mass-delete.
+- **[Search Terms](/api/rest-api/admin/marketing/search-seo/search-terms-list)** — storefront search analytics (read + edit redirect + delete; no create).
+- **[Search Synonyms](/api/rest-api/admin/marketing/search-seo/search-synonyms-create)** — widen search matches; CRUD + mass-delete.
+
+### Gotcha: sitemap generate is synchronous
+
+`POST /api/admin/marketing/sitemaps/{id}/generate` runs the generation **synchronously** (the admin panel queues it) so the response carries the generated file paths + `generatedAt` immediately. For a very large catalog this can take a while. If `general.sitemap.settings.enabled` is off the job returns early — the response still succeeds but `indexFile` / `generatedSitemaps` stay empty (that usually means the config flag, not a failure).
+
+## GraphQL notes
+
+Standard admin GraphQL: list queries use cursor pagination + explicit filter args; **mass-actions and action mutations** (campaign send, coupon generate, sitemap generate, mass-delete) return result objects — select the documented result fields, not a generic `id` (see the [result-field rule](/api/workflows/admin/#graphql-the-must-know-rules)).
+
+## Status codes to handle
+
+`200/201` success · `401` unauthenticated · `403` permission · `404` not found · `422` validation (duplicate coupon code, percent > 100, incoherent dates, inactive campaign, bad sitemap name/path) · `500` catalog-rule reindex timeout on a `sync` queue (rule is saved — re-query, don't retry).
+
+
+
+---
+
+# Order Fulfillment Actions (Admin)
+URL: /api/workflows/admin/order-fulfillment-actions
+
+---
+outline: false
+---
+
+# Order Fulfillment Actions (Admin)
+
+Once an order exists it moves through a lifecycle — invoice, ship, refund, or cancel. Each action is a per-order endpoint under `/api/admin/orders/{id}/…` with its **own eligibility guard**: it refuses with a clear error when its prerequisite isn't met. This page is the theory; open each linked page for the exact body.
+
+## Agent-ask inputs
+
+- **Integration token** — ask the user; send as `Authorization: Bearer <id>|<token>`. Each action is gated by its permission (`sales.invoices.create`, `sales.shipments.create`, `sales.refunds.create`, `sales.orders.cancel`) — a role without it returns `403`.
+- **Server URL** — ask the user for their Bagisto server's base URL (e.g. `https://store.example.com`) and prefix every endpoint path with it. Never assume localhost or a demo domain.
+
+## Lifecycle
+
+```mermaid
+flowchart LR
+  order[Order placed] --> inv[Invoice<br/>record payment]
+  inv --> ship[Ship<br/>fulfil items]
+  ship --> refund[Refund<br/>optional return]
+  order -.->|nothing invoiced/shipped| cancel[Cancel]
+  order -.->|any time| comment[Add comment]
+```
+
+A fulfilled order runs **Invoice → Ship → (Refund)**; an abandoned one runs **Cancel**. Comments work at any stage.
+
+## The actions and their guards
+
+| Action | Endpoint | Guard (refuses when…) |
+|--------|----------|------------------------|
+| **Invoice** | [POST invoices](/api/rest-api/admin/sales/orders/create-invoice) | closed / fraud / nothing left to invoice / **`paypal_standard`** (captured by the gateway, not the admin) / no permission |
+| **Shipment** | [POST shipments](/api/rest-api/admin/sales/orders/create-shipment) | closed / fraud / nothing left to ship / **insufficient stock at the chosen inventory source** / no permission |
+| **Refund** | [POST refunds](/api/rest-api/admin/sales/orders/create-refund) | closed / fraud / nothing left to refund / amount-zero / amount-exceeds-max / no permission |
+| **Refund preview** | [POST refunds/preview](/api/rest-api/admin/sales/orders/refund-preview) | same eligibility as refund, but **never writes** — returns the computed totals |
+| **Cancel** | [POST cancel](/api/rest-api/admin/sales/orders/cancel) | closed / fraud / nothing left to cancel (something already fully invoiced or shipped) / no permission |
+| **Add comment** | [POST comments](/api/rest-api/admin/sales/orders/add-comment) · [list](/api/rest-api/admin/sales/orders/list-comments) | none — no permission gate |
+
+## Theory & gotchas
+
+- **Invoice records what's owed, not that it's paid.** An invoice can be generated with no captured payment; the order/invoice stays `pending` until a payment transaction is recorded. **Partial invoicing** is allowed (invoice some SKUs now, the rest later) — each line is validated against its remaining `qty_to_invoice`.
+- **`canCreateTransaction` on invoice-create** (REST `can_create_transaction`, GraphQL `canCreateTransaction`, default false) auto-records a paid `order_transactions` row for the full invoice amount via the core listener — the "Create Transaction" checkbox on the admin invoice screen. Distinct from the standalone [Record Payment](/api/rest-api/admin/sales/transactions/create) (`POST /api/admin/transactions`), which records a specific amount against an invoice.
+- **PayPal Standard orders can't be invoiced** from the admin — the gateway captures asynchronously. The guard returns a distinct message.
+- **Shipment needs stock at the source.** Beyond items-awaiting-shipment, the chosen inventory source must hold enough quantity; otherwise the per-SKU guard rejects. Partial shipments allowed.
+- **Always Refund-Preview first.** `previewAdminRefund` computes subtotal/discount/tax/shipping/grand-total for the requested lines + adjustments without writing — drive the live "Total Refund" widget from it, then call create-refund. Refund needs an un-refunded invoiced amount (an order generally can't be refunded before it's invoiced).
+- **Cancel is early-abort only.** Once anything is fully invoiced or shipped, cancel is refused — use refund instead.
+- **Comments email the customer** when `customerNotified` is true (fires the core notification). No permission gate — matches the admin panel.
+- **Actions return the refreshed order.** Cancel/invoice/etc. return the full order (same shape as [order detail](/api/rest-api/admin/sales/orders/order-detail)) so the order-view screen refreshes without a follow-up GET. The generated invoice/shipment/refund also appears in its own store-wide menu ([Invoices](/api/rest-api/admin/sales/invoices/) / [Shipments](/api/rest-api/admin/sales/shipments/) / [Refunds](/api/rest-api/admin/sales/refunds/)).
+
+## GraphQL notes
+
+Fields: `createAdminInvoice`, `createAdminShipment`, `createAdminRefund`, `previewAdminRefund`, `createAdminCancelOrder`, `createAdminOrderComment`. These are **action / result mutations** — select the documented result fields (the refreshed order, `success`, `message`), **not** a generic `id` (see the [result-field rule](/api/workflows/admin/#graphql-the-must-know-rules)).
+
+## Status codes to handle
+
+`200/201` success · `401` unauthenticated · `403` permission · `404` order not found · `422` ineligible action / validation (per-SKU qty, refund amount, PayPal invoice).
+
+
+
+---
+
+# Product Management (Admin)
+URL: /api/workflows/admin/product-management
+
+---
+outline: false
+---
+
+# Product Management (Admin)
+
+Creating and editing products is the most structured admin flow — seven product types, a two-step create, a partial-update that can silently wipe fields if misused, and separate sub-panels for images, inventory, and prices. This page is the theory; open each linked endpoint page for the exact body.
+
+## Agent-ask inputs
+
+- **Integration token** — ask the user; send as `Authorization: Bearer <id>|<token>`. Product create/edit needs the product-create / product-edit permission (else `403`).
+- **Server URL** — ask the user for their Bagisto server's base URL (e.g. `https://store.example.com`) and prefix every endpoint path with it. Never assume localhost or a demo domain.
+
+## Two product endpoints — don't confuse them
+
+- **`GET /api/admin/catalog/products`** — the full **datagrid listing** (all columns, filters, sort, mass-actions). This is the Products management screen: [list](/api/rest-api/admin/catalog/products/list).
+- **`GET /api/admin/products`** — a **slim Add-Product search** (sku/name/price/image/saleable only) used by [Create-Order](/api/workflows/admin/create-order-flow). Not the product listing.
+
+## First, the schema: attributes → families → products
+
+A product isn't created in a vacuum — it's built from an **attribute family**, and that family is a grouping of **attributes**. So the build order is schema first, data second:
+
+```mermaid
+flowchart LR
+  attr["Attributes<br/>the fields"] --> fam["Attribute Family<br/>groups attributes"]
+  fam --> prod["Product<br/>built from a family"]
+  attr -.->|select types| opt["Attribute Options<br/>choosable values"]
+  opt -.-> prod
+```
+
+Attributes are the fields; a family groups them into the product form; a product is created against a family and renders that family's fields. Select-type attributes carry options (the choosable values).
+
+- **Attributes** are the dynamic fields a product can carry. Create one with [Attributes → Create](/api/rest-api/admin/catalog/attributes/attributes-create) (`POST /api/admin/catalog/attributes`) — validates code (unique), admin name, type. An attribute of type **select / multiselect / checkbox** owns a set of **options** (the choosable values), managed as a sub-resource: [Attribute Options](/api/rest-api/admin/catalog/attributes/attribute-options). List/detail: [listing](/api/rest-api/admin/catalog/attributes/attributes-listing) · [detail](/api/rest-api/admin/catalog/attributes/attributes-detail).
+- **Attribute Families** group attributes (into attribute groups) into the form layout a product edit screen renders. Create one with [Families → Create](/api/rest-api/admin/catalog/families/families-create) (`POST /api/admin/catalog/families`); its detail returns `attributeGroups: [{ code, name, column, position, attributes: [...] }]` — the column layout of the product form. List/detail: [listing](/api/rest-api/admin/catalog/families/families-listing) · [detail](/api/rest-api/admin/catalog/families/families-detail).
+- **Products** are created **against a family** — `attribute_family_id` is required at step 1, and that family decides which attribute fields step 2 can fill. For a **configurable** product, the `super_attributes` you pass are the ids/codes of select-type attributes (e.g. color, size) whose **options** generate the variant matrix — so those attributes and their options must exist first.
+
+So: build (or reuse) the attributes and the family before creating the product. In a fresh store the default family already carries the common attributes, so most tools surface Products first and treat Attributes / Families as configuration screens.
+
+## Create is a two-step wizard
+
+Mirror the admin panel — **don't send the whole product in one call.**
+
+```mermaid
+flowchart TD
+  fam[Pick attribute family] --> step1[POST create-product<br/>sku + attribute_family_id + type]
+  step1 -->|configurable| sa[super_attributes required<br/>backend generates variant matrix]
+  step1 --> row[Barebones product row]
+  sa --> row
+  row --> step2[PUT update-product<br/>fill family attributes, structures, categories]
+  step2 --> subs[Sub-panels: images / inventory / prices]
+```
+
+1. **Step 1 — [Create](/api/rest-api/admin/catalog/products/create)** (`POST /api/admin/catalog/products`). Body `{ sku, attribute_family_id, type? }` (`type` defaults `simple`). Validates `sku` (required, unique, slug-safe) and `attribute_family_id` (required, exists). Creates a barebones row.
+2. **Step 2 — [Update](/api/rest-api/admin/catalog/products/update)** (`PUT /api/admin/catalog/products/{id}`) fills the family's attribute fields, type structures, categories, etc.
+
+**Seven types:** simple / virtual / downloadable / grouped / bundle / configurable / booking.
+
+- **Configurable** needs `super_attributes` at step 1 — a map of attribute **code or id → option ids** (both shapes accepted). The backend generates the full variant matrix from it. Omit it and create returns 422.
+- **Booking** sub-types (default / appointment / event / rental / table) and their slots/tickets are configured in step 2, not step 1.
+
+### Step 1 body — by type
+
+A simple product needs only three fields:
+
+```json
+{
+  "sku": "tshirt-basic",
+  "attribute_family_id": 1,
+  "type": "simple"
+}
+```
+
+A configurable product adds `super_attributes` (here color = options 1,2,3 and size = options 4,5) — the backend builds one variant per combination:
+
+```json
+{
+  "sku": "tshirt-config",
+  "attribute_family_id": 1,
+  "type": "configurable",
+  "super_attributes": {
+    "color": [1, 2, 3],
+    "size": [4, 5]
+  }
+}
+```
+
+What each type needs at step 1, and what step 2 fills:
+
+| Type | Step 1 | Step 2 fills |
+|------|--------|--------------|
+| simple / virtual | sku + family (+ type) | attribute values, price, categories |
+| downloadable | sku + family + `type` | attribute values + `downloadable_links` / `downloadable_samples` |
+| grouped | sku + family + `type` | attribute values + `links` (the grouped child products) |
+| bundle | sku + family + `type` | attribute values + `bundle_options` |
+| configurable | sku + family + `type` + `super_attributes` | attribute values on the parent; variants already generated |
+| booking | sku + family + `type` | attribute values + `booking` (sub-type + slots/tickets) |
+
+### Step 2 body — partial update
+
+Send only what changed. This sets the English name + price and assigns two categories, leaving everything else intact:
+
+```json
+{
+  "name": "Basic T-Shirt",
+  "price": 19.99,
+  "categories": [3, 7]
+}
+```
+
+Pass `?locale=fr&channel=default` to write translatable values (name, description, meta) into a specific locale — one locale per request.
+
+## Update is a partial PATCH — and has wipe traps
+
+Send only the fields you change; every family attribute is editable by its **code**. But some structures **replace** on send and others get **wiped if the core full-form path runs** — know which:
+
+- **Attribute values** — send any family attribute code (`name`, `price`, `color`, `meta_title`, …). Translatable values write to the requested locale — pass `?locale=fr&channel=default` (one locale per request).
+- **Type structures** (`variants`, `bundle_options`, `links`, `downloadable_links`, `downloadable_samples`, `booking`) — sending one **replaces** that whole structure.
+- **Relations** (`categories`, `channels`, up/cross/related-sells) — sending replaces the set; **omitting preserves** it.
+- **Sub-panel data** (`images`, `videos`, `inventories`, `customer_group_prices`) — **ignored here**; they have dedicated endpoints (below). The response lists them under a warnings hint.
+
+Gotcha: an attribute-only edit uses a surgical write that touches only the sent values; a structure-bearing edit runs the full-form path that reconstructs current state first. So a partial edit does not clobber booleans/variants/relations — as long as you don't send an empty structure key. **Open the [Update page](/api/rest-api/admin/catalog/products/update) before writing a partial update.**
+
+## Sub-panels (image / inventory / price tabs)
+
+Each is parent-scoped under `/catalog/products/{productId}/…` and mirrors a tab on the edit screen:
+
+| Sub-panel | Operations |
+|-----------|-----------|
+| **Images** | [upload](/api/rest-api/admin/catalog/products/images-upload) (REST multipart only — binary `image` part, ≤4 MB; GraphQL upload is rejected) · [reorder](/api/rest-api/admin/catalog/products/images-reorder) · [delete](/api/rest-api/admin/catalog/products/images-delete) |
+| **Videos** | [upload](/api/rest-api/admin/catalog/products/videos-upload) (REST multipart) · [delete](/api/rest-api/admin/catalog/products/videos-delete) |
+| **Inventory** | [list](/api/rest-api/admin/catalog/products/inventories-list) (`meta.totalQty` sums sources) · [bulk update](/api/rest-api/admin/catalog/products/inventories-update) (`{ inventories: { sourceId: qty } }`; omitted sources untouched, `qty=0` zeroes) |
+| **Customer-group prices** | [list](/api/rest-api/admin/catalog/products/customer-group-prices-list) · [create](/api/rest-api/admin/catalog/products/customer-group-prices-create) · [update](/api/rest-api/admin/catalog/products/customer-group-prices-update) · [delete](/api/rest-api/admin/catalog/products/customer-group-prices-delete) (`{ qty, value_type: fixed\|discount, value, customer_group_id }`; null group = all groups; `(qty, group)` unique) |
+| **Downloadable** | [file upload](/api/rest-api/admin/catalog/products/downloadable-upload) · [download](/api/rest-api/admin/catalog/products/downloadable-download) (REST binary) |
+
+## Copy & mass-actions
+
+- **[Copy](/api/rest-api/admin/catalog/products/copy)** — `POST /api/admin/catalog/products/{sourceId}/copy`. Refuses a variant (can't copy standalone) → 422. Returns the new product's id + auto-suffixed sku.
+- **[Mass-delete](/api/rest-api/admin/catalog/products/mass-delete)** · **[Mass-update-status](/api/rest-api/admin/catalog/products/mass-update-status)** — `{ indices: int[] }` (+ `value: 0|1` for status). Best-effort: missing ids silently skipped.
+- **[Export](/api/rest-api/admin/catalog/products/export)** — CSV of the datagrid honouring the listing filters; send `Accept: text/csv`, `?format=csv` only. REST-only.
+
+## GraphQL notes
+
+Query fields: `adminCatalogProducts` (list), `adminCatalogProduct` (detail). Mutations: `createAdminCatalogProduct`, `updateAdminCatalogProduct`, `deleteAdminCatalogProduct`, `createAdminCatalogProductCopy`, `createAdminCatalogProductMassDelete`, `createAdminCatalogProductMassUpdateStatus`. On create/update mutations the nested connections (images, variants, …) come back empty — re-query `adminCatalogProduct` for them. On **mass-actions** select the result fields, not a generic `id` (see the [result-field rule](/api/workflows/admin/#graphql-the-must-know-rules)).
+
+## Status codes to handle
+
+`200/201` success · `401` unauthenticated · `403` permission · `400` bad input · `404` not found · `422` validation (missing `super_attributes`, copying a variant, bad option ids).
+
+
+
+---
+
+# Customization
+URL: /api/workflows/customization
+
+---
+outline: false
+---
+
+# Customization
+
+For developers extending the Bagisto API itself — adding or changing REST/GraphQL endpoints. The agent skills and machine index teach an agent to CONSUME the API; this section teaches a human to EXTEND it.
+
+## Install the build skills first
+
+```bash
+npx skills add bagisto/agent-skills --skill "bagisto-api-develop"
+npx skills add bagisto/agent-skills --skill "pest-testing"
+```
+
+## Principles
+
+- **Parity with admin, not superset** — the API mirrors what the Bagisto admin panel can do. When core lacks a feature, the API returns a clear "not supported" rather than half-extending.
+- **DRY** — every cross-cutting concern has one home (auth helper, collection envelope, base providers). Reuse before writing new.
+- **One resource = five files** — see [Folder Structure](/api/workflows/customization/folder-structure).
+- **Both transports, always** — every Provider/Processor serves REST AND GraphQL, so a REST change needs the GraphQL test green. See [Testing](/api/workflows/customization/testing).
+
+## The build sequence
+
+```mermaid
+flowchart TD
+  core[Locate the core admin behavior] --> model[Model: declare REST + GraphQL ops]
+  model --> dto[DTO: typed input contract]
+  dto --> pp[Provider read / Processor write]
+  pp --> reg[Register in the service provider]
+  reg --> lang[Add lang strings]
+  lang --> test[REST test + GraphQL test green]
+  test --> docs[Update these docs + regenerate llms]
+```
+
+
+
+---
+
+# Folder Structure
+URL: /api/workflows/customization/folder-structure
+
+---
+outline: false
+---
+
+# Folder Structure
+
+Every API resource is the same five files plus lang and tests. Each has one job.
+
+The Model declares the endpoints. Reads go through a Provider, writes through a Processor, and both hit the core repository:
+
+```mermaid
+flowchart LR
+  model[Model<br/>declares REST + GraphQL ops] --> prov[Provider<br/>read path]
+  model --> proc[Processor<br/>write path]
+  dto[DTO<br/>typed input] --> proc
+  prov --> repo[(Core repository)]
+  proc --> repo
+```
+
+`lang` strings and the two test files hang off each resource — see the table below.
+
+| Unit | Path shape | Responsibility |
+|------|-----------|----------------|
+| Model | `src/*/Models/*.php` | `#[ApiResource]` — declares REST + GraphQL operations and the OpenAPI block |
+| DTO | `src/*/Dto/*Input.php` | Typed input contract (validation surface + GraphQL input type) |
+| Provider | `src/*/State/*Provider.php` | Read path: auth, query, response envelope |
+| Processor | `src/*/State/*Processor.php` | Write path: validation, core repo call, events, permission gate |
+| Resolver | `src/*/Resolver/*.php` | GraphQL custom query resolver (only when needed) |
+| lang | `Resources/lang/en/app.php` | All user-facing strings (single-file convention) |
+| tests | `tests/Feature/{RestApi,GraphQL}/*Test.php` | Lock both transports |
+
+Shop resources live under `src/{Models,Dto,State}`. New collection/item providers extend the shared abstract base providers — reuse, don't re-scaffold.
+
+## Admin resources are different
+
+Admin uses the same file roles, but everything lives under `src/Admin/**` and every class is prefixed `Admin` (e.g. `AdminAttributeProcessor`). Two differences to know:
+
+**The read path is split into two providers**, not one:
+
+| File | Path shape | Job |
+|------|-----------|-----|
+| Collection provider | `src/Admin/State/Admin*CollectionProvider.php` | List (filter, sort, paginate) |
+| Item provider | `src/Admin/State/Admin*ItemProvider.php` | Single record read |
+| Processor | `src/Admin/State/Admin*Processor.php` | Write (create / update) |
+| Mass-delete processor | `src/Admin/State/Admin*MassDeleteProcessor.php` | Bulk delete |
+
+**Admin has extra folders** shop doesn't:
+
+- `src/Admin/Rules/` — validation rule classes (shop keeps these in `src/Validators/`).
+- `src/Admin/DataGrids/` — list filter/sort/pagination definitions backing the collection providers.
+
+Keep the shop and admin trees separate.
+
+
+
+---
+
+# Testing
+URL: /api/workflows/customization/testing
+
+---
+outline: false
+---
+
+# Testing
+
+## The golden rule
+
+Every Processor and Provider serves BOTH REST and GraphQL. So a REST change can break GraphQL through the shared class. **After any REST change, run the affected resource's GraphQL test before considering it done.**
+
+```mermaid
+flowchart LR
+  change[Change a Processor / Provider] --> test[Run REST test<br/>AND GraphQL test]
+  test --> green{Both green?}
+  green -- yes --> ship[Ship]
+  green -- no --> change
+```
+
+## How tests retain old APIs while building new
+
+- A resource's REST + GraphQL test files pin the request/response shape. Existing tests are the contract for existing consumers — they must stay green when you add a new endpoint, which proves the old behavior is unchanged.
+- A new endpoint ships with its own REST test AND GraphQL test covering the happy path and edge cases (missing input, unauthenticated, permission denied). The new tests guard the new behavior; the untouched old tests guard the old.
+- Install the testing skill for the framework rules:
+
+```bash
+npx skills add bagisto/agent-skills --skill "pest-testing"
+```
+
+## Commands
+
+```bash
+# GraphQL test for the changed resource (regression check first)
+php artisan test packages/Webkul/BagistoApi/tests/Feature/GraphQL/<Resource>Test.php
+
+# REST test for the changed resource
+php artisan test packages/Webkul/BagistoApi/tests/Feature/RestApi/<Resource>Test.php
+```
+
+
+
+---
+
+# Shop Workflows
+URL: /api/workflows/shop
+
+---
+outline: false
+---
+
+# Shop Workflows
+
+The storefront call-sequences — how a client chains the Shop API (`/api/shop/*` REST + `/api/graphql`) to build a customer-facing store. Every request carries the `X-STOREFRONT-KEY`; customer-scoped steps add `Authorization: Bearer <token>`.
+
+## Agent-ask inputs
+
+- **Storefront key** — ask the user; send it on every Shop request. Never invent it.
+- **Server URL** — ask the user for their Bagisto server's base URL (e.g. `https://store.example.com`) and prefix every endpoint path with it. Never assume localhost or a demo domain.
+
+## Start here
+
+- **[Build a Storefront](/api/workflows/shop/build-a-storefront)** — the complete blueprint: every screen (homepage, catalog, product detail, CMS, themes, account) mapped to its API. Read this first for the whole picture, then drill into a focused flow below.
+
+## Focused flows
+
+| Workflow | What it covers |
+|----------|----------------|
+| [Cart](/api/workflows/shop/cart) | Guest vs customer cart, add/update items, coupons, **merge on login** |
+| [Checkout](/api/workflows/shop/checkout) | Addresses → shipping → payment methods → place order, with saved-address reuse |
+
+## Guest vs customer
+
+The storefront key alone gives read-only access. A **guest can still place an order**: create a Cart Token (`createCartToken`), send it as `Authorization: Bearer <cartToken>`, and drive cart + checkout without a login. A logged-in customer additionally unlocks the account area (orders, addresses, wishlist) and lets a guest cart be **merged** into their cart at login.
+
+## How to read a flow page
+
+Intent → Agent-ask inputs → Prerequisites → **Mermaid dependency diagram** → ordered call table (links to the exact endpoint pages) → end-to-end example → customize hook. Flow pages own the sequence; endpoint detail lives on the linked API pages.
+
+
+
+---
+
+# Build a Storefront
+URL: /api/workflows/shop/build-a-storefront
+
+---
+outline: false
+---
+
+# Build a Storefront
+
+The **complete storefront blueprint** — every screen a shopper sees and the Shop API behind it, from the homepage to a placed order and the customer account. Use this as the map; for the two deepest flows, the focused [Cart](/api/workflows/shop/cart) and [Checkout](/api/workflows/shop/checkout) workflow pages carry the step-by-step call sequence.
+
+Every request carries the `X-STOREFRONT-KEY` header; customer-scoped steps also carry `Authorization: Bearer <token>`. Open each linked page for the exact request/response shape.
+
+## Agent-ask inputs
+
+- **Storefront key** — ask the user; send it on every Shop request. Never invent it.
+- **Server URL** — ask the user for their Bagisto server's base URL (e.g. `https://store.example.com`) and prefix every endpoint path with it. Never assume localhost or a demo domain.
+
+## 0. Context (locale / currency / channel)
+
+Optional per-request headers `X-LOCALE`, `X-CURRENCY`, `X-CHANNEL` control what content the API returns. Discover valid values:
+
+- [Get Channels](/api/rest-api/shop/channels/get-channels) — the store's sales channels.
+- [Get Locales](/api/rest-api/shop/locales/get-locales) · [Get Countries](/api/rest-api/shop/countries/get-countries) (+ [country states](/api/rest-api/shop/countries/get-country-states)).
+
+## 1. Homepage
+
+The landing screen is built from admin-managed content, not just products:
+
+- **CMS pages** (About, Privacy, Terms, custom landing copy) — the admin authors these; the storefront reads them via the [CMS Pages query (GraphQL)](/api/graphql-api/shop/cms-pages/). Render them as static pages and footer links.
+- **Theme customizations** (hero image carousel, static blocks, featured/category carousels, footer links) — the homepage layout the admin configures. Read with [Get Theme Customizations](/api/rest-api/shop/theme-customizations/get-theme-customizations). Each block tells you what to render (a product-carousel block gives you the product ids to fetch; an image block gives banners).
+- **Navigation** — [Get Categories](/api/rest-api/shop/categories/get-categories) for the menu, or [Category Tree](/api/rest-api/shop/categories/get-category-tree) for a nested megamenu.
+
+## 2. Catalog
+
+- **Category page** — [Get Categories](/api/rest-api/shop/categories/get-categories) for the category, then list its products (step below) filtered by that category.
+- **Product listing** — [Get Products](/api/rest-api/shop/products/get-products), paginated with `?page=`, `?per_page=`, `?sort=`, and category / price / attribute filters.
+- **Search** — [Search Products](/api/rest-api/shop/products/search-product) for the search results page.
+- **Filters (faceting)** — [Get Attributes](/api/rest-api/shop/attributes/get-attributes) and [Attribute Options](/api/rest-api/shop/attributes/get-attribute-options) to build the filter sidebar (color, size, brand, price).
+- **Product detail page** — [Get Product](/api/rest-api/shop/products/get-product) for a single product: price, images, description, and type-specific data. Configurable / bundle / grouped / downloadable products expose their extra structure via [product sub-resources](/api/rest-api/shop/products/product-subresources) and [type sub-resources](/api/rest-api/shop/products/product-type-subresources); bookable products via [booking slots](/api/rest-api/shop/products/get-booking-slots).
+- **Product reviews** — show and collect ratings: [Get Product Reviews](/api/rest-api/shop/product-reviews/get-product-reviews) · [Create Product Review](/api/rest-api/shop/product-reviews/create-product-review) (logged-in customer).
+
+## 3. Shopper engagement
+
+- **Wishlist** (logged-in) — [List](/api/rest-api/shop/wishlist/list) · [Add / Toggle](/api/rest-api/shop/wishlist/toggle) · [Move to Cart](/api/rest-api/shop/wishlist/move-to-cart).
+- **Compare** — [List](/api/rest-api/shop/compare/list) · [Add](/api/rest-api/shop/compare/create) · [Remove](/api/rest-api/shop/compare/delete).
+- **Newsletter** — [Subscribe](/api/rest-api/shop/newsletter/subscribe).
+
+## 4. Authenticate the customer
+
+For cart-to-order and the account area, log the customer in and keep the token:
+
+- [Customer Login](/api/rest-api/shop/customers/customer-login) → `data.token` → send as `Authorization: Bearer <token>`.
+- New customers: [Customer Registration](/api/rest-api/shop/customers/customer-registration).
+- Guests can still order without an account — see the Cart workflow's guest path.
+
+## 5. Cart
+
+The full cart sequence (guest / customer, add / update, coupons, **merge on login**) is its own page: **[Cart workflow →](/api/workflows/shop/cart)**.
+
+## 6. Checkout
+
+The enforced checkout sequence (addresses → shipping → payment methods → place order, with saved-address reuse) is its own page: **[Checkout workflow →](/api/workflows/shop/checkout)**.
+
+## 7. Customer account (post-login)
+
+- **Profile & addresses** — the [Customers](/api/rest-api/shop/customers/) endpoints: [addresses](/api/rest-api/shop/customers/get-customer-addresses), [change password](/api/rest-api/shop/customers/change-password).
+- **Orders** — [Get Customer Orders](/api/rest-api/shop/customer-orders/get-customer-orders) · [single order](/api/rest-api/shop/customer-orders/get-customer-order) for the confirmation + history screens.
+- **Invoices** — [Get Customer Invoices](/api/rest-api/shop/customer-invoices/get-customer-invoices) · [download PDF](/api/rest-api/shop/customer-invoices/download-customer-invoice-pdf).
+- **Downloadable products** — [Get Downloadable Products](/api/rest-api/shop/customer-downloadable-products/get-customer-downloadable-products).
+- **GDPR** — [raise](/api/rest-api/shop/gdpr-requests/create-gdpr-request) / [list](/api/rest-api/shop/gdpr-requests/list-gdpr-requests) / [revoke](/api/rest-api/shop/gdpr-requests/revoke-gdpr-request) data requests (config-gated).
+
+## GraphQL variant
+
+Every step has a GraphQL equivalent at `POST /api/graphql` (see the Shop GraphQL section). On cart / checkout **mutations** select the result fields (cart contents, order id, `success`, `message`) — they're actions, so don't select an `id` on them.
+
+## Status codes to handle
+
+`200/201` success · `401` unauthenticated (missing key/token) · `403` forbidden · `400` bad input · `404` not found · `422` validation (e.g. quantity exceeds stock).
+
+
+
+---
+
+# Cart Workflow (Shop)
+URL: /api/workflows/shop/cart
+
+---
+outline: false
+---
+
+# Cart Workflow (Shop)
+
+Build a cart for a guest or a logged-in customer: create/obtain the cart, add and update items, apply coupons, and merge a guest cart into the customer cart at login.
+
+## Agent-ask inputs
+
+- **Storefront key** — ask the user; send it as the storefront key header on every Shop request. Never invent it.
+- **Server URL** — ask the user for their Bagisto server's base URL (e.g. `https://store.example.com`) and prefix every endpoint path with it. Never assume localhost or a demo domain.
+
+## Prerequisites
+
+- A valid storefront key ([Setup](/api/setup), [Authentication](/api/authentication)).
+- For the customer path: a logged-in customer ([Customer login](/api/rest-api/shop/customers)).
+
+**When does a merge happen?** A guest adds items to a guest cart, then decides to log in. On login you call **mergeCart** with the guest cart token — the guest cart's items are merged into the customer's own cart so nothing is lost.
+
+## Dependency diagram
+
+```mermaid
+flowchart TD
+  key[Storefront key<br/>ask user] --> who{Customer<br/>logged in?}
+  who -- guest --> gcart[POST create-cart<br/>guest cart token]
+  who -- customer --> login[POST customer login]
+  gcart --> add[POST add-to-cart]
+  add --> decide{Guest logs<br/>in later?}
+  decide -- yes --> merge[mergeCart<br/>guest cart into customer cart]
+  decide -- no --> upd
+  login --> merge
+  merge --> upd[POST update-cart-item]
+  add --> coupon[POST apply-coupon]
+  upd --> read[GET get-cart]
+  coupon --> read
+```
+
+## Ordered call table
+
+| # | Step | Endpoint | Depends on | Note |
+|---|------|----------|-----------|------|
+| 1 | Create guest cart | [POST create-cart](/api/rest-api/shop/cart/create-cart) · [GraphQL](/api/graphql-api/shop/cart) | storefront key | Guest path only; returns a cart token |
+| 2 | Customer login | [POST login](/api/rest-api/shop/customers/customer-login) | storefront key | Customer path; after login, merge the guest cart (step 3) |
+| 3 | Merge guest cart | [POST merge-cart](/api/rest-api/shop/cart/merge-cart) · [GraphQL](/api/graphql-api/shop/mutations/merge-cart) | a guest cart id + a logged-in customer (customer Bearer token) | Merges the guest cart's items into the customer cart so nothing is lost |
+| 4 | Add item | [POST add-to-cart](/api/rest-api/shop/cart/add-to-cart) · [GraphQL](/api/graphql-api/shop/cart) | cart (guest token or logged-in customer) | Same endpoint for both paths |
+| 5 | Update item qty | [POST update-cart-item](/api/rest-api/shop/cart/update-cart-item) | an item in the cart | |
+| 6 | Apply coupon | [POST apply-coupon](/api/rest-api/shop/cart/apply-coupon) | an item in the cart | Remove with [remove-coupon](/api/rest-api/shop/cart/remove-coupon) |
+| 7 | Read cart | [GET get-cart](/api/rest-api/shop/cart/get-cart) · [GraphQL](/api/graphql-api/shop/cart) | any cart mutation | Totals, items, applied coupon |
+
+## End-to-end example
+
+Guest: create-cart → add-to-cart → apply-coupon → get-cart.
+Guest who then logs in: create-cart (guest) → add-to-cart → login → **mergeCart** → get-cart.
+Follow each linked page for the exact request/response body (REST and GraphQL).
+
+## Customize
+
+To change cart behavior on the server, see [Customization → Shop](/api/workflows/customization/).
+
+
+
+---
+
+# Checkout Workflow (Shop)
+URL: /api/workflows/shop/checkout
+
+---
+outline: false
+---
+
+# Checkout Workflow (Shop)
+
+Turn a ready cart into an order: set addresses, choose a shipping method, choose a payment method, place the order. A logged-in customer's saved addresses (and past orders) are surfaced so they can reuse them.
+
+## Agent-ask inputs
+
+- **Storefront key** — ask the user; send it on every Shop request. Never invent it.
+- **Server URL** — ask the user for their Bagisto server's base URL (e.g. `https://store.example.com`) and prefix every endpoint path with it. Never assume localhost or a demo domain.
+
+## Prerequisites
+
+- A cart with at least one item ([Cart workflow](/api/workflows/shop/cart)).
+- A valid storefront key.
+
+## Dependency diagram
+
+```mermaid
+flowchart TD
+  cart[Cart ready<br/>see Cart workflow] --> ctx{Customer<br/>logged in?}
+  ctx -- customer --> saved[GET checkout addresses<br/>saved customer addresses]
+  ctx -- guest --> billing
+  saved --> billing[POST set billing address]
+  billing --> shipaddr[POST set shipping address]
+  shipaddr --> shipm[GET shipping methods]
+  shipm --> setship[POST set shipping method]
+  setship --> paym[GET payment methods]
+  paym --> setpay[POST set payment method]
+  setpay --> place[POST place order]
+```
+
+## Ordered call table
+
+| # | Step | Endpoint | Depends on | Note |
+|---|------|----------|-----------|------|
+| 1 | Read saved addresses | [GET addresses](/api/rest-api/shop/checkout/get-addresses) | logged-in customer | Customer path; prefill from saved. Past orders: [customer orders](/api/rest-api/shop/customer-orders) |
+| 2 | Set billing address | [POST set-billing-address](/api/rest-api/shop/checkout/set-billing-address) · [GraphQL](/api/graphql-api/shop/checkout) | cart with items | Guest sends a full address; customer may reuse a saved one |
+| 3 | Set shipping address | [POST set-shipping-address](/api/rest-api/shop/checkout/set-shipping-address) | billing set | |
+| 4 | List shipping methods | [GET shipping-methods](/api/rest-api/shop/checkout/get-shipping-methods) | shipping address set | |
+| 5 | Set shipping method | [POST set-shipping-method](/api/rest-api/shop/checkout/set-shipping-method) | a chosen shipping method | |
+| 6 | List payment methods | [GET payment-methods](/api/rest-api/shop/checkout/get-payment-methods) | shipping method set | |
+| 7 | Set payment method | [POST set-payment-method](/api/rest-api/shop/checkout/set-payment-method) | a chosen payment method | |
+| 8 | Place order | [POST place-order](/api/rest-api/shop/checkout/place-order) · [GraphQL](/api/graphql-api/shop/checkout) | payment method set | Returns the created order |
+
+## End-to-end example
+
+Customer: get-addresses → set-billing → set-shipping → get-shipping-methods → set-shipping-method → get-payment-methods → set-payment-method → place-order.
+Guest: same, minus get-addresses (send a full billing/shipping address).
+Follow each linked page for the exact request/response body (REST and GraphQL).
+
+## Customize
+
+To change checkout behavior on the server, see [Customization → Shop](/api/workflows/customization/).
+

@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import { withMermaid } from 'vitepress-plugin-mermaid'
 import { redirects, makeRedirectHtml } from './_redirects'
 // @ts-ignore
 import fs from 'fs'
@@ -64,7 +65,7 @@ export default defineConfig(({ command, mode }) => {
   // Load env variables
   const env = loadEnv(mode, process.cwd(), '')
 
-  return {
+  return withMermaid({
   ignoreDeadLinks: true,
   lang: 'en-US',
   title: "Bagisto",
@@ -130,15 +131,49 @@ export default defineConfig(({ command, mode }) => {
           { text: 'Setup', link: '/api/setup' },
           { text: 'Authentication', link: '/api/authentication' },
           { text: 'Storefront Keys', link: '/api/storefront-api-key-management-guide' },
+          { text: 'Rate Limiting', link: '/api/rate-limiting' },
           { text: 'Build with AI', link: '/api/build-with-ai' },
           {
-            text: 'Recipes',
+            text: 'Workflows',
             collapsed: true,
-            link: '/api/recipes/',
+            link: '/api/workflows/',
             items: [
-              { text: 'Build a Storefront', link: '/api/recipes/build-a-storefront' },
-              { text: 'Build an Admin Dashboard', link: '/api/recipes/build-an-admin-dashboard' },
-              { text: 'Admin Create-Order Flow', link: '/api/recipes/admin-create-order-flow' },
+              {
+                text: 'Shop',
+                collapsed: true,
+                link: '/api/workflows/shop/',
+                items: [
+                  { text: 'Overview', link: '/api/workflows/shop/' },
+                  { text: 'Build a Storefront', link: '/api/workflows/shop/build-a-storefront' },
+                  { text: 'Cart', link: '/api/workflows/shop/cart' },
+                  { text: 'Checkout', link: '/api/workflows/shop/checkout' },
+                ],
+              },
+              {
+                text: 'Admin',
+                collapsed: true,
+                link: '/api/workflows/admin/',
+                items: [
+                  { text: 'Overview', link: '/api/workflows/admin/' },
+                  { text: 'Build an Admin Dashboard', link: '/api/workflows/admin/build-an-admin-dashboard' },
+                  { text: 'Create-Order Flow', link: '/api/workflows/admin/create-order-flow' },
+                  { text: 'Product Management', link: '/api/workflows/admin/product-management' },
+                  { text: 'Order Fulfillment Actions', link: '/api/workflows/admin/order-fulfillment-actions' },
+                  { text: 'Customers (Impersonate & GDPR)', link: '/api/workflows/admin/customers' },
+                  { text: 'Marketing', link: '/api/workflows/admin/marketing' },
+                  { text: 'Configuration', link: '/api/workflows/admin/configuration' },
+                ],
+              },
+              {
+                text: 'Customization',
+                collapsed: true,
+                link: '/api/workflows/customization/',
+                items: [
+                  { text: 'Overview', link: '/api/workflows/customization/' },
+                  { text: 'Folder Structure', link: '/api/workflows/customization/folder-structure' },
+                  { text: 'Testing', link: '/api/workflows/customization/testing' },
+                ],
+              },
             ],
           },
           {
@@ -705,6 +740,7 @@ export default defineConfig(({ command, mode }) => {
                         collapsed: true,
                         items: [
                           { text: 'List Transactions', link: '/api/graphql-api/admin/sales/transactions/list' },
+                          { text: 'Create Transaction', link: '/api/graphql-api/admin/sales/transactions/create' },
                         ]
                       },
                       {
@@ -1312,6 +1348,7 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Remove Cart Item', link: '/api/rest-api/shop/cart/remove-cart-item' },
                           { text: 'Apply Coupon', link: '/api/rest-api/shop/cart/apply-coupon' },
                           { text: 'Remove Coupon', link: '/api/rest-api/shop/cart/remove-coupon' },
+                          { text: 'Merge Cart', link: '/api/rest-api/shop/cart/merge-cart' },
                     ]
                   },
                   {
@@ -1406,6 +1443,10 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Upload Image', link: '/api/rest-api/admin/catalog/products/images-upload' },
                           { text: 'Reorder Images', link: '/api/rest-api/admin/catalog/products/images-reorder' },
                           { text: 'Delete Image', link: '/api/rest-api/admin/catalog/products/images-delete' },
+                          { text: 'Upload Downloadable File', link: '/api/rest-api/admin/catalog/products/downloadable-upload' },
+                          { text: 'Download Downloadable File', link: '/api/rest-api/admin/catalog/products/downloadable-download' },
+                          { text: 'Upload Video', link: '/api/rest-api/admin/catalog/products/videos-upload' },
+                          { text: 'Delete Video', link: '/api/rest-api/admin/catalog/products/videos-delete' },
                           { text: 'List Inventories', link: '/api/rest-api/admin/catalog/products/inventories-list' },
                           { text: 'Update Inventories', link: '/api/rest-api/admin/catalog/products/inventories-update' },
                           { text: 'List Customer-Group Prices', link: '/api/rest-api/admin/catalog/products/customer-group-prices-list' },
@@ -1561,6 +1602,7 @@ export default defineConfig(({ command, mode }) => {
                         collapsed: true,
                         items: [
                           { text: 'List Transactions', link: '/api/rest-api/admin/sales/transactions/list' },
+                          { text: 'Create Transaction', link: '/api/rest-api/admin/sales/transactions/create' },
                           { text: 'Export Transactions (CSV)', link: '/api/rest-api/admin/sales/transactions/export' },
                         ]
                       },
@@ -2063,5 +2105,5 @@ export default defineConfig(({ command, mode }) => {
       console.log(`✅ Redirect created: ${from} -> ${to}`)
     })
   }
-  }
+  })
 })

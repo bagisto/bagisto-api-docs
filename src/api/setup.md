@@ -135,20 +135,6 @@ php artisan config:clear
 3. Check `.htaccess` file is present in your web root
 4. Verify `APP_URL` in `.env` matches your domain
 
-### Permission Denied Errors
-
-**Error**: `Permission denied` on file operations
-
-**Solution**:
-```bash
-# Set proper permissions
-chmod -R 775 storage bootstrap/cache
-chmod -R 755 public
-
-# If using Docker/VM
-chown -R www-data:www-data storage bootstrap
-```
-
 ### Database Connection Errors
 
 **Error**: `SQLSTATE[HY000]: General error: 1030 Got error`
@@ -163,10 +149,14 @@ chown -R www-data:www-data storage bootstrap
 
 **Error**: `429 Too Many Requests`
 
-**Solutions**:
-1. Check rate limit configuration: `php artisan config:show bagisto-api`
-2. Update rate limit in `.env`: `BAGISTO_API_RATE_LIMIT=200`
-3. Clear rate limit cache: `php artisan cache:forget rate_limit`
+Rate limits are **per credential**, not a global `.env` value:
+
+- **Storefront (Shop API)** — each Storefront Key carries its own limit. Raise it when generating the key with `--rate-limit` (default 100/min, up to 5000, or `null` for unlimited), or rotate to a higher-limit key:
+  ```bash
+  php artisan bagisto-api:generate-key --name="High-Traffic App" --rate-limit=1000
+  ```
+  See [API Key Management](./storefront-api-key-management-guide) and the [Rate Limiting Guide](./rate-limiting).
+- **Admin API** — each Integration token has a per-minute and per-day limit set in the **Integration** menu of the admin panel. Edit the token there (or issue a new one) to change its limits.
 
 ### CORS Errors in Browser
 
@@ -180,14 +170,14 @@ chown -R www-data:www-data storage bootstrap
 
 ## Performance Optimization
 
-Ensure the application is running in a production environment and that APP_DEBUG is set to false.
+Ensure the application is running in a production environment and that `APP_DEBUG` is set to `false`.
 
 ```bash
-# Clear cached configuration and other optimized files
-php artisan optimize:clear
+# Clear the API Platform metadata cache (run after adding or changing an endpoint)
+php artisan bagisto-api-platform:clear-cache
 
-# Rebuild and optimize caches
-php artisan optimize
+# Rebuild + warm all caches for fast responses (run after every deploy or endpoint change)
+php artisan bagisto-api-platform:optimize
 ```
 
 ## What's Next?
