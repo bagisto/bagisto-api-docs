@@ -64,7 +64,7 @@ examples:
 
 # Update Customer Address (GraphQL)
 
-Updates an existing customer address. Send only the fields you want to change. The address must belong to the `customerId` passed in — cross-customer edits return `errors[]`.
+Updates an existing customer address. Send only the fields you want to change. `customerId` is **required** and must own the address — omitting it or passing a different customer returns `errors[]`.
 
 Permission: `customers.addresses.edit`.
 
