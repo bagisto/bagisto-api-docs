@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: get-product-by-id
     title: Get Product by ID
-    description: Retrieve product information using the product ID. `isInWishlist` and `isInCompare` indicate whether the signed-in customer has this product in their wishlist / compare list (`1` = yes, `0` = no) — send the customer Bearer token (both are `0` for guests). Over GraphQL these flags are returned as `"1"` / `"0"` strings; the REST API returns `1` / `0` integers.
+    description: Retrieve a single product by its ID. `isInWishlist` / `isInCompare` need the customer Bearer token — see the field notes below.
     query: |
       query getProduct($id: ID!) {
         product(id: $id) {
@@ -1455,6 +1455,122 @@ examples:
       - error: BOOKING_TYPE_MISMATCH
         cause: Product is not an event booking type
         solution: Ensure the product has event booking enabled
+  - id: get-product-with-customizable-options
+    title: Get Simple Product with Customizable Options
+    description: Retrieve a product's customizable options. Each option node's `_id` is the option id and each price node's `_id` is a selectable value id — you send these back when adding to cart (see Add to Cart).
+    query: |
+      query getProduct($id: ID!) {
+        product(id: $id) {
+          id
+          name
+          sku
+          price
+          customizableOptions {
+            edges {
+              node {
+                _id
+                type
+                isRequired
+                maxCharacters
+                customizableOptionPrices {
+                  edges {
+                    node {
+                      _id
+                      label
+                      price
+                      formattedPrice
+                      sortOrder
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    variables: |
+      {
+        "id": 2977
+      }
+    response: |
+      {
+        "data": {
+          "product": {
+            "id": "/api/shop/products/2977",
+            "name": "Simple Customizable options",
+            "sku": "testcustomizeoption",
+            "price": "24",
+            "customizableOptions": {
+              "edges": [
+                {
+                  "node": {
+                    "_id": 9,
+                    "type": "select",
+                    "isRequired": "0",
+                    "maxCharacters": null,
+                    "customizableOptionPrices": {
+                      "edges": [
+                        {
+                          "node": {
+                            "_id": 9,
+                            "label": "1kg",
+                            "price": "10",
+                            "formattedPrice": "$10.00",
+                            "sortOrder": 0
+                          }
+                        },
+                        {
+                          "node": {
+                            "_id": 10,
+                            "label": "2kg",
+                            "price": "20",
+                            "formattedPrice": "$20.00",
+                            "sortOrder": 1
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "node": {
+                    "_id": 10,
+                    "type": "select",
+                    "isRequired": "1",
+                    "maxCharacters": null,
+                    "customizableOptionPrices": {
+                      "edges": [
+                        {
+                          "node": {
+                            "_id": 11,
+                            "label": "Chocolate",
+                            "price": "10",
+                            "formattedPrice": "$10.00",
+                            "sortOrder": 0
+                          }
+                        },
+                        {
+                          "node": {
+                            "_id": 12,
+                            "label": "Pineapple",
+                            "price": "20",
+                            "formattedPrice": "$20.00",
+                            "sortOrder": 1
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    commonErrors:
+      - error: PRODUCT_NOT_FOUND
+        cause: Provided product ID does not exist
+        solution: Verify the product ID exists
 ---
 
 # Single Product

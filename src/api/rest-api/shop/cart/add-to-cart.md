@@ -207,6 +207,67 @@ examples:
       - error: 422 Validation Error
         cause: Quantity below 1, or required options missing for the product type
         solution: Send a valid quantity and the option fields required by the product type (see below).
+  - id: add-customizable
+    title: Simple Product - Customizable Options
+    description: Add a product that has customizable options. Send customizableOptions — see the Customizable options section below.
+    request: |
+      POST /api/shop/add-product-in-cart
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxxxxxxxxxxxxx
+      Authorization: Bearer <token>
+
+      {
+        "productId": 2977,
+        "quantity": 1,
+        "customizableOptions": { "9": [9], "10": [12] }
+      }
+    response: |
+      {
+        "id": 6895,
+        "cartToken": "6895",
+        "customerId": 19,
+        "channelId": 1,
+        "itemsCount": 1,
+        "items": [
+          {
+            "id": 7769,
+            "cartId": 6895,
+            "productId": 2977,
+            "name": "Simple Customizable options",
+            "sku": "testcustomizeoption",
+            "quantity": 1,
+            "price": 54,
+            "total": 54,
+            "type": "simple",
+            "options": [
+              {
+                "option_label": "1kg",
+                "attribute_name": "Weight Select",
+                "attribute_type": "select"
+              },
+              {
+                "option_label": "Pineapple",
+                "attribute_name": "Flavour",
+                "attribute_type": "select"
+              }
+            ],
+            "formattedPrice": "$54.00",
+            "formattedTotal": "$54.00",
+            "canChangeQty": true
+          }
+        ],
+        "subtotal": 54,
+        "grandTotal": 54,
+        "formattedSubtotal": "$54.00",
+        "formattedGrandTotal": "$54.00",
+        "couponCode": null,
+        "success": true,
+        "message": "Product added to cart successfully."
+      }
+    commonErrors:
+      - error: 422 Validation Error
+        cause: A required customizable option was omitted
+        solution: Include every option whose isRequired is true (from the product's customizableOptions)
 
 ---
 
@@ -246,8 +307,21 @@ All types take `productId` and `quantity`. Add the fields for the product's type
 | `bundleOptionQty` | object | bundle | `{ "<optionId>": <qty> }` — quantity per bundle option |
 | `groupedQty` | object | grouped | `{ "<associatedProductId>": <qty> }` — include every associated product |
 | `links` | array | downloadable | `[<linkId>, …]` — selected download-link IDs |
+| `customizableOptions` | object | simple / virtual / downloadable | `{ "<optionId>": [<valueId>, …] }` — chosen customizable-option values. See below. |
 
 The option IDs (variant product IDs, bundle-option-product IDs, associated product IDs, link IDs) come from the **product detail** response — fetch the product first to discover them. The product, variant, and bundle-option products must be **active and in stock**, or the item is rejected.
+
+### Customizable options
+
+Customizable options are extra inputs a merchant attaches to a product (a weight dropdown, a flavour picker, an engraving text field). They are **not** limited to configurable products — a **simple, virtual, or downloadable** product can carry them. Read them from the product's `customizableOptions` ([Get Product](/api/rest-api/shop/products/get-product)): each option has an `id` and a `prices` array whose entries each have an `id` (the value id), and `isRequired` marks the mandatory ones.
+
+Send the selections as `customizableOptions` — a map of option `id` → an **array** of chosen value `id`s:
+
+```json
+"customizableOptions": { "9": [9], "10": [12] }
+```
+
+Option `9` (Weight) → value `9` (1kg); option `10` (Flavour) → value `12` (Pineapple). The array form supports multi-select; for a text/textarea option the array holds the entered string. Include every option whose `isRequired` is `true`, or the request returns `422`. The chosen values come back on the cart item's `options` so you can show them on the cart page.
 
 > Use the example dropdown (top-right) to see the exact body for each product type.
 
