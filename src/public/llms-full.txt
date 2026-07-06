@@ -51126,6 +51126,88 @@ examples:
       - error: SLOT_NOT_AVAILABLE
         cause: The selected table slot is already reserved
         solution: Choose a different time slot or date
+  - id: add-product-with-customizable-options
+    title: Simple Product - Customizable Options
+    description: Add a product that has customizable options. Send `customizableOptions` — see the Customizable Options section below.
+    query: |
+      mutation createAddProductInCart($input: createAddProductInCartInput!) {
+        createAddProductInCart(input: $input) {
+          addProductInCart {
+            id
+            grandTotal
+            formattedGrandTotal
+            success
+            message
+            items {
+              edges {
+                node {
+                  id
+                  productId
+                  name
+                  quantity
+                  price
+                  formattedPrice
+                  options {
+                    edges {
+                      node {
+                        option_label
+                        attribute_name
+                        attribute_type
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    variables: |
+      {
+        "input": {
+          "productId": 2977,
+          "quantity": 1,
+          "customizableOptions": { "9": [9], "10": [12] }
+        }
+      }
+    response: |
+      {
+        "data": {
+          "createAddProductInCart": {
+            "addProductInCart": {
+              "id": "6895",
+              "grandTotal": 54,
+              "formattedGrandTotal": "$54.00",
+              "success": true,
+              "message": "Product added to cart successfully",
+              "items": {
+                "edges": [
+                  {
+                    "node": {
+                      "id": "7769",
+                      "productId": 2977,
+                      "name": "Simple Customizable options",
+                      "quantity": 1,
+                      "price": 54,
+                      "formattedPrice": "$54.00",
+                      "options": {
+                        "edges": [
+                          { "node": { "option_label": "1kg", "attribute_name": "Weight Select", "attribute_type": "select" } },
+                          { "node": { "option_label": "Pineapple", "attribute_name": "Flavour", "attribute_type": "select" } }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    commonErrors:
+      - error: MISSING_REQUIRED_OPTION
+        cause: A required customizable option was not provided
+        solution: Include every option whose `isRequired` is `"1"` in `customizableOptions`
 ---
 
 # Add to Cart
@@ -51167,6 +51249,7 @@ Authorization: Bearer <accessToken>
 | `bundleOptionQty` | `String` | Bundle only | JSON string mapping bundle option IDs to their quantities, e.g., `"{\"2\":3,\"3\":4}"`. Only applies to radio/select options; checkbox/multiselect quantities are fixed by admin. |
 | `booking` | `String` | Booking only | JSON string containing booking details. Structure varies by booking type (see [Booking Input Reference](#booking-input-reference) below). |
 | `bookingNote` | `String` | Table booking only | Special note or request for table bookings. Required for table booking type. |
+| `customizableOptions` | `Iterable` | Customizable products | Map of each customizable-option `_id` → array of chosen value `_id`s (from the product's `customizableOptions`), e.g. `{"9":[9],"10":[12]}`. Available on **simple, virtual, and downloadable** products. See [Customizable Options](#customizable-options). |
 | `isBuyNow` | `Int` | No | Set to `1` for buy-now flow (creates a new cart for immediate checkout). Default: `0`. |
 
 ## Input Requirements by Product Type
@@ -51180,6 +51263,25 @@ Authorization: Bearer <accessToken>
 | **Grouped** | `productId`, `groupedQty` | `quantity` |
 | **Bundle** | `productId`, `bundleOptions` | `quantity`, `bundleOptionQty` |
 | **Booking** | `productId`, `booking` | `quantity`, `bookingNote` |
+
+## Customizable Options
+
+Customizable options are extra inputs a merchant attaches to a product (a weight dropdown, a flavour picker, an engraving text field, a file upload). They are **not** limited to configurable products — a **simple, virtual, or downloadable** product can carry them, and when it does the shopper must satisfy them before adding to cart.
+
+**1. Read the options from the product.** [Get Product](/api/graphql-api/shop/queries/get-product) exposes `customizableOptions`. Each option node's `_id` is the option id; each price node's `_id` is a selectable value id. `isRequired: "1"` means the shopper must pick a value.
+
+**2. Send the selections.** Pass `customizableOptions` as a map of option `_id` → an **array** of the chosen value `_id`s:
+
+```json
+"customizableOptions": { "9": [9], "10": [12] }
+```
+
+Here option `9` (Weight) → value `9` (1kg), option `10` (Flavour) → value `12` (Pineapple). The array form supports multi-select options; for a text/textarea option the array holds the entered string.
+
+**3. Rules.**
+- Include every option whose `isRequired` is `"1"` — omitting one returns a validation error.
+- The value ids must belong to that option (from its `customizableOptionPrices`).
+- The chosen values come back on the cart item's `options` (`option_label` / `attribute_name`) so you can render them on the cart page.
 
 ## Booking Input Reference
 
@@ -73357,7 +73459,7 @@ outline: false
 examples:
   - id: get-product-by-id
     title: Get Product by ID
-    description: Retrieve product information using the product ID. `isInWishlist` and `isInCompare` indicate whether the signed-in customer has this product in their wishlist / compare list (`1` = yes, `0` = no) — send the customer Bearer token (both are `0` for guests). Over GraphQL these flags are returned as `"1"` / `"0"` strings; the REST API returns `1` / `0` integers.
+    description: Retrieve a single product by its ID. `isInWishlist` / `isInCompare` need the customer Bearer token — see the field notes below.
     query: |
       query getProduct($id: ID!) {
         product(id: $id) {
@@ -74809,6 +74911,90 @@ examples:
       - error: BOOKING_TYPE_MISMATCH
         cause: Product is not an event booking type
         solution: Ensure the product has event booking enabled
+  - id: get-product-with-customizable-options
+    title: Get Simple Product with Customizable Options
+    description: Retrieve a product's customizable options. Each option node's `_id` is the option id and each price node's `_id` is a selectable value id — you send these back when adding to cart (see Add to Cart).
+    query: |
+      query getProduct($id: ID!) {
+        product(id: $id) {
+          id
+          name
+          sku
+          price
+          customizableOptions {
+            edges {
+              node {
+                _id
+                type
+                isRequired
+                maxCharacters
+                customizableOptionPrices {
+                  edges {
+                    node {
+                      _id
+                      label
+                      price
+                      formattedPrice
+                      sortOrder
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    variables: |
+      {
+        "id": 2977
+      }
+    response: |
+      {
+        "data": {
+          "product": {
+            "id": "/api/shop/products/2977",
+            "name": "Simple Customizable options",
+            "sku": "testcustomizeoption",
+            "price": "24",
+            "customizableOptions": {
+              "edges": [
+                {
+                  "node": {
+                    "_id": 9,
+                    "type": "select",
+                    "isRequired": "0",
+                    "maxCharacters": null,
+                    "customizableOptionPrices": {
+                      "edges": [
+                        { "node": { "_id": 9, "label": "1kg", "price": "10", "formattedPrice": "$10.00", "sortOrder": 0 } },
+                        { "node": { "_id": 10, "label": "2kg", "price": "20", "formattedPrice": "$20.00", "sortOrder": 1 } }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "node": {
+                    "_id": 10,
+                    "type": "select",
+                    "isRequired": "1",
+                    "maxCharacters": null,
+                    "customizableOptionPrices": {
+                      "edges": [
+                        { "node": { "_id": 11, "label": "Chocolate", "price": "10", "formattedPrice": "$10.00", "sortOrder": 0 } },
+                        { "node": { "_id": 12, "label": "Pineapple", "price": "20", "formattedPrice": "$20.00", "sortOrder": 1 } }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    commonErrors:
+      - error: PRODUCT_NOT_FOUND
+        cause: Provided product ID does not exist
+        solution: Verify the product ID exists
 ---
 
 # Single Product
@@ -113615,6 +113801,59 @@ examples:
       - error: 422 Validation Error
         cause: Quantity below 1, or required options missing for the product type
         solution: Send a valid quantity and the option fields required by the product type (see below).
+  - id: add-customizable
+    title: Simple Product - Customizable Options
+    description: Add a product that has customizable options. Send customizableOptions — see the Customizable options section below.
+    request: |
+      POST /api/shop/add-product-in-cart
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxxxxxxxxxxxxx
+      Authorization: Bearer <token>
+
+      {
+        "productId": 2977,
+        "quantity": 1,
+        "customizableOptions": { "9": [9], "10": [12] }
+      }
+    response: |
+      {
+        "id": 6895,
+        "cartToken": "6895",
+        "customerId": 19,
+        "channelId": 1,
+        "itemsCount": 1,
+        "items": [
+          {
+            "id": 7769,
+            "cartId": 6895,
+            "productId": 2977,
+            "name": "Simple Customizable options",
+            "sku": "testcustomizeoption",
+            "quantity": 1,
+            "price": 54,
+            "total": 54,
+            "type": "simple",
+            "options": [
+              { "option_label": "1kg", "attribute_name": "Weight Select", "attribute_type": "select" },
+              { "option_label": "Pineapple", "attribute_name": "Flavour", "attribute_type": "select" }
+            ],
+            "formattedPrice": "$54.00",
+            "formattedTotal": "$54.00",
+            "canChangeQty": true
+          }
+        ],
+        "subtotal": 54,
+        "grandTotal": 54,
+        "formattedSubtotal": "$54.00",
+        "formattedGrandTotal": "$54.00",
+        "couponCode": null,
+        "success": true,
+        "message": "Product added to cart successfully."
+      }
+    commonErrors:
+      - error: 422 Validation Error
+        cause: A required customizable option was omitted
+        solution: Include every option whose isRequired is true (from the product's customizableOptions)
 
 ---
 
@@ -113654,8 +113893,21 @@ All types take `productId` and `quantity`. Add the fields for the product's type
 | `bundleOptionQty` | object | bundle | `{ "<optionId>": <qty> }` — quantity per bundle option |
 | `groupedQty` | object | grouped | `{ "<associatedProductId>": <qty> }` — include every associated product |
 | `links` | array | downloadable | `[<linkId>, …]` — selected download-link IDs |
+| `customizableOptions` | object | simple / virtual / downloadable | `{ "<optionId>": [<valueId>, …] }` — chosen customizable-option values. See below. |
 
 The option IDs (variant product IDs, bundle-option-product IDs, associated product IDs, link IDs) come from the **product detail** response — fetch the product first to discover them. The product, variant, and bundle-option products must be **active and in stock**, or the item is rejected.
+
+### Customizable options
+
+Customizable options are extra inputs a merchant attaches to a product (a weight dropdown, a flavour picker, an engraving text field). They are **not** limited to configurable products — a **simple, virtual, or downloadable** product can carry them. Read them from the product's `customizableOptions` ([Get Product](/api/rest-api/shop/products/get-product)): each option has an `id` and a `prices` array whose entries each have an `id` (the value id), and `isRequired` marks the mandatory ones.
+
+Send the selections as `customizableOptions` — a map of option `id` → an **array** of chosen value `id`s:
+
+```json
+"customizableOptions": { "9": [9], "10": [12] }
+```
+
+Option `9` (Weight) → value `9` (1kg); option `10` (Flavour) → value `12` (Pineapple). The array form supports multi-select; for a text/textarea option the array holds the entered string. Include every option whose `isRequired` is `true`, or the request returns `422`. The chosen values come back on the cart item's `options` so you can show them on the cart page.
 
 > Use the example dropdown (top-right) to see the exact body for each product type.
 
@@ -124974,6 +125226,48 @@ examples:
               "same_slot_all_days": 1,
               "slots": [{ "from": "09:00 AM", "to": "06:00 PM" }]
             }
+          }
+        ]
+      }
+    commonErrors:
+      - error: 404 Not Found
+        cause: No product with the given `{id}` exists
+        solution: List products via `GET /api/shop/products`.
+  - id: get-product-with-customizable-options
+    title: Get Simple Product with Customizable Options
+    description: A product's `customizableOptions`. Each option carries an `id` and a `prices` array whose entries each carry an `id` (a selectable value id) — you send these back when adding to cart (see Add to Cart).
+    request: |
+      GET /api/shop/products/2977
+      X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx
+    response: |
+      {
+        "id": 2977,
+        "name": "Simple Customizable options",
+        "sku": "testcustomizeoption",
+        "type": "simple",
+        "price": 24,
+        "customizableOptions": [
+          {
+            "id": 9,
+            "type": "select",
+            "isRequired": false,
+            "sortOrder": 0,
+            "label": "Weight Select",
+            "prices": [
+              { "id": 9,  "label": "1kg", "price": 10, "priceType": null, "sortOrder": 0 },
+              { "id": 10, "label": "2kg", "price": 20, "priceType": null, "sortOrder": 1 }
+            ]
+          },
+          {
+            "id": 10,
+            "type": "select",
+            "isRequired": true,
+            "sortOrder": 1,
+            "label": "Flavour",
+            "prices": [
+              { "id": 11, "label": "Chocolate", "price": 10, "priceType": null, "sortOrder": 0 },
+              { "id": 12, "label": "Pineapple", "price": 20, "priceType": null, "sortOrder": 1 }
+            ]
           }
         ]
       }

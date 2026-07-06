@@ -145,6 +145,48 @@ examples:
       - error: 404 Not Found
         cause: No product with the given `{id}` exists
         solution: List products via `GET /api/shop/products`.
+  - id: get-product-with-customizable-options
+    title: Get Simple Product with Customizable Options
+    description: A product's `customizableOptions`. Each option carries an `id` and a `prices` array whose entries each carry an `id` (a selectable value id) — you send these back when adding to cart (see Add to Cart).
+    request: |
+      GET /api/shop/products/2977
+      X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx
+    response: |
+      {
+        "id": 2977,
+        "name": "Simple Customizable options",
+        "sku": "testcustomizeoption",
+        "type": "simple",
+        "price": 24,
+        "customizableOptions": [
+          {
+            "id": 9,
+            "type": "select",
+            "isRequired": false,
+            "sortOrder": 0,
+            "label": "Weight Select",
+            "prices": [
+              { "id": 9,  "label": "1kg", "price": 10, "priceType": null, "sortOrder": 0 },
+              { "id": 10, "label": "2kg", "price": 20, "priceType": null, "sortOrder": 1 }
+            ]
+          },
+          {
+            "id": 10,
+            "type": "select",
+            "isRequired": true,
+            "sortOrder": 1,
+            "label": "Flavour",
+            "prices": [
+              { "id": 11, "label": "Chocolate", "price": 10, "priceType": null, "sortOrder": 0 },
+              { "id": 12, "label": "Pineapple", "price": 20, "priceType": null, "sortOrder": 1 }
+            ]
+          }
+        ]
+      }
+    commonErrors:
+      - error: 404 Not Found
+        cause: No product with the given `{id}` exists
+        solution: List products via `GET /api/shop/products`.
 
 ---
 
