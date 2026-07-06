@@ -1510,8 +1510,24 @@ examples:
                     "maxCharacters": null,
                     "customizableOptionPrices": {
                       "edges": [
-                        { "node": { "_id": 9, "label": "1kg", "price": "10", "formattedPrice": "$10.00", "sortOrder": 0 } },
-                        { "node": { "_id": 10, "label": "2kg", "price": "20", "formattedPrice": "$20.00", "sortOrder": 1 } }
+                        {
+                          "node": {
+                            "_id": 9,
+                            "label": "1kg",
+                            "price": "10",
+                            "formattedPrice": "$10.00",
+                            "sortOrder": 0
+                          }
+                        },
+                        {
+                          "node": {
+                            "_id": 10,
+                            "label": "2kg",
+                            "price": "20",
+                            "formattedPrice": "$20.00",
+                            "sortOrder": 1
+                          }
+                        }
                       ]
                     }
                   }
@@ -1524,8 +1540,24 @@ examples:
                     "maxCharacters": null,
                     "customizableOptionPrices": {
                       "edges": [
-                        { "node": { "_id": 11, "label": "Chocolate", "price": "10", "formattedPrice": "$10.00", "sortOrder": 0 } },
-                        { "node": { "_id": 12, "label": "Pineapple", "price": "20", "formattedPrice": "$20.00", "sortOrder": 1 } }
+                        {
+                          "node": {
+                            "_id": 11,
+                            "label": "Chocolate",
+                            "price": "10",
+                            "formattedPrice": "$10.00",
+                            "sortOrder": 0
+                          }
+                        },
+                        {
+                          "node": {
+                            "_id": 12,
+                            "label": "Pineapple",
+                            "price": "20",
+                            "formattedPrice": "$20.00",
+                            "sortOrder": 1
+                          }
+                        }
                       ]
                     }
                   }

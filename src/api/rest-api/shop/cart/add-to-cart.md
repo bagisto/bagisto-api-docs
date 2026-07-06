@@ -240,8 +240,16 @@ examples:
             "total": 54,
             "type": "simple",
             "options": [
-              { "option_label": "1kg", "attribute_name": "Weight Select", "attribute_type": "select" },
-              { "option_label": "Pineapple", "attribute_name": "Flavour", "attribute_type": "select" }
+              {
+                "option_label": "1kg",
+                "attribute_name": "Weight Select",
+                "attribute_type": "select"
+              },
+              {
+                "option_label": "Pineapple",
+                "attribute_name": "Flavour",
+                "attribute_type": "select"
+              }
             ],
             "formattedPrice": "$54.00",
             "formattedTotal": "$54.00",

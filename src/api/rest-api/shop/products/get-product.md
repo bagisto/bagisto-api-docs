@@ -166,8 +166,20 @@ examples:
             "sortOrder": 0,
             "label": "Weight Select",
             "prices": [
-              { "id": 9,  "label": "1kg", "price": 10, "priceType": null, "sortOrder": 0 },
-              { "id": 10, "label": "2kg", "price": 20, "priceType": null, "sortOrder": 1 }
+              {
+                "id": 9,
+                "label": "1kg",
+                "price": 10,
+                "priceType": null,
+                "sortOrder": 0
+              },
+              {
+                "id": 10,
+                "label": "2kg",
+                "price": 20,
+                "priceType": null,
+                "sortOrder": 1
+              }
             ]
           },
           {
@@ -177,8 +189,20 @@ examples:
             "sortOrder": 1,
             "label": "Flavour",
             "prices": [
-              { "id": 11, "label": "Chocolate", "price": 10, "priceType": null, "sortOrder": 0 },
-              { "id": 12, "label": "Pineapple", "price": 20, "priceType": null, "sortOrder": 1 }
+              {
+                "id": 11,
+                "label": "Chocolate",
+                "price": 10,
+                "priceType": null,
+                "sortOrder": 0
+              },
+              {
+                "id": 12,
+                "label": "Pineapple",
+                "price": 20,
+                "priceType": null,
+                "sortOrder": 1
+              }
             ]
           }
         ]

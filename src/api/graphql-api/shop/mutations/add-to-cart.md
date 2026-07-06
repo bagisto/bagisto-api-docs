@@ -1949,15 +1949,7 @@ examples:
                   quantity
                   price
                   formattedPrice
-                  options {
-                    edges {
-                      node {
-                        option_label
-                        attribute_name
-                        attribute_type
-                      }
-                    }
-                  }
+                  options
                 }
               }
             }
@@ -1994,8 +1986,20 @@ examples:
                       "formattedPrice": "$54.00",
                       "options": {
                         "edges": [
-                          { "node": { "option_label": "1kg", "attribute_name": "Weight Select", "attribute_type": "select" } },
-                          { "node": { "option_label": "Pineapple", "attribute_name": "Flavour", "attribute_type": "select" } }
+                          {
+                            "node": {
+                              "option_label": "1kg",
+                              "attribute_name": "Weight Select",
+                              "attribute_type": "select"
+                            }
+                          },
+                          {
+                            "node": {
+                              "option_label": "Pineapple",
+                              "attribute_name": "Flavour",
+                              "attribute_type": "select"
+                            }
+                          }
                         ]
                       }
                     }

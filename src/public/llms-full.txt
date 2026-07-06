@@ -51147,15 +51147,7 @@ examples:
                   quantity
                   price
                   formattedPrice
-                  options {
-                    edges {
-                      node {
-                        option_label
-                        attribute_name
-                        attribute_type
-                      }
-                    }
-                  }
+                  options
                 }
               }
             }
@@ -51192,8 +51184,20 @@ examples:
                       "formattedPrice": "$54.00",
                       "options": {
                         "edges": [
-                          { "node": { "option_label": "1kg", "attribute_name": "Weight Select", "attribute_type": "select" } },
-                          { "node": { "option_label": "Pineapple", "attribute_name": "Flavour", "attribute_type": "select" } }
+                          {
+                            "node": {
+                              "option_label": "1kg",
+                              "attribute_name": "Weight Select",
+                              "attribute_type": "select"
+                            }
+                          },
+                          {
+                            "node": {
+                              "option_label": "Pineapple",
+                              "attribute_name": "Flavour",
+                              "attribute_type": "select"
+                            }
+                          }
                         ]
                       }
                     }
@@ -74966,8 +74970,24 @@ examples:
                     "maxCharacters": null,
                     "customizableOptionPrices": {
                       "edges": [
-                        { "node": { "_id": 9, "label": "1kg", "price": "10", "formattedPrice": "$10.00", "sortOrder": 0 } },
-                        { "node": { "_id": 10, "label": "2kg", "price": "20", "formattedPrice": "$20.00", "sortOrder": 1 } }
+                        {
+                          "node": {
+                            "_id": 9,
+                            "label": "1kg",
+                            "price": "10",
+                            "formattedPrice": "$10.00",
+                            "sortOrder": 0
+                          }
+                        },
+                        {
+                          "node": {
+                            "_id": 10,
+                            "label": "2kg",
+                            "price": "20",
+                            "formattedPrice": "$20.00",
+                            "sortOrder": 1
+                          }
+                        }
                       ]
                     }
                   }
@@ -74980,8 +75000,24 @@ examples:
                     "maxCharacters": null,
                     "customizableOptionPrices": {
                       "edges": [
-                        { "node": { "_id": 11, "label": "Chocolate", "price": "10", "formattedPrice": "$10.00", "sortOrder": 0 } },
-                        { "node": { "_id": 12, "label": "Pineapple", "price": "20", "formattedPrice": "$20.00", "sortOrder": 1 } }
+                        {
+                          "node": {
+                            "_id": 11,
+                            "label": "Chocolate",
+                            "price": "10",
+                            "formattedPrice": "$10.00",
+                            "sortOrder": 0
+                          }
+                        },
+                        {
+                          "node": {
+                            "_id": 12,
+                            "label": "Pineapple",
+                            "price": "20",
+                            "formattedPrice": "$20.00",
+                            "sortOrder": 1
+                          }
+                        }
                       ]
                     }
                   }
@@ -113834,8 +113870,16 @@ examples:
             "total": 54,
             "type": "simple",
             "options": [
-              { "option_label": "1kg", "attribute_name": "Weight Select", "attribute_type": "select" },
-              { "option_label": "Pineapple", "attribute_name": "Flavour", "attribute_type": "select" }
+              {
+                "option_label": "1kg",
+                "attribute_name": "Weight Select",
+                "attribute_type": "select"
+              },
+              {
+                "option_label": "Pineapple",
+                "attribute_name": "Flavour",
+                "attribute_type": "select"
+              }
             ],
             "formattedPrice": "$54.00",
             "formattedTotal": "$54.00",
@@ -125254,8 +125298,20 @@ examples:
             "sortOrder": 0,
             "label": "Weight Select",
             "prices": [
-              { "id": 9,  "label": "1kg", "price": 10, "priceType": null, "sortOrder": 0 },
-              { "id": 10, "label": "2kg", "price": 20, "priceType": null, "sortOrder": 1 }
+              {
+                "id": 9,
+                "label": "1kg",
+                "price": 10,
+                "priceType": null,
+                "sortOrder": 0
+              },
+              {
+                "id": 10,
+                "label": "2kg",
+                "price": 20,
+                "priceType": null,
+                "sortOrder": 1
+              }
             ]
           },
           {
@@ -125265,8 +125321,20 @@ examples:
             "sortOrder": 1,
             "label": "Flavour",
             "prices": [
-              { "id": 11, "label": "Chocolate", "price": 10, "priceType": null, "sortOrder": 0 },
-              { "id": 12, "label": "Pineapple", "price": 20, "priceType": null, "sortOrder": 1 }
+              {
+                "id": 11,
+                "label": "Chocolate",
+                "price": 10,
+                "priceType": null,
+                "sortOrder": 0
+              },
+              {
+                "id": 12,
+                "label": "Pineapple",
+                "price": 20,
+                "priceType": null,
+                "sortOrder": 1
+              }
             ]
           }
         ]
