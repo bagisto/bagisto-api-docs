@@ -51128,7 +51128,7 @@ examples:
         solution: Choose a different time slot or date
   - id: add-product-with-customizable-options
     title: Simple Product - Customizable Options
-    description: Add a product that has customizable options. Send `customizableOptions` — see the Customizable Options section below.
+    description: Add a product with customizable options. Options 9 and 10 are selects (value ids). Option 11 is a file type — its value is a token from the upload endpoint (upload the file over REST first, then pass the token here). See the Customizable Options section below.
     query: |
       mutation createAddProductInCart($input: createAddProductInCartInput!) {
         createAddProductInCart(input: $input) {
@@ -51159,7 +51159,11 @@ examples:
         "input": {
           "productId": 2977,
           "quantity": 1,
-          "customizableOptions": { "9": [9], "10": [12] }
+          "customizableOptions": {
+            "9": [9],
+            "10": [12],
+            "11": ["<token-from-upload-endpoint>"]
+          }
         }
       }
     response: |
@@ -51253,7 +51257,7 @@ Authorization: Bearer <accessToken>
 | `bundleOptionQty` | `String` | Bundle only | JSON string mapping bundle option IDs to their quantities, e.g., `"{\"2\":3,\"3\":4}"`. Only applies to radio/select options; checkbox/multiselect quantities are fixed by admin. |
 | `booking` | `String` | Booking only | JSON string containing booking details. Structure varies by booking type (see [Booking Input Reference](#booking-input-reference) below). |
 | `bookingNote` | `String` | Table booking only | Special note or request for table bookings. Required for table booking type. |
-| `customizableOptions` | `Iterable` | Customizable products | Map of each customizable-option `_id` → array of chosen value `_id`s (from the product's `customizableOptions`), e.g. `{"9":[9],"10":[12]}`. Available on **simple, virtual, and downloadable** products. See [Customizable Options](#customizable-options). |
+| `customizableOptions` | `Iterable` | Customizable products | Map of each customizable-option `_id` → array of chosen value `_id`s (from the product's `customizableOptions`), e.g. `{"9":[9],"10":[12]}`. Available on **simple and virtual** products. See [Customizable Options](#customizable-options). |
 | `isBuyNow` | `Int` | No | Set to `1` for buy-now flow (creates a new cart for immediate checkout). Default: `0`. |
 
 ## Input Requirements by Product Type
@@ -51270,7 +51274,7 @@ Authorization: Bearer <accessToken>
 
 ## Customizable Options
 
-Customizable options are extra inputs a merchant attaches to a product (a weight dropdown, a flavour picker, an engraving text field, a file upload). They are **not** limited to configurable products — a **simple, virtual, or downloadable** product can carry them, and when it does the shopper must satisfy them before adding to cart.
+Customizable options are extra inputs an admin attaches to a product (a weight dropdown, a flavour picker, an engraving text field, a file upload). They are **not** limited to configurable products — a **simple or virtual** product can carry them, and when it does the shopper must satisfy them before adding to cart.
 
 **1. Read the options from the product.** [Get Product](/api/graphql-api/shop/queries/get-product) exposes `customizableOptions`. Each option node's `_id` is the option id; each price node's `_id` is a selectable value id. `isRequired: "1"` means the shopper must pick a value.
 
@@ -51286,6 +51290,16 @@ Here option `9` (Weight) → value `9` (1kg), option `10` (Flavour) → value `1
 - Include every option whose `isRequired` is `"1"` — omitting one returns a validation error.
 - The value ids must belong to that option (from its `customizableOptionPrices`).
 - The chosen values come back on the cart item's `options` (`option_label` / `attribute_name`) so you can render them on the cart page.
+
+### File-type options
+
+A `file`-type option needs a file upload, which cannot travel over GraphQL. Upload the file over REST first (it returns a token), then pass the token here as that option's value:
+
+```json
+"customizableOptions": { "9": [9], "10": [12], "11": ["<upload-token>"] }
+```
+
+The full flow, the upload endpoint, and the allowed file formats are on the **[Upload Customizable File](/api/graphql-api/shop/mutations/upload-customizable-file)** page.
 
 ## Booking Input Reference
 
@@ -51363,6 +51377,7 @@ The `options` field on each cart item contains product-specific selection detail
 - [Remove Cart Item](/api/graphql-api/shop/mutations/remove-cart-item) - Remove items from cart
 - [Get Cart](/api/graphql-api/shop/queries/get-cart) - Retrieve current cart state
 - [Single Product](/api/graphql-api/shop/queries/get-product) - Get product details and available options
+- [Upload Customizable File](/api/graphql-api/shop/mutations/upload-customizable-file) - The file-option flow: upload over REST, then reference the token in this mutation
 
 
 
@@ -58067,6 +58082,96 @@ When rating is outside the valid range (1-5).
 - [Get Product](/api/graphql-api/shop/queries/get-product) - Query product details
 - [Mutations Guide](/api/graphql-api/shop/mutations) - Overview of shop mutations
 - [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources
+
+
+
+---
+
+# Upload Customizable File
+URL: /api/graphql-api/shop/mutations/upload-customizable-file
+
+---
+outline: false
+examples:
+  - id: upload-then-add
+    title: Upload a File, then Add to Cart
+    description: A file-type customizable option needs a binary upload, which cannot travel over GraphQL. Upload the file over REST to get a token, then reference the token in the GraphQL add-to-cart mutation.
+    query: |
+      # Step 2 — upload the file over REST (binary cannot travel over GraphQL):
+      #
+      #   POST /api/shop/customizable-option-files   (multipart/form-data)
+      #   product_id=2977  option_id=11  file=@spec.pdf
+      #   → { "token": "…", "fileName": "spec.pdf", "optionId": 11 }
+      #
+      # Step 3 — add to cart over GraphQL with the token:
+      mutation createAddProductInCart($input: createAddProductInCartInput!) {
+        createAddProductInCart(input: $input) {
+          addProductInCart {
+            id
+            grandTotal
+            success
+            message
+          }
+        }
+      }
+    variables: |
+      {
+        "input": {
+          "productId": 2977,
+          "quantity": 1,
+          "customizableOptions": {
+            "9": [9],
+            "10": [12],
+            "11": ["<token-from-upload-endpoint>"]
+          }
+        }
+      }
+    response: |
+      {
+        "data": {
+          "createAddProductInCart": {
+            "addProductInCart": {
+              "id": "6895",
+              "grandTotal": 54,
+              "success": true,
+              "message": "Product added to cart successfully"
+            }
+          }
+        }
+      }
+
+---
+
+# Upload Customizable File
+
+A `file`-type customizable option (e.g. "upload your design") needs a binary file. **A file cannot travel over GraphQL**, so the upload itself is a REST call — but the rest of the flow stays in GraphQL. You upload once over REST to get a **token**, then reference the token in the GraphQL [Add to Cart](/api/graphql-api/shop/mutations/add-to-cart) mutation.
+
+## The flow
+
+```mermaid
+flowchart TD
+  read["1. Read option id"]
+  up["2. Upload (REST)"]
+  add["3. Add to cart"]
+  cart["File in cart"]
+  order["File to order"]
+  read --> up --> add --> cart --> order
+```
+
+1. **Read the option** from the product's `customizableOptions` ([Single Product](/api/graphql-api/shop/queries/get-product)) — a `file`-type option carries its `_id` and the allowed extensions.
+2. **Upload the file over REST** — `POST /api/shop/customizable-option-files` (multipart) with `product_id`, `option_id`, `file`. It returns a short-lived `token`. This is REST-only; see the [REST upload endpoint](/api/rest-api/shop/cart/upload-customizable-file) for the full request/response.
+3. **Add to cart over GraphQL** — pass the token as that option's value: `customizableOptions: { "11": ["<token>"] }`. The mutation carries only the token string.
+4. **Core owns the rest** — the file is stored with the cart, then moved to the order automatically at place-order.
+
+## Which file formats are allowed?
+
+There is no fixed API list — the **admin sets the allowed extensions per option** (the option's "Supported File Extensions", e.g. `pdf` or `jpg,png,pdf`). Read them from the product's `customizableOptions`; a mismatched extension is rejected at upload.
+
+## Related
+
+- [Add to Cart](/api/graphql-api/shop/mutations/add-to-cart) — reference the token here
+- [Single Product](/api/graphql-api/shop/queries/get-product) — read the customizable options
+- [REST upload endpoint](/api/rest-api/shop/cart/upload-customizable-file) — the actual multipart upload
 
 
 
@@ -88745,11 +88850,21 @@ numeric key is treated as an existing row id (and fails if it doesn't exist):
 | `booking` → `tickets` (event) | `ticket_*` |
 | `variants` (configurable) | the **existing** variant product id (numeric) |
 
-### Custom options are simple/virtual only
+### Customizable options (including file type)
 
 `customizable_options` (custom options) are a Bagisto **simple & virtual**-only
 feature — the edit form shows the Custom Options accordion only for those two
-types, and the API ignores the field on any other type.
+types, and the API ignores the field on any other type. Configurable, bundle,
+grouped, and downloadable products do not support them.
+
+Each option has a `type`: `text`, `textarea`, `select`, `multiselect`,
+`checkbox`, `radio`, `date`, `datetime`, `time`, or **`file`**. A `file` option
+also carries a **`supported_file_extensions`** value — a comma-separated list the
+admin defines (e.g. `pdf` or `jpg,png,pdf`). There is no fixed API list of
+formats; the allowed set is whatever that option specifies, and the storefront
+upload rejects any other extension. Storefront clients read these options (and
+their supported extensions) from the product's `customizableOptions` and upload a
+matching file via the shop [customizable-file upload endpoint](/api/rest-api/shop/cart/upload-customizable-file).
 
 ## Sub-resources are not updated here
 
@@ -113839,7 +113954,7 @@ examples:
         solution: Send a valid quantity and the option fields required by the product type (see below).
   - id: add-customizable
     title: Simple Product - Customizable Options
-    description: Add a product that has customizable options. Send customizableOptions — see the Customizable options section below.
+    description: Add a product with customizable options. Options 9 and 10 are selects (value ids). Option 11 is a file type — its value is a token from the upload endpoint (upload the file first, then pass the token). See the Customizable options section below.
     request: |
       POST /api/shop/add-product-in-cart
       Content-Type: application/json
@@ -113849,7 +113964,11 @@ examples:
       {
         "productId": 2977,
         "quantity": 1,
-        "customizableOptions": { "9": [9], "10": [12] }
+        "customizableOptions": {
+          "9": [9],
+          "10": [12],
+          "11": ["<token-from-upload-endpoint>"]
+        }
       }
     response: |
       {
@@ -113943,7 +114062,7 @@ The option IDs (variant product IDs, bundle-option-product IDs, associated produ
 
 ### Customizable options
 
-Customizable options are extra inputs a merchant attaches to a product (a weight dropdown, a flavour picker, an engraving text field). They are **not** limited to configurable products — a **simple, virtual, or downloadable** product can carry them. Read them from the product's `customizableOptions` ([Get Product](/api/rest-api/shop/products/get-product)): each option has an `id` and a `prices` array whose entries each have an `id` (the value id), and `isRequired` marks the mandatory ones.
+Customizable options are extra inputs an admin attaches to a product (a weight dropdown, a flavour picker, an engraving text field). They are **not** limited to configurable products — a **simple or virtual** product can carry them. Read them from the product's `customizableOptions` ([Get Product](/api/rest-api/shop/products/get-product)): each option has an `id` and a `prices` array whose entries each have an `id` (the value id), and `isRequired` marks the mandatory ones.
 
 Send the selections as `customizableOptions` — a map of option `id` → an **array** of chosen value `id`s:
 
@@ -113952,6 +114071,16 @@ Send the selections as `customizableOptions` — a map of option `id` → an **a
 ```
 
 Option `9` (Weight) → value `9` (1kg); option `10` (Flavour) → value `12` (Pineapple). The array form supports multi-select; for a text/textarea option the array holds the entered string. Include every option whose `isRequired` is `true`, or the request returns `422`. The chosen values come back on the cart item's `options` so you can show them on the cart page.
+
+#### File-type customizable options
+
+A `file`-type option needs a file upload, which cannot travel in a JSON body. Upload the file first at **[Upload Customizable File](/api/rest-api/shop/cart/upload-customizable-file)** (a separate REST call that returns a token), then send the token here as that option's value:
+
+```json
+"customizableOptions": { "9": [9], "10": [12], "11": ["<upload-token>"] }
+```
+
+The full flow, endpoint, and rules are on the [Upload Customizable File](/api/rest-api/shop/cart/upload-customizable-file) page.
 
 > Use the example dropdown (top-right) to see the exact body for each product type.
 
@@ -113982,6 +114111,8 @@ On success the endpoint returns the **full updated cart** (HTTP 200), not just t
 - [Get Cart](/api/rest-api/shop/cart/get-cart)
 - [Update Cart Item](/api/rest-api/shop/cart/update-cart-item)
 - [Remove Cart Item](/api/rest-api/shop/cart/remove-cart-item)
+- [Upload Customizable File](/api/rest-api/shop/cart/upload-customizable-file) — stage a file-option file, then reference the token here
+- [Get Product](/api/rest-api/shop/products/get-product) — read a product's customizable options and supported file extensions
 
 
 
@@ -114765,6 +114896,111 @@ PUT /api/shop/update-cart-item
 - [Get Cart](/api/rest-api/shop/cart/get-cart)
 - [Add to Cart](/api/rest-api/shop/cart/add-to-cart)
 - [Remove Cart Item](/api/rest-api/shop/cart/remove-cart-item)
+
+
+
+---
+
+# Upload Customizable-Option File
+URL: /api/rest-api/shop/cart/upload-customizable-file
+
+---
+outline: false
+examples:
+  - id: upload-customizable-file
+    title: Upload a Customizable-Option File
+    description: Stage a file for a file-type customizable option and get a token. Send the token on Add to Cart as customizableOptions with the option id.
+    request: |
+      POST /api/shop/customizable-option-files
+      Content-Type: multipart/form-data
+      X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxxxxxxxxxxxxx
+      Authorization: Bearer <token>
+
+      product_id=2977
+      option_id=11
+      file=@/path/to/spec.pdf
+    response: |
+      {
+        "token": "q8f2c1a0…48-char-token",
+        "fileName": "spec.pdf",
+        "optionId": 11
+      }
+    commonErrors:
+      - error: 400 Bad Request
+        cause: The option is not a file option, or the file is missing / wrong extension / too large
+        solution: Use a file option id and a file whose extension is in the option's supported list
+      - error: 403 Forbidden
+        cause: The staged file is referenced by a different cart on Add to Cart
+        solution: Upload the file with the same cart/customer token you use for Add to Cart
+      - error: 404 Not Found
+        cause: The product id does not exist
+        solution: Use a valid product id
+
+---
+
+# Upload Customizable-Option File
+
+Stage a file for a **file-type** customizable option. A file cannot travel in a JSON body, so uploading is a separate REST call that returns a short-lived **token**; [Add to Cart](/api/rest-api/shop/cart/add-to-cart) then references the token. This keeps Add to Cart pure JSON, so it works on both REST and GraphQL.
+
+## The flow
+
+```mermaid
+flowchart TD
+  read["1. Read option id"]
+  up["2. Upload (REST)"]
+  add["3. Add to cart"]
+  cart["File in cart"]
+  order["File to order"]
+  read --> up --> add --> cart --> order
+```
+
+1. **Read the option** from the product's `customizableOptions` ([Get Product](/api/rest-api/shop/products/get-product)) — a `file`-type option carries its `id` and the allowed extensions.
+2. **Upload the file here** (this endpoint) → you get a short-lived `token`. This is the only REST-required step; GraphQL cannot carry a binary.
+3. **Add to cart** with the token as that option's value — over [REST](/api/rest-api/shop/cart/add-to-cart) or GraphQL. The mutation carries only the token string.
+4. **Core owns the rest** — the file is stored with the cart, then moved to the order automatically when the order is placed.
+
+## Endpoint
+
+```
+POST /api/shop/customizable-option-files
+```
+
+## Request (multipart/form-data)
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `product_id` | integer | Yes | The product that owns the option |
+| `option_id` | integer | Yes | The `file`-type customizable option id (from the product's `customizableOptions`) |
+| `file` | file | Yes | The file — its extension must be in the option's supported extensions and within the size limit |
+
+Send the storefront key and the same cart/customer Bearer token you will use for Add to Cart.
+
+## Response (201)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `token` | string | Short-lived reference to the staged file |
+| `fileName` | string | The original file name |
+| `optionId` | integer | The option the file is for |
+
+## Then add to cart
+
+Send the token as the option's value on [Add to Cart](/api/rest-api/shop/cart/add-to-cart):
+
+```json
+"customizableOptions": { "11": ["<token>"] }
+```
+
+## Notes
+
+- The token expires after a short window (default 60 minutes). If it expires, upload again.
+- The file is stored with the cart on Add to Cart and is moved to the order automatically when the order is placed — you do not save it separately.
+- The upload is **REST-only** (binary); Add to Cart with the token works on REST and GraphQL.
+
+## Related Resources
+
+- [Add to Cart](/api/rest-api/shop/cart/add-to-cart)
+- [Get Product](/api/rest-api/shop/products/get-product)
 
 
 
@@ -130279,12 +130515,12 @@ Mirror the admin panel — **don't send the whole product in one call.**
 
 ```mermaid
 flowchart TD
-  fam[Pick attribute family] --> step1[POST create-product<br/>sku + attribute_family_id + type]
-  step1 -->|configurable| sa[super_attributes required<br/>backend generates variant matrix]
-  step1 --> row[Barebones product row]
+  fam["Pick attribute family"] --> step1["Step 1: create<br/>sku + family + type"]
+  step1 -->|configurable| sa["super_attributes<br/>→ variant matrix"]
+  step1 --> row["Barebones row"]
   sa --> row
-  row --> step2[PUT update-product<br/>fill family attributes, structures, categories]
-  step2 --> subs[Sub-panels: images / inventory / prices]
+  row --> step2["Step 2: update<br/>attributes + structures"]
+  step2 --> subs["Sub-panels:<br/>images / inventory / prices"]
 ```
 
 1. **Step 1 — [Create](/api/rest-api/admin/catalog/products/create)** (`POST /api/admin/catalog/products`). Body `{ sku, attribute_family_id, type? }` (`type` defaults `simple`). Validates `sku` (required, unique, slug-safe) and `attribute_family_id` (required, exists). Creates a barebones row.
@@ -130368,6 +130604,25 @@ Each is parent-scoped under `/catalog/products/{productId}/…` and mirrors a ta
 | **Inventory** | [list](/api/rest-api/admin/catalog/products/inventories-list) (`meta.totalQty` sums sources) · [bulk update](/api/rest-api/admin/catalog/products/inventories-update) (`{ inventories: { sourceId: qty } }`; omitted sources untouched, `qty=0` zeroes) |
 | **Customer-group prices** | [list](/api/rest-api/admin/catalog/products/customer-group-prices-list) · [create](/api/rest-api/admin/catalog/products/customer-group-prices-create) · [update](/api/rest-api/admin/catalog/products/customer-group-prices-update) · [delete](/api/rest-api/admin/catalog/products/customer-group-prices-delete) (`{ qty, value_type: fixed\|discount, value, customer_group_id }`; null group = all groups; `(qty, group)` unique) |
 | **Downloadable** | [file upload](/api/rest-api/admin/catalog/products/downloadable-upload) · [download](/api/rest-api/admin/catalog/products/downloadable-download) (REST binary) |
+
+## Managing images, videos & files — the flow
+
+Uploads follow **two different patterns**. Getting this right matters, because one saves immediately and the other needs a follow-up product update.
+
+```mermaid
+flowchart TD
+  edit["Editing a product"] --> imgvid["Images / Videos<br/>upload (multipart, REST)"]
+  imgvid --> saved["Saved immediately<br/>row inserted + file stored"]
+  edit --> dl["Downloadable file<br/>upload (multipart, REST)"]
+  dl --> path["Returns a path"]
+  path --> upd["Update product (PUT)<br/>set the path on the link/sample"]
+  edit --> variant["Variant image<br/>upload to the variant's product id"]
+```
+
+- **Images & videos are one-step.** The upload endpoint **inserts the row and stores the file immediately** and returns the created record. There is no "save it in the product update" step — the upload *is* the save. To change one: delete + re-upload (or reorder images).
+- **Downloadable files are two-step.** The upload endpoint only **stores the file and returns a `path`**. You then set that `path` on the link/sample in the **product update** (`PUT`). This is the only media flow that rides along with the product update.
+- **Variant images** attach to the variant, and a configurable variant is its **own product** — upload to `POST /catalog/products/{variantId}/images` using the variant's id.
+- **A GraphQL admin client uses REST only for the binary.** All uploads are REST multipart (a file cannot travel in GraphQL); reading, reordering, and deleting work over GraphQL. The GraphQL upload mutation is a placeholder that rejects with a pointer to REST.
 
 ## Copy & mass-actions
 

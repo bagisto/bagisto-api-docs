@@ -66,6 +66,9 @@ export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
 
   return withMermaid({
+  mermaid: {
+    flowchart: { htmlLabels: false, useMaxWidth: false },
+  },
   ignoreDeadLinks: true,
   lang: 'en-US',
   title: "Bagisto",
@@ -431,6 +434,7 @@ export default defineConfig(({ command, mode }) => {
                               { text: 'UpdateCartItem', link: '/api/graphql-api/shop/mutations/update-cart-item' },
                               { text: 'RemoveCartItem', link: '/api/graphql-api/shop/mutations/remove-cart-item' },
                               { text: 'Merge Cart', link: '/api/graphql-api/shop/mutations/merge-cart' },
+                              { text: 'Upload Customizable File', link: '/api/graphql-api/shop/mutations/upload-customizable-file' },
                               { text: 'ApplyCoupon', link: '/api/graphql-api/shop/mutations/apply-coupon' },
                               { text: 'RemoveCoupon', link: '/api/graphql-api/shop/mutations/remove-coupon' },
                             ]
@@ -1349,6 +1353,7 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Apply Coupon', link: '/api/rest-api/shop/cart/apply-coupon' },
                           { text: 'Remove Coupon', link: '/api/rest-api/shop/cart/remove-coupon' },
                           { text: 'Merge Cart', link: '/api/rest-api/shop/cart/merge-cart' },
+                          { text: 'Upload Customizable File', link: '/api/rest-api/shop/cart/upload-customizable-file' },
                     ]
                   },
                   {

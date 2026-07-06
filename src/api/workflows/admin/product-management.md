@@ -42,12 +42,12 @@ Mirror the admin panel — **don't send the whole product in one call.**
 
 ```mermaid
 flowchart TD
-  fam[Pick attribute family] --> step1[POST create-product<br/>sku + attribute_family_id + type]
-  step1 -->|configurable| sa[super_attributes required<br/>backend generates variant matrix]
-  step1 --> row[Barebones product row]
+  fam["Pick attribute family"] --> step1["Step 1: create<br/>sku + family + type"]
+  step1 -->|configurable| sa["super_attributes<br/>→ variant matrix"]
+  step1 --> row["Barebones row"]
   sa --> row
-  row --> step2[PUT update-product<br/>fill family attributes, structures, categories]
-  step2 --> subs[Sub-panels: images / inventory / prices]
+  row --> step2["Step 2: update<br/>attributes + structures"]
+  step2 --> subs["Sub-panels:<br/>images / inventory / prices"]
 ```
 
 1. **Step 1 — [Create](/api/rest-api/admin/catalog/products/create)** (`POST /api/admin/catalog/products`). Body `{ sku, attribute_family_id, type? }` (`type` defaults `simple`). Validates `sku` (required, unique, slug-safe) and `attribute_family_id` (required, exists). Creates a barebones row.
@@ -131,6 +131,25 @@ Each is parent-scoped under `/catalog/products/{productId}/…` and mirrors a ta
 | **Inventory** | [list](/api/rest-api/admin/catalog/products/inventories-list) (`meta.totalQty` sums sources) · [bulk update](/api/rest-api/admin/catalog/products/inventories-update) (`{ inventories: { sourceId: qty } }`; omitted sources untouched, `qty=0` zeroes) |
 | **Customer-group prices** | [list](/api/rest-api/admin/catalog/products/customer-group-prices-list) · [create](/api/rest-api/admin/catalog/products/customer-group-prices-create) · [update](/api/rest-api/admin/catalog/products/customer-group-prices-update) · [delete](/api/rest-api/admin/catalog/products/customer-group-prices-delete) (`{ qty, value_type: fixed\|discount, value, customer_group_id }`; null group = all groups; `(qty, group)` unique) |
 | **Downloadable** | [file upload](/api/rest-api/admin/catalog/products/downloadable-upload) · [download](/api/rest-api/admin/catalog/products/downloadable-download) (REST binary) |
+
+## Managing images, videos & files — the flow
+
+Uploads follow **two different patterns**. Getting this right matters, because one saves immediately and the other needs a follow-up product update.
+
+```mermaid
+flowchart TD
+  edit["Editing a product"] --> imgvid["Images / Videos<br/>upload (multipart, REST)"]
+  imgvid --> saved["Saved immediately<br/>row inserted + file stored"]
+  edit --> dl["Downloadable file<br/>upload (multipart, REST)"]
+  dl --> path["Returns a path"]
+  path --> upd["Update product (PUT)<br/>set the path on the link/sample"]
+  edit --> variant["Variant image<br/>upload to the variant's product id"]
+```
+
+- **Images & videos are one-step.** The upload endpoint **inserts the row and stores the file immediately** and returns the created record. There is no "save it in the product update" step — the upload *is* the save. To change one: delete + re-upload (or reorder images).
+- **Downloadable files are two-step.** The upload endpoint only **stores the file and returns a `path`**. You then set that `path` on the link/sample in the **product update** (`PUT`). This is the only media flow that rides along with the product update.
+- **Variant images** attach to the variant, and a configurable variant is its **own product** — upload to `POST /catalog/products/{variantId}/images` using the variant's id.
+- **A GraphQL admin client uses REST only for the binary.** All uploads are REST multipart (a file cannot travel in GraphQL); reading, reordering, and deleting work over GraphQL. The GraphQL upload mutation is a placeholder that rejects with a pointer to REST.
 
 ## Copy & mass-actions
 
