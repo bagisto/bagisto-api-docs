@@ -694,7 +694,7 @@
 - [Single CMS Page](/api/graphql-api/shop/queries/get-page): Retrieve a single CMS page by its IRI-style ID, including full translation details.
 - [CMS Pages](/api/graphql-api/shop/queries/get-pages): Retrieve all CMS pages with their translation details using cursor-based pagination.
 - [Get Payment Methods](/api/graphql-api/shop/queries/get-payment-methods): Retrieve available payment methods for checkout.
-- [Single Product](/api/graphql-api/shop/queries/get-product): Retrieve product information using the product ID. `isInWishlist` and `isInCompare` indicate whether the signed-in customer has this product in their wishlist…
+- [Single Product](/api/graphql-api/shop/queries/get-product): Retrieve a single product by its ID. `isInWishlist` / `isInCompare` need the customer Bearer token — see the field notes below.
 - [Product Reviews](/api/graphql-api/shop/queries/get-product-reviews): Retrieve product reviews with basic fields and pagination.
 - [Get Products](/api/graphql-api/shop/queries/get-products): For a signed-in customer, every product carries `isInWishlist` and `isInCompare`, so you can highlight the wishlist / compare icon directly on each product…
 - [Get Shipping Methods](/api/graphql-api/shop/queries/get-shipping-methods): Retrieve available shipping methods for checkout.
