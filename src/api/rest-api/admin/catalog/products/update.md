@@ -655,11 +655,21 @@ numeric key is treated as an existing row id (and fails if it doesn't exist):
 | `booking` → `tickets` (event) | `ticket_*` |
 | `variants` (configurable) | the **existing** variant product id (numeric) |
 
-### Custom options are simple/virtual only
+### Customizable options (including file type)
 
 `customizable_options` (custom options) are a Bagisto **simple & virtual**-only
 feature — the edit form shows the Custom Options accordion only for those two
-types, and the API ignores the field on any other type.
+types, and the API ignores the field on any other type. Configurable, bundle,
+grouped, and downloadable products do not support them.
+
+Each option has a `type`: `text`, `textarea`, `select`, `multiselect`,
+`checkbox`, `radio`, `date`, `datetime`, `time`, or **`file`**. A `file` option
+also carries a **`supported_file_extensions`** value — a comma-separated list the
+admin defines (e.g. `pdf` or `jpg,png,pdf`). There is no fixed API list of
+formats; the allowed set is whatever that option specifies, and the storefront
+upload rejects any other extension. Storefront clients read these options (and
+their supported extensions) from the product's `customizableOptions` and upload a
+matching file via the shop [customizable-file upload endpoint](/api/rest-api/shop/cart/upload-customizable-file).
 
 ## Sub-resources are not updated here
 

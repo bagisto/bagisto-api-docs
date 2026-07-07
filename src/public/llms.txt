@@ -644,6 +644,7 @@
 - [Update Customer Address](/api/graphql-api/shop/mutations/update-customer-address): Update an existing customer address.
 - [Update Customer Profile](/api/graphql-api/shop/mutations/update-customer-profile): Update the authenticated customer's profile information.
 - [Update Product Review](/api/graphql-api/shop/mutations/update-product-review): Update basic product review information like title and comment.
+- [Upload Customizable File](/api/graphql-api/shop/mutations/upload-customizable-file): A file-type customizable option needs a binary upload, which cannot travel over GraphQL. Upload the file over REST to get a token, then reference the token in…
 
 ## GraphQL API › Shop › Newsletter
 
@@ -1242,6 +1243,7 @@
 - [Remove Cart Item](/api/rest-api/shop/cart/remove-cart-item): Remove a product from the shopping cart.
 - [Remove Coupon](/api/rest-api/shop/cart/remove-coupon): Remove a discount coupon code from the shopping cart.
 - [Update Cart Item](/api/rest-api/shop/cart/update-cart-item): Update quantity or attributes of an item in cart.
+- [Upload Customizable-Option File](/api/rest-api/shop/cart/upload-customizable-file): Stage a file for a file-type customizable option and get a token. Send the token on Add to Cart as customizableOptions with the option id.
 
 ## REST API › Shop › Categories
 

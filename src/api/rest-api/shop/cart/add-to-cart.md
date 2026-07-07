@@ -209,7 +209,7 @@ examples:
         solution: Send a valid quantity and the option fields required by the product type (see below).
   - id: add-customizable
     title: Simple Product - Customizable Options
-    description: Add a product that has customizable options. Send customizableOptions — see the Customizable options section below.
+    description: Add a product with customizable options. Options 9 and 10 are selects (value ids). Option 11 is a file type — its value is a token from the upload endpoint (upload the file first, then pass the token). See the Customizable options section below.
     request: |
       POST /api/shop/add-product-in-cart
       Content-Type: application/json
@@ -219,7 +219,11 @@ examples:
       {
         "productId": 2977,
         "quantity": 1,
-        "customizableOptions": { "9": [9], "10": [12] }
+        "customizableOptions": {
+          "9": [9],
+          "10": [12],
+          "11": ["<token-from-upload-endpoint>"]
+        }
       }
     response: |
       {
@@ -313,7 +317,7 @@ The option IDs (variant product IDs, bundle-option-product IDs, associated produ
 
 ### Customizable options
 
-Customizable options are extra inputs a merchant attaches to a product (a weight dropdown, a flavour picker, an engraving text field). They are **not** limited to configurable products — a **simple, virtual, or downloadable** product can carry them. Read them from the product's `customizableOptions` ([Get Product](/api/rest-api/shop/products/get-product)): each option has an `id` and a `prices` array whose entries each have an `id` (the value id), and `isRequired` marks the mandatory ones.
+Customizable options are extra inputs an admin attaches to a product (a weight dropdown, a flavour picker, an engraving text field). They are **not** limited to configurable products — a **simple or virtual** product can carry them. Read them from the product's `customizableOptions` ([Get Product](/api/rest-api/shop/products/get-product)): each option has an `id` and a `prices` array whose entries each have an `id` (the value id), and `isRequired` marks the mandatory ones.
 
 Send the selections as `customizableOptions` — a map of option `id` → an **array** of chosen value `id`s:
 
@@ -322,6 +326,16 @@ Send the selections as `customizableOptions` — a map of option `id` → an **a
 ```
 
 Option `9` (Weight) → value `9` (1kg); option `10` (Flavour) → value `12` (Pineapple). The array form supports multi-select; for a text/textarea option the array holds the entered string. Include every option whose `isRequired` is `true`, or the request returns `422`. The chosen values come back on the cart item's `options` so you can show them on the cart page.
+
+#### File-type customizable options
+
+A `file`-type option needs a file upload, which cannot travel in a JSON body. Upload the file first at **[Upload Customizable File](/api/rest-api/shop/cart/upload-customizable-file)** (a separate REST call that returns a token), then send the token here as that option's value:
+
+```json
+"customizableOptions": { "9": [9], "10": [12], "11": ["<upload-token>"] }
+```
+
+The full flow, endpoint, and rules are on the [Upload Customizable File](/api/rest-api/shop/cart/upload-customizable-file) page.
 
 > Use the example dropdown (top-right) to see the exact body for each product type.
 
@@ -352,3 +366,5 @@ On success the endpoint returns the **full updated cart** (HTTP 200), not just t
 - [Get Cart](/api/rest-api/shop/cart/get-cart)
 - [Update Cart Item](/api/rest-api/shop/cart/update-cart-item)
 - [Remove Cart Item](/api/rest-api/shop/cart/remove-cart-item)
+- [Upload Customizable File](/api/rest-api/shop/cart/upload-customizable-file) — stage a file-option file, then reference the token here
+- [Get Product](/api/rest-api/shop/products/get-product) — read a product's customizable options and supported file extensions

@@ -527,23 +527,14 @@
   transition: width 0.3s ease, max-width 0.3s ease, min-width 0.3s ease;
 }
 
-/* Mermaid diagram labels — stop descenders (g, p, y) and text being clipped */
+/* Mermaid diagram labels — only give descenders (g, p, y) room. Do NOT override
+   line-height/padding: Mermaid measures the label to size the box, and forcing a
+   taller line-height makes the text overflow the box it computed. */
 .mermaid foreignObject {
   overflow: visible;
-}
-.mermaid .nodeLabel,
-.mermaid .edgeLabel,
-.mermaid .cluster-label,
-.mermaid span.nodeLabel,
-.mermaid .label {
-  line-height: 1.5 !important;
-  overflow: visible !important;
-  white-space: normal !important;
 }
 .mermaid .nodeLabel p,
 .mermaid .edgeLabel p,
 .mermaid .label p {
   margin: 0;
-  line-height: 1.5 !important;
-  padding-bottom: 2px;
 }

@@ -1930,7 +1930,7 @@ examples:
         solution: Choose a different time slot or date
   - id: add-product-with-customizable-options
     title: Simple Product - Customizable Options
-    description: Add a product that has customizable options. Send `customizableOptions` — see the Customizable Options section below.
+    description: Add a product with customizable options. Options 9 and 10 are selects (value ids). Option 11 is a file type — its value is a token from the upload endpoint (upload the file over REST first, then pass the token here). See the Customizable Options section below.
     query: |
       mutation createAddProductInCart($input: createAddProductInCartInput!) {
         createAddProductInCart(input: $input) {
@@ -1961,7 +1961,11 @@ examples:
         "input": {
           "productId": 2977,
           "quantity": 1,
-          "customizableOptions": { "9": [9], "10": [12] }
+          "customizableOptions": {
+            "9": [9],
+            "10": [12],
+            "11": ["<token-from-upload-endpoint>"]
+          }
         }
       }
     response: |
@@ -2055,7 +2059,7 @@ Authorization: Bearer <accessToken>
 | `bundleOptionQty` | `String` | Bundle only | JSON string mapping bundle option IDs to their quantities, e.g., `"{\"2\":3,\"3\":4}"`. Only applies to radio/select options; checkbox/multiselect quantities are fixed by admin. |
 | `booking` | `String` | Booking only | JSON string containing booking details. Structure varies by booking type (see [Booking Input Reference](#booking-input-reference) below). |
 | `bookingNote` | `String` | Table booking only | Special note or request for table bookings. Required for table booking type. |
-| `customizableOptions` | `Iterable` | Customizable products | Map of each customizable-option `_id` → array of chosen value `_id`s (from the product's `customizableOptions`), e.g. `{"9":[9],"10":[12]}`. Available on **simple, virtual, and downloadable** products. See [Customizable Options](#customizable-options). |
+| `customizableOptions` | `Iterable` | Customizable products | Map of each customizable-option `_id` → array of chosen value `_id`s (from the product's `customizableOptions`), e.g. `{"9":[9],"10":[12]}`. Available on **simple and virtual** products. See [Customizable Options](#customizable-options). |
 | `isBuyNow` | `Int` | No | Set to `1` for buy-now flow (creates a new cart for immediate checkout). Default: `0`. |
 
 ## Input Requirements by Product Type
@@ -2072,7 +2076,7 @@ Authorization: Bearer <accessToken>
 
 ## Customizable Options
 
-Customizable options are extra inputs a merchant attaches to a product (a weight dropdown, a flavour picker, an engraving text field, a file upload). They are **not** limited to configurable products — a **simple, virtual, or downloadable** product can carry them, and when it does the shopper must satisfy them before adding to cart.
+Customizable options are extra inputs an admin attaches to a product (a weight dropdown, a flavour picker, an engraving text field, a file upload). They are **not** limited to configurable products — a **simple or virtual** product can carry them, and when it does the shopper must satisfy them before adding to cart.
 
 **1. Read the options from the product.** [Get Product](/api/graphql-api/shop/queries/get-product) exposes `customizableOptions`. Each option node's `_id` is the option id; each price node's `_id` is a selectable value id. `isRequired: "1"` means the shopper must pick a value.
 
@@ -2088,6 +2092,16 @@ Here option `9` (Weight) → value `9` (1kg), option `10` (Flavour) → value `1
 - Include every option whose `isRequired` is `"1"` — omitting one returns a validation error.
 - The value ids must belong to that option (from its `customizableOptionPrices`).
 - The chosen values come back on the cart item's `options` (`option_label` / `attribute_name`) so you can render them on the cart page.
+
+### File-type options
+
+A `file`-type option needs a file upload, which cannot travel over GraphQL. Upload the file over REST first (it returns a token), then pass the token here as that option's value:
+
+```json
+"customizableOptions": { "9": [9], "10": [12], "11": ["<upload-token>"] }
+```
+
+The full flow, the upload endpoint, and the allowed file formats are on the **[Upload Customizable File](/api/graphql-api/shop/mutations/upload-customizable-file)** page.
 
 ## Booking Input Reference
 
@@ -2165,3 +2179,4 @@ The `options` field on each cart item contains product-specific selection detail
 - [Remove Cart Item](/api/graphql-api/shop/mutations/remove-cart-item) - Remove items from cart
 - [Get Cart](/api/graphql-api/shop/queries/get-cart) - Retrieve current cart state
 - [Single Product](/api/graphql-api/shop/queries/get-product) - Get product details and available options
+- [Upload Customizable File](/api/graphql-api/shop/mutations/upload-customizable-file) - The file-option flow: upload over REST, then reference the token in this mutation
