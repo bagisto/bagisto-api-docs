@@ -436,6 +436,50 @@ examples:
         }
       }
 
+  - id: gql-sales-sales-by-coupon
+    title: Sales By Coupon
+    description: Top coupon codes by discount given. Here `statistics` is a flat array of coupon rows, not an object.
+    query: |
+      query AdminReportingSales($type: String, $start: String, $end: String, $channel: String) {
+        statsAdminReportingSales(type: $type, start: $start, end: $end, channel: $channel) {
+          entity
+          type
+          dateRange
+          statistics
+        }
+      }
+    variables: |
+      {
+        "type": "sales-by-coupon",
+        "start": "2026-05-10",
+        "end": "2026-06-09",
+        "channel": "default"
+      }
+    response: |
+      {
+        "data": {
+          "statsAdminReportingSales": {
+            "entity": "sales",
+            "type": "sales-by-coupon",
+            "dateRange": { "previous": "07 May 2026 - 06 Jun 2026", "current": "06 Jun 2026 - 06 Jul 2026" },
+            "statistics": [
+              {
+                "coupon_code": "SAVE10",
+                "cart_rule_id": 1,
+                "total": 12,
+                "base_total": "2480.0000",
+                "base_discount_total": "248.0000",
+                "formatted_total": "$2,480.00",
+                "formatted_discount_total": "$248.00",
+                "link": "https://your-domain.com/admin/marketing/promotions/cart-rules/edit/1",
+                "progress": 42.5,
+                "datetime": null
+              }
+            ]
+          }
+        }
+      }
+
   - id: gql-sales-view
     title: View Details (table form)
     description: The expanded, row-by-row table behind a panel's "View Details" link. `statistics` carries ordered `columns` plus the full `records` list — the same shape for every `type`.
@@ -491,11 +535,11 @@ Returns the aggregate statistics that power the Bagisto admin **Reporting → Sa
 
 All admin endpoints require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication). Reporting has **no permission gate**; any authenticated admin can read it.
 
-## Understanding `type` — the Sales report is **nine** separate calls
+## Understanding `type` — the Sales report is **ten** separate calls
 
 This is the most important thing to understand about this API.
 
-The Bagisto admin Sales report is **not one response**. The page is assembled from **nine independent queries**, one per panel, and each is selected with the `type` argument. These nine groups are exactly the panels of the admin Sales report screen — no more, no less.
+The Bagisto admin Sales report is **not one response**. The page is assembled from **ten independent queries**, one per panel, and each is selected with the `type` argument. These ten groups are exactly the panels of the admin Sales report screen — no more, no less.
 
 So a single call returns **one panel** of the report. To render the full screen, query `statsAdminReportingSales` once per `type` (or only for the panels you need). The `statistics` payload **changes shape per `type`** — sometimes an object, sometimes a flat array — so always branch on `type` when consuming it.
 
@@ -512,6 +556,7 @@ So a single call returns **one panel** of the report. To render the full screen,
 | **Tax Collected** | `tax-collected` | object (with `top_categories` + `over_time`) |
 | **Shipping Collected** | `shipping-collected` | object (with `top_methods` + `over_time`) |
 | **Top Payment Methods** | `top-payment-methods` | array |
+| **Sales By Coupon** | `sales-by-coupon` | array |
 
 `total-sales` is the default — if you omit `type`, you get the "Total Sales" panel.
 
@@ -519,7 +564,7 @@ So a single call returns **one panel** of the report. To render the full screen,
 
 | Argument | Type | Required | Description |
 |---|---|---|---|
-| `type` | `String` | No | One of the nine values above. Defaults to `total-sales`. |
+| `type` | `String` | No | One of the ten values above. Defaults to `total-sales`. |
 | `start` | `String` (YYYY-MM-DD) | No | Lower bound of the reporting window. Defaults to **30 days ago**. |
 | `end` | `String` (YYYY-MM-DD) | No | Upper bound. Defaults to **today**. |
 | `channel` | `String` | No | Channel **code** to scope the figures to a single channel. Defaults to all channels. |
@@ -617,6 +662,10 @@ Each stage carries a single running `total` plus `progress` — there is no `pre
 ### `top-payment-methods`
 
 `statistics` is an **array** (one row per payment method, ranked by collected amount). Each row: `id`, `method`, `method_title`, `title`, `total`, `base_total`, `progress`, `formatted_total`.
+
+### `sales-by-coupon`
+
+`statistics` is an **array** (one row per coupon code used, ranked by discount given). Each row: `coupon_code`, `cart_rule_id`, `total` (orders using the coupon), `base_total`, `base_discount_total`, `formatted_total`, `formatted_discount_total`, `link` (admin cart-rule edit URL, `null` if the rule was deleted), `progress`, `datetime`.
 
 ## View Details
 

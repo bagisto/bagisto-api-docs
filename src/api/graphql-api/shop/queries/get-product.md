@@ -74,6 +74,39 @@ examples:
       - error: PRODUCT_NOT_FOUND
         cause: SKU does not exist
         solution: Check product SKU spelling
+  - id: get-product-by-url-key
+    title: Get Product by URL Key
+    description: Retrieve product using its URL key (the storefront slug). The URL key is matched across every locale, so a slug that exists only in another locale still resolves — you do not need to know which locale it was created in.
+    query: |
+      query getProduct($urlKey: String!) {
+        product(urlKey: $urlKey) {
+          id
+          name
+          sku
+          urlKey
+          price
+        }
+      }
+    variables: |
+      {
+        "urlKey": "ivory-frost-classic-overcoat-xl"
+      }
+    response: |
+      {
+        "data": {
+          "product": {
+            "id": "/api/shop/products/2499",
+            "name": "Ivory Frost Classic Overcoat XL",
+            "sku": "sku-345346346-variant-9",
+            "urlKey": "ivory-frost-classic-overcoat-xl",
+            "price": "500"
+          }
+        }
+      }
+    commonErrors:
+      - error: PRODUCT_NOT_FOUND
+        cause: No product has this URL key in any locale
+        solution: Check the URL key spelling
   - id: get-product-with-variants
     title: Get Product with Variants
     description: Retrieve a configurable product with its variant options and superAttributeOptions for building variant selectors.
@@ -1066,6 +1099,10 @@ examples:
                 qty
                 location
                 availableEveryWeek
+                startingPrice
+                formattedStartingPrice
+                startingRegularPrice
+                formattedStartingRegularPrice
                 rentalSlot {
                   id
                   _id
@@ -1105,6 +1142,10 @@ examples:
                     "qty": 150,
                     "location": "Noida, Uttar Pradesh",
                     "availableEveryWeek": "0",
+                    "startingPrice": 208,
+                    "formattedStartingPrice": "$208.00",
+                    "startingRegularPrice": 208,
+                    "formattedStartingRegularPrice": "$208.00",
                     "rentalSlot": {
                       "id": "1",
                       "_id": 1,
@@ -1318,6 +1359,10 @@ examples:
                 qty
                 location
                 availableEveryWeek
+                startingPrice
+                formattedStartingPrice
+                startingRegularPrice
+                formattedStartingRegularPrice
                 eventTickets {
                   edges {
                     node {
@@ -1377,6 +1422,10 @@ examples:
                     "qty": 0,
                     "location": "Noida, Uttar Pradesh",
                     "availableEveryWeek": null,
+                    "startingPrice": 235,
+                    "formattedStartingPrice": "$235.00",
+                    "startingRegularPrice": 240,
+                    "formattedStartingRegularPrice": "$240.00",
                     "eventTickets": {
                       "edges": [
                         {
@@ -1599,7 +1648,7 @@ All product types (simple, configurable, grouped, bundle, downloadable, virtual)
 |----------|------|-------------|
 | `id` | `ID` | Product's unique system identifier. Use this for direct lookups. |
 | `sku` | `String` | Stock Keeping Unit. Alternative identifier for product lookup. |
-| `urlKey` | `String` | URL-friendly product slug. Alternative lookup method. |
+| `urlKey` | `String` | URL-friendly product slug. Alternative lookup method. Matched across **all locales** — a slug created in any locale resolves regardless of the request's `locale`. |
 | `include_variants` | `Boolean` | Include product variants (colors, sizes, options). Default: `false` |
 | `include_images` | `Boolean` | Include product images. Default: `false` |
 | `include_attributes` | `Boolean` | Include custom product attributes. Default: `true` |
@@ -1742,6 +1791,19 @@ The `bookingProducts` field returns a `type` that determines which slot/ticket r
 ::: tip
 Only the relationship matching the product's booking type will contain data. For example, an appointment booking product will have data in `appointmentSlot` but not in `rentalSlot` or `tableSlot`. Always check the `type` field first to determine which relationship to query.
 :::
+
+### Starting-from price
+
+Each `bookingProducts` node also exposes a computed **"starting from"** price — the product base price plus the cheapest bookable extra — matching what the storefront shows on the product card / detail page:
+
+| Field | Meaning |
+|---|---|
+| `startingPrice` | Final (post-discount) starting price. |
+| `formattedStartingPrice` | Currency-formatted `startingPrice`. |
+| `startingRegularPrice` | Pre-discount starting price. Differs from `startingPrice` only when an event ticket is on sale — use both to render a strike-through. |
+| `formattedStartingRegularPrice` | Currency-formatted `startingRegularPrice`. |
+
+The extra is the **cheapest event ticket** (for `event`) or the **minimum rental unit rate** (for `rental`, whichever of hourly/daily is smallest). For `default`, `appointment` and `table` there is no composed extra, so all four fields are `null` and the product's own `price` is the correct figure.
 
 ## Product Fields Reference
 
