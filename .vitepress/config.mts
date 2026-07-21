@@ -413,6 +413,58 @@ export default defineConfig(({ command, mode }) => {
                         ]
                       },
                       {
+                        text: 'Returns (RMA)',
+                        collapsed: true,
+                        link: '/api/graphql-api/shop/returns/',
+                        items: [
+                          {
+                            text: 'Queries',
+                            collapsed: true,
+                            items: [
+                              { text: 'List Returns', link: '/api/graphql-api/shop/returns/queries/list-returns' },
+                              { text: 'View Return', link: '/api/graphql-api/shop/returns/queries/view-return' },
+                              { text: 'List Returnable Items', link: '/api/graphql-api/shop/returns/queries/list-returnable-items' },
+                              { text: 'List Return Reasons', link: '/api/graphql-api/shop/returns/queries/list-return-reasons' },
+                              { text: 'List Return Messages', link: '/api/graphql-api/shop/returns/queries/list-return-messages' },
+                            ]
+                          },
+                          {
+                            text: 'Mutations',
+                            collapsed: true,
+                            items: [
+                              { text: 'Create Return', link: '/api/graphql-api/shop/returns/mutations/create-return' },
+                              { text: 'Cancel Return', link: '/api/graphql-api/shop/returns/mutations/cancel-return' },
+                              { text: 'Reopen Return', link: '/api/graphql-api/shop/returns/mutations/reopen-return' },
+                              { text: 'Close Return', link: '/api/graphql-api/shop/returns/mutations/close-return' },
+                              { text: 'Send Return Message', link: '/api/graphql-api/shop/returns/mutations/send-return-message' },
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        text: 'EU Withdrawal',
+                        collapsed: true,
+                        link: '/api/graphql-api/shop/eu-withdrawal/',
+                        items: [
+                          {
+                            text: 'Queries',
+                            collapsed: true,
+                            items: [
+                              { text: 'List EU Withdrawals', link: '/api/graphql-api/shop/eu-withdrawal/queries/list-eu-withdrawals' },
+                              { text: 'View EU Withdrawal', link: '/api/graphql-api/shop/eu-withdrawal/queries/view-eu-withdrawal' },
+                            ]
+                          },
+                          {
+                            text: 'Mutations',
+                            collapsed: true,
+                            items: [
+                              { text: 'File EU Withdrawal', link: '/api/graphql-api/shop/eu-withdrawal/mutations/create-eu-withdrawal' },
+                              { text: 'File EU Withdrawal (Guest)', link: '/api/graphql-api/shop/eu-withdrawal/mutations/create-guest-eu-withdrawal' },
+                            ]
+                          }
+                        ]
+                      },
+                      {
                         text: 'Cart',
                         collapsed: true,
                         link: '/api/graphql-api/shop/cart/',
@@ -740,6 +792,34 @@ export default defineConfig(({ command, mode }) => {
                         ]
                       },
                       {
+                        text: 'Returns (RMA)',
+                        link: '/api/graphql-api/admin/sales/returns/',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Returns', link: '/api/graphql-api/admin/sales/returns/queries/list-returns' },
+                          { text: 'View Return', link: '/api/graphql-api/admin/sales/returns/queries/view-return' },
+                          { text: 'Returnable Items', link: '/api/graphql-api/admin/sales/returns/queries/list-returnable-items' },
+                          { text: 'Return Reasons', link: '/api/graphql-api/admin/sales/returns/queries/list-return-reasons' },
+                          { text: 'Return Messages', link: '/api/graphql-api/admin/sales/returns/queries/list-return-messages' },
+                          { text: 'Create Return', link: '/api/graphql-api/admin/sales/returns/mutations/create-return' },
+                          { text: 'Update Status', link: '/api/graphql-api/admin/sales/returns/mutations/update-status' },
+                          { text: 'Reopen Return', link: '/api/graphql-api/admin/sales/returns/mutations/reopen-return' },
+                          { text: 'Send Return Message', link: '/api/graphql-api/admin/sales/returns/mutations/send-return-message' },
+                        ]
+                      },
+                      {
+                        text: 'EU Withdrawal',
+                        link: '/api/graphql-api/admin/sales/eu-withdrawal/',
+                        collapsed: true,
+                        items: [
+                          { text: 'List EU Withdrawals', link: '/api/graphql-api/admin/sales/eu-withdrawal/queries/list-eu-withdrawals' },
+                          { text: 'View EU Withdrawal', link: '/api/graphql-api/admin/sales/eu-withdrawal/queries/view-eu-withdrawal' },
+                          { text: 'Decline', link: '/api/graphql-api/admin/sales/eu-withdrawal/mutations/decline' },
+                          { text: 'Mark Refunded', link: '/api/graphql-api/admin/sales/eu-withdrawal/mutations/mark-refunded' },
+                          { text: 'Resend Confirmation', link: '/api/graphql-api/admin/sales/eu-withdrawal/mutations/resend-confirmation' },
+                        ]
+                      },
+                      {
                         text: 'Transactions',
                         collapsed: true,
                         items: [
@@ -985,6 +1065,62 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Create', link: '/api/graphql-api/admin/settings/tax-rates/create' },
                           { text: 'Update', link: '/api/graphql-api/admin/settings/tax-rates/update' },
                           { text: 'Delete', link: '/api/graphql-api/admin/settings/tax-rates/delete' },
+                        ]
+                      },
+                      {
+                        text: 'Return Reasons',
+                        link: '/api/graphql-api/admin/settings/return-reasons/',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/graphql-api/admin/settings/return-reasons/queries/list' },
+                          { text: 'Detail', link: '/api/graphql-api/admin/settings/return-reasons/queries/get' },
+                          { text: 'Create', link: '/api/graphql-api/admin/settings/return-reasons/mutations/create' },
+                          { text: 'Update', link: '/api/graphql-api/admin/settings/return-reasons/mutations/update' },
+                          { text: 'Delete', link: '/api/graphql-api/admin/settings/return-reasons/mutations/delete' },
+                          { text: 'Mass Delete', link: '/api/graphql-api/admin/settings/return-reasons/mutations/mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/graphql-api/admin/settings/return-reasons/mutations/mass-update-status' },
+                        ]
+                      },
+                      {
+                        text: 'Return Rules',
+                        link: '/api/graphql-api/admin/settings/return-rules/',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/graphql-api/admin/settings/return-rules/queries/list' },
+                          { text: 'Detail', link: '/api/graphql-api/admin/settings/return-rules/queries/get' },
+                          { text: 'Create', link: '/api/graphql-api/admin/settings/return-rules/mutations/create' },
+                          { text: 'Update', link: '/api/graphql-api/admin/settings/return-rules/mutations/update' },
+                          { text: 'Delete', link: '/api/graphql-api/admin/settings/return-rules/mutations/delete' },
+                          { text: 'Mass Delete', link: '/api/graphql-api/admin/settings/return-rules/mutations/mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/graphql-api/admin/settings/return-rules/mutations/mass-update-status' },
+                        ]
+                      },
+                      {
+                        text: 'Return Statuses',
+                        link: '/api/graphql-api/admin/settings/return-statuses/',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/graphql-api/admin/settings/return-statuses/queries/list' },
+                          { text: 'Detail', link: '/api/graphql-api/admin/settings/return-statuses/queries/get' },
+                          { text: 'Create', link: '/api/graphql-api/admin/settings/return-statuses/mutations/create' },
+                          { text: 'Update', link: '/api/graphql-api/admin/settings/return-statuses/mutations/update' },
+                          { text: 'Delete', link: '/api/graphql-api/admin/settings/return-statuses/mutations/delete' },
+                          { text: 'Mass Delete', link: '/api/graphql-api/admin/settings/return-statuses/mutations/mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/graphql-api/admin/settings/return-statuses/mutations/mass-update-status' },
+                        ]
+                      },
+                      {
+                        text: 'Return Custom Fields',
+                        link: '/api/graphql-api/admin/settings/return-custom-fields/',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/graphql-api/admin/settings/return-custom-fields/queries/list' },
+                          { text: 'Detail', link: '/api/graphql-api/admin/settings/return-custom-fields/queries/get' },
+                          { text: 'Create', link: '/api/graphql-api/admin/settings/return-custom-fields/mutations/create' },
+                          { text: 'Update', link: '/api/graphql-api/admin/settings/return-custom-fields/mutations/update' },
+                          { text: 'Delete', link: '/api/graphql-api/admin/settings/return-custom-fields/mutations/delete' },
+                          { text: 'Mass Delete', link: '/api/graphql-api/admin/settings/return-custom-fields/mutations/mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/graphql-api/admin/settings/return-custom-fields/mutations/mass-update-status' },
                         ]
                       },
                       {
@@ -1341,6 +1477,34 @@ export default defineConfig(({ command, mode }) => {
                     ]
                   },
                   {
+                    text: 'Returns (RMA)',
+                    collapsed: true,
+                    link: '/api/rest-api/shop/returns/',
+                    items: [
+                          { text: 'List Returns', link: '/api/rest-api/shop/returns/list-returns' },
+                          { text: 'View Return', link: '/api/rest-api/shop/returns/view-return' },
+                          { text: 'Create Return', link: '/api/rest-api/shop/returns/create-return' },
+                          { text: 'Cancel Return', link: '/api/rest-api/shop/returns/cancel-return' },
+                          { text: 'Reopen Return', link: '/api/rest-api/shop/returns/reopen-return' },
+                          { text: 'Close Return', link: '/api/rest-api/shop/returns/close-return' },
+                          { text: 'List Returnable Items', link: '/api/rest-api/shop/returns/list-returnable-items' },
+                          { text: 'List Return Reasons', link: '/api/rest-api/shop/returns/list-return-reasons' },
+                          { text: 'List Return Messages', link: '/api/rest-api/shop/returns/list-return-messages' },
+                          { text: 'Send Return Message', link: '/api/rest-api/shop/returns/send-return-message' },
+                    ]
+                  },
+                  {
+                    text: 'EU Withdrawal',
+                    collapsed: true,
+                    link: '/api/rest-api/shop/eu-withdrawal/',
+                    items: [
+                          { text: 'List EU Withdrawals', link: '/api/rest-api/shop/eu-withdrawal/list-eu-withdrawals' },
+                          { text: 'View EU Withdrawal', link: '/api/rest-api/shop/eu-withdrawal/view-eu-withdrawal' },
+                          { text: 'File EU Withdrawal', link: '/api/rest-api/shop/eu-withdrawal/create-eu-withdrawal' },
+                          { text: 'File EU Withdrawal (Guest)', link: '/api/rest-api/shop/eu-withdrawal/create-guest-eu-withdrawal' },
+                    ]
+                  },
+                  {
                     text: 'Cart',
                     collapsed: true,
                     link: '/api/rest-api/shop/cart/',
@@ -1603,6 +1767,34 @@ export default defineConfig(({ command, mode }) => {
                         ]
                       },
                       {
+                        text: 'Returns (RMA)',
+                        link: '/api/rest-api/admin/sales/returns/',
+                        collapsed: true,
+                        items: [
+                          { text: 'List Returns', link: '/api/rest-api/admin/sales/returns/list-returns' },
+                          { text: 'Get Return', link: '/api/rest-api/admin/sales/returns/get-return' },
+                          { text: 'Create Return', link: '/api/rest-api/admin/sales/returns/create-return' },
+                          { text: 'Update Status', link: '/api/rest-api/admin/sales/returns/update-status' },
+                          { text: 'Reopen Return', link: '/api/rest-api/admin/sales/returns/reopen-return' },
+                          { text: 'Returnable Items', link: '/api/rest-api/admin/sales/returns/list-returnable-items' },
+                          { text: 'Return Reasons', link: '/api/rest-api/admin/sales/returns/list-return-reasons' },
+                          { text: 'Return Messages', link: '/api/rest-api/admin/sales/returns/list-return-messages' },
+                          { text: 'Send Return Message', link: '/api/rest-api/admin/sales/returns/send-return-message' },
+                        ]
+                      },
+                      {
+                        text: 'EU Withdrawal',
+                        link: '/api/rest-api/admin/sales/eu-withdrawal/',
+                        collapsed: true,
+                        items: [
+                          { text: 'List EU Withdrawals', link: '/api/rest-api/admin/sales/eu-withdrawal/list-eu-withdrawals' },
+                          { text: 'Get EU Withdrawal', link: '/api/rest-api/admin/sales/eu-withdrawal/get-eu-withdrawal' },
+                          { text: 'Decline', link: '/api/rest-api/admin/sales/eu-withdrawal/decline' },
+                          { text: 'Mark Refunded', link: '/api/rest-api/admin/sales/eu-withdrawal/mark-refunded' },
+                          { text: 'Resend Confirmation', link: '/api/rest-api/admin/sales/eu-withdrawal/resend-confirmation' },
+                        ]
+                      },
+                      {
                         text: 'Transactions',
                         collapsed: true,
                         items: [
@@ -1840,6 +2032,62 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Update', link: '/api/rest-api/admin/settings/tax-rates/update' },
                           { text: 'Delete', link: '/api/rest-api/admin/settings/tax-rates/delete' },
                           { text: 'Export (CSV)', link: '/api/rest-api/admin/settings/tax-rates/export' },
+                        ]
+                      },
+                      {
+                        text: 'Return Reasons',
+                        link: '/api/rest-api/admin/settings/return-reasons/',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/rest-api/admin/settings/return-reasons/list' },
+                          { text: 'Detail', link: '/api/rest-api/admin/settings/return-reasons/get' },
+                          { text: 'Create', link: '/api/rest-api/admin/settings/return-reasons/create' },
+                          { text: 'Update', link: '/api/rest-api/admin/settings/return-reasons/update' },
+                          { text: 'Delete', link: '/api/rest-api/admin/settings/return-reasons/delete' },
+                          { text: 'Mass Delete', link: '/api/rest-api/admin/settings/return-reasons/mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/rest-api/admin/settings/return-reasons/mass-update-status' },
+                        ]
+                      },
+                      {
+                        text: 'Return Rules',
+                        link: '/api/rest-api/admin/settings/return-rules/',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/rest-api/admin/settings/return-rules/list' },
+                          { text: 'Detail', link: '/api/rest-api/admin/settings/return-rules/get' },
+                          { text: 'Create', link: '/api/rest-api/admin/settings/return-rules/create' },
+                          { text: 'Update', link: '/api/rest-api/admin/settings/return-rules/update' },
+                          { text: 'Delete', link: '/api/rest-api/admin/settings/return-rules/delete' },
+                          { text: 'Mass Delete', link: '/api/rest-api/admin/settings/return-rules/mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/rest-api/admin/settings/return-rules/mass-update-status' },
+                        ]
+                      },
+                      {
+                        text: 'Return Statuses',
+                        link: '/api/rest-api/admin/settings/return-statuses/',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/rest-api/admin/settings/return-statuses/list' },
+                          { text: 'Detail', link: '/api/rest-api/admin/settings/return-statuses/get' },
+                          { text: 'Create', link: '/api/rest-api/admin/settings/return-statuses/create' },
+                          { text: 'Update', link: '/api/rest-api/admin/settings/return-statuses/update' },
+                          { text: 'Delete', link: '/api/rest-api/admin/settings/return-statuses/delete' },
+                          { text: 'Mass Delete', link: '/api/rest-api/admin/settings/return-statuses/mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/rest-api/admin/settings/return-statuses/mass-update-status' },
+                        ]
+                      },
+                      {
+                        text: 'Return Custom Fields',
+                        link: '/api/rest-api/admin/settings/return-custom-fields/',
+                        collapsed: true,
+                        items: [
+                          { text: 'List', link: '/api/rest-api/admin/settings/return-custom-fields/list' },
+                          { text: 'Detail', link: '/api/rest-api/admin/settings/return-custom-fields/get' },
+                          { text: 'Create', link: '/api/rest-api/admin/settings/return-custom-fields/create' },
+                          { text: 'Update', link: '/api/rest-api/admin/settings/return-custom-fields/update' },
+                          { text: 'Delete', link: '/api/rest-api/admin/settings/return-custom-fields/delete' },
+                          { text: 'Mass Delete', link: '/api/rest-api/admin/settings/return-custom-fields/mass-delete' },
+                          { text: 'Mass Update Status', link: '/api/rest-api/admin/settings/return-custom-fields/mass-update-status' },
                         ]
                       },
                       {

@@ -6,7 +6,8 @@ Get the Bagisto API up and running in just a few minutes. Choose the installatio
 
 Before installing, ensure you have:
 
-- **Bagisto v2.0 or higher** ([Bagisto Installation Guide](https://devdocs.bagisto.com/getting-started/installation))
+- **Bagisto v2.4.x** ([Bagisto Installation Guide](https://devdocs.bagisto.com/getting-started/installation))
+- **PHP 8.3+**
 - **Composer 2.0+**
 
 ## Installation Methods
@@ -69,7 +70,17 @@ Edit `composer.json` and update the `autoload` section:
 
 #### Step 4: Install Dependencies
 
-Install the required API Platform packages, pinned to a consistent, tested set so the install completes cleanly:
+Install the API Platform packages.
+
+On **Bagisto 2.4.x**, the Laravel bridge and the GraphQL package bring in every other API Platform component at a matching version, so only these two are needed:
+
+```bash
+composer require \
+  api-platform/laravel:~4.3.8 \
+  api-platform/graphql:~4.3.8
+```
+
+On **Bagisto 2.3.x** (which runs the older release of this package), API Platform is not on a single aligned version, so every component must be pinned individually:
 
 ```bash
 composer require \

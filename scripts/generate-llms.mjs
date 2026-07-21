@@ -11,6 +11,18 @@ import { fileURLToPath } from 'node:url'
 
 const SITE = 'https://api-docs.bagisto.com'
 
+// Prepended to the index so an agent can tell the two API surfaces apart.
+const SURFACES_PRIMER = `## Two API surfaces — Shop vs Admin
+
+This API has two separate surfaces. Pick one and do not mix them:
+
+- **Shop API** (customer-facing: catalog, cart, checkout, customer account). REST base \`/api/shop/*\`; GraphQL endpoint \`POST /api/graphql\`. Auth: \`X-STOREFRONT-KEY\` header on every request, plus a customer or guest-cart \`Authorization: Bearer <token>\` for authenticated/cart calls. Index entries are grouped under \`Shop\` section headers (e.g. \`## GraphQL API › Shop\`, \`## REST API › Shop\`) and their page URLs contain \`/shop/\`.
+- **Admin API** (back-office: manage orders, catalog, customers, marketing, CMS, settings). REST base \`/api/admin/*\`; GraphQL endpoint \`POST /api/admin/graphql\`. Auth: an admin Integration \`Authorization: Bearer <id>|<token>\` — **no** \`X-STOREFRONT-KEY\`. Index entries are grouped under \`Admin\` section headers (e.g. \`## GraphQL API › Admin\`, \`## REST API › Admin\`) and their page URLs contain \`/admin/\`.
+
+**How to tell an entry apart:** look at the section breadcrumb (\`› Shop\` vs \`› Admin\`) and the URL path segment (\`/shop/\` vs \`/admin/\`). GraphQL field names differ too — shop uses e.g. \`products\` / \`categories\`, admin uses e.g. \`adminCatalogProducts\` / \`adminCatalogCategories\`.
+
+`
+
 export function buildIndex(pages) {
   const groups = new Map()
   for (const p of pages) {
@@ -23,7 +35,9 @@ export function buildIndex(pages) {
   out += 'This index lists every documented endpoint; open a page URL for its exact request and response.\n\n'
   out += `- Site: ${SITE}\n`
   out += `- Full documentation (single file): ${SITE}/llms-full.txt\n`
-  out += `- Agent skills: \`npx skills add bagisto/api-agent-skills\`\n\n`
+  out += `- Agent skills: \`npx skills add bagisto/agent-skills\`\n\n`
+
+  out += SURFACES_PRIMER
 
   for (const group of [...groups.keys()].sort()) {
     out += `## ${group}\n\n`
@@ -38,7 +52,8 @@ export function buildIndex(pages) {
 
 export function buildFull(pages) {
   let out = '# Bagisto API — Full Documentation\n\n'
-  out += `Generated from ${SITE}. Each section below is one documentation page.\n`
+  out += `Generated from ${SITE}. Each section below is one documentation page.\n\n`
+  out += SURFACES_PRIMER
   for (const p of pages) {
     out += `\n\n---\n\n# ${p.title}\nURL: ${p.url}\n\n${p.body}\n`
   }

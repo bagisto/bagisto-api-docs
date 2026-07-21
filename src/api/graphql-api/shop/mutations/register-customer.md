@@ -179,8 +179,8 @@ This mutation validates input, checks for duplicate emails, and generates authen
 | `customer.email` | `String!` | Customer email. |
 | `customer.firstName` | `String!` | First name. |
 | `customer.lastName` | `String!` | Last name. |
-| `customer.token` | `String!` | Authentication token for use in requests. |
-| `customer.apiToken` | `String!` | API token for programmatic access. |
+| `customer.token` | `String!` | **The authentication credential** — send as `Authorization: Bearer <token>`. |
+| `customer.apiToken` | `String!` | Legacy field, kept for backward compatibility. **Not** an auth Bearer — authenticate with `token` instead. |
 | `customer.status` | `String!` | Account status (active, inactive). |
 | `message` | `String!` | Success message. |
 | `success` | `Boolean!` | Indicates successful registration. |

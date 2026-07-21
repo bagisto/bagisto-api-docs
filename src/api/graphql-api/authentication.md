@@ -197,6 +197,15 @@ mutation {
 }
 ```
 
+::: warning `token` vs `apiToken` — use `token`
+The login response returns two fields:
+
+- **`token`** — the authentication credential. Send it as `Authorization: Bearer <token>` on every authenticated request (REST **and** GraphQL).
+- **`apiToken`** — a legacy field kept for backward compatibility. It is **not** an authentication Bearer. Sending `apiToken` in the `Authorization` header returns `Unauthenticated`.
+
+Always authenticate with `token`.
+:::
+
 ### Using Customer Token
 
 Include the access token in the `Authorization` header:

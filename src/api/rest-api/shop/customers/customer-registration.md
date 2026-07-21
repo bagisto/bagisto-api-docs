@@ -152,8 +152,8 @@ POST /api/shop/customers
 | `phone` | string | Customer phone |
 | `gender` | string | Customer gender |
 | `dateOfBirth` | string | Customer date of birth |
-| `apiToken` | string | API authentication token |
-| `token` | string | Session token |
+| `apiToken` | string | Legacy field, kept for backward compatibility. **Not** an auth Bearer — authenticate with `token` instead |
+| `token` | string | **The authentication credential** — send as `Authorization: Bearer <token>` |
 | `status` | integer | Account status (1=active, 0=inactive) |
 | `subscribedToNewsLetter` | boolean | Newsletter subscription status |
 | `isVerified` | integer | Email verification status (0=not verified) |

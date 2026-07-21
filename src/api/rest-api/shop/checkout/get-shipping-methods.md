@@ -100,6 +100,7 @@ POST /api/shop/checkout-shipping-methods
 
 ## Notes
 
+- **Requires a checkout address first.** Rates are calculated from the saved checkout address. With no address set on the cart, this returns an **empty list** (`[]`) — not an error. Call [Set Checkout Address](/api/rest-api/shop/checkout/set-shipping-address) first.
 - Methods vary by location and product
 - Prices may be calculated dynamically
 - Some methods may have weight/dimension limits

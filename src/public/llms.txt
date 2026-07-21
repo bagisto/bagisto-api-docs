@@ -4,7 +4,16 @@
 
 - Site: https://api-docs.bagisto.com
 - Full documentation (single file): https://api-docs.bagisto.com/llms-full.txt
-- Agent skills: `npx skills add bagisto/api-agent-skills`
+- Agent skills: `npx skills add bagisto/agent-skills`
+
+## Two API surfaces — Shop vs Admin
+
+This API has two separate surfaces. Pick one and do not mix them:
+
+- **Shop API** (customer-facing: catalog, cart, checkout, customer account). REST base `/api/shop/*`; GraphQL endpoint `POST /api/graphql`. Auth: `X-STOREFRONT-KEY` header on every request, plus a customer or guest-cart `Authorization: Bearer <token>` for authenticated/cart calls. Index entries are grouped under `Shop` section headers (e.g. `## GraphQL API › Shop`, `## REST API › Shop`) and their page URLs contain `/shop/`.
+- **Admin API** (back-office: manage orders, catalog, customers, marketing, CMS, settings). REST base `/api/admin/*`; GraphQL endpoint `POST /api/admin/graphql`. Auth: an admin Integration `Authorization: Bearer <id>|<token>` — **no** `X-STOREFRONT-KEY`. Index entries are grouped under `Admin` section headers (e.g. `## GraphQL API › Admin`, `## REST API › Admin`) and their page URLs contain `/admin/`.
+
+**How to tell an entry apart:** look at the section breadcrumb (`› Shop` vs `› Admin`) and the URL path segment (`/shop/` vs `/admin/`). GraphQL field names differ too — shop uses e.g. `products` / `categories`, admin uses e.g. `adminCatalogProducts` / `adminCatalogCategories`.
 
 ## GraphQL API
 
@@ -366,6 +375,21 @@
 - [Set Shipping Method](/api/graphql-api/admin/sales/carts/set-shipping-method): Save the chosen shipping method on the draft cart.
 - [Update Cart Item Quantities](/api/graphql-api/admin/sales/carts/update-items): Bulk-update line-item quantities. `qty` is a map of cartItemId → new quantity.
 
+## GraphQL API › Admin › Sales › Eu Withdrawal
+
+- [EU Withdrawal](/api/graphql-api/admin/sales/eu-withdrawal): The EU Withdrawal menu is the store-wide queue of every **right-of-withdrawal declaration** a customer has filed against an order — the EU consumer's statutory…
+
+## GraphQL API › Admin › Sales › Eu Withdrawal › Mutations
+
+- [Decline EU Withdrawal](/api/graphql-api/admin/sales/eu-withdrawal/mutations/decline): Declines a declaration when the purchase is exempt from the right of withdrawal. Sets status to declined and clears any prior refund metadata.
+- [Mark EU Withdrawal Refunded](/api/graphql-api/admin/sales/eu-withdrawal/mutations/mark-refunded): Records that a declaration has been honoured and the customer refunded out-of-band. Sets status to refunded and clears any prior decline metadata.
+- [Resend EU Withdrawal Confirmation](/api/graphql-api/admin/sales/eu-withdrawal/mutations/resend-confirmation): Re-sends the durable-medium confirmation email in the declaration's locale and refreshes confirmationSentAt.
+
+## GraphQL API › Admin › Sales › Eu Withdrawal › Queries
+
+- [List EU Withdrawals](/api/graphql-api/admin/sales/eu-withdrawal/queries/list-eu-withdrawals): Cursor-paginated list of every right-of-withdrawal declaration, mirroring the admin Sales → EU Withdrawal datagrid.
+- [Get EU Withdrawal](/api/graphql-api/admin/sales/eu-withdrawal/queries/view-eu-withdrawal): A single withdrawal declaration with its full evidence timeline.
+
 ## GraphQL API › Admin › Sales › Invoices
 
 - [Invoices](/api/graphql-api/admin/sales/invoices): The Invoices menu is the store-wide list of every invoice that has been generated across all orders, plus the actions you can take on a single invoice. It…
@@ -395,6 +419,25 @@
 
 - [Refunds](/api/graphql-api/admin/sales/refunds): The Refunds menu is the store-wide, **read-only** list of every refund that has been issued across all orders. It mirrors the admin **Sales → Refunds** screen…
 - [List Refunds (Datagrid)](/api/graphql-api/admin/sales/refunds/list): Cursor-paginated refunds datagrid. Every refund column plus the billing/shipping addresses are populated on each row — only line items and payment info are…
+
+## GraphQL API › Admin › Sales › Returns
+
+- [Returns (RMA)](/api/graphql-api/admin/sales/returns): The Returns menu is the admin queue for **RMA (Return Merchandise Authorization) requests** — the returns and item-cancellations customers raise against their…
+
+## GraphQL API › Admin › Sales › Returns › Mutations
+
+- [Create Return (GraphQL)](/api/graphql-api/admin/sales/returns/mutations/create-return): Open a return (or item cancellation) for any customer order. rmaQty is capped server-side by the item's returnable/cancelable quantity.
+- [Reopen Return (GraphQL)](/api/graphql-api/admin/sales/returns/mutations/reopen-return): Reopen a declined or canceled RMA back to pending when store settings allow it (otherwise the mutation returns an error).
+- [Send Return Message (GraphQL)](/api/graphql-api/admin/sales/returns/mutations/send-return-message): Add an admin message to the RMA conversation. The customer is notified.
+- [Update Status (GraphQL)](/api/graphql-api/admin/sales/returns/mutations/update-status): Set the RMA status. "Received package" creates a refund for the returned item (send shipping to include shipping); "Item canceled" cancels the order item and…
+
+## GraphQL API › Admin › Sales › Returns › Queries
+
+- [List Return Messages (GraphQL)](/api/graphql-api/admin/sales/returns/queries/list-return-messages): The conversation messages of an RMA request, newest first.
+- [List Return Reasons (GraphQL)](/api/graphql-api/admin/sales/returns/queries/list-return-reasons): The active return reasons available when creating a return, filtered by resolution type.
+- [List Returnable Items (GraphQL)](/api/graphql-api/admin/sales/returns/queries/list-returnable-items): The items of an order that can be put on a return, each with the trusted server-enforced quantity caps. No customer scope — admin can open a return for any…
+- [List Returns (GraphQL)](/api/graphql-api/admin/sales/returns/queries/list-returns): Cursor pagination over the RMA queue. Detail-only fields (item, images, availableStatuses, information, packageCondition, canReopen, messagesCount) are null on…
+- [Return Detail (GraphQL)](/api/graphql-api/admin/sales/returns/queries/view-return): Full detail of a single return request — the returned item, images, status, order/customer context, whether it can be reopened, and the status transitions the…
 
 ## GraphQL API › Admin › Sales › Shipments
 
@@ -473,6 +516,74 @@
 - [List Locales](/api/graphql-api/admin/settings/locales/list): Paginated list of every locale (storefront language) configured in the store.
 - [Mass Delete Locales](/api/graphql-api/admin/settings/locales/mass-delete): Delete several locales in one call by their numeric ids.
 - [Update Locale](/api/graphql-api/admin/settings/locales/update): Change a locale's name, code, or text direction.
+
+## GraphQL API › Admin › Settings › Return Custom Fields
+
+- [Return Custom Fields](/api/graphql-api/admin/settings/return-custom-fields): The **Return Custom Fields** menu is part of the store's **RMA (Returns) settings**. Extra fields the return form collects from the customer (for example a…
+
+## GraphQL API › Admin › Settings › Return Custom Fields › Mutations
+
+- [Create RMA custom field](/api/graphql-api/admin/settings/return-custom-fields/mutations/create): Creates a new RMA custom field. Permission: `sales.rma.custom-fields.create`.
+- [Delete RMA custom field](/api/graphql-api/admin/settings/return-custom-fields/mutations/delete): Deletes a RMA custom field. Pass the resource IRI as `id`. Permission: `sales.rma.custom-fields.delete`.
+- [Mass Delete RMA custom fields](/api/graphql-api/admin/settings/return-custom-fields/mutations/mass-delete): Deletes several RMA custom fields in one call. Permission: `sales.rma.custom-fields.delete`.
+- [Mass Update RMA custom fields Status](/api/graphql-api/admin/settings/return-custom-fields/mutations/mass-update-status): Sets the active `status` flag on several RMA custom fields in one call. Permission: `sales.rma.custom-fields.edit`.
+- [Update RMA custom field](/api/graphql-api/admin/settings/return-custom-fields/mutations/update): Partial update — send only the fields you want to change. Pass the resource IRI as `id`. Permission: `sales.rma.custom-fields.edit`.
+
+## GraphQL API › Admin › Settings › Return Custom Fields › Queries
+
+- [Get RMA custom field](/api/graphql-api/admin/settings/return-custom-fields/queries/get): Returns a single RMA custom field by its IRI.
+- [List RMA custom fields](/api/graphql-api/admin/settings/return-custom-fields/queries/list): Filter, sort and paginate in one query. Supplying multiple filters narrows the result (logical AND).
+
+## GraphQL API › Admin › Settings › Return Reasons
+
+- [Return Reasons](/api/graphql-api/admin/settings/return-reasons): The **Return Reasons** menu is part of the store's **RMA (Returns) settings**. Return / cancel reasons the RMA form offers a customer when they open a return.…
+
+## GraphQL API › Admin › Settings › Return Reasons › Mutations
+
+- [Create RMA reason](/api/graphql-api/admin/settings/return-reasons/mutations/create): Creates a new RMA reason. Permission: `sales.rma.reasons.create`.
+- [Delete RMA reason](/api/graphql-api/admin/settings/return-reasons/mutations/delete): Deletes a RMA reason. Pass the resource IRI as `id`. Permission: `sales.rma.reasons.delete`.
+- [Mass Delete RMA reasons](/api/graphql-api/admin/settings/return-reasons/mutations/mass-delete): Deletes several RMA reasons in one call. Permission: `sales.rma.reasons.delete`.
+- [Mass Update RMA reasons Status](/api/graphql-api/admin/settings/return-reasons/mutations/mass-update-status): Sets the active `status` flag on several RMA reasons in one call. Permission: `sales.rma.reasons.edit`.
+- [Update RMA reason](/api/graphql-api/admin/settings/return-reasons/mutations/update): Partial update — send only the fields you want to change. Pass the resource IRI as `id`. Permission: `sales.rma.reasons.edit`.
+
+## GraphQL API › Admin › Settings › Return Reasons › Queries
+
+- [Get RMA reason](/api/graphql-api/admin/settings/return-reasons/queries/get): Returns a single RMA reason by its IRI.
+- [List RMA reasons](/api/graphql-api/admin/settings/return-reasons/queries/list): Filter, sort and paginate in one query. Supplying multiple filters narrows the result (logical AND).
+
+## GraphQL API › Admin › Settings › Return Rules
+
+- [Return Rules](/api/graphql-api/admin/settings/return-rules): The **Return Rules** menu is part of the store's **RMA (Returns) settings**. Return rules set the **return window** (in days) for matching products. Each rule…
+
+## GraphQL API › Admin › Settings › Return Rules › Mutations
+
+- [Create RMA rule](/api/graphql-api/admin/settings/return-rules/mutations/create): Creates a new RMA rule. Permission: `sales.rma.rules.create`.
+- [Delete RMA rule](/api/graphql-api/admin/settings/return-rules/mutations/delete): Deletes a RMA rule. Pass the resource IRI as `id`. Permission: `sales.rma.rules.delete`.
+- [Mass Delete RMA rules](/api/graphql-api/admin/settings/return-rules/mutations/mass-delete): Deletes several RMA rules in one call. Permission: `sales.rma.rules.delete`.
+- [Mass Update RMA rules Status](/api/graphql-api/admin/settings/return-rules/mutations/mass-update-status): Sets the active `status` flag on several RMA rules in one call. Permission: `sales.rma.rules.edit`.
+- [Update RMA rule](/api/graphql-api/admin/settings/return-rules/mutations/update): Partial update — send only the fields you want to change. Pass the resource IRI as `id`. Permission: `sales.rma.rules.edit`.
+
+## GraphQL API › Admin › Settings › Return Rules › Queries
+
+- [Get RMA rule](/api/graphql-api/admin/settings/return-rules/queries/get): Returns a single RMA rule by its IRI.
+- [List RMA rules](/api/graphql-api/admin/settings/return-rules/queries/list): Filter, sort and paginate in one query. Supplying multiple filters narrows the result (logical AND).
+
+## GraphQL API › Admin › Settings › Return Statuses
+
+- [Return Statuses](/api/graphql-api/admin/settings/return-statuses): The **Return Statuses** menu is part of the store's **RMA (Returns) settings**. Custom return statuses used to track a return through your workflow. Each…
+
+## GraphQL API › Admin › Settings › Return Statuses › Mutations
+
+- [Create RMA status](/api/graphql-api/admin/settings/return-statuses/mutations/create): Creates a new RMA status. Permission: `sales.rma.statuses.create`.
+- [Delete RMA status](/api/graphql-api/admin/settings/return-statuses/mutations/delete): Deletes a RMA status. Pass the resource IRI as `id`. Permission: `sales.rma.statuses.delete`.
+- [Mass Delete RMA statuses](/api/graphql-api/admin/settings/return-statuses/mutations/mass-delete): Deletes several RMA statuses in one call. Permission: `sales.rma.statuses.delete`.
+- [Mass Update RMA statuses Status](/api/graphql-api/admin/settings/return-statuses/mutations/mass-update-status): Sets the active `status` flag on several RMA statuses in one call. Permission: `sales.rma.statuses.edit`.
+- [Update RMA status](/api/graphql-api/admin/settings/return-statuses/mutations/update): Partial update — send only the fields you want to change. Pass the resource IRI as `id`. Permission: `sales.rma.statuses.edit`.
+
+## GraphQL API › Admin › Settings › Return Statuses › Queries
+
+- [Get RMA status](/api/graphql-api/admin/settings/return-statuses/queries/get): Returns a single RMA status by its IRI.
+- [List RMA statuses](/api/graphql-api/admin/settings/return-statuses/queries/list): Filter, sort and paginate in one query. Supplying multiple filters narrows the result (logical AND).
 
 ## GraphQL API › Admin › Settings › Roles
 
@@ -576,6 +687,20 @@
 ## GraphQL API › Shop › Customer
 
 - [Customer](/api/graphql-api/shop/customer): The Customer menu is the customer's account area — registering and signing in, managing the profile and address book, viewing past orders, invoices, shipments,…
+
+## GraphQL API › Shop › Eu Withdrawal
+
+- [EU Right of Withdrawal](/api/graphql-api/shop/eu-withdrawal): The EU right-of-withdrawal endpoints let a shopper formally declare that they are exercising their statutory right to withdraw from a purchase (the EU…
+
+## GraphQL API › Shop › Eu Withdrawal › Mutations
+
+- [File an EU Withdrawal](/api/graphql-api/shop/eu-withdrawal/mutations/create-eu-withdrawal): File an EU right-of-withdrawal declaration against one of the authenticated customer's own orders.
+- [File a Guest EU Withdrawal](/api/graphql-api/shop/eu-withdrawal/mutations/create-guest-eu-withdrawal): File an EU right-of-withdrawal declaration for a guest order, proving ownership with the order increment id and email.
+
+## GraphQL API › Shop › Eu Withdrawal › Queries
+
+- [List EU Withdrawals](/api/graphql-api/shop/eu-withdrawal/queries/list-eu-withdrawals): Retrieve a paginated list of the authenticated customer's own EU right-of-withdrawal declarations, newest first.
+- [View EU Withdrawal](/api/graphql-api/shop/eu-withdrawal/queries/view-eu-withdrawal): Retrieve a single EU right-of-withdrawal declaration owned by the authenticated customer.
 
 ## GraphQL API › Shop › Gdpr Requests
 
@@ -705,6 +830,26 @@
 - [Get Theme Customisation](/api/graphql-api/shop/queries/single-theme-customisation): Retrieve basic information for a single theme customisation by its ID.
 - [Theme Customizations](/api/graphql-api/shop/queries/theme-customisations): Retrieve theme customizations with basic fields and pagination.
 - [Tree Categories](/api/graphql-api/shop/queries/tree-categories): Retrieve root and child categories with their basic hierarchical structure.
+
+## GraphQL API › Shop › Returns
+
+- [Returns (RMA)](/api/graphql-api/shop/returns): Returns — also called RMA (Return Merchandise Authorization) — let a logged-in customer ask the store to take back or cancel an item they ordered. A customer…
+
+## GraphQL API › Shop › Returns › Mutations
+
+- [Cancel a Return](/api/graphql-api/shop/returns/mutations/cancel-return): Cancel the authenticated customer's own return (RMA) request.
+- [Close a Return](/api/graphql-api/shop/returns/mutations/close-return): Mark the authenticated customer's own return (RMA) request as solved.
+- [Raise a Return](/api/graphql-api/shop/returns/mutations/create-return): Raise a new return (RMA) request for one item of one of the authenticated customer's orders.
+- [Reopen a Return](/api/graphql-api/shop/returns/mutations/reopen-return): Reopen a canceled or declined return (RMA) request back to pending.
+- [Send a Return Message](/api/graphql-api/shop/returns/mutations/send-return-message): Add a customer message to the conversation thread of a return (RMA) request.
+
+## GraphQL API › Shop › Returns › Queries
+
+- [List Return Messages](/api/graphql-api/shop/returns/queries/list-return-messages): List the conversation messages of a return (RMA) request owned by the authenticated customer, newest first.
+- [List Return Reasons](/api/graphql-api/shop/returns/queries/list-return-reasons): List the active reasons a customer can pick when raising a return, filtered by resolution type.
+- [List Returnable Items](/api/graphql-api/shop/returns/queries/list-returnable-items): List the return-eligible items of one of the authenticated customer's orders, with the quantity caps the store enforces.
+- [List Returns](/api/graphql-api/shop/returns/queries/list-returns): Retrieve a paginated list of the authenticated customer's own return (RMA) requests, newest first.
+- [View Return](/api/graphql-api/shop/returns/queries/view-return): Retrieve a single return (RMA) request owned by the authenticated customer, including its item, images and action flags.
 
 ## GraphQL API › Shop › Theme Customisations
 
@@ -1069,6 +1214,15 @@
 - [Set Shipping Method](/api/rest-api/admin/sales/carts/set-shipping-method): Save the selected shipping method on the draft cart and recollect totals.
 - [Update Cart Item Quantities](/api/rest-api/admin/sales/carts/update-items): Bulk-update line-item quantities. `qty` is a map of cart_item_id → new quantity.
 
+## REST API › Admin › Sales › Eu Withdrawal
+
+- [EU Withdrawal](/api/rest-api/admin/sales/eu-withdrawal): The EU Withdrawal menu is the store-wide queue of every **right-of-withdrawal declaration** a customer has filed against an order — the EU consumer's statutory…
+- [Decline EU Withdrawal](/api/rest-api/admin/sales/eu-withdrawal/decline): Declines a withdrawal declaration when the purchase is exempt from the right of withdrawal (for example a personalised good). Sets `status` to `declined` and…
+- [Get EU Withdrawal](/api/rest-api/admin/sales/eu-withdrawal/get-eu-withdrawal): Returns a single withdrawal declaration with its full evidence timeline — the received / confirmation / outcome record for one declaration.
+- [List EU Withdrawals](/api/rest-api/admin/sales/eu-withdrawal/list-eu-withdrawals): Mirrors the admin **Sales → EU Withdrawal** datagrid — a paginated list of every right-of-withdrawal declaration filed across all orders. The response is…
+- [Mark EU Withdrawal Refunded](/api/rest-api/admin/sales/eu-withdrawal/mark-refunded): Records that a withdrawal declaration has been honoured and the customer refunded out-of-band. Sets `status` to `refunded` and records who marked it, when, and…
+- [Resend EU Withdrawal Confirmation](/api/rest-api/admin/sales/eu-withdrawal/resend-confirmation): Re-sends the durable-medium confirmation email for a declaration in its own locale and refreshes `confirmationSentAt`. Use this when the original…
+
 ## REST API › Admin › Sales › Invoices
 
 - [Invoices](/api/rest-api/admin/sales/invoices): The Invoices menu is the store-wide list of every invoice that has been generated across all orders, plus the actions you can take on a single invoice. It…
@@ -1101,6 +1255,19 @@
 - [Refunds](/api/rest-api/admin/sales/refunds): The Refunds menu is the store-wide, **read-only** list of every refund that has been issued across all orders. It mirrors the admin **Sales → Refunds** screen…
 - [Export Refunds](/api/rest-api/admin/sales/refunds/export): Download the refunds datagrid as a CSV file — the same data the admin Refunds "Export" button produces. Honours the same filters as the listing.
 - [List Refunds](/api/rest-api/admin/sales/refunds/list): Paginated refunds listing. Every refund column + billing/shipping addresses are populated per row (line items are detail-only).
+
+## REST API › Admin › Sales › Returns
+
+- [Returns (RMA)](/api/rest-api/admin/sales/returns): The Returns menu is the admin queue for **RMA (Return Merchandise Authorization) requests** — the returns and item-cancellations customers raise against their…
+- [Create Return](/api/rest-api/admin/sales/returns/create-return): Open a return (or item cancellation) for any customer order. rma_qty is capped server-side by the item's returnable/cancelable quantity. Optional proof images…
+- [Get Return](/api/rest-api/admin/sales/returns/get-return): Full detail of a single return request — the returned item, images, status, order/customer context, whether it can be reopened, and the status transitions the…
+- [List Return Messages](/api/rest-api/admin/sales/returns/list-return-messages): The conversation messages of an RMA request, newest first. Returned as a plain JSON array (no envelope).
+- [List Return Reasons](/api/rest-api/admin/sales/returns/list-return-reasons): The active return reasons available when creating a return, filtered by resolution type. Returned as a plain JSON array (no envelope).
+- [List Returnable Items](/api/rest-api/admin/sales/returns/list-returnable-items): The items of an order that can be put on a return, each with the trusted server-enforced quantity caps. Returned as a plain JSON array (no envelope). No…
+- [List Returns](/api/rest-api/admin/sales/returns/list-returns): Paginated RMA queue. Detail-only fields (item, images, availableStatuses, information, packageCondition, canReopen, messagesCount) are null on the listing rows.
+- [Reopen Return](/api/rest-api/admin/sales/returns/reopen-return): Reopen a declined or canceled RMA back to pending when store settings allow it (otherwise 422). Empty body.
+- [Send Return Message](/api/rest-api/admin/sales/returns/send-return-message): Add an admin message to the RMA conversation. The customer is notified. Optional file attachment via multipart file.
+- [Update Status](/api/rest-api/admin/sales/returns/update-status): Set the RMA status. "Received package" creates a refund for the returned item (send shipping to include shipping); "Item canceled" cancels the order item and…
 
 ## REST API › Admin › Sales › Shipments
 
@@ -1175,6 +1342,50 @@
 - [List Locales](/api/rest-api/admin/settings/locales/list): Paginated list of every locale (storefront language) configured in the store.
 - [Mass Delete Locales](/api/rest-api/admin/settings/locales/mass-delete): Per-id guards (last-locale, channel-default) skip with a reason in `skipped`. Empty `indices` → 422. Permission: `settings.locales.delete`.
 - [Update Locale](/api/rest-api/admin/settings/locales/update): Partial. `code` uniqueness excludes self. Image upload deferred. Permission: `settings.locales.edit`.
+
+## REST API › Admin › Settings › Return Custom Fields
+
+- [Return Custom Fields](/api/rest-api/admin/settings/return-custom-fields): The **Return Custom Fields** menu is part of the store's **RMA (Returns) settings**. Extra fields the return form collects from the customer (for example a…
+- [Create RMA custom field](/api/rest-api/admin/settings/return-custom-fields/create): Creates a new RMA custom field. Permission: `sales.rma.custom-fields.create`.
+- [Delete RMA custom field](/api/rest-api/admin/settings/return-custom-fields/delete): Deletes a RMA custom field by its numeric id. Permission: `sales.rma.custom-fields.delete`.
+- [Get RMA custom field](/api/rest-api/admin/settings/return-custom-fields/get): Returns a single RMA custom field by its numeric id.
+- [List RMA custom fields](/api/rest-api/admin/settings/return-custom-fields/list): Returns the store's return custom fields. `options` is populated only for `select` / `multiselect` / `checkbox` / `radio` types. Rows come back in the standard…
+- [Mass Delete RMA custom fields](/api/rest-api/admin/settings/return-custom-fields/mass-delete): Deletes several RMA custom fields in one call. Permission: `sales.rma.custom-fields.delete`.
+- [Mass Update RMA custom fields Status](/api/rest-api/admin/settings/return-custom-fields/mass-update-status): Sets the active `status` flag on several RMA custom fields in one call. Permission: `sales.rma.custom-fields.edit`.
+- [Update RMA custom field](/api/rest-api/admin/settings/return-custom-fields/update): Partial update — send only the fields you want to change; omitted fields keep their current value. Permission: `sales.rma.custom-fields.edit`.
+
+## REST API › Admin › Settings › Return Reasons
+
+- [Return Reasons](/api/rest-api/admin/settings/return-reasons): The **Return Reasons** menu is part of the store's **RMA (Returns) settings**. Return / cancel reasons the RMA form offers a customer when they open a return.…
+- [Create RMA reason](/api/rest-api/admin/settings/return-reasons/create): Creates a new RMA reason. Permission: `sales.rma.reasons.create`.
+- [Delete RMA reason](/api/rest-api/admin/settings/return-reasons/delete): Deletes a RMA reason by its numeric id. Permission: `sales.rma.reasons.delete`.
+- [Get RMA reason](/api/rest-api/admin/settings/return-reasons/get): Returns a single RMA reason by its numeric id.
+- [List RMA reasons](/api/rest-api/admin/settings/return-reasons/list): Returns the store's return reasons. Rows come back in the standard `{ data, meta }` envelope.
+- [Mass Delete RMA reasons](/api/rest-api/admin/settings/return-reasons/mass-delete): Deletes several RMA reasons in one call. Permission: `sales.rma.reasons.delete`.
+- [Mass Update RMA reasons Status](/api/rest-api/admin/settings/return-reasons/mass-update-status): Sets the active `status` flag on several RMA reasons in one call. Permission: `sales.rma.reasons.edit`.
+- [Update RMA reason](/api/rest-api/admin/settings/return-reasons/update): Partial update — send only the fields you want to change; omitted fields keep their current value. Permission: `sales.rma.reasons.edit`.
+
+## REST API › Admin › Settings › Return Rules
+
+- [Return Rules](/api/rest-api/admin/settings/return-rules): The **Return Rules** menu is part of the store's **RMA (Returns) settings**. Return rules set the **return window** (in days) for matching products. Each rule…
+- [Create RMA rule](/api/rest-api/admin/settings/return-rules/create): Creates a new RMA rule. Permission: `sales.rma.rules.create`.
+- [Delete RMA rule](/api/rest-api/admin/settings/return-rules/delete): Deletes a RMA rule by its numeric id. Permission: `sales.rma.rules.delete`.
+- [Get RMA rule](/api/rest-api/admin/settings/return-rules/get): Returns a single RMA rule by its numeric id.
+- [List RMA rules](/api/rest-api/admin/settings/return-rules/list): Returns the store's return rules. Rows come back in the standard `{ data, meta }` envelope.
+- [Mass Delete RMA rules](/api/rest-api/admin/settings/return-rules/mass-delete): Deletes several RMA rules in one call. Permission: `sales.rma.rules.delete`.
+- [Mass Update RMA rules Status](/api/rest-api/admin/settings/return-rules/mass-update-status): Sets the active `status` flag on several RMA rules in one call. Permission: `sales.rma.rules.edit`.
+- [Update RMA rule](/api/rest-api/admin/settings/return-rules/update): Partial update — send only the fields you want to change; omitted fields keep their current value. Permission: `sales.rma.rules.edit`.
+
+## REST API › Admin › Settings › Return Statuses
+
+- [Return Statuses](/api/rest-api/admin/settings/return-statuses): The **Return Statuses** menu is part of the store's **RMA (Returns) settings**. Custom return statuses used to track a return through your workflow. Each…
+- [Create RMA status](/api/rest-api/admin/settings/return-statuses/create): Creates a new RMA status. Permission: `sales.rma.statuses.create`.
+- [Delete RMA status](/api/rest-api/admin/settings/return-statuses/delete): Deletes a RMA status by its numeric id. Permission: `sales.rma.statuses.delete`.
+- [Get RMA status](/api/rest-api/admin/settings/return-statuses/get): Returns a single RMA status by its numeric id.
+- [List RMA statuses](/api/rest-api/admin/settings/return-statuses/list): Returns the store's return statuses. Default statuses cannot be deleted. Rows come back in the standard `{ data, meta }` envelope.
+- [Mass Delete RMA statuses](/api/rest-api/admin/settings/return-statuses/mass-delete): Deletes several RMA statuses in one call. Permission: `sales.rma.statuses.delete`.
+- [Mass Update RMA statuses Status](/api/rest-api/admin/settings/return-statuses/mass-update-status): Sets the active `status` flag on several RMA statuses in one call. Permission: `sales.rma.statuses.edit`.
+- [Update RMA status](/api/rest-api/admin/settings/return-statuses/update): Partial update — send only the fields you want to change; omitted fields keep their current value. Permission: `sales.rma.statuses.edit`.
 
 ## REST API › Admin › Settings › Roles
 
@@ -1327,6 +1538,14 @@
 
 - [Register Customer](/api/rest-api/shop/customers/mutations/register-customer): Create a new customer account.
 
+## REST API › Shop › Eu Withdrawal
+
+- [EU Right of Withdrawal](/api/rest-api/shop/eu-withdrawal): The EU right-of-withdrawal endpoints let a shopper formally declare that they are exercising their statutory right to withdraw from a purchase (the EU…
+- [File an EU Withdrawal](/api/rest-api/shop/eu-withdrawal/create-eu-withdrawal): File an EU right-of-withdrawal declaration against one of the authenticated customer's own orders.
+- [File a Guest EU Withdrawal](/api/rest-api/shop/eu-withdrawal/create-guest-eu-withdrawal): File an EU right-of-withdrawal declaration for a guest order, proving ownership with the order increment id and email.
+- [List EU Withdrawals](/api/rest-api/shop/eu-withdrawal/list-eu-withdrawals): Retrieve a paginated list of the authenticated customer's own EU right-of-withdrawal declarations, newest first.
+- [View EU Withdrawal](/api/rest-api/shop/eu-withdrawal/view-eu-withdrawal): Retrieve a single EU right-of-withdrawal declaration owned by the authenticated customer.
+
 ## REST API › Shop › Gdpr Requests
 
 - [GDPR Data Requests](/api/rest-api/shop/gdpr-requests): GDPR data requests let a logged-in customer exercise their data-protection rights — asking the store to **delete** their account data or to **update** the…
@@ -1377,6 +1596,20 @@
 
 - [Get Product Details](/api/rest-api/shop/queries/get-product): Retrieve detailed information for a specific product.
 - [List Products](/api/rest-api/shop/queries/get-products): Retrieve paginated list of all products from the catalog.
+
+## REST API › Shop › Returns
+
+- [Returns (RMA)](/api/rest-api/shop/returns): Returns — also called RMA (Return Merchandise Authorization) — let a logged-in customer ask the store to take back or cancel an item they ordered. A customer…
+- [Cancel a Return](/api/rest-api/shop/returns/cancel-return): Cancel the authenticated customer's own return (RMA) request.
+- [Close a Return](/api/rest-api/shop/returns/close-return): Mark the authenticated customer's own return (RMA) request as solved.
+- [Raise a Return](/api/rest-api/shop/returns/create-return): Raise a new return (RMA) request for one item of one of the authenticated customer's orders.
+- [List Return Messages](/api/rest-api/shop/returns/list-return-messages): List the conversation messages of a return (RMA) request owned by the authenticated customer, newest first.
+- [List Return Reasons](/api/rest-api/shop/returns/list-return-reasons): List the active reasons a customer can pick when raising a return, filtered by resolution type.
+- [List Returnable Items](/api/rest-api/shop/returns/list-returnable-items): List the return-eligible items of one of the authenticated customer's orders, with the quantity caps the store enforces.
+- [List Returns](/api/rest-api/shop/returns/list-returns): Retrieve the authenticated customer's own return (RMA) requests, newest first.
+- [Reopen a Return](/api/rest-api/shop/returns/reopen-return): Reopen a canceled or declined return (RMA) request back to pending.
+- [Send a Return Message](/api/rest-api/shop/returns/send-return-message): Add a customer message to the conversation thread of a return (RMA) request.
+- [View Return](/api/rest-api/shop/returns/view-return): Retrieve a single return (RMA) request owned by the authenticated customer, including its item, images and action flags.
 
 ## REST API › Shop › Theme Customizations
 

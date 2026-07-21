@@ -93,6 +93,7 @@ GET /api/shop/checkout-payment-methods
 
 ## Notes
 
+- **Requires address + shipping method first.** Payment methods become available only after a checkout address is saved and a shipping method is selected. Before that, this returns an **empty list** (`[]`) — not an error. Complete [Set Checkout Address](/api/rest-api/shop/checkout/set-shipping-address) → [Set Shipping Method](/api/rest-api/shop/checkout/set-shipping-method) first.
 - Methods availability depends on store configuration
 - Some methods may have requirements or restrictions
 - Instructions help guide customer through payment

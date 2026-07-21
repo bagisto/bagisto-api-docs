@@ -68,7 +68,7 @@ examples:
 
   - id: filter-by-price
     title: Filter by price range
-    description: Use `?price=from,to` (compound) or `?price_from=` + `?price_to=` (separate). Both are equivalent.
+    description: Use `?price={min},{max}` (the comma splits min from max — not a thousands separator) or `?price_from=` + `?price_to=` (separate). `?price=10,200` means min 10 / max 200. Both forms are equivalent.
     request: |
       curl -X GET "http://localhost/api/shop/products?price=10,200&per_page=2" \
         -H "Accept: application/json" \
@@ -183,9 +183,9 @@ These names are interpreted by the search/sort/pagination layer — never as att
 | `filter`            | string  | —       | JSON filter object — GraphQL parity. Example: `{"color":{"match":"3","match_type":"PARTIAL"}}`. Most clients prefer the simpler `?<attribute>=<id>` shorthand. |
 | `type`              | string  | —       | Product type. One of `simple`, `configurable`, `bundle`, `grouped`, `virtual`, `downloadable`, `booking`.    |
 | `category_id`       | integer | —       | Filter by category ID. `categoryId` (camelCase) is also accepted.                                            |
-| `price`             | string  | —       | Compound price range `from,to` (e.g. `10,200`).                                                              |
-| `price_from`        | number  | —       | Minimum price (inclusive). Equivalent to the lower bound of `price`.                                         |
-| `price_to`          | number  | —       | Maximum price (inclusive). Equivalent to the upper bound of `price`.                                         |
+| `price`             | string  | —       | Compound price range in the exact form `{min},{max}` — the comma separates minimum from maximum, it is **not** a thousands separator. `?price=10,200` means **min 10, max 200**. Use `.` for decimals and no grouping (e.g. `?price=1000,5000.50`), never `?price=1,000`. |
+| `price_from`        | number  | —       | Minimum price (inclusive). Same as the `{min}` in `price`.                                                   |
+| `price_to`          | number  | —       | Maximum price (inclusive). Same as the `{max}` in `price`.                                                   |
 | `new`               | boolean | —       | `1` to restrict to products with the "new" flag set.                                                         |
 | `featured`          | boolean | —       | `1` to restrict to products with the "featured" flag set.                                                    |
 
@@ -247,10 +247,12 @@ GET /api/shop/products?
 - Sending `itemsPerPage` instead of `per_page` — the legacy API Platform name is **not accepted**.
 - Filtering by an attribute that isn't flagged `isFilterable=1` — the parameter is silently ignored.
 - Filtering by an attribute *code* but passing an option *label* (e.g. `?color=Red`) — values are matched against option **IDs**, not labels.
+- Reading the comma in `price` as a thousands separator — it isn't. `?price=10,200` is **min 10 / max 200**, not "10200". Never group digits (`?price=1,000` is invalid); write `?price=1000,5000`.
 - Combining `price` + `price_from`/`price_to` — pick one. The compound form wins if both are present.
 
 ## Related Resources
 
+- [REST ↔ GraphQL parameter mapping](/api/graphql-api/shop/queries/get-products#rest-graphql-parameter-mapping) — how these filters translate to GraphQL (`treeCategories`, `sortKey`/`reverse`, `price_from`/`price_to`)
 - [Products](/api/rest-api/shop/products/get-products) — same endpoint with no filters
 - [Single Product](/api/rest-api/shop/products/get-product) — fetch one product after the user picks a result
 - [Categories](/api/rest-api/shop/categories/get-categories) — discover category IDs for `?category_id=N`

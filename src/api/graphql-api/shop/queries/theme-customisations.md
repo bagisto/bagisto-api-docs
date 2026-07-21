@@ -527,6 +527,27 @@ This query supports pagination with cursor-based navigation and type-based filte
 | `footer_links` | Footer navigation links | Footer menu items |
 | `services_content` | Services information | Additional service blocks |
 
+## Locale
+
+Block content is locale-specific. `translation` returns the content for the **requested locale**, selected by the `X-Locale` request header (e.g. `X-Locale: ar`); omit it and you get the store default locale. The `translations` connection always carries every locale, so you can also read them all and pick client-side.
+
+## Options Schema (per type)
+
+`translation.options` is a **JSON-encoded string** — `JSON.parse` it client-side. The parsed shape depends on `type`:
+
+| Type | Parsed `options` shape |
+|------|------------------------|
+| `image_carousel` | `{ "images": [{ "image": "storage/theme/…/*.webp", "link": "...", "title": "..." }, …] }` |
+| `product_carousel` | `{ "title": "...", "filters": { "new": 1, "featured": 1, "limit": 10, "sort": "asc" } }` — `filters` forwards to the [products](/api/graphql-api/shop/queries/get-products) listing |
+| `category_carousel` | `{ "title": "...", "filters": { "parent_id": "1", "limit": "10", "sort": "asc" } }` — `parent_id` is the same value passed to [`treeCategories(parentId:)`](/api/graphql-api/shop/queries/tree-categories) |
+| `static_content` | `{ "html": "<div>…</div>", "css": ".foo{…}" }` |
+| `footer_links` | `{ "column_1": [{ "url": "...", "title": "...", "sort_order": "3" }, …], "column_2": […] }` |
+| `services_content` | `{ "services": [{ "service_icon": "storage/…", "title": "...", "description": "..." }, …] }` |
+
+::: warning `static_content` images use `data-src`
+The stored `html` is authored for the storefront web theme, where `<img>` tags carry the real source in **`data-src`** (lazy-loading) with a placeholder in `src`. Rendering this HTML in your own frontend requires reading `data-src`, not `src`.
+:::
+
 ## Use Cases
 
 ### 1. Home Page Sliders

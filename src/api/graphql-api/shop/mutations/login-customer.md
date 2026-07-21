@@ -85,8 +85,8 @@ This mutation validates credentials, verifies account status, and generates toke
 | `login.email` | `String!` | Customer email. |
 | `login.firstName` | `String!` | First name. |
 | `login.lastName` | `String!` | Last name. |
-| `login.token` | `String!` | Authentication token for API requests. |
-| `login.apiToken` | `String!` | API token for programmatic access. |
+| `login.token` | `String!` | **The authentication credential** — send as `Authorization: Bearer <token>`. |
+| `login.apiToken` | `String!` | Legacy field, kept for backward compatibility. **Not** an auth Bearer — authenticate with `token` instead. |
 | `login.success` | `Boolean!` | Login success indicator. |
 | `login.message` | `String!` | Success or error message. |
 | `errors` | `[ErrorMessage!]` | Authentication errors if login failed. |

@@ -313,6 +313,10 @@ X-STOREFRONT-KEY: <storefrontKey>
 |----------|------|----------|-------------|
 | `id` | `ID!` | ✅ Yes | The IRI identifier of the customer order (e.g. `/api/shop/customer-orders/1`). |
 
+::: warning Use the IRI `id`, not `incrementId`
+The lookup key is the order's **IRI `id`** (`/api/shop/customer-orders/{id}`), not the human-readable `incrementId`. Passing `incrementId` (e.g. `"1000000123"`) returns not found. The [`customerOrders`](/api/graphql-api/shop/queries/get-customer-orders) list returns **both** fields on each row — read a row's `id` and feed it here; `incrementId` is display-only.
+:::
+
 ## Possible Returns
 
 | Field | Type | Description |
