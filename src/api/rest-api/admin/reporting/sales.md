@@ -311,6 +311,36 @@ examples:
         }
       ]
 
+  - id: rest-sales-sales-by-coupon
+    title: Sales By Coupon
+    description: Top coupon codes by discount given. Here `statistics` is a flat array of coupon rows, not an object.
+    query: |
+      curl -X GET "https://your-domain.com/api/admin/reporting/sales?type=sales-by-coupon&start=2026-05-10&end=2026-06-09&channel=default" \
+        -H "Accept: application/json" \
+        -H "Authorization: Bearer <id>|<token>"
+    response: |
+      [
+        {
+          "entity": "sales",
+          "type": "sales-by-coupon",
+          "dateRange": { "previous": "07 May 2026 - 06 Jun 2026", "current": "06 Jun 2026 - 06 Jul 2026" },
+          "statistics": [
+            {
+              "coupon_code": "SAVE10",
+              "cart_rule_id": 1,
+              "total": 12,
+              "base_total": "2480.0000",
+              "base_discount_total": "248.0000",
+              "formatted_total": "$2,480.00",
+              "formatted_discount_total": "$248.00",
+              "link": "https://your-domain.com/admin/marketing/promotions/cart-rules/edit/1",
+              "progress": 42.5,
+              "datetime": null
+            }
+          ]
+        }
+      ]
+
   - id: rest-sales-view
     title: View Details (table form)
     description: The expanded, row-by-row table behind a panel's "View Details" link. `statistics` carries ordered `columns` plus the full `records` list — the same shape for every `type`.
@@ -350,6 +380,21 @@ examples:
       Date,Orders,Total
       10 May,12,"$8,500.00"
       11 May,4,"$1,197.53"
+
+  - id: rest-sales-export-xlsx
+    title: Export (XLSX)
+    description: The detailed table streamed as an XLSX workbook (the "Export" button). The header row is built from the column labels, followed by one line per record.
+    query: |
+      curl -X GET "https://your-domain.com/api/admin/reporting/sales/export?type=total-sales&format=xlsx&start=2026-05-10&end=2026-06-09&channel=default" \
+        -H "Authorization: Bearer <id>|<token>" \
+        -H "Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" \
+        -o sales-report.xlsx
+    response: |
+      # Binary response: an XLSX workbook is written to disk
+      # (Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+      #  Content-Disposition: attachment; filename="sales-<type>.xlsx").
+      # Same columns as the CSV export, as the first sheet's header row plus one row per record.
+
 ---
 
 # Reporting — Sales
@@ -365,11 +410,11 @@ Returns the aggregate statistics that power the Bagisto admin **Reporting → Sa
 
 All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication). Reporting has **no permission gate**; any authenticated admin can read it.
 
-## Understanding `type` — the Sales report is **nine** separate calls
+## Understanding `type` — the Sales report is **ten** separate calls
 
 This is the most important thing to understand about this API.
 
-The Bagisto admin Sales report is **not one response**. The page is assembled from **nine independent requests**, one per panel, and each is selected with the `?type=` query parameter. These nine groups are exactly the panels of the admin Sales report screen — no more, no less.
+The Bagisto admin Sales report is **not one response**. The page is assembled from **ten independent requests**, one per panel, and each is selected with the `?type=` query parameter. These ten groups are exactly the panels of the admin Sales report screen — no more, no less.
 
 So a single call returns **one panel** of the report. To render the full screen, call the endpoint once per `type` (or only for the panels you need). The `statistics` payload **changes shape per `type`** — sometimes an object, sometimes a flat array — so always branch on `type` when consuming it.
 
@@ -386,6 +431,7 @@ So a single call returns **one panel** of the report. To render the full screen,
 | **Tax Collected** | `tax-collected` | object (with `top_categories` + `over_time`) |
 | **Shipping Collected** | `shipping-collected` | object (with `top_methods` + `over_time`) |
 | **Top Payment Methods** | `top-payment-methods` | array |
+| **Sales By Coupon** | `sales-by-coupon` | array |
 
 `total-sales` is the default — if you omit `?type=`, you get the "Total Sales" panel.
 
@@ -393,7 +439,7 @@ So a single call returns **one panel** of the report. To render the full screen,
 
 | Param | Type | Required | Description |
 |---|---|---|---|
-| `type` | enum | No | One of the nine values above. Defaults to `total-sales`. |
+| `type` | enum | No | One of the ten values above. Defaults to `total-sales`. |
 | `start` | date (YYYY-MM-DD) | No | Lower bound of the reporting window. Defaults to **30 days ago**. |
 | `end` | date (YYYY-MM-DD) | No | Upper bound. Defaults to **today**. |
 | `channel` | string | No | Channel **code** to scope the figures to a single channel. Defaults to all channels. |
@@ -483,6 +529,10 @@ Each stage carries a single running `total` plus `progress` — there is no `pre
 
 `statistics` is an **array** (one row per payment method, ranked by collected amount). Each row: `id`, `method`, `method_title`, `title`, `total`, `base_total`, `progress`, `formatted_total`.
 
+### `sales-by-coupon`
+
+`statistics` is an **array** (one row per coupon code used, ranked by discount given). Each row: `coupon_code`, `cart_rule_id`, `total` (orders using the coupon), `base_total`, `base_discount_total`, `formatted_total`, `formatted_discount_total`, `link` (admin cart-rule edit URL, `null` if the rule was deleted), `progress`, `datetime`.
+
 ## View Details
 
 `GET /api/admin/reporting/sales/view` returns the same statistics as the summary stats endpoint, but in a detailed table form — the full list that sits behind a panel's **View Details** link. The `statistics` object carries:
@@ -494,9 +544,9 @@ The table shape is **uniform across every `type`** (`columns` + `records`); only
 
 ## Export (CSV)
 
-`GET /api/admin/reporting/sales/export` streams the same detailed table as a `text/csv` attachment (the **Export** button). The header row is built from the column labels, followed by one line per record. Send `Accept: text/csv` and save the response to a file. It honors the same `type`, `start`, `end` and `channel` parameters.
+`GET /api/admin/reporting/sales/export` streams the same detailed table as a csv, xls or xlsx attachment (the **Export** button). The header row is built from the column labels, followed by one line per record. Send the `Accept` header matching the requested format and save the response to a file. It honors the same `type`, `start`, `end` and `channel` parameters.
 
-Only `?format=csv` is accepted — any other `format` value returns HTTP **422**.
+`?format=` accepts `csv` (the default), `xls` and `xlsx` — any other value returns HTTP **422**. Send an `Accept` header matching the format: `text/csv`, `application/vnd.ms-excel` or `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`.
 
 ## Errors
 

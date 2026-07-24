@@ -336,6 +336,21 @@ examples:
       ID,Name,Price,Total Revenue
       2359,"Horizon Arc 49"" OLED Curved Gaming Monitor","$3,899.00","$38,990.00"
       1184,"Wireless Noise-Cancelling Headphones","$199.00","$12,840.00"
+
+  - id: rest-products-export-xlsx
+    title: Export (XLSX)
+    description: Streams the View Details table as a text/csv attachment (the "Export" button). Send Accept text/csv. Only format=xlsx is accepted; any other value returns 422.
+    query: |
+      curl -X GET "https://your-domain.com/api/admin/reporting/products/export?type=top-selling-products-by-revenue&format=xlsx&start=2026-05-10&end=2026-06-09&channel=default" \
+        -H "Authorization: Bearer <id>|<token>" \
+        -H "Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" \
+        -o products-report.xlsx
+    response: |
+      # Binary response: an XLSX workbook is written to disk
+      # (Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+      #  Content-Disposition: attachment; filename="products-<type>.xlsx").
+      # Same columns as the CSV export, as the first sheet's header row plus one row per record.
+
 ---
 
 # Reporting — Products
@@ -443,9 +458,9 @@ This is the expanded, row-by-row view; the summary stats endpoint returns the ro
 
 ## Export (CSV)
 
-`GET /api/admin/reporting/products/export` streams the same detailed table as a `text/csv` attachment (the **Export** button). The header row is built from the column labels, followed by one line per record. Send `Accept: text/csv` and save the response to a file.
+`GET /api/admin/reporting/products/export` streams the same detailed table as a csv, xls or xlsx attachment (the **Export** button). The header row is built from the column labels, followed by one line per record. Send the `Accept` header matching the requested format and save the response to a file.
 
-Only `?format=csv` is accepted — any other `format` value returns HTTP **422**.
+`?format=` accepts `csv` (the default), `xls` and `xlsx` — any other value returns HTTP **422**. Send an `Accept` header matching the format: `text/csv`, `application/vnd.ms-excel` or `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`.
 
 Both **View Details** and **Export** require only authentication; reporting has no permission gate.
 

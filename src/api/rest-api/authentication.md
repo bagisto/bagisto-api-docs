@@ -176,6 +176,10 @@ print(f"Token: {data['access_token']}")
 
 Verify if authentication token is still valid.
 
+::: tip Checking "am I logged in?"
+There is no dedicated session/status endpoint. To check whether a stored token is still valid, call `POST /api/shop/verify-tokens` — or simply call any protected endpoint (e.g. `GET /api/shop/customer` profile). A `200` means the token is valid; a `401`/`403` means it is missing, invalid, or expired — treat any of those as "not logged in" and send the user back through login (tokens do not auto-refresh; re-login to get a new one).
+:::
+
 **Endpoint:**
 ```
 POST /api/shop/verify-tokens

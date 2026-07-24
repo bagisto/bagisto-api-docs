@@ -114,7 +114,8 @@ Authenticate a customer account with email and password.
 | Field | Type | Description |
 |-------|------|-------------|
 | `createCustomerLogin` | Customer | The authenticated customer login object |
-| `token` | String | JWT token for API authentication |
+| `token` | String | **The authentication credential** (format `<id>\|<secret>`). Send as `Authorization: Bearer <token>` |
+| `apiToken` | String | Legacy field, kept for backward compatibility. **Not** an auth Bearer — sending it in the `Authorization` header returns `Unauthenticated` |
 | `message` | String | Success or error message |
 | `success` | Boolean | Login success status |
 

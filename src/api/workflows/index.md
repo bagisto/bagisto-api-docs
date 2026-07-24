@@ -42,5 +42,5 @@ Every flow page uses the same blocks:
 Extending the API itself (adding or changing endpoints) — see [Customization](/api/workflows/customization/).
 
 ::: tip Building with an AI agent?
-See [Build with AI](/api/build-with-ai) for the `llms.txt` index, the agent skills, and the optional docs MCP server.
+See [Build with AI](/api/build-with-ai/) for the `llms.txt` index, the agent skills, and the optional docs MCP server.
 :::

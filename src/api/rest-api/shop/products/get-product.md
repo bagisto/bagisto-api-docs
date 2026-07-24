@@ -282,7 +282,7 @@ The default-family product output includes top-level shortcuts for the common fi
 | `videos`                | array  | Video objects                                                                                               |
 | `superAttributes`       | array  | **Configurable type only** — list of attributes used to build variants, with their options inlined          |
 | `variants`              | array  | **Configurable type only** — child variant products, each carrying card-level fields                        |
-| `bookingProducts`       | array  | **Booking type only** — slot config with `type` (`default`/`appointment`/`rental`/`event`/`table`) and a type-specific `slots` block |
+| `bookingProducts`       | array  | **Booking type only** — slot config with `type` (`default`/`appointment`/`rental`/`event`/`table`), a type-specific `slots` block, and the "starting from" price fields (see below) |
 | `bundleOptions`         | array  | **Bundle type only** — option groups with their member products inlined                                     |
 | `groupedProducts`       | array  | **Grouped type only** — associated products                                                                 |
 | `downloadableLinks`     | array  | **Downloadable type only** — purchasable links                                                              |
@@ -309,6 +309,19 @@ Each embedded relation is also available as its own URL — useful when you only
 | `GET /api/shop/products/{productId}/booking-products`| Booking config row(s) for a booking product   |
 | `GET /api/shop/booking-products/{id}`                | Single booking config (with type-specific `slots`) |
 | `GET /api/shop/booking-slots?id={bp}&date=YYYY-MM-DD`| Runtime slot availability — see [Booking Slots](/api/rest-api/shop/products/get-booking-slots) |
+
+### Booking "starting from" price
+
+Each `bookingProducts[]` entry carries a computed "starting from" price — the product base price plus the cheapest bookable extra — matching the storefront card / detail page:
+
+| Field | Meaning |
+|---|---|
+| `startingPrice` | Final (post-discount) starting price. |
+| `formattedStartingPrice` | Currency-formatted `startingPrice`. |
+| `startingRegularPrice` | Pre-discount starting price. Differs from `startingPrice` only when an event ticket is on sale — use both for a strike-through. |
+| `formattedStartingRegularPrice` | Currency-formatted `startingRegularPrice`. |
+
+The extra is the **cheapest event ticket** (`event`) or the **minimum rental unit rate** (`rental`). For `default` / `appointment` / `table` all four are `null` and the product's own `price` is the correct figure.
 
 ## Use Cases
 

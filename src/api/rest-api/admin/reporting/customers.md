@@ -252,6 +252,21 @@ examples:
       Jane Cooper,jane@example.com,"$4,820.00"
       Devon Lane,devon@example.com,"$3,150.50"
       Arlene McCoy,arlene@example.com,"$2,940.25"
+
+  - id: rest-customers-export-xlsx
+    title: Export (XLSX)
+    description: Streams the View Details table as a text/csv attachment (the Export button). Header row is built from the column labels; honors the same `type`. CSV only — any other format returns 422.
+    query: |
+      curl -X GET "https://your-domain.com/api/admin/reporting/customers/export?type=customers-with-most-sales&format=xlsx&start=2026-05-10&end=2026-06-09&channel=default" \
+        -H "Authorization: Bearer <id>|<token>" \
+        -H "Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" \
+        -o customers-report.xlsx
+    response: |
+      # Binary response: an XLSX workbook is written to disk
+      # (Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+      #  Content-Disposition: attachment; filename="customers-<type>.xlsx").
+      # Same columns as the CSV export, as the first sheet's header row plus one row per record.
+
 ---
 
 # Reporting — Customers
@@ -362,9 +377,9 @@ The table columns per `type`:
 
 ## Export (CSV)
 
-`GET /api/admin/reporting/customers/export` streams the same detailed table as a `text/csv` attachment (the **Export** button). It honors the same `?type=`. The header row is built from the column labels, followed by one line per record. Send `Accept: text/csv` and save the response to a file.
+`GET /api/admin/reporting/customers/export` streams the same detailed table as a csv, xls or xlsx attachment (the **Export** button). It honors the same `?type=`. The header row is built from the column labels, followed by one line per record. Send the `Accept` header matching the requested format and save the response to a file.
 
-Only `?format=csv` is accepted — any other `format` value returns HTTP 422.
+`?format=` accepts `csv` (the default), `xls` and `xlsx` — any other value returns HTTP 422. Send an `Accept` header matching the format: `text/csv`, `application/vnd.ms-excel` or `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`.
 
 Both **View Details** and **Export** require only authentication; reporting has no permission gate.
 

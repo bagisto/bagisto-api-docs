@@ -73,8 +73,8 @@ The response is flat — the token is at the top level.
 | Field | Type | Description |
 |-------|------|-------------|
 | `id` / `_id` | integer | Customer ID |
-| `token` | string | Bearer token, format `<id>\|<secret>` — send as `Authorization: Bearer <token>` |
-| `apiToken` | string | Long-lived customer API token |
+| `token` | string | **The authentication credential.** Format `<id>\|<secret>` — send as `Authorization: Bearer <token>` on all authenticated requests |
+| `apiToken` | string | Legacy field, kept for backward compatibility. **Not** an auth Bearer — using it in the `Authorization` header returns `Unauthenticated` |
 | `success` | boolean | Whether login succeeded |
 | `message` | string | Human-readable result |
 

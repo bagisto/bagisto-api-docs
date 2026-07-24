@@ -16,6 +16,12 @@ export const GRAPHQL_API_URL = 'https://api-demo.bagisto.com'
 
 Replace with your actual Bagisto instance URLs, and all documentation examples will automatically use the updated URLs.
 
+## Run with `APP_DEBUG=false`
+
+Keep `APP_DEBUG=false` in your server `.env` (the default). With `APP_DEBUG=true`, the framework stores API metadata in a **per-request in-memory cache** instead of a persistent one, so the two whole-spec pages — the OpenAPI docs pages (`GET /api/admin`, `GET /api/shop`) and the full GraphQL schema / introspection — rebuild metadata for **every** resource on every request and can exceed the 30-second request limit and fail. The cost grows with the number of API resources.
+
+This affects **only** those whole-spec pages. Normal API calls (a single REST endpoint or GraphQL operation) build metadata for just the resource they touch and stay fast in either mode. It is a development-mode trade-off in the underlying framework (debug mode intentionally skips the persistent cache so schema edits appear immediately) — not a bug. If a docs page or the schema hangs, set `APP_DEBUG=false` and reload.
+
 ## Interactive Testing Tools
 
 ### 1. Swagger UI (Built-in)

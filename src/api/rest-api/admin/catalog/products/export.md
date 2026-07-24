@@ -19,6 +19,32 @@ examples:
       1,"Coastal Breeze Men's Blue Zipper Hoodie",COASTALBREEZEMENSHOODIE,Default,$100.00,10000,Active,Fashion,simple
       22,"Acme Drawstring Bag",bagistoNGRY3424234KJCKJK,Default,"$3,000.00",0,Active,,bundle
       2705,,temporary-sku-8816cd,Default,,1,Disabled,,simple
+  - id: admin-products-export-xlsx
+    title: Export Products (XLSX)
+    description: Download the products datagrid as an XLSX file — the same data the admin Catalog → Products "Export" button produces. Honours the same filters as the listing and exports EVERY matching row (not just the current page).
+    query: |
+      curl -X GET "https://your-domain.com/api/admin/catalog/products/export?format=xlsx" \
+        -H "Authorization: Bearer <token>" \
+        -H "Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" \
+        --output products.xlsx
+    response: |
+      # Binary response: an XLSX workbook is written to disk
+      # (Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+      #  Content-Disposition: attachment; filename="products.xlsx").
+      # Same columns as the CSV export, as the first sheet's header row plus one row per record.
+  - id: admin-products-export-xls
+    title: Export Products (XLS)
+    description: Download the products datagrid as an XLS file — the same data the admin Catalog → Products "Export" button produces. Honours the same filters as the listing and exports EVERY matching row (not just the current page).
+    query: |
+      curl -X GET "https://your-domain.com/api/admin/catalog/products/export?format=xls" \
+        -H "Authorization: Bearer <token>" \
+        -H "Accept: application/vnd.ms-excel" \
+        --output products.xls
+    response: |
+      # Binary response: an XLS workbook is written to disk
+      # (Content-Type: application/vnd.ms-excel
+      #  Content-Disposition: attachment; filename="products.xls").
+      # Same columns as the CSV export, as the first sheet's header row plus one row per record.
   - id: admin-products-export-filtered
     title: Export Products (filtered)
     description: The export honours every listing filter — pass them as query params to export exactly the rows you are viewing. Here only active products of one attribute family within a price band are exported.
@@ -51,7 +77,7 @@ examples:
 
 # Export Products
 
-Downloads the products datagrid as a **CSV file** — the same data the admin **Catalog → Products** "Export" button produces. The response is a binary `text/csv` attachment, not JSON.
+Downloads the products datagrid as a **csv, xls or xlsx file** — the same data the admin **Catalog → Products** "Export" button produces. The response is a binary file attachment, not JSON.
 
 Unlike the [listing](/api/rest-api/admin/catalog/products), the export is **not paginated** — it streams **every row that matches the current filters**, so you can export a whole filtered catalog in one call.
 
@@ -76,7 +102,7 @@ There is no GraphQL counterpart — binary file streams aren't expressible over 
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `format` | string | Export format — **only `csv` is supported** (the default). Any other value returns `422`. |
+| `format` | string | Export format — `csv` (the default), `xls` or `xlsx`. Any other value returns `422`. Send a matching `Accept` header: `text/csv`, `application/vnd.ms-excel` or `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`. |
 
 The export also accepts the **same filters as the [listing](/api/rest-api/admin/catalog/products)**, AND-combined (more filters = narrower result):
 
@@ -93,7 +119,7 @@ The export also accepts the **same filters as the [listing](/api/rest-api/admin/
 
 ## Columns
 
-The CSV carries the nine datagrid columns, in order:
+The export carries the nine datagrid columns, in order:
 
 | Header | Value |
 |--------|-------|

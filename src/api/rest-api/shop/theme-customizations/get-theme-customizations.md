@@ -215,20 +215,24 @@ Both endpoints return the same shape — the collection wraps an array of these 
 
 > Both `translation` and `translations[]` are inlined — there are no IRIs to follow on this resource. The `options` field inside each translation is a **JSON string**, not a parsed object — you have to `JSON.parse(translation.options)` on the client.
 
+> **Content is locale-specific — pass `X-Locale`.** The `translation` field returns the block's content for the **requested locale**, selected by the `X-Locale` request header (e.g. `X-Locale: ar`); omit it and you get the store default locale. The `translations[]` array always carries every locale, so you can also read them all and pick client-side.
+
 ### Shape of the `options` payload (per type)
 
 The `options` JSON string varies by `type`. Common shapes:
 
 | `type`              | Parsed `options` shape                                                                       |
 |---------------------|----------------------------------------------------------------------------------------------|
-| `image_carousel`    | `{ "images": [{ "link": "...", "image": "storage/theme/.../*.webp", "title": "..." }, …] }`  |
-| `category_carousel` | `{ "filters": { "sort": "asc", "limit": "10", "parent_id": "1" } }`                          |
-| `product_carousel`  | `{ "filters": { … } }` (similar to category)                                                 |
+| `image_carousel`    | `{ "images": [{ "image": "storage/theme/.../*.webp", "link": "...", "title": "..." }, …] }`  |
+| `product_carousel`  | `{ "title": "...", "filters": { "new": 1, "featured": 1, "limit": 10, "sort": "asc" } }` — `filters` is forwarded as query params to the [Products](/api/rest-api/shop/products/search-product) listing |
+| `category_carousel` | `{ "title": "...", "filters": { "parent_id": "1", "limit": "10", "sort": "asc" } }` — `parent_id` selects the parent whose children are shown (same value you'd pass to `treeCategories(parentId:)`) |
+| `static_content`    | `{ "html": "<div>…</div>", "css": ".foo{…}" }`                                               |
 | `footer_links`      | `{ "column_1": [{ "url": "...", "title": "...", "sort_order": "3" }, …], "column_2": […], … }` |
-| `services_content`  | `{ "services": [{ "icon": "...", "title": "...", "description": "..." }, …] }`               |
-| `static_content`    | `{ "html_content": "<p>…</p>" }`                                                             |
+| `services_content`  | `{ "services": [{ "service_icon": "storage/…", "title": "...", "description": "..." }, …] }`  |
 
 > The client must **parse the JSON string** before using it. The API stores `options` as a TEXT column and returns it verbatim.
+
+> **`static_content` images:** the stored `html` is authored for the storefront web theme, where `<img>` tags carry the real source in a **`data-src`** attribute (lazy-loading) and a placeholder in `src`. If you render this HTML in your own frontend, read `data-src`, not `src`, or images won't load.
 
 ## Use Cases
 

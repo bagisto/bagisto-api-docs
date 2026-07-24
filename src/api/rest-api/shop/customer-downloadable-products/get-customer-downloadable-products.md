@@ -113,11 +113,23 @@ GET /api/shop/customer-downloadable-products
 
 ### Status Values
 
+Use any of these as the `?status=` filter value, or read them off the `status` field:
+
 | Status | Description |
 |--------|-------------|
 | `available` | Download link is active and can be used |
 | `pending` | Order has not been invoiced yet; download is not available |
 | `expired` | All downloads have been used or the link has expired |
+
+### Query Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `status` | string | — | Filter by purchase status (`available` / `pending` / `expired`). `?status=available` |
+| `page` | integer | `1` | Page number. |
+| `per_page` | integer | `10` | Items per page (max 50). |
+
+Over GraphQL: `customerDownloadableProducts(status: "available", first: 10) { … }`.
 
 ## cURL Example
 

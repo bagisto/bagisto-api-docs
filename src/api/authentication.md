@@ -118,11 +118,16 @@ curl -X POST "https://your-domain.com/api/shop/customer/login" \
   "id": 1,
   "name": "John Doe",
   "email": "john@example.com",
-  "token": "IsInRbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "apiToken": "aRfn7cVRSN7qUR6W7vGnlgb40XXa1mko4QNoLbiui1dAAKFcFh3yHY1PtG68OfJdksl0aHgbRKO",
+  "token": "3627|DfkAK11F8qdqtaFVJPvBxlJyNbCSMNl8TFWhWm4G5c9660e4",
   "success": true,
   "message": "Login successful"
 }
 ```
+
+::: warning Two fields come back — use `token`, not `apiToken`
+`token` (format `<id>|<secret>`) is the Bearer for **both** REST and GraphQL. `apiToken` is a **legacy** field kept for backward compatibility — it is **not** an auth Bearer; sending it in the `Authorization` header returns `Unauthenticated`. Full field reference on the [Customer Login](/api/rest-api/shop/customers/customer-login) page.
+:::
 
 **Step 2: Save the token**
 
@@ -156,7 +161,7 @@ Once authenticated, customers can:
 - 👤 **User-specific** — Each customer sees only their own data
 - 🔐 **Requires login** — Must authenticate first (Bearer token)
 - 📝 **Read & Write** — Can view and modify data
-- ⏱️ **Session-based** — Token expires after some time
+- ⏱️ **No default expiry** — the customer token does not expire unless the server sets one; there is **no refresh token** — recovery is re-login (see [Credential lifetimes](#credential-lifetimes))
 - 🚫 **Not cacheable** — Personal data shouldn't be cached
 - 🔄 **Requires both headers** — Need `X-STOREFRONT-KEY` AND `Authorization: Bearer`
 ---
@@ -243,6 +248,19 @@ Admins have full control over:
 | **Public** | Browse products, categories | `X-STOREFRONT-KEY` only | ❌ No |
 | **Customer** | Cart, orders, profile | `X-STOREFRONT-KEY` + `Authorization: Bearer` | ✅ Customer login |
 | **Admin** | Manage products, inventory | `Authorization: Bearer` only | Integration token |
+
+### Credential lifetimes
+
+There is **no refresh token** anywhere in the API. When a credential is no longer accepted, you obtain a new one — you never refresh.
+
+| Credential | Sent as | Expires by default | How to renew |
+|---|---|---|---|
+| **Storefront key** | `X-STOREFRONT-KEY` | **Never** — a generated key has no expiry | Rotate it (a rotated key is valid 12 months) |
+| **Customer token** | `Authorization: Bearer` | **Never** — unless the server sets a token lifetime | Re-login (`POST /api/shop/customer/login`) |
+| **Admin Integration token** | `Authorization: Bearer` | **365 days** (or a custom/unlimited value set when it is issued) | Regenerate it in the admin **Integration** menu |
+
+- The public demo may cap the customer token to a short window for safety — that is a demo setting, not the default. A self-hosted store's customer token does not expire unless you configure a lifetime.
+- Because there is no refresh flow, treat a `401` as "get a new credential": re-login for a customer token, regenerate for an admin token, rotate for a storefront key.
 
 ### Optional Context Headers
 
@@ -342,18 +360,26 @@ php artisan bagisto-api:key:manage status --key="Your Key"
 
 ### "Unauthorized" (401) Error
 
-**Problem:** Your Bearer token is invalid or expired.
+**Problem:** The token is missing, invalid, or no longer accepted.
 
-**Solution:**
+A 401 comes back with one of **two** messages — treat both the same way:
+
+- `Unauthenticated. Please login to perform this action`
+- `Invalid or expired authentication token`
+
+Branch on the **`401` status**, not on the message text — either one means "get a new credential". There is no refresh token; recovery is:
+
 ```bash
-# 1. Check if token is still valid (tokens expire)
-# 2. Login again to get a new token
+# Login again to get a fresh token (no refresh flow exists)
 curl -X POST "https://your-domain.com/api/shop/customer/login" \
   -H "Content-Type: application/json" \
+  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
   -d '{"email": "user@example.com", "password": "password"}'
 
-# 3. Use the new token in your Authorization header
+# Then send the new token as: Authorization: Bearer <token>
 ```
+
+Send `token` from the response as the Bearer — never `apiToken` (see [Credential lifetimes](#credential-lifetimes)).
 
 ### "Forbidden" (403) Error
 
@@ -364,20 +390,10 @@ curl -X POST "https://your-domain.com/api/shop/customer/login" \
 - If Admin API: Make sure you logged in as an admin, not a customer
 - Check your admin role has permission for this endpoint
 
-### Token Keeps Expiring
-
-**Problem:** You have to login repeatedly.
-
-**Solution:**
-- Implement automatic token refresh (if backend supports it)
-- Check token expiration time in the response
-- Store refresh token if provided
-- Consider longer-lived tokens for backend-to-backend communication
-
 ---
 
 ## Related Documentation
 
 - [API Key Management Guide](./storefront-api-key-management-guide.md) — How to generate and manage API keys
-- [REST API Guide](./rest-api/rest-api.md) — REST API endpoints
-- [GraphQL API Guide](./graphql-api/graphql-api.md) — GraphQL queries and mutations 
+- [REST API Guide](/api/rest-api/introduction) — REST API endpoints
+- [GraphQL API Guide](/api/graphql-api/introduction) — GraphQL queries and mutations 

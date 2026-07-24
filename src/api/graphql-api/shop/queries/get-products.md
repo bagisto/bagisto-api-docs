@@ -1694,6 +1694,10 @@ The query supports cursor-based pagination to efficiently handle large product c
 - Publication and availability status
 - Created and updated timestamps
 
+::: tip Building a filter UI?
+This page covers **applying** filters via `filter:`. To discover **which filters a category offers** — the attribute facets, their options, swatches, localized labels, and the category's price range — use [Category Attribute Filters](/api/graphql-api/shop/queries/get-category-attribute-filters). Don't hardcode facets, and don't derive them from [Attributes](/api/graphql-api/shop/queries/get-attributes) (that lists every attribute in the catalog, filterable or not).
+:::
+
 > **Currency & Formatted Prices:** All price fields reflect the active currency set via the `X-Currency` header — both numeric fields (e.g. `price`, `specialPrice`, `minimumPrice`) and formatted fields (e.g. `formattedPrice`, `formattedMinimumPrice`) return converted values. The difference is that numeric fields return the converted amount as a number, while formatted fields return the converted amount as a string with the currency symbol prefixed (e.g. `"€84.99"`). See the "Get Products with Currency Formatted Prices" dropdown example above for all available price fields.
 
 ## Wishlist & Compare Flags
@@ -1726,7 +1730,42 @@ See the **"Get Products with Wishlist & Compare Flags"** dropdown example above.
 | `sortKey` | `ProductSortKeys` | Field to sort by: `TITLE`, `PRICE`, `CREATED_AT`, `UPDATED_AT`. Default: `TITLE` |
 | `reverse` | `Boolean` | Reverse the sort order. Default: `false` |
 | `query` | `String` | Search query string for filtering products. Supports advanced search syntax. |
-| `filter` | `String` | JSON string for filtering by type, category, attributes, or price. See examples below. |
+| `filter` | `String` | JSON string of filter keys (see below). Pass as a single-line JSON string with escaped quotes. |
+
+### `filter` keys
+
+The `filter` argument is a JSON object encoded as a string. Accepted keys:
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `type` | String | Product type: `simple`, `configurable`, `bundle`, `grouped`, `virtual`, `downloadable`, `booking`. |
+| `sku` | String | Exact SKU match. |
+| `category_id` | Int | Restrict to a category. |
+| `price_from` | Number | Minimum price (inclusive). |
+| `price_to` | Number | Maximum price (inclusive). |
+| `new` | Boolean | `true` → only products flagged "new". |
+| `featured` | Boolean | `true` → only products flagged "featured". |
+| `<attribute_code>` | String | Any filterable attribute code (e.g. `color`, `size`, `brand`). Value is the option id; comma-separate for multiple (`"3,4"`). |
+
+Example: `products(filter: "{\"category_id\": 5, \"price_from\": 10, \"price_to\": 200, \"featured\": true}")`.
+
+::: tip Price range over GraphQL
+GraphQL uses separate `price_from` / `price_to` keys. The REST-only compound `price=min,max` string form does **not** apply here.
+:::
+
+## REST ↔ GraphQL parameter mapping
+
+The same catalog operations use different shapes on each transport. Common equivalents:
+
+| Goal | REST (`GET /api/shop/products`, `?query`) | GraphQL |
+|------|-------------------------------------------|---------|
+| Children of a category | `?parent_id=5` on `GET /api/shop/categories` | `treeCategories(parentId: 5)` — the flat `categories` query has **no** `parentId` argument |
+| Price range | `?price={min},{max}` e.g. `?price=10,200` (comma = min/max split, not a thousands separator) **or** `?price_from=10&price_to=200` | `filter: "{\"price_from\": 10, \"price_to\": 200}"` (no compound `price` key) |
+| New / Featured | `?new=1` / `?featured=1` | `filter: "{\"new\": true, \"featured\": true}"` |
+| Sort | `?sort=price-asc` (or `?sort=price&order=asc`) | `sortKey: PRICE, reverse: false` |
+| Category filter | `?category_id=5` | `filter: "{\"category_id\": 5}"` |
+| Attribute filter | `?color=3` | `filter: "{\"color\": \"3\"}"` |
+| Auth Bearer | `Authorization: Bearer <token>` | `Authorization: Bearer <token>` — same `token` field from login; `apiToken` is a legacy field, **not** a Bearer on either transport |
 
 ## Possible Returns
 
