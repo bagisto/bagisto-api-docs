@@ -15,34 +15,34 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 **How to tell an entry apart:** look at the section breadcrumb (`› Shop` vs `› Admin`) and the URL path segment (`/shop/` vs `/admin/`). GraphQL field names differ too — shop uses e.g. `products` / `categories`, admin uses e.g. `adminCatalogProducts` / `adminCatalogCategories`.
 
+**REST vs GraphQL** — same data, two transports, NOT interchangeable syntax. REST filters go in the query string (`?category_id=&price=&sort=`); GraphQL uses a JSON `filter:` string plus `sortKey`/`reverse` and cursor pagination.
+
+**Read these three cross-cutting references first — they answer what the per-endpoint pages assume you already know:**
+- **Authentication** (https://api-docs.bagisto.com/api/authentication) — which header for which surface; the login `token` (not `apiToken`) is the Bearer for both transports; credential lifetimes; there is **no refresh token** (recover by re-login / regenerate).
+- **Identifiers** (https://api-docs.bagisto.com/api/graphql-api/identifiers) — GraphQL exposes both `id` (IRI string) and `_id` (numeric); REST uses the numeric id. Store/compare `_id`, pass `id` back to operations.
+- **REST ↔ GraphQL mapping** (https://api-docs.bagisto.com/api/rest-graphql-mapping/) — side-by-side table for category children, price, new/featured, sort, pagination, and auth.
+
+## Build With Ai
+
+- [Build with AI](/api/build-with-ai): This documentation is built to be consumed by AI coding agents (Claude Code, Cursor, Windsurf, and others) as well as humans. If you are building a storefront…
+- [Agent Skills](/api/build-with-ai/agent-skills): The [`bagisto/agent-skills`](https://github.com/bagisto/agent-skills) repository packages Bagisto's build-rules as installable **agent skills** —…
+- [MCP Server](/api/build-with-ai/mcp-server): Bagisto provides an **optional** [MCP](https://modelcontextprotocol.io) (Model Context Protocol) server that lets an AI agent search this documentation on…
+
 ## GraphQL API
 
-- [GraphQL API Overview](/api/graphql-api): Welcome to the Bagisto GraphQL API documentation. This comprehensive guide covers all available endpoints for both customer-facing (Shop) and administrative…
 - [Admin API Reference](/api/graphql-api/admin-api): The Bagisto Admin API provides comprehensive administrative endpoints for managing your e-commerce platform. All Admin API operations require authenticated…
-- [Admin API](/api/graphql-api/admin-coming-soon): The comprehensive Admin API documentation is coming soon. This section will include detailed guides for:
-- [AttributeOption GraphQL API Guide](/api/graphql-api/attribute-option): The AttributeOption GraphQL API provides two primary ways to query attribute options:
 - [Authentication Guide](/api/graphql-api/authentication): Bagisto GraphQL API supports multiple authentication methods to handle different use cases - from guest checkouts to admin operations.
 - [Best Practices & Testing Guide](/api/graphql-api/best-practices): Comprehensive guide for optimizing your Bagisto GraphQL API integration with best practices, performance tips, and testing strategies.
-- [GraphQL API](/api/graphql-api/graphql-api): Bagisto's GraphQL API delivers a modern, flexible approach to e-commerce data access. Built on Laravel Lighthouse, it provides efficient querying capabilities…
+- [Identifiers — `id`, `_id` and IRIs](/api/graphql-api/identifiers): Every GraphQL node exposes **two** identifier fields, and they are not interchangeable:
 - [Integration Guides](/api/graphql-api/integrations): Complete integration examples for popular programming languages and frameworks to get started with Bagisto GraphQL API.
 - [GraphQL API - Introduction](/api/graphql-api/introduction): Welcome to the Bagisto GraphQL API documentation! This guide will help you build modern, efficient e-commerce applications using our comprehensive GraphQL…
 - [Cursor Pagination Guide](/api/graphql-api/pagination): Bagisto GraphQL API uses cursor-based pagination for efficiently handling large datasets. This guide explains how to implement pagination in your applications.
 - [Interactive Playground Guide](/api/graphql-api/playground): Test and explore the Bagisto GraphQL API using our interactive playgrounds. No authentication required to explore the schema!
-- [GraphQL API Quick Reference](/api/graphql-api/quick-reference): - **List Products** - `GET /graphql` with `query GetProducts`
-- [Bagisto GraphQL API Documentation](/api/graphql-api/README): Complete, developer-friendly GraphQL API documentation for Bagisto e-commerce platform with Shopify-style organization and interactive examples.
 - [Shop API Reference](/api/graphql-api/shop-api): The Bagisto Shop API provides all necessary endpoints for customer-facing e-commerce operations including product browsing, shopping cart management, and…
 
 ## GraphQL API › Admin
 
-- [Attributes](/api/graphql-api/admin/attributes): Retrieve all product attributes from the admin panel.
 - [Admin Authentication](/api/graphql-api/admin/authentication): Every Admin GraphQL request carries the admin Bearer token. This example reads the authenticated admin's own profile to confirm the token works.
-- [Categories](/api/graphql-api/admin/categories): Retrieve all categories from the admin panel.
-- [Customers](/api/graphql-api/admin/customers): Retrieve all customers from the admin panel.
-- [Inventory](/api/graphql-api/admin/inventory): Retrieve inventory information for products.
-- [Orders](/api/graphql-api/admin/orders): Retrieve all orders from the admin panel with pagination.
-- [Products](/api/graphql-api/admin/products): Retrieve all products from the admin panel with pagination.
-- [Promotions](/api/graphql-api/admin/promotions): Retrieve all active promotions from the admin panel.
-- [Reports](/api/graphql-api/admin/reports): Retrieve sales statistics and report data.
 
 ## GraphQL API › Admin › Catalog
 
@@ -326,12 +326,6 @@ This API has two separate surfaces. Pick one and do not mix them:
 ## GraphQL API › Admin › Marketing › Search Seo › Url Rewrites
 
 - [URL Rewrites](/api/graphql-api/admin/marketing/search-seo/url-rewrites): A **URL rewrite** redirects an old or custom path to a target path, so links keep working when a product, category, or CMS page slug changes. It mirrors the…
-
-## GraphQL API › Admin › Mutations
-
-- [Create Product](/api/graphql-api/admin/mutations/create-product): Create a new simple product with basic information.
-- [Delete Product](/api/graphql-api/admin/mutations/delete-product): Delete a product from the system.
-- [Update Product](/api/graphql-api/admin/mutations/update-product): Update the price of an existing product.
 
 ## GraphQL API › Admin › Navigation
 
@@ -637,12 +631,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 - [Shop API - Attribute Options](/api/graphql-api/shop/attribute-options): Retrieve attribute options for products in your Bagisto store, including color swatches, size options, and other product variants.
 - [Shop API - Cart](/api/graphql-api/shop/cart): Manage shopping cart operations for both guest and authenticated customers.
-- [Shop API - Categories](/api/graphql-api/shop/categories): Manage and retrieve product categories.
 - [Shop API - Checkout](/api/graphql-api/shop/checkout): Complete the checkout process and create orders.
-- [Shop API - Customers](/api/graphql-api/shop/customers): Manage customer accounts, authentication, and profiles.
-- [Shop API - Orders](/api/graphql-api/shop/orders): Retrieve and manage customer orders.
-- [Shop API - CMS Pages](/api/graphql-api/shop/pages): Retrieve CMS (Content Management System) pages from your Bagisto store, including their HTML content, SEO metadata, and locale-specific translations.
-- [Shop API - Reviews](/api/graphql-api/shop/reviews): Manage and view product reviews and ratings.
 
 ## GraphQL API › Shop › Attribute
 
@@ -736,9 +725,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Create Contact Us](/api/graphql-api/shop/mutations/create-contact-us): Submit a contact us form with name, email, contact number, and message.
 - [Create Customer Address](/api/graphql-api/shop/mutations/create-customer-address): Create a new address for the authenticated customer.
 - [Create Newsletter](/api/graphql-api/shop/mutations/create-newsletter): Subscribe the authenticated customer to the newsletter on the current channel.
-- [Create Order](/api/graphql-api/shop/mutations/create-order): Convert cart to order with billing and shipping information.
 - [Create Product Review](/api/graphql-api/shop/mutations/create-product-review): Create a basic product review with title, comment, and rating.
-- [Create Review](/api/graphql-api/shop/mutations/create-review): Submit a review and rating for a purchased product.
 - [Create Wishlist Item](/api/graphql-api/shop/mutations/create-wishlist): Add a product to the authenticated customer's wishlist.
 - [Customer Login](/api/graphql-api/shop/mutations/customer-login): Authenticate a customer with email and password.
 - [Customer Logout](/api/graphql-api/shop/mutations/customer-logout): Logout a customer and invalidate their authentication tokens.
@@ -752,17 +739,14 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Delete Product Review](/api/graphql-api/shop/mutations/delete-product-review): Delete a product review by providing its ID in IRI format.
 - [Delete Wishlist Item](/api/graphql-api/shop/mutations/delete-wishlist): Delete a specific wishlist item by its IRI.
 - [Forgot Password](/api/graphql-api/shop/mutations/forgot-password): Request a password reset email for an account.
-- [Login Customer](/api/graphql-api/shop/mutations/login-customer): Authenticate customer with email and password.
 - [Merge Cart](/api/graphql-api/shop/mutations/merge-cart): Merge a guest cart into the authenticated customer's cart. Pass the guest cart's _id as cartId and the customer's Bearer token in the Authorization header.…
 - [Move Wishlist Item to Cart](/api/graphql-api/shop/mutations/move-wishlist-to-cart): Move a wishlist item to the shopping cart and remove it from the wishlist.
-- [Place Order](/api/graphql-api/shop/mutations/place-order): Create an order from a cart.
-- [Register Customer](/api/graphql-api/shop/mutations/register-customer): Create a new customer account with email and password.
+- [Place Order](/api/graphql-api/shop/mutations/place-order): Cash-on-delivery or money-transfer — the order is created immediately.
 - [Remove Cart Item](/api/graphql-api/shop/mutations/remove-cart-item): Remove a specific item from the shopping cart.
 - [Remove Coupon](/api/graphql-api/shop/mutations/remove-coupon): Remove an applied coupon code from the cart.
 - [Reorder Customer Order](/api/graphql-api/shop/mutations/reorder-customer-order): Add all items from a previous order to the customer's cart.
 - [Set Checkout Address](/api/graphql-api/shop/mutations/set-billing-address): Set the billing address and use it as the shipping address too by setting useForShipping to true.
 - [Set Payment Method](/api/graphql-api/shop/mutations/set-payment-method): Set the payment method for a cart.
-- [Set Shipping Address](/api/graphql-api/shop/mutations/set-shipping-address): This page has been merged into [Set Checkout Address](/api/graphql-api/shop/mutations/set-billing-address).
 - [Set Shipping Method](/api/graphql-api/shop/mutations/set-shipping-method): Set the shipping method for a checkout.
 - [Toggle Wishlist Item](/api/graphql-api/shop/mutations/toggle-wishlist): Toggle a product in the wishlist. If the product is not in the wishlist, it gets added.
 - [Update Cart Item](/api/graphql-api/shop/mutations/update-cart-item): Modify the quantity of an item in the shopping cart.
@@ -795,6 +779,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Get Booking Slots](/api/graphql-api/shop/queries/get-booking-slots): |
 - [Get Cart](/api/graphql-api/shop/queries/get-cart): Retrieve the current shopping cart with all items.
 - [Get Category](/api/graphql-api/shop/queries/get-category): Retrieve basic information for a single category by its ID.
+- [Get Category Attribute Filters](/api/graphql-api/shop/queries/get-category-attribute-filters): Fetch the filters available on a category, with the price range for the slider.
 - [Get Channel](/api/graphql-api/shop/queries/get-channel): Retrieve basic information for a single channel by its ID.
 - [Get Channels](/api/graphql-api/shop/queries/get-channels): Retrieve all store channels with basic information.
 - [Get Compare Item](/api/graphql-api/shop/queries/get-compare-item): Retrieve a specific compare item by its IRI.
@@ -862,18 +847,13 @@ This API has two separate surfaces. Pick one and do not mix them:
 ## Overview
 
 - [API Authentication Guide](/api/authentication): Bagisto provides multiple authentication methods to secure your API requests. Choose the authentication method based on the type of API access you need.
-- [Build with AI](/api/build-with-ai): This documentation is built to be consumed by AI coding agents (Claude Code, Cursor, Windsurf, and others) as well as humans. If you're building an app on the…
-- [GraphQL API](/api/graphql-api): Bagisto's GraphQL API delivers a modern, flexible approach to e-commerce data access. Built on Laravel Lighthouse, it provides efficient querying capabilities…
-- [Integration Guides](/api/integrations): Real-world examples and step-by-step guides for integrating Bagisto APIs into your application architecture. Choose the integration pattern that best fits your…
 - [Introduction](/api/introduction): Bagisto provides comprehensive API solutions to help developers integrate and extend the platform's functionality. Whether you're building mobile apps,…
 - [Rate Limiting](/api/rate-limiting): Bagisto APIs implement rate limiting to ensure fair usage and protect infrastructure from abuse. This guide explains how rate limiting works and how to handle…
-- [REST API](/api/rest-api): The Bagisto REST API provides a comprehensive RESTful interface to access all core Bagisto features. Built with Laravel Sanctum authentication, it offers…
 - [Setup & Configuration](/api/setup): Get the Bagisto API up and running in just a few minutes. Choose the installation method that works best for your setup.
 - [Storefront API Key Management Guide](/api/storefront-api-key-management-guide): Bagisto uses **API keys** to authenticate requests to your storefront and shop API endpoints. Think of your API key as a secure password that identifies your…
 
 ## REST API
 
-- [Admin API](/api/rest-api/admin-coming-soon): The comprehensive Admin API documentation is coming soon. This section will include detailed guides for:
 - [Authentication](/api/rest-api/authentication): Complete guide to API authentication methods including customer authentication, admin authentication, and token management using the REST API.
 - [REST API Best Practices](/api/rest-api/best-practices): This guide provides best practices and recommendations for building robust, scalable, and secure applications using the Bagisto REST API.
 - [REST API - Introduction](/api/rest-api/introduction): Welcome to the Bagisto REST API documentation! This guide will help you build modern, efficient e-commerce applications using our comprehensive REST API…
@@ -1408,7 +1388,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Create Tax Rate](/api/rest-api/admin/settings/tax-rates/create): Body fields differ by `is_zip`:
 - [Delete Tax Rate](/api/rest-api/admin/settings/tax-rates/delete): Tax category pivot cascades automatically. Permission: `settings.taxes.tax_rates.delete`.
 - [Tax Rate Detail](/api/rest-api/admin/settings/tax-rates/detail)
-- [Export Tax Rates (CSV)](/api/rest-api/admin/settings/tax-rates/export): Downloads the Tax Rates list as a CSV file — the API equivalent of the **Export** button on the Tax Rates screen.
+- [Export Tax Rates](/api/rest-api/admin/settings/tax-rates/export): Downloads the Tax Rates list as a csv, xls or xlsx file — the API equivalent of the **Export** button on the Tax Rates screen.
 - [List Tax Rates](/api/rest-api/admin/settings/tax-rates/list): Returns the store-wide list of tax rates in the standard `{ data, meta }` envelope. Each row is one tax rate — a rule that defines the tax percentage applied…
 - [Update Tax Rate](/api/rest-api/admin/settings/tax-rates/update): Partial. `identifier` uniqueness excludes self. Permission: `settings.taxes.tax_rates.edit`.
 
@@ -1433,7 +1413,6 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 ## REST API › Shop
 
-- [Cart & Checkout](/api/rest-api/shop/cart-checkout): Complete guide to shopping cart management and checkout operations using the REST API. This section covers cart creation, item management, address handling,…
 - [Customer Management](/api/rest-api/shop/customers): Complete guide to customer operations including registration, authentication, profile management, and address management using the REST API.
 
 ## REST API › Shop › Attributes
@@ -1474,7 +1453,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Get Checkout Addresses](/api/rest-api/shop/checkout/get-addresses): Retrieve the guest / authenticated customer's saved checkout addresses to select as shipping or billing address during checkout.
 - [Get Payment Methods](/api/rest-api/shop/checkout/get-payment-methods): Retrieve available payment methods for checkout.
 - [Get Shipping Methods](/api/rest-api/shop/checkout/get-shipping-methods): Retrieve available shipping methods for checkout.
-- [Place Order](/api/rest-api/shop/checkout/place-order): Create an order from the cart.
+- [Place Order](/api/rest-api/shop/checkout/place-order): Cash-on-delivery or money-transfer — the order is created immediately. Address, shipping method, and payment method must already be set on the cart, so the…
 - [Set Billing Address](/api/rest-api/shop/checkout/set-billing-address): Set the billing address for checkout.
 - [Set Payment Method](/api/rest-api/shop/checkout/set-payment-method): Select a payment method for the order.
 - [Set Shipping Address](/api/rest-api/shop/checkout/set-shipping-address): Set the shipping address for checkout.
@@ -1534,10 +1513,6 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Update Customer Address](/api/rest-api/shop/customers/update-customer-address): Update an existing customer address.
 - [Update Customer Profile](/api/rest-api/shop/customers/update-customer-profile): Update the authenticated customer's profile information.
 
-## REST API › Shop › Customers › Mutations
-
-- [Register Customer](/api/rest-api/shop/customers/mutations/register-customer): Create a new customer account.
-
 ## REST API › Shop › Eu Withdrawal
 
 - [EU Right of Withdrawal](/api/rest-api/shop/eu-withdrawal): The EU right-of-withdrawal endpoints let a shopper formally declare that they are exercising their statutory right to withdraw from a purchase (the EU…
@@ -1560,13 +1535,6 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Locales](/api/rest-api/shop/locales): The Locales menu lists the languages the storefront is published in. A locale carries its language code, display name, text direction (`ltr` / `rtl`) and an…
 - [Get All Locales](/api/rest-api/shop/locales/get-locales): Retrieve all available language locales in the store.
 - [Get Single Locale](/api/rest-api/shop/locales/get-single-locale): Retrieve detailed information for a specific language locale.
-- [Get Locales](/api/rest-api/shop/locales/list): Retrieve all store locales with basic information.
-- [Get Single Locale](/api/rest-api/shop/locales/single): Retrieve a single locale by ID with basic information.
-
-## REST API › Shop › Mutations
-
-- [Add Product to Cart](/api/rest-api/shop/mutations/add-to-cart): Add a simple product with quantity to the shopping cart.
-- [Create Cart](/api/rest-api/shop/mutations/create-cart): Generate a new shopping cart token for guest users.
 
 ## REST API › Shop › Newsletter
 
@@ -1591,11 +1559,6 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Product Sub-Resources (`Product` tag)](/api/rest-api/shop/products/product-subresources): |
 - [Product Type Sub-Resources (`Product Types` tag)](/api/rest-api/shop/products/product-type-subresources): |
 - [Search Products](/api/rest-api/shop/products/search-product): Use `?query=` to match against product SKU and name.
-
-## REST API › Shop › Queries
-
-- [Get Product Details](/api/rest-api/shop/queries/get-product): Retrieve detailed information for a specific product.
-- [List Products](/api/rest-api/shop/queries/get-products): Retrieve paginated list of all products from the catalog.
 
 ## REST API › Shop › Returns
 
@@ -1625,6 +1588,17 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Get Wishlist Items](/api/rest-api/shop/wishlist/list): Retrieve the authenticated customer's wishlist items for the current channel.
 - [Move Wishlist Item to Cart](/api/rest-api/shop/wishlist/move-to-cart): Move a wishlist item to the shopping cart and remove it from the wishlist.
 - [Toggle Wishlist Item](/api/rest-api/shop/wishlist/toggle): Toggle a product in the wishlist. If not present, it is added.
+
+## Rest Graphql Mapping
+
+- [REST ↔ GraphQL mapping](/api/rest-graphql-mapping): REST and GraphQL expose the **same** Bagisto data and behaviour with different syntax. This section is the single reference for translating one to the other —…
+
+## Rest Graphql Mapping › Shop
+
+- [Auth & Context mapping](/api/rest-graphql-mapping/shop/auth-context): Authentication and the locale/currency/channel context are **identical** across REST and GraphQL — same headers, same tokens. Only the catalog filter/sort…
+- [Cart & Checkout mapping](/api/rest-graphql-mapping/shop/cart-checkout): The cart and checkout flow is a sequence — the same on both transports. The difference is naming: REST uses one path per step; GraphQL wraps each step as a…
+- [Catalog mapping — products, categories, attributes](/api/rest-graphql-mapping/shop/catalog): The catalog is where REST and GraphQL differ most. REST puts filters in the query string; GraphQL packs them into one JSON `filter:` string and uses typed…
+- [Customer Account mapping](/api/rest-graphql-mapping/shop/customer-account): Everything behind a logged-in customer's account. All of these require the customer Bearer token (see [Auth &…
 
 ## Workflows
 

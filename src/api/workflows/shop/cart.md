@@ -6,11 +6,6 @@ outline: false
 
 Build a cart for a guest or a logged-in customer: create/obtain the cart, add and update items, apply coupons, and merge a guest cart into the customer cart at login.
 
-## Agent-ask inputs
-
-- **Storefront key** — ask the user; send it as the storefront key header on every Shop request. Never invent it.
-- **Server URL** — ask the user for their Bagisto server's base URL (e.g. `https://store.example.com`) and prefix every endpoint path with it. Never assume localhost or a demo domain.
-
 ## Prerequisites
 
 - A valid storefront key ([Setup](/api/setup), [Authentication](/api/authentication)).
@@ -48,11 +43,14 @@ flowchart TD
 | 6 | Apply coupon | [POST apply-coupon](/api/rest-api/shop/cart/apply-coupon) | an item in the cart | Remove with [remove-coupon](/api/rest-api/shop/cart/remove-coupon) |
 | 7 | Read cart | [GET get-cart](/api/rest-api/shop/cart/get-cart) · [GraphQL](/api/graphql-api/shop/cart) | any cart mutation | Totals, items, applied coupon |
 
-## End-to-end example
+> **GraphQL equivalents:** the table links REST paths. Each step has a GraphQL operation (`createCartToken`, `createAddProductInCart`, `createUpdateCartItem`, `createApplyCoupon`, `createMergeCart`, `createReadCart`) — the full REST↔GraphQL list is on the [Cart & Checkout mapping](/api/rest-graphql-mapping/shop/cart-checkout).
 
-Guest: create-cart → add-to-cart → apply-coupon → get-cart.
-Guest who then logs in: create-cart (guest) → add-to-cart → login → **mergeCart** → get-cart.
-Follow each linked page for the exact request/response body (REST and GraphQL).
+## End-to-end sequence
+
+- **Guest:** create-cart → add-to-cart → apply-coupon → get-cart.
+- **Guest who then logs in:** create-cart (guest) → add-to-cart → login → **merge-cart** → get-cart.
+
+Follow each linked endpoint page for the exact request / response body.
 
 ## Customize
 

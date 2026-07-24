@@ -1,27 +1,66 @@
 ---
 outline: false
 examples:
-  - id: place-order
-    title: Place Order
-    description: Create an order from a cart.
+  - id: place-order-onsite
+    title: Place Order (on-site payment)
+    description: Cash-on-delivery or money-transfer — the order is created immediately.
     query: |
       mutation createCheckoutOrder {
         createCheckoutOrder(input:{}) {
           checkoutOrder {
             id
-            orderId      
+            orderId
+            redirect
+            redirectUrl
+            success
+            message
           }
         }
       }
     response: |
-     {
+      {
         "data": {
-            "createCheckoutOrder": {
-                "checkoutOrder": {
-                    "id": "4814",
-                    "orderId": "554",
-                }
+          "createCheckoutOrder": {
+            "checkoutOrder": {
+              "id": "4814",
+              "orderId": "554",
+              "redirect": false,
+              "redirectUrl": null,
+              "success": true,
+              "message": "Order placed successfully"
             }
+          }
+        }
+      }
+  - id: place-order-redirect
+    title: Place Order (payment gateway)
+    description: Stripe / PayU / PhonePe / Razorpay / PayPal — no order yet; redirect the shopper to complete payment.
+    query: |
+      mutation createCheckoutOrder {
+        createCheckoutOrder(input:{}) {
+          checkoutOrder {
+            id
+            orderId
+            redirect
+            redirectUrl
+            success
+            message
+          }
+        }
+      }
+    response: |
+      {
+        "data": {
+          "createCheckoutOrder": {
+            "checkoutOrder": {
+              "id": "9372",
+              "orderId": null,
+              "redirect": true,
+              "redirectUrl": "https://your-domain.com/stripe/redirect",
+              "success": true,
+              "message": "This payment method requires the shopper to complete payment on the gateway. Send them to redirectUrl; the order is created once the gateway confirms the payment."
+            }
+          }
         }
       }
 ---
@@ -45,8 +84,21 @@ Authorization: Bearer <accessToken>
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | String | Checkout order ID |
-| `orderId` | String | Created order ID |
+| `id` | ID | The cart id the order was placed from (numeric — this is an action result, not a fetchable IRI; use `orderId` for the created order). |
+| `orderId` | String | The created order id — **only set on the on-site path**. `null` when a payment redirect is required (the order is created after the gateway confirms). |
+| `redirect` | Boolean | `true` when the payment method needs the shopper sent to a payment page before the order exists. |
+| `redirectUrl` | String | The payment page to open when `redirect` is `true`; `null` otherwise. |
+| `success` | Boolean | `true` when the call succeeded — either the order was placed **or** a redirect is required. Order-placement **failures** are returned in `errors[]`, not here. |
+| `message` | String | Human-readable result — "order placed", or an explanation that the shopper must be redirected to complete payment. |
+
+### Two outcomes
+
+This mutation has two success shapes — branch on `redirect`:
+
+- **`redirect: false`** (cash-on-delivery, money-transfer) — the order exists; read `orderId`.
+- **`redirect: true`** (stripe, payu, phonepe, razorpay, paypal) — **no order yet**. `orderId` is `null`; send the shopper to `redirectUrl` to pay. The order is created when the gateway returns to your success URL. `message` explains this so a client that only checks the payload knows why there is no order id.
+
+On a genuine failure (empty cart, missing address/shipping/payment, suspended account, minimum-order not met) the mutation returns `errors[]` with the exact reason and `checkoutOrder` is `null`.
 
 ## Prerequisites
 

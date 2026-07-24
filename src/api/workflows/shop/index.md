@@ -6,14 +6,20 @@ outline: false
 
 The storefront call-sequences — how a client chains the Shop API (`/api/shop/*` REST + `/api/graphql`) to build a customer-facing store. Every request carries the `X-STOREFRONT-KEY`; customer-scoped steps add `Authorization: Bearer <token>`.
 
-## Agent-ask inputs
+## Prerequisite inputs for the AI agent
 
-- **Storefront key** — ask the user; send it on every Shop request. Never invent it.
-- **Server URL** — ask the user for their Bagisto server's base URL (e.g. `https://store.example.com`) and prefix every endpoint path with it. Never assume localhost or a demo domain.
+Ask the user for these once, before any Shop call — they apply to every flow below, so the individual flow pages do not repeat them:
+
+- **Storefront key** — send it on every Shop request. Never invent it.
+- **Server URL** — the Bagisto server's base URL (e.g. `https://store.example.com`); prefix every endpoint path with it. Never assume localhost or a demo domain.
+- **Customer credentials** *(only for the account area)* — needed to obtain a customer Bearer token via login.
+
+Before building, read [Authentication](/api/authentication) (the credential model — `token` is the Bearer, not `apiToken`; there is no refresh token), then skim this Storefront overview for the surface you are about to work on.
 
 ## Start here
 
 - **[Build a Storefront](/api/workflows/shop/build-a-storefront)** — the complete blueprint: every screen (homepage, catalog, product detail, CMS, themes, account) mapped to its API. Read this first for the whole picture, then drill into a focused flow below.
+- Translating a REST call to GraphQL (or vice-versa)? The [REST ↔ GraphQL mapping](/api/rest-graphql-mapping/) has the side-by-side tables per area.
 
 ## Focused flows
 
@@ -28,4 +34,4 @@ The storefront key alone gives read-only access. A **guest can still place an or
 
 ## How to read a flow page
 
-Intent → Agent-ask inputs → Prerequisites → **Mermaid dependency diagram** → ordered call table (links to the exact endpoint pages) → end-to-end example → customize hook. Flow pages own the sequence; endpoint detail lives on the linked API pages.
+Intent → Prerequisites → **Mermaid dependency diagram** → ordered call table (links to the exact endpoint pages) → flow notes → customize hook. Flow pages own the sequence; endpoint detail lives on the linked API pages. The prerequisite inputs above are assumed on every flow page and not repeated.

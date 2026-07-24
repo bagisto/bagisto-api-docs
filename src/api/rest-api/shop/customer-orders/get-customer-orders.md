@@ -127,7 +127,19 @@ The response is a plain JSON array of order objects.
 | `createdAt` | string | ISO 8601 creation timestamp |
 | `updatedAt` | string | ISO 8601 last update timestamp |
 
+## Query Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `status` | string | — | Filter by order status (values below). `GET /api/shop/customer-orders?status=completed` |
+| `page` | integer | `1` | Page number. |
+| `per_page` | integer | `10` | Items per page (max 50). |
+
+Over GraphQL, pass `status` as an argument: `customerOrders(status: "completed", first: 10) { … }`.
+
 ## Order Status Values
+
+Use any of these as the `?status=` filter value, or read them off the `status` field:
 
 | Status | Description |
 |--------|-------------|

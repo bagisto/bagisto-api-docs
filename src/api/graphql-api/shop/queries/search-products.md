@@ -688,6 +688,10 @@ The `searchProducts` query enables advanced product search with support for text
 
 The search supports Bagisto's advanced search syntax for building complex, multi-criteria queries. It efficiently ranks results by relevance while maintaining performance across large product catalogs.
 
+::: tip Coming from REST?
+The REST `?parent_id`, `?price=`, `?new=1`, `?sort=` query params map onto the GraphQL `filter:` string, `sortKey`/`reverse`, and cursor args. See [REST ↔ GraphQL parameter mapping](/api/rest-graphql-mapping/shop/catalog) for the side-by-side table.
+:::
+
 ## Arguments
 
 | Argument | Type | Description |
@@ -728,6 +732,7 @@ The `filter` argument accepts a JSON-encoded string. You can combine multiple fi
 | Filter Key | Type | Description | Example |
 |------------|------|-------------|---------|
 | `category_id` | String | Filter by category ID | `"{\"category_id\": \"22\"}"` |
+| `price` | String | Price range as `"{min},{max}"` — the comma splits min from max, **not** a thousands separator | `"{\"price\": \"10,200\"}"` |
 | `type` | String | Filter by product type (`simple`, `configurable`, `virtual`, `downloadable`, `grouped`, `bundle`) | `"{\"type\": \"configurable\"}"` |
 | `color` | String | Filter by color attribute option ID | `"{\"color\": \"3\"}"` |
 | `size` | String | Filter by size attribute option ID | `"{\"size\": \"1\"}"` |

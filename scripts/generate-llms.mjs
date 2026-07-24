@@ -21,6 +21,13 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 **How to tell an entry apart:** look at the section breadcrumb (\`› Shop\` vs \`› Admin\`) and the URL path segment (\`/shop/\` vs \`/admin/\`). GraphQL field names differ too — shop uses e.g. \`products\` / \`categories\`, admin uses e.g. \`adminCatalogProducts\` / \`adminCatalogCategories\`.
 
+**REST vs GraphQL** — same data, two transports, NOT interchangeable syntax. REST filters go in the query string (\`?category_id=&price=&sort=\`); GraphQL uses a JSON \`filter:\` string plus \`sortKey\`/\`reverse\` and cursor pagination.
+
+**Read these three cross-cutting references first — they answer what the per-endpoint pages assume you already know:**
+- **Authentication** (${SITE}/api/authentication) — which header for which surface; the login \`token\` (not \`apiToken\`) is the Bearer for both transports; credential lifetimes; there is **no refresh token** (recover by re-login / regenerate).
+- **Identifiers** (${SITE}/api/graphql-api/identifiers) — GraphQL exposes both \`id\` (IRI string) and \`_id\` (numeric); REST uses the numeric id. Store/compare \`_id\`, pass \`id\` back to operations.
+- **REST ↔ GraphQL mapping** (${SITE}/api/rest-graphql-mapping/) — side-by-side table for category children, price, new/featured, sort, pagination, and auth.
+
 `
 
 export function buildIndex(pages) {

@@ -8,17 +8,12 @@ The **complete storefront blueprint** — every screen a shopper sees and the Sh
 
 Every request carries the `X-STOREFRONT-KEY` header; customer-scoped steps also carry `Authorization: Bearer <token>`. Open each linked page for the exact request/response shape.
 
-## Agent-ask inputs
-
-- **Storefront key** — ask the user; send it on every Shop request. Never invent it.
-- **Server URL** — ask the user for their Bagisto server's base URL (e.g. `https://store.example.com`) and prefix every endpoint path with it. Never assume localhost or a demo domain.
-
 ## 0. Context (locale / currency / channel)
 
 Optional per-request headers `X-LOCALE`, `X-CURRENCY`, `X-CHANNEL` control what content the API returns. Discover valid values:
 
-- [Get Channels](/api/rest-api/shop/channels/get-channels) — the store's sales channels.
-- [Get Locales](/api/rest-api/shop/locales/get-locales) · [Get Countries](/api/rest-api/shop/countries/get-countries) (+ [country states](/api/rest-api/shop/countries/get-country-states)).
+- [Get Channels](/api/rest-api/shop/channels/get-channels) — the store's sales channels; each channel lists its allowed **currencies** and **locales**.
+- [Get Locales](/api/rest-api/shop/locales/get-locales) — available languages (with `direction` for RTL).
 
 ## 1. Homepage
 
@@ -31,9 +26,10 @@ The landing screen is built from admin-managed content, not just products:
 ## 2. Catalog
 
 - **Category page** — [Get Categories](/api/rest-api/shop/categories/get-categories) for the category, then list its products (step below) filtered by that category.
-- **Product listing** — [Get Products](/api/rest-api/shop/products/get-products), paginated with `?page=`, `?per_page=`, `?sort=`, and category / price / attribute filters.
-- **Search** — [Search Products](/api/rest-api/shop/products/search-product) for the search results page.
-- **Filters (faceting)** — [Get Attributes](/api/rest-api/shop/attributes/get-attributes) and [Attribute Options](/api/rest-api/shop/attributes/get-attribute-options) to build the filter sidebar (color, size, brand, price).
+- **Product listing** — [Get Products](/api/rest-api/shop/products/get-products), paginated with `?page=`, `?per_page=`, `?sort=`. Scope and filter it with `?category_id=`, `?price=10,200` (min,max), `?new=1`, `?featured=1`, `?type=`, and any attribute code (`?color=3&size=6`). The complete parameter list is on [Search Products](/api/rest-api/shop/products/search-product); the GraphQL equivalents (`filter:` string, `sortKey`/`reverse`) are in the [Catalog mapping](/api/rest-graphql-mapping/shop/catalog).
+- **Category children** — `?parent_id=N` (REST) or `treeCategories(parentId: N)` (GraphQL). The GraphQL `categories` field has **no** `parentId` argument.
+- **Search** — [Search Products](/api/rest-api/shop/products/search-product) — the same endpoint with `?query=`; composes with the filters above.
+- **Filters (faceting sidebar)** — [Get Attributes](/api/rest-api/shop/attributes/get-attributes) (`isFilterable: 1`) and [Attribute Options](/api/rest-api/shop/attributes/get-attribute-options) give you the filter codes and option ids to feed the product-listing filters above (color, size, brand, price).
 - **Product detail page** — [Get Product](/api/rest-api/shop/products/get-product) for a single product: price, images, description, and type-specific data. Configurable / bundle / grouped / downloadable products expose their extra structure via [product sub-resources](/api/rest-api/shop/products/product-subresources) and [type sub-resources](/api/rest-api/shop/products/product-type-subresources); bookable products via [booking slots](/api/rest-api/shop/products/get-booking-slots).
 - **Product reviews** — show and collect ratings: [Get Product Reviews](/api/rest-api/shop/product-reviews/get-product-reviews) · [Create Product Review](/api/rest-api/shop/product-reviews/create-product-review) (logged-in customer).
 

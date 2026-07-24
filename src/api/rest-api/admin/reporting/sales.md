@@ -380,6 +380,21 @@ examples:
       Date,Orders,Total
       10 May,12,"$8,500.00"
       11 May,4,"$1,197.53"
+
+  - id: rest-sales-export-xlsx
+    title: Export (XLSX)
+    description: The detailed table streamed as an XLSX workbook (the "Export" button). The header row is built from the column labels, followed by one line per record.
+    query: |
+      curl -X GET "https://your-domain.com/api/admin/reporting/sales/export?type=total-sales&format=xlsx&start=2026-05-10&end=2026-06-09&channel=default" \
+        -H "Authorization: Bearer <id>|<token>" \
+        -H "Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" \
+        -o sales-report.xlsx
+    response: |
+      # Binary response: an XLSX workbook is written to disk
+      # (Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+      #  Content-Disposition: attachment; filename="sales-<type>.xlsx").
+      # Same columns as the CSV export, as the first sheet's header row plus one row per record.
+
 ---
 
 # Reporting — Sales
@@ -529,9 +544,9 @@ The table shape is **uniform across every `type`** (`columns` + `records`); only
 
 ## Export (CSV)
 
-`GET /api/admin/reporting/sales/export` streams the same detailed table as a `text/csv` attachment (the **Export** button). The header row is built from the column labels, followed by one line per record. Send `Accept: text/csv` and save the response to a file. It honors the same `type`, `start`, `end` and `channel` parameters.
+`GET /api/admin/reporting/sales/export` streams the same detailed table as a csv, xls or xlsx attachment (the **Export** button). The header row is built from the column labels, followed by one line per record. Send the `Accept` header matching the requested format and save the response to a file. It honors the same `type`, `start`, `end` and `channel` parameters.
 
-Only `?format=csv` is accepted — any other `format` value returns HTTP **422**.
+`?format=` accepts `csv` (the default), `xls` and `xlsx` — any other value returns HTTP **422**. Send an `Accept` header matching the format: `text/csv`, `application/vnd.ms-excel` or `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`.
 
 ## Errors
 

@@ -1694,6 +1694,10 @@ The query supports cursor-based pagination to efficiently handle large product c
 - Publication and availability status
 - Created and updated timestamps
 
+::: tip Building a filter UI?
+This page covers **applying** filters via `filter:`. To discover **which filters a category offers** — the attribute facets, their options, swatches, localized labels, and the category's price range — use [Category Attribute Filters](/api/graphql-api/shop/queries/get-category-attribute-filters). Don't hardcode facets, and don't derive them from [Attributes](/api/graphql-api/shop/queries/get-attributes) (that lists every attribute in the catalog, filterable or not).
+:::
+
 > **Currency & Formatted Prices:** All price fields reflect the active currency set via the `X-Currency` header — both numeric fields (e.g. `price`, `specialPrice`, `minimumPrice`) and formatted fields (e.g. `formattedPrice`, `formattedMinimumPrice`) return converted values. The difference is that numeric fields return the converted amount as a number, while formatted fields return the converted amount as a string with the currency symbol prefixed (e.g. `"€84.99"`). See the "Get Products with Currency Formatted Prices" dropdown example above for all available price fields.
 
 ## Wishlist & Compare Flags

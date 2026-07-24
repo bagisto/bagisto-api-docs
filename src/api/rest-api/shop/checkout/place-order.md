@@ -1,33 +1,49 @@
 ---
 outline: false
 examples:
-  - id: place-order
-    title: Place Order
-    description: Create an order from the cart.
+  - id: place-order-onsite
+    title: Place Order (on-site payment)
+    description: Cash-on-delivery or money-transfer — the order is created immediately. Address, shipping method, and payment method must already be set on the cart, so the body is empty.
     request: |
       POST /api/shop/checkout-orders
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
-      {
-        "shippingMethodCode": "flatrate_flatrate",
-        "paymentMethod": "paypal"
-      }
+      {}
     response: |
+      HTTP/1.1 201 Created
+
       {
-        "data": {
-          "order": {
-            "id": 12345,
-            "incrementId": "#000012345",
-            "status": "pending",
-            "grandTotal": 1329.97,
-            "itemsCount": 2,
-            "createdAt": "2024-01-15T10:30:00Z"
-          },
-          "redirect": "https://checkout.paypal.com/..."
-        },
+        "id": 9372,
+        "cartToken": "1536",
+        "orderId": "554",
+        "redirect": false,
+        "redirectUrl": null,
+        "success": true,
         "message": "Order placed successfully"
+      }
+  - id: place-order-redirect
+    title: Place Order (payment gateway)
+    description: Stripe / PayU / PhonePe / Razorpay / PayPal — no order is created yet; redirect the shopper to redirectUrl to complete payment.
+    request: |
+      POST /api/shop/checkout-orders
+      Content-Type: application/json
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+      {}
+    response: |
+      HTTP/1.1 201 Created
+
+      {
+        "id": 9372,
+        "cartToken": "1536",
+        "orderId": null,
+        "redirect": true,
+        "redirectUrl": "https://your-domain.com/stripe/redirect",
+        "success": true,
+        "message": "This payment method requires the shopper to complete payment on the gateway. Send them to redirectUrl; the order is created once the gateway confirms the payment."
       }
     commonErrors:
       - error: 401 Unauthorized
@@ -65,39 +81,30 @@ POST /api/shop/checkout-orders
 
 ## Request Body
 
+The address, shipping method, and payment method are set on the cart in the preceding checkout steps, so place-order takes an **empty body**:
+
 ```json
-{
-  "shippingMethodCode": "flatrate_flatrate",
-  "paymentMethod": "paypal"
-}
+{}
 ```
 
-## Request Parameters
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `shippingMethodCode` | string | Yes | Code of selected shipping method |
-| `paymentMethod` | string | Yes | Selected payment method |
-
-## Response Fields (200-201 Created)
+## Response Fields (201 Created)
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `order` | object | Created order details |
-| `redirect` | string | Payment redirect URL (if needed) |
-| `message` | string | Success message |
+| `id` | integer | The cart id the order was placed from (not the order id). |
+| `cartToken` | string | The cart token. |
+| `orderId` | string | The created order id — **only set on the on-site path**; `null` when a payment redirect is required. |
+| `redirect` | boolean | `true` when the payment method needs the shopper sent to a payment page before the order exists. |
+| `redirectUrl` | string | The payment page to open when `redirect` is `true`; `null` otherwise. |
+| `success` | boolean | `true` when the call succeeded — order placed **or** redirect required. Failures return a 4xx with the reason, not `success: false`. |
+| `message` | string | Human-readable result — "order placed", or an explanation to redirect the shopper to complete payment. |
 
-## Order Fields
+### Two outcomes — branch on `redirect`
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | integer | Order ID |
-| `incrementId` | string | Order increment ID |
-| `status` | string | Order status |
-| `grandTotal` | decimal | Total amount |
-| `itemsCount` | integer | Number of items |
-| `createdAt` | string | Creation timestamp |
-| `invoiceUrl` | string | Invoice download URL |
+- **`redirect: false`** (cash-on-delivery, money-transfer) — the order exists; read `orderId`.
+- **`redirect: true`** (stripe, payu, phonepe, razorpay, paypal) — **no order yet**. `orderId` is `null`; send the shopper to `redirectUrl` to pay. The order is created when the gateway returns to your success URL. `message` explains this.
+
+On a genuine failure (empty cart, missing address/shipping/payment, suspended account, minimum-order not met) the endpoint returns a **4xx** with the exact reason in the error body — it does not return `success: false`.
 
 ## Order Status Values
 

@@ -182,4 +182,4 @@ mutation RemoveCoupon($cartId: String!) {
 ## Related Resources
 - [Products](/api/graphql-api/shop/products)
 - [Checkout](/api/graphql-api/shop/checkout)
-- [Orders](/api/graphql-api/shop/orders)
+- [Orders](/api/graphql-api/shop/queries/get-customer-orders)

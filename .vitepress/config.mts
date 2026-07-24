@@ -135,7 +135,35 @@ export default defineConfig(({ command, mode }) => {
           { text: 'Authentication', link: '/api/authentication' },
           { text: 'Storefront Keys', link: '/api/storefront-api-key-management-guide' },
           { text: 'Rate Limiting', link: '/api/rate-limiting' },
-          { text: 'Build with AI', link: '/api/build-with-ai' },
+          {
+            text: 'REST ↔ GraphQL Mapping',
+            collapsed: true,
+            link: '/api/rest-graphql-mapping/',
+            items: [
+              { text: 'Overview', link: '/api/rest-graphql-mapping/' },
+              {
+                text: 'Shop',
+                collapsed: true,
+                link: '/api/rest-graphql-mapping/shop/catalog',
+                items: [
+                  { text: 'Catalog', link: '/api/rest-graphql-mapping/shop/catalog' },
+                  { text: 'Cart & Checkout', link: '/api/rest-graphql-mapping/shop/cart-checkout' },
+                  { text: 'Customer Account', link: '/api/rest-graphql-mapping/shop/customer-account' },
+                  { text: 'Auth & Context', link: '/api/rest-graphql-mapping/shop/auth-context' },
+                ],
+              },
+            ],
+          },
+          {
+            text: 'Build with AI',
+            collapsed: true,
+            link: '/api/build-with-ai/',
+            items: [
+              { text: 'Overview', link: '/api/build-with-ai/' },
+              { text: 'Agent Skills', link: '/api/build-with-ai/agent-skills' },
+              { text: 'MCP Server', link: '/api/build-with-ai/mcp-server' },
+            ],
+          },
           {
             text: 'Workflows',
             collapsed: true,
@@ -255,6 +283,7 @@ export default defineConfig(({ command, mode }) => {
                             items: [
                               { text: 'Products', link: '/api/graphql-api/shop/queries/get-products' },
                               { text: 'Search Products', link: '/api/graphql-api/shop/queries/search-products' },
+                              { text: 'Category Attribute Filters', link: '/api/graphql-api/shop/queries/get-category-attribute-filters' },
                               { text: 'Single Product', link: '/api/graphql-api/shop/queries/get-product' },
                               { text: 'Booking Slots', link: '/api/graphql-api/shop/queries/get-booking-slots' },
                             ]
@@ -1341,6 +1370,7 @@ export default defineConfig(({ command, mode }) => {
                   }
                 ]
               },
+              { text: 'Identifiers (id, _id, IRI)', link: '/api/graphql-api/identifiers' },
               { text: 'Playground Guide', link: '/api/graphql-api/playground' },
               { text: 'Best Practices', link: '/api/graphql-api/best-practices' },
               { text: 'Integration Guides', link: '/api/graphql-api/integrations' },
