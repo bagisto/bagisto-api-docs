@@ -136,7 +136,7 @@ export default defineConfig(({ command, mode }) => {
           { text: 'Storefront Keys', link: '/api/storefront-api-key-management-guide' },
           { text: 'Rate Limiting', link: '/api/rate-limiting' },
           {
-            text: 'REST ↔ GraphQL Mapping',
+            text: 'REST & GraphQL API Mapping',
             collapsed: true,
             link: '/api/rest-graphql-mapping/',
             items: [
