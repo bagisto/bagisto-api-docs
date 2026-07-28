@@ -1,6 +1,11 @@
 # API Authentication Guide
 
-Bagisto provides multiple authentication methods to secure your API requests. Choose the authentication method based on the type of API access you need.
+Authentication depends on the surface you are calling. There are two, each with a fixed scheme:
+
+- **Shop API** (`/api/shop/*`, `/api/graphql`) — always send the `X-STOREFRONT-KEY`. That alone gives read-only public access. For customer actions add a customer Bearer token (from [login](/api/rest-api/shop/customers/customer-login)); a guest can act without login by using a [cart token](/api/rest-api/shop/cart/create-cart) as the Bearer.
+- **Admin API** (`/api/admin/*`, `/api/admin/graphql`) — send a pre-issued **Integration** Bearer token. No `X-STOREFRONT-KEY`, no login.
+
+Pick the row that matches your surface below.
 
 ## Quick Authentication Overview
 
@@ -20,7 +25,6 @@ All Bagisto APIs are built on a secure, Laravel-native foundation:
 - **Rate Limiting** — Per-key rate limit protection
 - **HTTPS Required** — Enforced in production environments
 
----
 
 ## 1. Public APIs (Storefront)
 
@@ -44,11 +48,17 @@ Here are common things you can do with Public APIs:
 - 🌍 Get available countries and locales
 - 📮 Retrieve shipping and payment methods (available options)
 
-::: tip Guest checkout — placing an order without login
-The Storefront Key alone is read-only, but a **guest can build a cart and place an order** without a customer account. Create a **Cart Token** (`createCartToken`), then send it as `Authorization: Bearer <cartToken>` alongside the `X-STOREFRONT-KEY` on the cart and checkout calls — no customer login required. See the [Cart workflow](/api/workflows/shop/cart) and [Checkout workflow](/api/workflows/shop/checkout).
-:::
+### Guest checkout — order without an account
 
-### How to Use
+The Storefront Key is read-only on its own, but a guest can build a cart and place a full order without a customer account by using a **cart token** as the Bearer:
+
+1. Create a cart to obtain a cart token — [Create Cart](/api/rest-api/shop/cart/create-cart).
+2. Send it as `Authorization: Bearer <cartToken>` **alongside** the `X-STOREFRONT-KEY` on every cart and checkout call.
+3. Drive the [Cart](/api/workflows/shop/cart) and [Checkout](/api/workflows/shop/checkout) flows to place the order — no customer login required.
+
+This is the storefront's guest-checkout path: the cart token stands in for a customer Bearer for the duration of that one cart.
+
+### Using the Storefront Key
 
 **1. Get your Storefront Key**
 
@@ -57,6 +67,8 @@ php artisan bagisto-api:generate-key --name="Web Storefront"
 ```
 
 You'll get something like: `pk_storefront_xxxxxxxxxxxxx`
+
+To generate, rotate, or revoke keys, see the [Storefront Key Management Guide](/api/storefront-api-key-management-guide).
 
 **2. Make a REST API request:**
 
@@ -85,7 +97,7 @@ curl -X POST "https://your-domain.com/api/graphql" \
 - ⚡ **Fast** — No database lookups for user data
 - 🚀 **Scalable** — Can handle high request volumes
 - 🔄 **Rate limited** — Default: 100 requests/minute per key (see [Rate Limiting Guide](./rate-limiting))
----
+
 
 ## 2. Customer APIs
 
@@ -131,7 +143,7 @@ curl -X POST "https://your-domain.com/api/shop/customer/login" \
 
 **Step 2: Save the token**
 
-Store the token securely in your application. See the [Introduction Guide](./introduction.md) for recommended storage patterns.
+Store the token securely — never in source code, logs, or URL query strings. See [Security Essentials](#security-essentials) below for the full do / don't list and per-platform storage.
 
 **Step 3: Use token in future requests**
 
@@ -145,16 +157,19 @@ curl -X GET "https://your-domain.com/api/shop/customers/addresses" \
 
 ### What You Can Do
 
-Once authenticated, customers can:
+Logging in unlocks the customer's personal account. An authenticated customer can:
 
 - 👤 View and edit their profile
 - 📍 Manage delivery addresses
-- 🛒 Add/remove items from cart
 - ❤️ Create and manage wishlists
-- 🛍️ Place orders
-- 📦 View order history and tracking
-- ⭐ Create product reviews
-- 🔄 Manage subscriptions (if enabled)
+- ⚖️ Compare products
+- 🛍️ Place orders and view order history, invoices, and downloadable products
+- ⭐ Write product reviews
+- ↩️ Request returns (RMA) and EU withdrawals
+- 🔒 Raise GDPR data requests
+- 📧 Subscribe to or unsubscribe from the newsletter
+
+Building a cart and checking out are **not** login-only — a guest can do both with a cart token (see [Guest checkout](#guest-checkout-order-without-an-account)). Login adds the personal account features above.
 
 ### Key Facts
 
@@ -164,15 +179,15 @@ Once authenticated, customers can:
 - ⏱️ **No default expiry** — the customer token does not expire unless the server sets one; there is **no refresh token** — recovery is re-login (see [Credential lifetimes](#credential-lifetimes))
 - 🚫 **Not cacheable** — Personal data shouldn't be cached
 - 🔄 **Requires both headers** — Need `X-STOREFRONT-KEY` AND `Authorization: Bearer`
----
+
 
 ## 3. Admin APIs
 
 **Best for:** Building admin dashboards to manage products, inventory, customers, and system settings.
 
-::: tip Admin uses a pre-issued Integration token
-Admin clients authenticate with an **Integration token** generated from the **Integration** menu in the admin panel — there is no admin login. Send it as `Authorization: Bearer <id>|<token>` (no `X-STOREFRONT-KEY`). Admin **GraphQL** clients POST to `/api/admin/graphql`. See the [Admin Authentication](/api/graphql-api/admin/authentication) reference.
-:::
+Admin clients authenticate with an **Integration token** generated from the **Integration** menu in the admin panel — there is no admin login. Send it as `Authorization: Bearer <id>|<token>` (no `X-STOREFRONT-KEY`). Admin **GraphQL** clients POST to `/api/admin/graphql`.
+
+The token is highly configurable for security — scope its **permissions** (all access, a custom subset, or mirror the owner's role), restrict it to an **IP allowlist**, set an **expiry**, and cap its **rate limits**. See the [Admin Authentication](/api/graphql-api/admin/authentication#token-security) reference for the full breakdown.
 
 ### The Basics
 
@@ -189,7 +204,7 @@ In the admin panel, open the **Integration** menu and generate a token. A store 
 
 **Step 2: Save the token**
 
-Store the token securely in your application. See the [Introduction Guide](./introduction.md) for recommended storage patterns.
+Store the token securely — never in source code, logs, or URL query strings. See [Security Essentials](#security-essentials) below for the full do / don't list and per-platform storage.
 
 **Step 3: Use the token in API requests**
 
@@ -237,7 +252,7 @@ Admins have full control over:
 - 🚫 **Not cacheable** — Data changes frequently
 - 🔒 **Role-based** — What you can do depends on your admin role
 
----
+
 
 ## Authentication Summary Table
 
@@ -274,7 +289,7 @@ In addition to authentication headers, you can pass these optional headers to co
 
 If these headers are omitted or contain a value that doesn't exist in the system, the API silently falls back to the default value. For more details, see the [GraphQL Introduction](/api/graphql-api/introduction#context-headers-x-locale-x-currency-x-channel).
 
----
+
 
 ## Common Patterns
 ### Public API Request
@@ -303,7 +318,6 @@ curl -X GET "https://your-domain.com/api/admin/products" \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
----
 
 ## Using Tokens in Requests
 
@@ -318,14 +332,13 @@ Retrieve the token from secure device storage.
 **Backend Services:**
 Use the token from environment variables or secure vaults.
 
-For detailed token storage and security guidance, see the [Introduction Guide](./introduction.md).
+For the full do / don't list and per-platform storage guidance, see [Security Essentials](#security-essentials) below.
 
----
 
 ## Security Essentials
 
 ✅ **Do This:**
-- Use HTTPS for all requests (required in production)
+- Use HTTPS in production (local development over `http://localhost` is fine)
 - Include the token in the `Authorization: Bearer` header
 - Validate token before making requests
 - Handle 401 errors by re-authenticating
@@ -338,7 +351,7 @@ For detailed token storage and security guidance, see the [Introduction Guide](.
 - Don't commit `.env` files to Git
 - Don't reuse the same token across environments
 - Don't ignore token expiration
----
+
 
 ## Troubleshooting Authentication Issues
 
@@ -390,7 +403,7 @@ Send `token` from the response as the Bearer — never `apiToken` (see [Credenti
 - If Admin API: Make sure you logged in as an admin, not a customer
 - Check your admin role has permission for this endpoint
 
----
+
 
 ## Related Documentation
 

@@ -135,8 +135,11 @@ export default defineConfig(({ command, mode }) => {
           { text: 'Authentication', link: '/api/authentication' },
           { text: 'Storefront Keys', link: '/api/storefront-api-key-management-guide' },
           { text: 'Rate Limiting', link: '/api/rate-limiting' },
+          { text: 'Status Codes', link: '/api/errors' },
+          { text: 'Pagination', link: '/api/pagination' },
+          { text: 'Sorting', link: '/api/sorting' },
           {
-            text: 'REST & GraphQL API Mapping',
+            text: 'API Mapping',
             collapsed: true,
             link: '/api/rest-graphql-mapping/',
             items: [
@@ -176,8 +179,13 @@ export default defineConfig(({ command, mode }) => {
                 items: [
                   { text: 'Overview', link: '/api/workflows/shop/' },
                   { text: 'Build a Storefront', link: '/api/workflows/shop/build-a-storefront' },
+                  { text: 'Browse & Filter Catalog', link: '/api/workflows/shop/browse-and-filter-catalog' },
                   { text: 'Cart', link: '/api/workflows/shop/cart' },
                   { text: 'Checkout', link: '/api/workflows/shop/checkout' },
+                  { text: 'Customer Account', link: '/api/workflows/shop/customer-account' },
+                  { text: 'Returns / RMA', link: '/api/workflows/shop/returns-rma' },
+                  { text: 'EU Withdrawal', link: '/api/workflows/shop/eu-withdrawal' },
+                  { text: 'GDPR Requests', link: '/api/workflows/shop/gdpr' },
                 ],
               },
               {
@@ -1381,7 +1389,9 @@ export default defineConfig(({ command, mode }) => {
             collapsed: true,
             items: [
               { text: 'Introduction', link: '/api/rest-api/introduction' },
-              
+              { text: 'Authentication', link: '/api/rest-api/authentication' },
+              { text: 'Integration Guides', link: '/api/rest-api/integrations' },
+
               {
                 text: 'Shop API',
                 collapsed: true,

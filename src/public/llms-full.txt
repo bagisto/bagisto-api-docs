@@ -27,7 +27,12 @@ URL: /api/authentication
 
 # API Authentication Guide
 
-Bagisto provides multiple authentication methods to secure your API requests. Choose the authentication method based on the type of API access you need.
+Authentication depends on the surface you are calling. There are two, each with a fixed scheme:
+
+- **Shop API** (`/api/shop/*`, `/api/graphql`) — always send the `X-STOREFRONT-KEY`. That alone gives read-only public access. For customer actions add a customer Bearer token (from [login](/api/rest-api/shop/customers/customer-login)); a guest can act without login by using a [cart token](/api/rest-api/shop/cart/create-cart) as the Bearer.
+- **Admin API** (`/api/admin/*`, `/api/admin/graphql`) — send a pre-issued **Integration** Bearer token. No `X-STOREFRONT-KEY`, no login.
+
+Pick the row that matches your surface below.
 
 ## Quick Authentication Overview
 
@@ -47,7 +52,6 @@ All Bagisto APIs are built on a secure, Laravel-native foundation:
 - **Rate Limiting** — Per-key rate limit protection
 - **HTTPS Required** — Enforced in production environments
 
----
 
 ## 1. Public APIs (Storefront)
 
@@ -71,11 +75,17 @@ Here are common things you can do with Public APIs:
 - 🌍 Get available countries and locales
 - 📮 Retrieve shipping and payment methods (available options)
 
-::: tip Guest checkout — placing an order without login
-The Storefront Key alone is read-only, but a **guest can build a cart and place an order** without a customer account. Create a **Cart Token** (`createCartToken`), then send it as `Authorization: Bearer <cartToken>` alongside the `X-STOREFRONT-KEY` on the cart and checkout calls — no customer login required. See the [Cart workflow](/api/workflows/shop/cart) and [Checkout workflow](/api/workflows/shop/checkout).
-:::
+### Guest checkout — order without an account
 
-### How to Use
+The Storefront Key is read-only on its own, but a guest can build a cart and place a full order without a customer account by using a **cart token** as the Bearer:
+
+1. Create a cart to obtain a cart token — [Create Cart](/api/rest-api/shop/cart/create-cart).
+2. Send it as `Authorization: Bearer <cartToken>` **alongside** the `X-STOREFRONT-KEY` on every cart and checkout call.
+3. Drive the [Cart](/api/workflows/shop/cart) and [Checkout](/api/workflows/shop/checkout) flows to place the order — no customer login required.
+
+This is the storefront's guest-checkout path: the cart token stands in for a customer Bearer for the duration of that one cart.
+
+### Using the Storefront Key
 
 **1. Get your Storefront Key**
 
@@ -84,6 +94,8 @@ php artisan bagisto-api:generate-key --name="Web Storefront"
 ```
 
 You'll get something like: `pk_storefront_xxxxxxxxxxxxx`
+
+To generate, rotate, or revoke keys, see the [Storefront Key Management Guide](/api/storefront-api-key-management-guide).
 
 **2. Make a REST API request:**
 
@@ -112,7 +124,7 @@ curl -X POST "https://your-domain.com/api/graphql" \
 - ⚡ **Fast** — No database lookups for user data
 - 🚀 **Scalable** — Can handle high request volumes
 - 🔄 **Rate limited** — Default: 100 requests/minute per key (see [Rate Limiting Guide](./rate-limiting))
----
+
 
 ## 2. Customer APIs
 
@@ -158,7 +170,7 @@ curl -X POST "https://your-domain.com/api/shop/customer/login" \
 
 **Step 2: Save the token**
 
-Store the token securely in your application. See the [Introduction Guide](./introduction.md) for recommended storage patterns.
+Store the token securely — never in source code, logs, or URL query strings. See [Security Essentials](#security-essentials) below for the full do / don't list and per-platform storage.
 
 **Step 3: Use token in future requests**
 
@@ -172,16 +184,19 @@ curl -X GET "https://your-domain.com/api/shop/customers/addresses" \
 
 ### What You Can Do
 
-Once authenticated, customers can:
+Logging in unlocks the customer's personal account. An authenticated customer can:
 
 - 👤 View and edit their profile
 - 📍 Manage delivery addresses
-- 🛒 Add/remove items from cart
 - ❤️ Create and manage wishlists
-- 🛍️ Place orders
-- 📦 View order history and tracking
-- ⭐ Create product reviews
-- 🔄 Manage subscriptions (if enabled)
+- ⚖️ Compare products
+- 🛍️ Place orders and view order history, invoices, and downloadable products
+- ⭐ Write product reviews
+- ↩️ Request returns (RMA) and EU withdrawals
+- 🔒 Raise GDPR data requests
+- 📧 Subscribe to or unsubscribe from the newsletter
+
+Building a cart and checking out are **not** login-only — a guest can do both with a cart token (see [Guest checkout](#guest-checkout-order-without-an-account)). Login adds the personal account features above.
 
 ### Key Facts
 
@@ -191,15 +206,15 @@ Once authenticated, customers can:
 - ⏱️ **No default expiry** — the customer token does not expire unless the server sets one; there is **no refresh token** — recovery is re-login (see [Credential lifetimes](#credential-lifetimes))
 - 🚫 **Not cacheable** — Personal data shouldn't be cached
 - 🔄 **Requires both headers** — Need `X-STOREFRONT-KEY` AND `Authorization: Bearer`
----
+
 
 ## 3. Admin APIs
 
 **Best for:** Building admin dashboards to manage products, inventory, customers, and system settings.
 
-::: tip Admin uses a pre-issued Integration token
-Admin clients authenticate with an **Integration token** generated from the **Integration** menu in the admin panel — there is no admin login. Send it as `Authorization: Bearer <id>|<token>` (no `X-STOREFRONT-KEY`). Admin **GraphQL** clients POST to `/api/admin/graphql`. See the [Admin Authentication](/api/graphql-api/admin/authentication) reference.
-:::
+Admin clients authenticate with an **Integration token** generated from the **Integration** menu in the admin panel — there is no admin login. Send it as `Authorization: Bearer <id>|<token>` (no `X-STOREFRONT-KEY`). Admin **GraphQL** clients POST to `/api/admin/graphql`.
+
+The token is highly configurable for security — scope its **permissions** (all access, a custom subset, or mirror the owner's role), restrict it to an **IP allowlist**, set an **expiry**, and cap its **rate limits**. See the [Admin Authentication](/api/graphql-api/admin/authentication#token-security) reference for the full breakdown.
 
 ### The Basics
 
@@ -216,7 +231,7 @@ In the admin panel, open the **Integration** menu and generate a token. A store 
 
 **Step 2: Save the token**
 
-Store the token securely in your application. See the [Introduction Guide](./introduction.md) for recommended storage patterns.
+Store the token securely — never in source code, logs, or URL query strings. See [Security Essentials](#security-essentials) below for the full do / don't list and per-platform storage.
 
 **Step 3: Use the token in API requests**
 
@@ -264,7 +279,7 @@ Admins have full control over:
 - 🚫 **Not cacheable** — Data changes frequently
 - 🔒 **Role-based** — What you can do depends on your admin role
 
----
+
 
 ## Authentication Summary Table
 
@@ -301,7 +316,7 @@ In addition to authentication headers, you can pass these optional headers to co
 
 If these headers are omitted or contain a value that doesn't exist in the system, the API silently falls back to the default value. For more details, see the [GraphQL Introduction](/api/graphql-api/introduction#context-headers-x-locale-x-currency-x-channel).
 
----
+
 
 ## Common Patterns
 ### Public API Request
@@ -330,7 +345,6 @@ curl -X GET "https://your-domain.com/api/admin/products" \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
----
 
 ## Using Tokens in Requests
 
@@ -345,14 +359,13 @@ Retrieve the token from secure device storage.
 **Backend Services:**
 Use the token from environment variables or secure vaults.
 
-For detailed token storage and security guidance, see the [Introduction Guide](./introduction.md).
+For the full do / don't list and per-platform storage guidance, see [Security Essentials](#security-essentials) below.
 
----
 
 ## Security Essentials
 
 ✅ **Do This:**
-- Use HTTPS for all requests (required in production)
+- Use HTTPS in production (local development over `http://localhost` is fine)
 - Include the token in the `Authorization: Bearer` header
 - Validate token before making requests
 - Handle 401 errors by re-authenticating
@@ -365,7 +378,7 @@ For detailed token storage and security guidance, see the [Introduction Guide](.
 - Don't commit `.env` files to Git
 - Don't reuse the same token across environments
 - Don't ignore token expiration
----
+
 
 ## Troubleshooting Authentication Issues
 
@@ -417,7 +430,7 @@ Send `token` from the response as the Bearer — never `apiToken` (see [Credenti
 - If Admin API: Make sure you logged in as an admin, not a customer
 - Check your admin role has permission for this endpoint
 
----
+
 
 ## Related Documentation
 
@@ -437,7 +450,7 @@ outline: false
 
 # Build with AI
 
-This documentation is built to be consumed by AI coding agents (Claude Code, Cursor, Windsurf, and others) as well as humans. If you are building a storefront or an app on the Bagisto API — or extending the API itself — with an AI assistant, point it at the resources on this page.
+This documentation is built to be consumed by AI coding agents (Claude Code, Codex, Antigravity, and other MCP-capable editors) as well as humans. If you are building a storefront or an app on the Bagisto API — or extending the API itself — with an AI assistant, point it at the resources on this page.
 
 Three things make an agent productive here, in order of how much they help:
 
@@ -454,7 +467,7 @@ A single file lists every documented endpoint with a one-line description and a 
 - **Index:** [`/llms.txt`](/llms.txt) — every Shop and Admin endpoint, grouped by transport and menu.
 - **Full content:** [`/llms-full.txt`](/llms-full.txt) — the complete documentation concatenated into one file for full ingestion.
 
-These follow the [llms.txt convention](https://llmstxt.org). The index opens with a **Shop vs Admin** primer and three cross-cutting references every agent should read first — [Authentication](/api/authentication), [Identifiers](/api/graphql-api/identifiers), and the [REST ↔ GraphQL mapping](/api/rest-graphql-mapping/).
+These follow the [llms.txt convention](https://llmstxt.org). The index opens with a **Shop vs Admin** primer and three cross-cutting references every agent should read first — [Authentication](/api/authentication), [Identifiers](/api/graphql-api/identifiers), and the [API Mapping](/api/rest-graphql-mapping/).
 
 ## Where an agent should start
 
@@ -523,7 +536,7 @@ npx skills add bagisto/agent-skills --skill "pest-testing"
 npx skills add bagisto/agent-skills
 ```
 
-Target a specific agent with `-a claude-code` or `-a cursor`.
+Target a specific agent with `-a <agent>` — `claude-code`, `codex`, or `antigravity`.
 
 ## The skills
 
@@ -551,39 +564,173 @@ URL: /api/build-with-ai/mcp-server
 
 ---
 outline: false
+apiType: rest
+examples:
+  - id: register-claude-code
+    title: Register — Claude Code
+    description: Run from inside the cloned repo so $(pwd) fills the absolute path. Verify shows the server connected.
+    request: |
+      cd /path/to/mcp
+      npm install
+
+      claude mcp add bagisto-mcp -- node "$(pwd)/src/index.mjs"
+    response: |
+      $ claude mcp list
+      bagisto-mcp   node …/src/index.mjs   ✓ Connected
+  - id: register-codex
+    title: Register — Codex CLI
+    description: Codex reads MCP servers from ~/.codex/config.toml. Recent builds can also add it from the CLI (run inside the cloned repo).
+    request: |
+      cd /path/to/mcp
+      npm install
+
+      codex mcp add bagisto-mcp -- node "$(pwd)/src/index.mjs"
+    response: |
+      # ~/.codex/config.toml (equivalent)
+      [mcp_servers.bagisto-mcp]
+      command = "node"
+      args = ["<ABSOLUTE_PATH_TO_REPO>/src/index.mjs"]
+
+      $ codex mcp list
+      bagisto-mcp
+  - id: register-antigravity
+    title: Register — Antigravity
+    description: Antigravity reads a JSON MCP config. Add a stdio server pointing node at the absolute path to src/index.mjs.
+    request: |
+      {
+        "mcpServers": {
+          "bagisto-mcp": {
+            "command": "node",
+            "args": ["<ABSOLUTE_PATH_TO_REPO>/src/index.mjs"]
+          }
+        }
+      }
+    response: |
+      Server "bagisto-mcp" appears in the MCP panel with 4 tools:
+      search_api_docs, list_endpoints, get_doc, refresh_api_docs
 ---
 
 # MCP Server
 
-Bagisto provides an **optional** [MCP](https://modelcontextprotocol.io) (Model Context Protocol) server that lets an AI agent search this documentation on demand, from inside the editor, while it writes code.
+An **optional** [MCP](https://modelcontextprotocol.io) server that lets an AI agent search this documentation on demand, from inside the editor, while it writes code. It **runs locally** — nothing to host — and by default indexes the latest published docs, so the agent reads the same reference you do.
 
-It is optional: [`/llms.txt`](/llms.txt) and [`/llms-full.txt`](/llms-full.txt) cover the same knowledge statically. The MCP server is worth adding when you want the agent to pull the *exact* current page for an endpoint mid-task instead of ingesting the whole index.
+It is optional: [`/llms.txt`](/llms.txt) and [`/llms-full.txt`](/llms-full.txt) cover the same knowledge statically. Add the MCP server when you want the agent to pull the *exact* current page for an endpoint mid-task instead of ingesting the whole index.
 
 ## Why use it
 
-- **Live lookup while coding.** The agent fetches the precise request/response shape for an endpoint at the moment it needs it — no copy-pasting docs into the chat.
-- **Always current.** It indexes the published docs, so the agent reads the same reference you do, not a stale snapshot from its training data.
-- **Smaller context.** Instead of loading `llms-full.txt`, the agent pulls only the page it is working on, leaving room for your actual code.
-
-For building a storefront, that means when the agent reaches the checkout step it can look up the exact address-input fields and the shipping-then-payment sequence on demand, rather than guessing or asking you.
+- **Live lookup while coding.** The agent fetches the precise request/response shape for an endpoint the moment it needs it — no copy-pasting docs into the chat.
+- **Always current.** It indexes the published docs, not a stale snapshot from training data.
+- **Smaller context.** The agent pulls only the page it is working on, leaving room for your code.
 
 ## Tools it exposes
 
 | Tool | What it does |
 |---|---|
-| `search_api_docs` | Full-text search across the API documentation |
-| `list_endpoints` | Enumerate documented endpoints (filterable by surface / menu) |
+| `search_api_docs` | Ranked full-text search across the API documentation |
+| `list_endpoints` | Enumerate endpoints, filterable by transport (`rest`/`graphql`) and menu |
 | `get_doc` | Fetch one page's full content by path |
+| `refresh_api_docs` | Re-pull the latest docs in-session, no restart |
 
 ## Install
 
+```bash
+git clone https://github.com/bagisto/mcp
+cd mcp
+npm install
+```
+
+Requires **Node 18+**. Then register it with your agent — the panel on the right has the exact command for **Claude Code**, **Codex**, and **Antigravity**. Any other MCP client (Cursor, Windsurf, VS Code) uses the same stdio `node <path>/src/index.mjs` form.
+
 - **Repository:** [`bagisto/mcp`](https://github.com/bagisto/mcp)
 
-The repo README has the setup and the exact command to register the server with your agent (for example `claude mcp add` for Claude Code, or the editor's MCP settings for Cursor / Windsurf).
+## Docs source
+
+By default the server fetches `https://api-docs.bagisto.com/llms-full.txt` and caches it locally. To pin a local snapshot or point at a mirror, set `BAGISTO_DOCS_LLMS` to a URL or file path when registering. Call `refresh_api_docs` to pull newly-published docs mid-session.
 
 ## Do you need it?
 
-No — it is a convenience, not a requirement. If you have installed the [Agent Skills](/api/build-with-ai/agent-skills) and the agent can reach [`/llms.txt`](/llms.txt), you already have everything needed to build. Add the MCP server if you want on-demand, in-editor doc search on top of that.
+No — it is a convenience, not a requirement. With the [Agent Skills](/api/build-with-ai/agent-skills) installed and [`/llms.txt`](/llms.txt) reachable, you already have everything needed to build. Add the MCP server for on-demand, in-editor doc search on top of that.
+
+
+
+---
+
+# Status Codes
+URL: /api/errors
+
+# Status Codes
+
+How the API reports failures. The two transports signal errors differently — REST uses the HTTP status, GraphQL always returns `200` and puts the failure in `errors[]` — but both draw from the same set of conditions below. This is the single reference; endpoint pages do not repeat it.
+
+## REST vs GraphQL error shape
+
+**REST** — the HTTP status carries the outcome; the body carries the message.
+
+```
+HTTP/1.1 422 Unprocessable Entity
+Content-Type: application/json
+
+{ "detail": "The email field is required.", "status": 422 }
+```
+
+Branch on the **status code**, not on the message text (messages are localised and may change).
+
+**GraphQL** — the HTTP status is almost always `200`. A failed operation returns its field as `null` and the reason in a top-level `errors[]` array.
+
+```json
+{
+  "data": { "createCheckoutOrder": null },
+  "errors": [
+    { "message": "Please select a payment method." }
+  ]
+}
+```
+
+A partial success is possible: some fields resolve while `errors[]` lists what did not. Always check `errors[]` even when `data` is present.
+
+## Status codes
+
+| Status | Meaning | Typical cause | What to do |
+|--------|---------|---------------|------------|
+| `200` | OK | Success (GraphQL: also check `errors[]`) | — |
+| `201` | Created | Resource created (register, place order, add address) | — |
+| `204` | No Content | Deleted successfully | — |
+| `400` | Bad Request | Missing/invalid input, business-rule violation | Fix the request body |
+| `401` | Unauthorized | Missing/invalid/expired credential | Get a new credential (re-login / rotate / regenerate) — there is no refresh token |
+| `403` | Forbidden | Authenticated but not allowed (wrong owner, missing permission) | Use the right account/token |
+| `404` | Not Found | Entity does not exist, or is not yours | Verify the id |
+| `409` | Conflict | Out-of-sequence step (e.g. shipping before an address is set), or empty cart | Complete the prerequisite step first |
+| `422` | Unprocessable Entity | Validation failed, or stock unavailable | Correct the fields / quantities |
+| `429` | Too Many Requests | Rate limit exceeded | Back off — see [Rate Limiting](/api/rate-limiting) |
+| `500` | Server Error | Unexpected server fault | Retry; report if it persists |
+
+GraphQL maps the same conditions into `errors[]` (there is no HTTP `422`/`404` over GraphQL — the message identifies the cause).
+
+## The two 401 messages
+
+A `401` comes back with one of two messages — treat both identically:
+
+- `Unauthenticated. Please login to perform this action`
+- `Invalid or expired authentication token`
+
+Both mean "get a new credential." There is no refresh flow — see [Authentication → Credential lifetimes](/api/authentication#credential-lifetimes).
+
+## Common conditions
+
+| Condition | REST | GraphQL |
+|-----------|------|---------|
+| No / wrong storefront key | `401` `missing_key` / `invalid_key` | `401` at the transport (same key check) |
+| Not logged in for a customer action | `401` | `errors[]` "unauthenticated" |
+| Accessing another customer's resource | `403` / `404` | `errors[]` |
+| Validation failure | `422` | `errors[]` with the field message |
+| Cart empty at checkout | `409` | `errors[]` |
+| Checkout step out of order | `409` | `errors[]` |
+| Out of stock | `422` | `errors[]` |
+
+## Handling pattern
+
+1. **REST:** switch on the status code. `2xx` → success; `401` → renew credential; `403`/`404` → surface "not available"; `409`/`422` → show the body message to the user; `429` → back off; `5xx` → retry.
+2. **GraphQL:** treat any non-empty `errors[]` as a failure even on `200`; read `errors[0].message` for the reason; do not rely on `data` being null.
 
 
 
@@ -2034,6 +2181,14 @@ Each token is throttled by two independent buckets:
 Exceeding either limit returns **429 Too Many Requests**.
 
 **Unlimited rate limit** — when generating or editing the token, choose the **Unlimited** option for the per-minute and/or per-day limit. That removes the cap for that bucket; set **both** to Unlimited for a fully unthrottled token.
+
+## Token lifecycle
+
+- **One active token per admin.** Each admin user holds a single active (or draft) token at a time. To issue a new one, revoke or regenerate the existing token first — the generate form only offers admins who don't already have one.
+- **States.** A token moves through **draft** (created but not yet generated — no secret), **active** (generated and usable), **revoked** (manually killed — stops working immediately, kept for audit), and **regenerated** (superseded by a newer token — the old row is retired but kept for audit).
+- **Regenerate.** Issues a fresh secret on a new token row and retires the old one; the new plaintext is shown **once**. Use it when a token may be compromised, without losing the audit trail.
+- **Revoke.** Kills the token immediately — from the Integration menu, or the one-click link in the lifecycle email.
+- **Email notifications.** The owning admin is emailed on generate, regenerate, and revoke. Generate and regenerate emails carry a **signed, 7-day, login-free revoke link** so the owner can kill a token from their inbox. The plaintext token is **never** included in any email.
 
 ## Errors
 
@@ -42413,26 +42568,56 @@ Requires the `settings.users.users.edit` permission and an admin Bearer token �
 
 ---
 
-# Authentication Guide
+# Authentication (GraphQL)
 URL: /api/graphql-api/authentication
 
-# Authentication Guide
+---
+outline: false
+---
 
-Bagisto GraphQL API supports multiple authentication methods to handle different use cases - from guest checkouts to admin operations.
+# Authentication (GraphQL)
 
-## Authentication Methods Overview
+The full authentication model — public access, customer login, guest checkout, and admin — lives on the central [Authentication](/api/authentication) page. This page is the **GraphQL-specific** quickref: the endpoints, the headers, and the exact operations.
 
-| Method | Use Case | Token Type | Expiration |
-|--------|----------|-----------|-----------|
-| Guest Cart | Unauthenticated users | UUID Token | Session-based |
-| Customer Token | Registered customers | JWT/Bearer Token | Configurable |
-| Admin Token | Administrator operations | JWT/Bearer Token | Configurable |
+## Endpoints
 
-## 1. Guest Checkout Authentication
+| Surface | Endpoint | Headers |
+|---------|----------|---------|
+| Shop | `POST /api/graphql` | `X-STOREFRONT-KEY` (always) + `Authorization: Bearer <token>` for customer actions |
+| Admin | `POST /api/admin/graphql` | `Authorization: Bearer <id>\|<token>` only (no storefront key) |
 
-Perfect for unauthenticated users who want to browse and checkout without creating an account.
+The shop and admin GraphQL endpoints are separate. Never send an admin token to `/api/graphql` or a storefront key to `/api/admin/graphql`.
 
-### Create Guest Cart Token
+## Public access
+
+The `X-STOREFRONT-KEY` alone gives read-only access to public data (products, categories, CMS):
+
+```bash
+curl -X POST "https://your-domain.com/api/graphql" \
+  -H "Content-Type: application/json" \
+  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
+  -d '{"query":"query { products(first: 10) { edges { node { id name } } } }"}'
+```
+
+## Customer login — get a token
+
+```graphql
+mutation {
+  createCustomerLogin(input: { email: "john@example.com", password: "SecurePass@123" }) {
+    customerLogin {
+      token
+      success
+      message
+    }
+  }
+}
+```
+
+Send `token` (format `<id>|<secret>`) as `Authorization: Bearer <token>` on every authenticated request. Use `token`, **not** `apiToken` (a legacy field that is not a Bearer). There is no refresh token — on a `401`, log in again. Full field reference on the [Customer Login](/api/graphql-api/shop/mutations/customer-login) page.
+
+## Guest — act without login
+
+A guest can build a cart and place an order using a **cart token** as the Bearer:
 
 ```graphql
 mutation {
@@ -42442,610 +42627,17 @@ mutation {
 }
 ```
 
-**Response:**
-```json
-{
-  "data": {
-    "createCartToken": {
-      "cartToken": "550e8400-e29b-41d4-a716-446655440000"
-    }
-  }
-}
-```
+Send the returned `cartToken` as `Authorization: Bearer <cartToken>` alongside the `X-STOREFRONT-KEY` on cart and checkout calls. See the [Cart](/api/workflows/shop/cart) and [Checkout](/api/workflows/shop/checkout) workflows.
 
-### Using Guest Token
+## Admin
 
-Pass the token as a Bearer token in the `Authorization` header for all subsequent requests:
+Admin clients use a pre-issued **Integration token** (no login) sent as `Authorization: Bearer <id>|<token>` to `/api/admin/graphql`. See [Admin Authentication](/api/graphql-api/admin/authentication) for the token model, permissions, IP allowlist, expiry, and rate limits.
 
-```bash
-curl -X POST https://your-domain.com/api/graphql \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer 550e8400-e29b-41d4-a716-446655440000" \
-  -d '{
-    "query": "query { cart { items { edges { node { id } } } } }"
-  }'
-```
+## Related
 
-### Guest Cart Workflow
-
-```graphql
-# 1. Create cart token
-mutation {
-  createCartToken(input: {}) {
-    cartToken {
-      id
-      cartToken
-    }
-  }
-}
-
-# 2. Add product to guest cart
-mutation {
-  addProductsToCart(input: {
-    productId: 50
-    quantity: 1
-  }) {
-    addProductInCart {
-      id
-      items {
-        edges {
-          node {
-            id
-            name
-            sku
-          }
-        }
-      }
-    }
-  }
-}
-
-# 3. Proceed to checkout
-mutation {
-  mutation createCheckoutOrder {
-    createCheckoutOrder(input:{}) {
-      checkoutOrder {
-        id
-        orderId      
-      }
-    }
-  }
-}
-```
-
-## 2. Customer Authentication
-
-For registered users, provide a secure login/logout flow.
-
-### Customer Registration
-
-```graphql
-mutation {
-  createCustomer(input: {
-    firstName: "John",
-    lastName: "Doe",
-    gender: "Male",
-    dateOfBirth: "01/15/1990",
-    phone: "555-0123",
-    status: "1",
-    isVerified: "1",
-    isSuspended: "0",
-    email: "john.doe@example.com",
-    password: "SecurePass@123",
-    confirmPassword: "SecurePass@123",
-    subscribedToNewsLetter: true
-  }) {
-    customer {
-      id
-      _id
-      apiToken
-      channelId
-      customerGroupId
-      dateOfBirth
-      email
-      gender
-      isSuspended
-      isVerified
-      name
-      firstName
-      lastName
-      rememberToken
-      subscribedToNewsLetter
-      status
-      token
-      phone
-    }
-  }
-}
-
-```
-
-**Response:**
-```json
-{
-  "data": {
-    "createCustomer": {
-      "customer": {
-        "id": "1",
-        "firstName": "John",
-        "email": "john@example.com",
-        "createdAt": "2024-12-19T10:30:00Z"
-      }
-    }
-  }
-}
-```
-
-### Customer Login
-
-```graphql
-mutation {
-  createCustomerLogin(
-    input: {
-      email: "john@example.com"
-      password: "SecurePassword123!"
-    }
-  ) {
-    customerLogin {
-      id
-      _id     
-      token
-      success
-      message
-    }
-  }
-}
-```
-
-**Response:**
-```json
-{
-    "data": {
-        "createCustomerLogin": {
-            "customerLogin": {
-                "id": "1",
-                "_id": 1,
-                "apiToken": "OOxDk2s06JCndg5FHb8WbfF6ZR8jGq231...",
-                "token": "1|xy56RHXcttcDnimTHVEGIeyxzMKAWX6MyICCsZTA7dc...",
-                "success": true,
-                "message": "You have logged in successfully"
-            }
-        }
-    }
-}
-```
-
-::: warning `token` vs `apiToken` — use `token`
-The login response returns two fields:
-
-- **`token`** — the authentication credential. Send it as `Authorization: Bearer <token>` on every authenticated request (REST **and** GraphQL).
-- **`apiToken`** — a legacy field kept for backward compatibility. It is **not** an authentication Bearer. Sending `apiToken` in the `Authorization` header returns `Unauthenticated`.
-
-Always authenticate with `token`.
-:::
-
-### Using Customer Token
-
-Include the access token in the `Authorization` header:
-
-```bash
-curl -X POST https://your-domain.com/api/graphql \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
-  -d '{
-    "query": "query { customer { id firstName email } }"
-  }'
-```
-
-### Verify Token
-
-Check if a token is still valid:
-
-```graphql
-mutation {
-  createVerifyToken(input: {
-    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-  }) {
-    verifyToken {
-      isValid
-      message
-    }
-  }
-}
-```
-
-**Response:**
-```json
-{
-  "data": {
-    "createVerifyToken": {
-      "verifyToken": {
-        "isValid": true,
-        "message": "Token is valid"
-      }
-    }
-  }
-}
-```
-
-### Customer Logout
-
-```graphql
-mutation {
-  createLogout(input: {}) {
-    status
-    message
-  }
-}
-```
-
-**Response:**
-```json
-{
-  "data": {
-    "createLogout": {
-      "status": "success",
-      "message": "Logout successful"
-    }
-  }
-}
-```
-
-### Authenticated Customer Workflow
-
-```graphql
-# 1. Register/Login
-mutation {
-  createLogin(input: {
-    email: "john@example.com"
-    password: "SecurePassword123!"
-  }) {
-    accessToken
-  }
-}
-
-# 2. Get customer profile (requires token)
-query {
-  customer {
-    id
-    firstName
-    email
-    addresses {
-      edges {
-        node {
-          id
-          firstName
-          address
-          city
-        }
-      }
-    }
-  }
-}
-
-# 3. Create authenticated cart
-mutation {
-  createCart(input: {}) {
-    cart {
-      id
-    }
-  }
-}
-
-# 4. Manage cart and checkout with customer info
-mutation {
-  createOrder(input: {
-    cartId: "your-cart-id"
-    billingAddressId: "1"
-    shippingAddressId: "1"
-    shippingMethod: "flatrate_flatrate"
-    paymentMethod: "paypal"
-  }) {
-    order {
-      id
-      incrementId
-      status
-    }
-  }
-}
-
-# 5. Logout
-mutation {
-  createLogout(input: {}) {
-    status
-  }
-}
-```
-
-## 3. Admin Authentication
-
-For administrative operations and management tasks.
-
-Admin requests authenticate with a pre-issued **Integration token** — there is no login call. The whole flow runs through the **Integration** plugin in the admin panel:
-
-1. In the admin panel, open the **Integration** menu (`Admin → Integration`).
-2. Generate an Integration token. A store owner generates tokens here and shares them with the sub-admins who need API access — each token is tied to a specific admin user and inherits that admin's permissions.
-3. Copy the token the moment it is shown — it is displayed **once**.
-4. Send it on every admin request as a Bearer token:
-
-```
-POST /api/admin/graphql
-Authorization: Bearer <id>|<token>
-Content-Type: application/json
-```
-
-Admin GraphQL has its own endpoint (`/api/admin/graphql`), separate from the shop endpoint (`/api/graphql`). It takes the `Authorization` header **only** — the storefront key is not used here.
-
-See [Admin Authentication](/api/graphql-api/admin/authentication) for token lifecycle, IP allowlists, and rate limits.
-
-### Endpoint
-
-| URL | Headers |
-|-----|---------|
-| `POST /api/admin/graphql` | `Authorization: Bearer <integration-token>` |
-| `GET  /api/admin/graphiql` | Browser-only playground UI |
-
-### Using the Admin Token
-
-```bash
-curl -X POST https://your-domain.com/api/admin/graphql \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer 5|1dYWpciAn2Ro8dfsabA89ohhduVWWXqicyPyQeIH" \
-  -d '{
-    "query": "query { adminProducts(first: 10) { edges { node { id sku name } } } }"
-  }'
-```
-
-### Revoking a Token
-
-Open the **Integration** menu, find the token row, and click
-**Revoke** (or use the signed one-click link in the lifecycle email). A
-revoked token stops working immediately.
-
-## Authentication Best Practices
-
-### 🔒 Security Tips
-
-1. **HTTPS Only**: Always use HTTPS in production
-   ```
-   ✓ https://your-domain.com/api/graphql
-   ✗ http://your-domain.com/api/graphql
-   ```
-
-2. **Secure Token Storage**
-   - **Frontend**: Use httpOnly cookies (JavaScript cannot access)
-   - **Mobile**: Use secure device storage
-   - **Backend**: Store in secure session or encrypted database
-
-3. **Token Expiration**
-   - Set reasonable expiration times (e.g., 24 hours)
-   - Implement refresh token mechanism
-   - Validate token expiration on each request
-
-4. **Never Log Tokens**
-   ```javascript
-   // ✗ Bad
-   console.log(accessToken);
-   localStorage.setItem('token', accessToken);
-   
-   // ✓ Good
-   // Store in httpOnly cookie (server-side)
-   // Use secure storage on mobile
-   ```
-
-5. **Validate on Server**
-   ```graphql
-   # Always verify token server-side
-   mutation {
-     createVerifyToken(input: { token: userToken }) {
-       verifyToken { isValid }
-     }
-   }
-   ```
-
-### Handling Expired Tokens
-
-```javascript
-async function makeGraphQLRequest(query, token) {
-  let response = await fetch('/api/graphql', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ query })
-  });
-
-  if (response.status === 401) {
-    // Token expired, refresh or re-authenticate
-    token = await refreshToken();
-    return makeGraphQLRequest(query, token);
-  }
-
-  return response.json();
-}
-```
-
-### Environment Variables
-
-Store sensitive information securely:
-
-```bash
-# .env
-GRAPHQL_API_URL=https://your-domain.com/api/graphql
-CUSTOMER_TOKEN=your_token_here
-ADMIN_TOKEN=admin_token_here
-```
-
-```javascript
-const API_URL = process.env.REACT_APP_API_URL;
-const token = process.env.REACT_APP_CUSTOMER_TOKEN;
-```
-
-## Token Refresh Strategy
-
-Implement a refresh token mechanism for long-lived sessions:
-
-```graphql
-# Initial login
-mutation {
-  createLogin(input: {
-    email: "user@example.com"
-    password: "password"
-  }) {
-    accessToken
-    refreshToken
-  }
-}
-
-# When access token expires, use refresh token
-mutation {
-  refreshToken(input: {
-    refreshToken: "refresh_token_here"
-  }) {
-    accessToken
-  }
-}
-```
-
-## Multi-Channel Authentication
-
-Bagisto supports multiple channels. Include channel information:
-
-```graphql
-query {
-  channel {
-    id
-    code
-    name
-    rootCategoryId
-  }
-}
-```
-
-Use channel-specific queries:
-
-```graphql
-query {
-  products(channel: "default", first: 10) {
-    edges {
-      node {
-        id
-        name
-        prices {
-          channel
-          price
-        }
-      }
-    }
-  }
-}
-```
-
-## Error Handling
-
-### Common Authentication Errors
-
-```json
-{
-  "errors": [
-    {
-      "message": "Unauthenticated",
-      "extensions": {
-        "guard": "api"
-      }
-    }
-  ]
-}
-```
-
-```json
-{
-  "errors": [
-    {
-      "message": "Invalid credentials",
-      "extensions": {
-        "category": "authentication"
-      }
-    }
-  ]
-}
-```
-
-### Error Response Handling
-
-```javascript
-async function login(email, password) {
-  const response = await fetch('/api/graphql', {
-    method: 'POST',
-    body: JSON.stringify({
-      query: `mutation {
-        createLogin(input: {email: "${email}", password: "${password}"}) {
-          accessToken
-        }
-      }`
-    })
-  });
-
-  const result = await response.json();
-
-  if (result.errors) {
-    result.errors.forEach(error => {
-      console.error('Auth Error:', error.message);
-    });
-    return null;
-  }
-
-  return result.data.createLogin.accessToken;
-}
-```
-
-## Logout and Cleanup
-
-Always implement proper logout:
-
-```javascript
-async function logout() {
-  // Clear GraphQL session
-  await fetch('/api/graphql', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify({
-      query: 'mutation { createLogout(input: {}) { status } }'
-    })
-  });
-
-  // Clear local storage
-  localStorage.removeItem('token');
-  
-  // Redirect to login
-  window.location.href = '/login';
-}
-```
-
-## Multi-Tenant Authentication
-
-For multi-tenant setups:
-
-```graphql
-query {
-  channel(code: "channel-code") {
-    id
-    code
-    locales
-    currencies
-  }
-}
-```
-
----
-
-**Next Steps:**
-- 📚 [Shop API Reference](/api/graphql-api/shop-api) - Use authentication in shop operations
-- 🔑 [Admin API Reference](/api/graphql-api/admin-api) - Admin authentication flows
-- 💡 [Best Practices](/api/graphql-api/best-practices) - Advanced security topics
+- [Authentication](/api/authentication) — the full model (public / customer / guest / admin)
+- [Status Codes](/api/errors) — how failures are reported (including `401`)
+- [Identifiers](/api/graphql-api/identifiers) — `id` vs `_id` vs IRI
 
 
 
@@ -43893,75 +43485,77 @@ URL: /api/graphql-api/integrations
 
 # Integration Guides
 
-Complete integration examples for popular programming languages and frameworks to get started with Bagisto GraphQL API.
+Language and framework examples for the Bagisto **GraphQL** API. Every example targets the shop endpoint and carries the required headers.
+
+- **Endpoint:** `POST https://your-domain.com/api/graphql`
+- **Required on every request:** `Content-Type: application/json` and `X-STOREFRONT-KEY: <your key>`.
+- **Customer operations** additionally send `Authorization: Bearer <token>` — the `token` from login (not `apiToken`). See [Authentication](/api/graphql-api/authentication).
+
+Field notes used below: the product list is `products(first: N)` (channel comes from the `X-CHANNEL` header, not a query argument — see [Pagination](/api/pagination)); the profile query is `readCustomerProfile { customer { … } }`; login is `createCustomerLogin`. On action mutations select **result fields**, not `id` — see [Identifiers](/api/graphql-api/identifiers).
 
 ## JavaScript / Node.js
 
 ### Using Fetch API
 
 ```javascript
-// Simple GraphQL query
+const API_URL = 'https://your-domain.com/api/graphql';
+const STOREFRONT_KEY = 'pk_storefront_xxxxxxxxxxxxx';
+
+async function gql(query, variables = {}, token = null) {
+  const headers = {
+    'Content-Type': 'application/json',
+    'X-STOREFRONT-KEY': STOREFRONT_KEY,
+  };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ query, variables }),
+  });
+  const json = await res.json();
+  if (json.errors) throw new Error(json.errors[0].message);
+  return json.data;
+}
+
+// Public — list products
 async function getProducts() {
   const query = `
-    query {
-      products(channel: "default", first: 10) {
-        edges {
-          node {
-            id
-            name
-            price
-            description
-          }
-        }
+    query GetProducts($first: Int!) {
+      products(first: $first) {
+        edges { node { id name sku } }
+        pageInfo { hasNextPage endCursor }
       }
     }
   `;
-
-  const response = await fetch('https://your-domain.com/api/graphql', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ query })
-  });
-
-  const data = await response.json();
-  return data.data.products;
+  const data = await gql(query, { first: 10 });
+  return data.products;
 }
 
-// With authentication
+// Login — returns the customer Bearer token
+async function login(email, password) {
+  const mutation = `
+    mutation Login($email: String!, $password: String!) {
+      createCustomerLogin(input: { email: $email, password: $password }) {
+        customerLogin { token success message }
+      }
+    }
+  `;
+  const data = await gql(mutation, { email, password });
+  return data.createCustomerLogin.customerLogin.token;
+}
+
+// Authenticated — customer profile
 async function getCustomerProfile(token) {
   const query = `
     query {
-      customer {
-        id
-        firstName
-        lastName
-        email
-        addresses {
-          edges {
-            node {
-              id
-              address
-              city
-            }
-          }
-        }
+      readCustomerProfile {
+        customer { id firstName lastName email }
       }
     }
   `;
-
-  const response = await fetch('https://your-domain.com/api/graphql', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify({ query })
-  });
-
-  const data = await response.json();
-  return data.data.customer;
+  const data = await gql(query, {}, token);
+  return data.readCustomerProfile.customer;
 }
 ```
 
@@ -43974,112 +43568,31 @@ npm install @apollo/client graphql
 ```javascript
 import { ApolloClient, InMemoryCache, HttpLink, gql } from '@apollo/client';
 
-// Initialize Apollo Client
 const client = new ApolloClient({
   link: new HttpLink({
     uri: 'https://your-domain.com/api/graphql',
-    credentials: 'include', // Include cookies for session
     headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`
-    }
+      'X-STOREFRONT-KEY': 'pk_storefront_xxxxxxxxxxxxx',
+      // add after login:
+      // Authorization: `Bearer ${token}`,
+    },
   }),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
 });
 
-// Query products
 const PRODUCTS_QUERY = gql`
-  query GetProducts($first: Int!, $channel: String!) {
-    products(channel: $channel, first: $first) {
-      edges {
-        node {
-          id
-          name
-          price
-          images {
-            edges {
-              node {
-                url
-              }
-            }
-          }
-        }
-      }
+  query GetProducts($first: Int!) {
+    products(first: $first) {
+      edges { node { id name sku } }
+      pageInfo { hasNextPage endCursor }
     }
   }
 `;
 
-const { data, loading, error } = await client.query({
-  query: PRODUCTS_QUERY,
-  variables: { first: 20, channel: 'default' }
-});
+const { data } = await client.query({ query: PRODUCTS_QUERY, variables: { first: 20 } });
 ```
 
-### React Component Example
-
-```javascript
-import { useQuery, useMutation, gql } from '@apollo/client';
-
-const PRODUCTS_QUERY = gql`
-  query {
-    products(channel: "default", first: 20) {
-      edges {
-        node {
-          id
-          name
-          price
-          productFlat {
-            url
-          }
-        }
-      }
-    }
-  }
-`;
-
-const ADD_TO_CART_MUTATION = gql`
-  mutation AddToCart($cartId: String!, $productId: String!, $quantity: Int!) {
-    addProductsToCart(input: {
-      cartId: $cartId
-      items: [{ productId: $productId, quantity: $quantity }]
-    }) {
-      cart {
-        id
-        itemsCount
-      }
-    }
-  }
-`;
-
-export function ProductList() {
-  const { data, loading, error } = useQuery(PRODUCTS_QUERY);
-  const [addToCart] = useMutation(ADD_TO_CART_MUTATION);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-
-  return (
-    <div>
-      {data.products.edges.map(({ node: product }) => (
-        <div key={product.id}>
-          <h3>{product.name}</h3>
-          <p>${product.price}</p>
-          <button onClick={() => addToCart({
-            variables: {
-              cartId: 'your-cart-id',
-              productId: product.id,
-              quantity: 1
-            }
-          })}>
-            Add to Cart
-          </button>
-        </div>
-      ))}
-    </div>
-  );
-}
-```
-
-### Using GraphQL Request
+### Using graphql-request
 
 ```bash
 npm install graphql-request
@@ -44090,265 +43603,120 @@ import { GraphQLClient, gql } from 'graphql-request';
 
 const client = new GraphQLClient('https://your-domain.com/api/graphql', {
   headers: {
-    Authorization: `Bearer ${token}`
-  }
+    'X-STOREFRONT-KEY': 'pk_storefront_xxxxxxxxxxxxx',
+    // Authorization: `Bearer ${token}`,  // customer operations
+  },
 });
 
 const query = gql`
-  query GetProductById($id: String!) {
-    product(id: $id) {
-      id
-      name
-      price
-      description
-      images {
-        edges {
-          node {
-            url
-          }
-        }
-      }
-    }
+  query GetProduct($id: Int!) {
+    product(id: $id) { id name sku }
   }
 `;
 
-const variables = { id: '1' };
-const data = await client.request(query, variables);
+const data = await client.request(query, { id: 1 });
 ```
 
-### Next.js Integration
+### Next.js
 
 ```typescript
-// lib/apolloClient.ts
-import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
+// lib/graphql.ts
+export async function gql(query: string, variables = {}, token?: string) {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    'X-STOREFRONT-KEY': process.env.STOREFRONT_KEY!,
+  };
+  if (token) headers.Authorization = `Bearer ${token}`;
 
-const client = new ApolloClient({
-  ssrMode: typeof window === 'undefined',
-  link: new HttpLink({
-    uri: 'https://your-domain.com/api/graphql',
-    credentials: 'include'
-  }),
-  cache: new InMemoryCache()
-});
-
-export default client;
-```
-
-```typescript
-// pages/products.tsx
-import { useQuery, gql } from '@apollo/client';
-
-const PRODUCTS_QUERY = gql`...`;
-
-export default function ProductsPage() {
-  const { data, loading } = useQuery(PRODUCTS_QUERY);
-  // Render component
+  const res = await fetch('https://your-domain.com/api/graphql', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ query, variables }),
+  });
+  const json = await res.json();
+  if (json.errors) throw new Error(json.errors[0].message);
+  return json.data;
 }
 ```
 
 ## Python
 
-### Using Requests + JSON
+### Using requests
 
 ```python
 import requests
-import json
 
 API_URL = "https://your-domain.com/api/graphql"
+STOREFRONT_KEY = "pk_storefront_xxxxxxxxxxxxx"
+
+def gql(query, variables=None, token=None):
+    headers = {
+        "Content-Type": "application/json",
+        "X-STOREFRONT-KEY": STOREFRONT_KEY,
+    }
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+
+    res = requests.post(API_URL, json={"query": query, "variables": variables or {}}, headers=headers)
+    body = res.json()
+    if body.get("errors"):
+        raise Exception(body["errors"][0]["message"])
+    return body["data"]
 
 def get_products():
     query = """
-    query {
-      products(channel: "default", first: 10) {
-        edges {
-          node {
-            id
-            name
-            price
-            description
-          }
-        }
+    query GetProducts($first: Int!) {
+      products(first: $first) {
+        edges { node { id name sku } }
+        pageInfo { hasNextPage endCursor }
       }
     }
     """
-    
-    response = requests.post(
-        API_URL,
-        json={'query': query}
-    )
-    
-    data = response.json()
-    return data['data']['products']
+    return gql(query, {"first": 10})["products"]
 
-# With authentication
+def login(email, password):
+    mutation = """
+    mutation Login($email: String!, $password: String!) {
+      createCustomerLogin(input: { email: $email, password: $password }) {
+        customerLogin { token success message }
+      }
+    }
+    """
+    data = gql(mutation, {"email": email, "password": password})
+    return data["createCustomerLogin"]["customerLogin"]["token"]
+
 def get_customer_profile(token):
     query = """
     query {
-      customer {
-        id
-        firstName
-        lastName
-        email
-      }
+      readCustomerProfile { customer { id firstName lastName email } }
     }
     """
-    
-    headers = {
-        'Authorization': f'Bearer {token}'
-    }
-    
-    response = requests.post(
-        API_URL,
-        json={'query': query},
-        headers=headers
-    )
-    
-    data = response.json()
-    return data['data']['customer']
-
-# Usage
-if __name__ == '__main__':
-    products = get_products()
-    print(json.dumps(products, indent=2))
+    return gql(query, token=token)["readCustomerProfile"]["customer"]
 ```
 
-### Using Gql Library
+### Using gql
 
 ```bash
-pip install gql
+pip install "gql[requests]"
 ```
 
 ```python
-from gql import Client, gql
+from gql import Client, gql as parse
 from gql.transport.requests import RequestsHTTPTransport
 
-# Create transport
 transport = RequestsHTTPTransport(
     url="https://your-domain.com/api/graphql",
-    verify=True,
-    retries=3,
+    headers={"X-STOREFRONT-KEY": "pk_storefront_xxxxxxxxxxxxx"},
 )
+client = Client(transport=transport, fetch_schema_from_transport=False)
 
-# Create client
-client = Client(transport=transport, fetch_schema_from_transport=True)
-
-# Execute query
-query = gql("""
-    query {
-      products(channel: "default", first: 10) {
-        edges {
-          node {
-            id
-            name
-            price
-          }
-        }
-      }
+query = parse("""
+    query GetProducts($first: Int!) {
+      products(first: $first) { edges { node { id name sku } } }
     }
 """)
 
-result = client.execute(query)
-print(result)
-```
-
-### Using Strawberry / GraphQL-Core
-
-```bash
-pip install strawberry-graphql httpx
-```
-
-```python
-import httpx
-from typing import Optional
-
-class BagitoGraphQLClient:
-    def __init__(self, url: str, token: Optional[str] = None):
-        self.url = url
-        self.token = token
-    
-    async def execute(self, query: str, variables: dict = None):
-        headers = {
-            'Content-Type': 'application/json',
-        }
-        
-        if self.token:
-            headers['Authorization'] = f'Bearer {self.token}'
-        
-        payload = {
-            'query': query,
-            'variables': variables or {}
-        }
-        
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                self.url,
-                json=payload,
-                headers=headers
-            )
-            return response.json()
-
-# Usage
-async def main():
-    client = BagitoGraphQLClient('https://your-domain.com/api/graphql')
-    
-    query = """
-    query {
-      products(channel: "default", first: 10) {
-        edges {
-          node {
-            id
-            name
-            price
-          }
-        }
-      }
-    }
-    """
-    
-    result = await client.execute(query)
-    print(result)
-```
-
-### Django Integration
-
-```python
-# settings.py
-GRAPHENE = {
-    'SCHEMA': 'myapp.schema.schema',
-    'MIDDLEWARE': [
-        'graphene_django.debug.DjangoDebugMiddleware',
-    ]
-}
-
-# views.py
-from django.http import JsonResponse
-import requests
-
-def sync_bagisto_products(request):
-    query = """
-    query {
-      products(channel: "default", first: 100) {
-        edges {
-          node {
-            id
-            name
-            sku
-            price
-            description
-          }
-        }
-      }
-    }
-    """
-    
-    response = requests.post(
-        'https://your-domain.com/api/graphql',
-        json={'query': query}
-    )
-    
-    products = response.json()['data']['products']
-    # Sync to Django database
-    return JsonResponse({'status': 'synced', 'count': len(products['edges'])})
+print(client.execute(query, variable_values={"first": 10}))
 ```
 
 ## PHP
@@ -44358,79 +43726,54 @@ def sync_bagisto_products(request):
 ```php
 <?php
 
-class BagitoGraphQL {
-    private $url;
-    private $token;
-    
-    public function __construct($url, $token = null) {
+class BagistoGraphQL
+{
+    private string $url;
+    private string $storefrontKey;
+    private ?string $token;
+
+    public function __construct(string $url, string $storefrontKey, ?string $token = null)
+    {
         $this->url = $url;
+        $this->storefrontKey = $storefrontKey;
         $this->token = $token;
     }
-    
-    public function query($query, $variables = []) {
-        $payload = [
-            'query' => $query,
-            'variables' => $variables
+
+    public function query(string $query, array $variables = []): array
+    {
+        $headers = [
+            'Content-Type: application/json',
+            'X-STOREFRONT-KEY: ' . $this->storefrontKey,
         ];
-        
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        
-        $headers = ['Content-Type: application/json'];
         if ($this->token) {
             $headers[] = 'Authorization: Bearer ' . $this->token;
         }
+
+        $ch = curl_init($this->url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['query' => $query, 'variables' => $variables]));
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        
-        $result = curl_exec($ch);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $body = json_decode(curl_exec($ch), true);
         curl_close($ch);
-        
-        return json_decode($result, true);
-    }
-    
-    public function getProducts() {
-        $query = '
-        query {
-            products(channel: "default", first: 10) {
-                edges {
-                    node {
-                        id
-                        name
-                        price
-                        description
-                    }
-                }
-            }
+
+        if (! empty($body['errors'])) {
+            throw new Exception($body['errors'][0]['message']);
         }
-        ';
-        
-        return $this->query($query);
+        return $body['data'];
     }
-    
-    public function getCustomerProfile() {
-        $query = '
-        query {
-            customer {
-                id
-                firstName
-                lastName
-                email
-            }
-        }
-        ';
-        
-        return $this->query($query);
+
+    public function getProducts(): array
+    {
+        return $this->query('
+            query { products(first: 10) { edges { node { id name sku } } } }
+        ')['products'];
     }
 }
 
-// Usage
-$client = new BagitoGraphQL('https://your-domain.com/api/graphql');
-$products = $client->getProducts();
-print_r($products);
-?>
+$client = new BagistoGraphQL('https://your-domain.com/api/graphql', 'pk_storefront_xxxxxxxxxxxxx');
+print_r($client->getProducts());
 ```
 
 ### Using Laravel HTTP Client
@@ -44440,133 +43783,50 @@ print_r($products);
 
 use Illuminate\Support\Facades\Http;
 
-class BagitoService {
-    protected $apiUrl = 'https://your-domain.com/api/graphql';
-    
-    public function getProducts() {
-        $query = '
-        query {
-            products(channel: "default", first: 20) {
-                edges {
-                    node {
-                        id
-                        name
-                        price
-                        description
-                    }
-                }
-            }
+class BagistoService
+{
+    private string $url = 'https://your-domain.com/api/graphql';
+    private string $key = 'pk_storefront_xxxxxxxxxxxxx';
+
+    private function gql(string $query, array $variables = [], ?string $token = null): array
+    {
+        $request = Http::withHeaders(['X-STOREFRONT-KEY' => $this->key]);
+        if ($token) {
+            $request = $request->withToken($token);
         }
-        ';
-        
-        $response = Http::post($this->apiUrl, [
-            'query' => $query
-        ]);
-        
-        return $response->json()['data']['products'];
+
+        $body = $request->post($this->url, ['query' => $query, 'variables' => $variables])->json();
+        if (! empty($body['errors'])) {
+            throw new Exception($body['errors'][0]['message']);
+        }
+        return $body['data'];
     }
-    
-    public function login($email, $password) {
-        $mutation = "
-        mutation {
-            createLogin(input: {
-                email: \"$email\"
-                password: \"$password\"
-            }) {
-                accessToken
-                customer {
-                    id
-                    email
-                }
-            }
-        }
-        ";
-        
-        $response = Http::post($this->apiUrl, [
-            'query' => $mutation
-        ]);
-        
-        return $response->json()['data']['createLogin'];
+
+    public function getProducts(): array
+    {
+        return $this->gql('query { products(first: 20) { edges { node { id name sku } } } }')['products'];
     }
-    
-    public function getCustomerOrders($token) {
-        $query = '
-        query {
-            customerOrders(first: 20) {
-                edges {
-                    node {
-                        id
-                        incrementId
-                        status
-                        grandTotal
-                    }
+
+    public function login(string $email, string $password): string
+    {
+        $data = $this->gql('
+            mutation ($email: String!, $password: String!) {
+                createCustomerLogin(input: { email: $email, password: $password }) {
+                    customerLogin { token }
                 }
             }
-        }
-        ';
-        
-        $response = Http::withToken($token)
-            ->post($this->apiUrl, ['query' => $query]);
-        
-        return $response->json()['data']['customerOrders'];
+        ', ['email' => $email, 'password' => $password]);
+
+        return $data['createCustomerLogin']['customerLogin']['token'];
+    }
+
+    public function getCustomerOrders(string $token): array
+    {
+        return $this->gql('
+            query { customerOrders(first: 20) { edges { node { id incrementId status grandTotal } } } }
+        ', [], $token)['customerOrders'];
     }
 }
-
-// Usage in controller
-Route::get('/products', function () {
-    $bagitoService = new BagitoService();
-    $products = $bagitoService->getProducts();
-    return response()->json($products);
-});
-?>
-```
-
-### Using Guzzle
-
-```php
-<?php
-
-use GuzzleHttp\Client;
-
-class BagitoGraphQLClient {
-    private $client;
-    private $token;
-    
-    public function __construct($url, $token = null) {
-        $this->client = new Client([
-            'base_uri' => $url,
-            'timeout' => 30.0,
-        ]);
-        $this->token = $token;
-    }
-    
-    public function query($query, $variables = []) {
-        $options = [
-            'json' => [
-                'query' => $query,
-                'variables' => $variables
-            ]
-        ];
-        
-        if ($this->token) {
-            $options['headers'] = [
-                'Authorization' => 'Bearer ' . $this->token
-            ];
-        }
-        
-        try {
-            $response = $this->client->post('', $options);
-            return json_decode($response->getBody(), true);
-        } catch (Exception $e) {
-            return ['error' => $e->getMessage()];
-        }
-    }
-}
-
-// Usage
-$client = new BagitoGraphQLClient('https://your-domain.com/api/graphql');
-$result = $client->query('query { products(channel: "default", first: 10) { ... } }');
-?>
 ```
 
 ## Ruby
@@ -44578,275 +43838,103 @@ require 'net/http'
 require 'json'
 require 'uri'
 
-class BagitoClient
-  def initialize(url, token = nil)
-    @url = url
+class BagistoClient
+  def initialize(url, storefront_key, token = nil)
+    @uri = URI(url)
+    @storefront_key = storefront_key
     @token = token
-    @uri = URI(@url)
   end
-  
+
   def query(query_string, variables = {})
     http = Net::HTTP.new(@uri.host, @uri.port)
-    http.use_ssl = true if @uri.scheme == 'https'
-    
+    http.use_ssl = @uri.scheme == 'https'
+
     request = Net::HTTP::Post.new(@uri.path)
     request['Content-Type'] = 'application/json'
+    request['X-STOREFRONT-KEY'] = @storefront_key
     request['Authorization'] = "Bearer #{@token}" if @token
-    
-    payload = {
-      query: query_string,
-      variables: variables
-    }
-    
-    request.body = payload.to_json
-    
-    response = http.request(request)
-    JSON.parse(response.body)
+    request.body = { query: query_string, variables: variables }.to_json
+
+    body = JSON.parse(http.request(request).body)
+    raise body['errors'][0]['message'] if body['errors']
+    body['data']
   end
-  
+
   def get_products
-    query('
-      query {
-        products(channel: "default", first: 10) {
-          edges {
-            node {
-              id
-              name
-              price
-              description
-            }
-          }
-        }
-      }
-    ')
+    query('query { products(first: 10) { edges { node { id name sku } } } }')['products']
   end
-  
+
   def login(email, password)
-    query("
-      mutation {
-        createLogin(input: {
-          email: \"#{email}\"
-          password: \"#{password}\"
-        }) {
-          accessToken
-          customer {
-            id
-            email
-          }
-        }
-      }
-    ")
+    data = query(
+      'mutation ($email: String!, $password: String!) {
+         createCustomerLogin(input: { email: $email, password: $password }) {
+           customerLogin { token }
+         }
+       }',
+      { email: email, password: password }
+    )
+    data['createCustomerLogin']['customerLogin']['token']
   end
 end
 
-# Usage
-client = BagitoClient.new('https://your-domain.com/api/graphql')
-products = client.get_products
-puts products
-```
-
-### Using GraphQL-Client Gem
-
-```bash
-gem 'graphql-client'
-```
-
-```ruby
-require 'graphql/client'
-require 'graphql/client/http'
-
-# Create HTTP adapter
-HTTP = GraphQL::Client::HTTP.new('https://your-domain.com/api/graphql')
-
-# Create client
-Schema = GraphQL::Client.load_schema(HTTP)
-Client = GraphQL::Client.new(schema: Schema, execute_document_directly: true)
-
-# Define query
-ProductsQuery = Client.parse <<-'GRAPHQL'
-  query {
-    products(channel: "default", first: 10) {
-      edges {
-        node {
-          id
-          name
-          price
-        }
-      }
-    }
-  }
-GRAPHQL
-
-# Execute query
-result = Client.query(ProductsQuery)
-puts result.data.products
-```
-
-### Rails Integration
-
-```ruby
-# app/services/bagisto_service.rb
-class BagitoService
-  API_URL = 'https://your-domain.com/api/graphql'
-  
-  def self.get_products(channel = 'default')
-    query = %{
-      query {
-        products(channel: "#{channel}", first: 20) {
-          edges {
-            node {
-              id
-              name
-              sku
-              price
-              description
-            }
-          }
-        }
-      }
-    }
-    
-    response = execute_query(query)
-    response['data']['products']
-  end
-  
-  def self.create_order(customer_token, cart_id, address_id)
-    mutation = %{
-      mutation {
-        createOrder(input: {
-          cartId: "#{cart_id}"
-          billingAddressId: "#{address_id}"
-          shippingAddressId: "#{address_id}"
-          shippingMethod: "flatrate_flatrate"
-          paymentMethod: "paypal"
-        }) {
-          order {
-            id
-            incrementId
-            status
-            grandTotal
-          }
-        }
-      }
-    }
-    
-    response = execute_query(mutation, customer_token)
-    response['data']['createOrder']
-  end
-  
-  private
-  
-  def self.execute_query(query, token = nil)
-    headers = { 'Content-Type' => 'application/json' }
-    headers['Authorization'] = "Bearer #{token}" if token
-    
-    response = HTTParty.post(API_URL, body: { query: query }.to_json, headers: headers)
-    response.parsed_response
-  end
-end
-
-# Usage in controller
-class ProductsController < ApplicationController
-  def index
-    @products = BagitoService.get_products
-  end
-end
+client = BagistoClient.new('https://your-domain.com/api/graphql', 'pk_storefront_xxxxxxxxxxxxx')
+puts client.get_products
 ```
 
 ## Go
-
-### Using GraphQL-Go
 
 ```go
 package main
 
 import (
-    "bytes"
-    "encoding/json"
-    "fmt"
-    "io"
-    "net/http"
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"net/http"
 )
 
-type GraphQLRequest struct {
-    Query     string                 `json:"query"`
-    Variables map[string]interface{} `json:"variables"`
-}
+const (
+	apiURL        = "https://your-domain.com/api/graphql"
+	storefrontKey = "pk_storefront_xxxxxxxxxxxxx"
+)
 
-type Product struct {
-    ID          string `json:"id"`
-    Name        string `json:"name"`
-    Price       string `json:"price"`
-    Description string `json:"description"`
-}
+func gql(query string, variables map[string]interface{}, token string) (map[string]interface{}, error) {
+	payload, _ := json.Marshal(map[string]interface{}{"query": query, "variables": variables})
 
-type ProductsResponse struct {
-    Data struct {
-        Products struct {
-            Edges []struct {
-                Node Product `json:"node"`
-            } `json:"edges"`
-        } `json:"products"`
-    } `json:"data"`
-}
+	req, _ := http.NewRequest("POST", apiURL, bytes.NewReader(payload))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("X-STOREFRONT-KEY", storefrontKey)
+	if token != "" {
+		req.Header.Set("Authorization", "Bearer "+token)
+	}
 
-func GetProducts() ([]Product, error) {
-    query := `
-    query {
-        products(channel: "default", first: 10) {
-            edges {
-                node {
-                    id
-                    name
-                    price
-                    description
-                }
-            }
-        }
-    }
-    `
-    
-    req := GraphQLRequest{
-        Query: query,
-    }
-    
-    jsonBody, _ := json.Marshal(req)
-    body := bytes.NewReader(jsonBody)
-    
-    resp, err := http.Post(
-        "https://your-domain.com/api/graphql",
-        "application/json",
-        body,
-    )
-    
-    if err != nil {
-        return nil, err
-    }
-    defer resp.Body.Close()
-    
-    respBody, _ := io.ReadAll(resp.Body)
-    
-    var result ProductsResponse
-    json.Unmarshal(respBody, &result)
-    
-    var products []Product
-    for _, edge := range result.Data.Products.Edges {
-        products = append(products, edge.Node)
-    }
-    
-    return products, nil
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	var out struct {
+		Data   map[string]interface{}   `json:"data"`
+		Errors []struct{ Message string } `json:"errors"`
+	}
+	json.Unmarshal(body, &out)
+	if len(out.Errors) > 0 {
+		return nil, errors.New(out.Errors[0].Message)
+	}
+	return out.Data, nil
 }
 
 func main() {
-    products, err := GetProducts()
-    if err != nil {
-        fmt.Println("Error:", err)
-        return
-    }
-    
-    for _, product := range products {
-        fmt.Printf("Product: %s - $%s\n", product.Name, product.Price)
-    }
+	data, err := gql(`query { products(first: 10) { edges { node { id name sku } } } }`, nil, "")
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	fmt.Println(data["products"])
 }
 ```
 
@@ -44858,121 +43946,92 @@ func main() {
 import okhttp3.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import java.util.Map;
 
-public class BagitoGraphQLClient {
+public class BagistoGraphQLClient {
     private final String apiUrl;
+    private final String storefrontKey;
     private final String token;
-    private final OkHttpClient client;
-    
-    public BagitoGraphQLClient(String apiUrl, String token) {
+    private final OkHttpClient client = new OkHttpClient();
+    private final Gson gson = new Gson();
+
+    public BagistoGraphQLClient(String apiUrl, String storefrontKey, String token) {
         this.apiUrl = apiUrl;
+        this.storefrontKey = storefrontKey;
         this.token = token;
-        this.client = new OkHttpClient();
     }
-    
-    public String query(String graphqlQuery) throws Exception {
-        JsonObject json = new JsonObject();
-        json.addProperty("query", graphqlQuery);
-        
-        RequestBody body = RequestBody.create(
-            json.toString(),
-            MediaType.parse("application/json")
-        );
-        
-        Request.Builder requestBuilder = new Request.Builder()
+
+    public String query(String graphqlQuery, Map<String, Object> variables) throws Exception {
+        JsonObject payload = new JsonObject();
+        payload.addProperty("query", graphqlQuery);
+        payload.add("variables", gson.toJsonTree(variables));
+
+        Request.Builder builder = new Request.Builder()
             .url(apiUrl)
-            .post(body)
-            .addHeader("Content-Type", "application/json");
-        
+            .post(RequestBody.create(payload.toString(), MediaType.parse("application/json")))
+            .addHeader("Content-Type", "application/json")
+            .addHeader("X-STOREFRONT-KEY", storefrontKey);
+
         if (token != null && !token.isEmpty()) {
-            requestBuilder.addHeader("Authorization", "Bearer " + token);
+            builder.addHeader("Authorization", "Bearer " + token);
         }
-        
-        Request request = requestBuilder.build();
-        Response response = client.newCall(request).execute();
-        
-        return response.body().string();
+
+        try (Response response = client.newCall(builder.build()).execute()) {
+            return response.body().string();
+        }
     }
-    
+
     public static void main(String[] args) throws Exception {
-        String query = "query { products(channel: \"default\", first: 10) { edges { node { id name price } } } }";
-        
-        BagitoGraphQLClient client = new BagitoGraphQLClient(
+        BagistoGraphQLClient client = new BagistoGraphQLClient(
             "https://your-domain.com/api/graphql",
+            "pk_storefront_xxxxxxxxxxxxx",
             null
         );
-        
-        String result = client.query(query);
-        System.out.println(result);
+        System.out.println(client.query(
+            "query { products(first: 10) { edges { node { id name sku } } } }", Map.of()));
     }
 }
 ```
 
 ## cURL
 
-Simple command-line testing:
-
 ```bash
-# Get products
+# Public — list products
 curl -X POST https://your-domain.com/api/graphql \
   -H "Content-Type: application/json" \
-  -d '{
-    "query": "query { products(channel: \"default\", first: 10) { edges { node { id name price } } } }"
-  }'
+  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
+  -d '{"query":"query { products(first: 10) { edges { node { id name sku } } } }"}'
 
-# With authentication
+# Login — returns the customer token
 curl -X POST https://your-domain.com/api/graphql \
   -H "Content-Type: application/json" \
+  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
+  -d '{"query":"mutation { createCustomerLogin(input: { email: \"user@example.com\", password: \"password\" }) { customerLogin { token } } }"}'
+
+# Authenticated — customer profile
+curl -X POST https://your-domain.com/api/graphql \
+  -H "Content-Type: application/json" \
+  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
   -H "Authorization: Bearer YOUR_TOKEN" \
-  -d '{
-    "query": "query { customer { id firstName email } }"
-  }'
-
-# Customer login
-curl -X POST https://your-domain.com/api/graphql \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "mutation { createLogin(input: { email: \"user@example.com\", password: \"password\" }) { accessToken } }"
-  }'
+  -d '{"query":"query { readCustomerProfile { customer { id firstName email } } }"}'
 ```
 
-## Best Practices Across All Languages
+## Best practices
 
-1. **Error Handling**
-   ```javascript
-   // Always check for errors in response
-   if (response.errors) {
-     response.errors.forEach(error => {
-       console.error('Error:', error.message);
-     });
-   }
-   ```
+- **Always send `X-STOREFRONT-KEY`.** Every shop GraphQL request needs it; without it the request is rejected before the query runs.
+- **Check `errors[]`.** GraphQL returns HTTP `200` even on failure — the reason is in the top-level `errors` array with `data` fields `null`. See [Status Codes](/api/errors).
+- **Use `token`, not `apiToken`.** Login returns both; the Bearer is `token`. There is **no refresh token** — on a `401`, log in again to get a new one.
+- **Paginate with cursors.** Page forward with `first` + `after: <endCursor>` until `pageInfo.hasNextPage` is `false`. See [Pagination](/api/pagination).
+- **Select result fields on action mutations,** never `id` — see [Identifiers](/api/graphql-api/identifiers).
+- **Rate limiting.** Back off and retry on `429`. See [Rate Limiting](/api/rate-limiting).
 
-2. **Token Management**
-   - Store tokens securely
-   - Implement token refresh logic
-   - Handle token expiration gracefully
+## Related Documentation
 
-3. **Caching**
-   - Cache frequently accessed data
-   - Implement cache invalidation strategies
-
-4. **Rate Limiting**
-   - Implement backoff and retry logic
-   - Monitor rate limit headers
-
-5. **Testing**
-   - Use the GraphiQL playground for testing
-   - Write unit tests for API calls
-
----
-
-**Ready to integrate?** Choose your language above and start building!
-
-📚 **Related Documentation:**
-- 🔐 [Authentication Guide](/api/graphql-api/authentication)
-- 🛍️ [Shop API Reference](/api/graphql-api/shop-api)
-- 👨‍💼 [Admin API Reference](/api/graphql-api/admin-api)
+- [Authentication](/api/graphql-api/authentication)
+- [Status Codes](/api/errors)
+- [Pagination](/api/pagination)
+- [Identifiers (`id` vs `_id`)](/api/graphql-api/identifiers)
+- [REST ↔ GraphQL Mapping](/api/rest-graphql-mapping/)
 
 
 
@@ -84311,58 +83370,129 @@ URL: /api/introduction
 
 Bagisto provides comprehensive API solutions to help developers integrate and extend the platform's functionality. Whether you're building mobile apps, third-party integrations, or headless commerce solutions, our APIs offer the flexibility and power you need.
 
-## Available API Types
+Both transports expose the **same** data and behaviour — pick the one that fits how you build. Full CRUD, pagination, and token authentication are available on both; the differences below are what actually set them apart.
 
-### GraphQL API  
+## GraphQL API
 
-The Bagisto GraphQL API enables flexible, efficient data fetching with a single endpoint. Ideal for:
+The Bagisto GraphQL API enables flexible, efficient data fetching from a single endpoint. Ideal for:
 
 - **Headless Commerce** - Power modern frontend frameworks
 - **Mobile Apps** - Reduce bandwidth with precise data queries
 - **Custom Storefronts** - Build unique shopping experiences
-- **Real-time Applications** - Efficient data synchronization
+- **Composite Screens** - Fetch a whole screen's data in one request
 
-**Key Features:**
-- Single endpoint for all operations
-- Flexible query structure - fetch exactly what you need
-- Real-time subscriptions support
-- Built on Platform API Laravel 
-- Type-safe schema with introspection
+**What sets it apart:**
+- Single endpoint for every operation
+- Fetch exactly the fields you need — no over- or under-fetching
+- Related data (product + variants + images, or cart + items + totals) in one round-trip
+- Cursor-based pagination
+- Typed schema with introspection
 
-::: tip Modern Development
-GraphQL is perfect for modern frontend frameworks like React, Vue, and React Native. Check out our [GraphQL API Guide](./graphql-api) to get started.
-:::
+GraphQL suits modern frontend frameworks like React, Vue, and React Native. See the [GraphQL API Guide](/api/graphql-api/introduction) to get started.
 
-### REST API
+## REST API
 
-The Bagisto REST API follows RESTful principles and provides complete access to CRUD operations across all Bagisto features. Perfect for:
+The Bagisto REST API follows RESTful principles and provides complete access across all Bagisto features. Perfect for:
 
 - **Mobile Applications** - Build native iOS/Android shopping apps
-- **Third-party Integrations** - Connect with external systems and services  
+- **Third-party Integrations** - Connect with external systems and services
 - **Progressive Web Apps (PWA)** - Create fast, app-like web experiences
 - **Custom Admin Interfaces** - Build specialized admin tools
 
-**Key Features:**
-- Full CRUD operations support
-- Built-in pagination for performance
-- Comprehensive documentation with interactive testing
-- Laravel Sanctum authentication
+**What sets it apart:**
+- Standard HTTP verbs (GET/POST/PUT/DELETE) and status codes
+- One resource per URL — predictable and easy to cache
+- Works with any HTTP client — no query language to learn
+- Header-based pagination (`X-Total-Count`, `X-Page`, `X-Per-Page`, `X-Total-Pages`)
+- Interactive "try it" documentation
 
-::: tip Getting Started
-New to REST APIs? Start with our [REST API Guide](./rest-api) for installation steps and examples.
-:::
+New to REST? See the [REST API Guide](/api/rest-api/introduction) for setup and examples.
+
+## Build with AI
+
+These docs are built for AI coding agents (Claude Code, Codex, Antigravity) as much as for humans. A machine-readable [`llms.txt`](/llms.txt) indexes every endpoint, so an agent can discover the whole API surface in one fetch. Point your agent at **[Build with AI](/api/build-with-ai/)** — the hub that ties together every AI resource (`llms.txt`, agent skills, and the MCP server). Two ways to make an assistant productive on Bagisto:
+
+### Agent Skills
+
+Installable build-rules that teach an agent the storefront flows, the auth model, and the transport gotchas (`token` vs `apiToken`, `id` vs `_id`, filter and sort shapes) up front — so it writes correct calls instead of rediscovering them each session. Install once with `npx skills add bagisto/agent-skills`. See [Agent Skills](/api/build-with-ai/agent-skills).
+
+### MCP Server
+
+An optional local server that lets an agent search these docs on demand from inside the editor — it pulls the exact request and response for an endpoint mid-task instead of guessing. Runs on your machine, indexes the latest published docs. See [MCP Server](/api/build-with-ai/mcp-server).
 
 ## What's Next?
 
 Ready to start building? Choose your preferred API approach:
 
-- ⚡ [GraphQL API Guide](./graphql-api/introduction.html) - Modern GraphQL for flexible queries
-- 🔗 [REST API Guide](./rest-api/introduction.html) - RESTful API for traditional integrations
-- 📚 [Installation](./setup) - Installation and setup
-- 🔐 [Authentication](./authentication) - Authentication methods
-- 📊 [Rate Limiting](./rate-limiting) - Understanding API rate limits
-- 🚀 [Integration Guides](./integrations) - Real-world integration examples
+- ⚡ [GraphQL API Guide](/api/graphql-api/introduction) - Modern GraphQL for flexible queries
+- 🔗 [REST API Guide](/api/rest-api/introduction) - RESTful API for traditional integrations
+- 📚 [Setup](/api/setup) - Installation and setup
+- 🔐 [Authentication](/api/authentication) - Authentication methods
+- 📊 [Rate Limiting](/api/rate-limiting) - Understanding API rate limits
+- 🤖 [Build with AI](/api/build-with-ai/) - Agent skills, `llms.txt`, and MCP server
+- 🧭 [Workflows](/api/workflows/) - End-to-end call sequences
 
+
+
+---
+
+# Pagination
+URL: /api/pagination
+
+# Pagination
+
+How to page through list endpoints. The mechanics are the same across every Shop list, so endpoint pages don't repeat them. The two transports page differently — REST uses offset, GraphQL uses cursors.
+
+## REST — offset (`page` + `per_page`)
+
+```
+GET /api/shop/products?page=2&per_page=20
+```
+
+| Parameter | Meaning | Default | Cap |
+|-----------|---------|---------|-----|
+| `page` | 1-based page number | `1` | — |
+| `per_page` | Items per page (snake_case) | `10` (products `30`) | `50` |
+
+`per_page` above the cap is clamped to `50`; `0`/negative falls back to the default. The list body is a **flat JSON array**; the paging totals come back in response headers:
+
+| Header | Meaning |
+|--------|---------|
+| `X-Total-Count` | Total items across all pages |
+| `X-Page` | Current page |
+| `X-Per-Page` | Items on this page |
+| `X-Total-Pages` | Total page count |
+
+Loop until `X-Page` reaches `X-Total-Pages`.
+
+## GraphQL — cursor (`first` + `after`)
+
+```graphql
+query {
+  products(first: 20, after: "MjA=") {
+    edges {
+      node { id name }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+```
+
+| Argument | Meaning |
+|----------|---------|
+| `first` | Page size (equivalent to `per_page`) |
+| `after` | Cursor to start after — pass the previous page's `pageInfo.endCursor` |
+
+Page forward by repeating with `after: <endCursor>` until `pageInfo.hasNextPage` is `false`. The cursor is opaque — do not parse or construct it; use the value the API returns.
+
+## Related
+
+- [Sorting](/api/sorting) — sort tokens and filters for the same list endpoints.
+- [API Mapping](/api/rest-graphql-mapping/) — side-by-side REST ↔ GraphQL for a specific call.
 
 
 
@@ -85007,6 +84137,14 @@ Each token is throttled by two independent buckets:
 Exceeding either limit returns **429 Too Many Requests**.
 
 **Unlimited rate limit** — when generating or editing the token, choose the **Unlimited** option for the per-minute and/or per-day limit. That removes the cap for that bucket; set **both** to Unlimited for a fully unthrottled token.
+
+## Token lifecycle
+
+- **One active token per admin.** Each admin user holds a single active (or draft) token at a time. To issue a new one, revoke or regenerate the existing token first — the generate form only offers admins who don't already have one.
+- **States.** A token moves through **draft** (created but not yet generated — no secret), **active** (generated and usable), **revoked** (manually killed — stops working immediately, kept for audit), and **regenerated** (superseded by a newer token — the old row is retired but kept for audit).
+- **Regenerate.** Issues a fresh secret on a new token row and retires the old one; the new plaintext is shown **once**. Use it when a token may be compromised, without losing the audit trail.
+- **Revoke.** Kills the token immediately — from the Integration menu, or the one-click link in the lifecycle email.
+- **Email notifications.** The owning admin is emailed on generate, regenerate, and revoke. Generate and regenerate emails carry a **signed, 7-day, login-free revoke link** so the owner can kill a token from their inbox. The plaintext token is **never** included in any email.
 
 ## Errors
 
@@ -113821,541 +112959,57 @@ Partial. Permission: `settings.users.edit`.
 
 ---
 
-# Authentication
+# Authentication (REST)
 URL: /api/rest-api/authentication
 
-# Authentication
+---
+outline: false
+---
 
-Complete guide to API authentication methods including customer authentication, admin authentication, and token management using the REST API.
+# Authentication (REST)
 
-## Customer Authentication
+The full authentication model — public access, customer login, guest checkout, and admin — lives on the central [Authentication](/api/authentication) page. This page is the **REST-specific** quickref: the base URLs, the headers, and the exact calls.
 
-### Customer Registration
+## Base URLs
 
-Register a new customer account.
+| Surface | Base | Headers |
+|---------|------|---------|
+| Shop | `/api/shop/*` | `X-STOREFRONT-KEY` (always) + `Authorization: Bearer <token>` for customer actions |
+| Admin | `/api/admin/*` | `Authorization: Bearer <id>\|<token>` only (no storefront key) |
 
-**Endpoint:**
-```
-POST /api/shop/customers
-```
+## Public access
 
-:::tabs
-
-== cURL
+The `X-STOREFRONT-KEY` alone gives read-only access to public data (products, categories, CMS):
 
 ```bash
-curl -X POST "https://your-domain.com/api/shop/customers" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "first_name": "John",
-    "last_name": "Doe",
-    "email": "john@example.com",
-    "password": "SecurePassword123!",
-    "password_confirmation": "SecurePassword123!",
-    "phone": "1234567890"
-  }'
+curl -X GET "https://your-domain.com/api/shop/products" \
+  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx"
 ```
 
-== Node.js
-
-```javascript
-const response = await fetch('https://your-domain.com/api/shop/customers', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    first_name: 'John',
-    last_name: 'Doe',
-    email: 'john@example.com',
-    password: 'SecurePassword123!',
-    password_confirmation: 'SecurePassword123!',
-    phone: '1234567890'
-  })
-});
-
-const customer = await response.json();
-console.log(customer);
-```
-
-== Python
-
-```python
-import requests
-
-response = requests.post(
-    'https://your-domain.com/api/shop/customers',
-    headers={'Content-Type': 'application/json'},
-    json={
-        'first_name': 'John',
-        'last_name': 'Doe',
-        'email': 'john@example.com',
-        'password': 'SecurePassword123!',
-        'password_confirmation': 'SecurePassword123!',
-        'phone': '1234567890'
-    }
-)
-
-customer = response.json()
-print(customer)
-```
-
-:::
-
-**Response (201 Created):**
-
-```json
-{
-  "@context": "/api/contexts/Customer",
-  "@id": "/api/shop/customers/10",
-  "@type": "Customer",
-  "id": 10,
-  "first_name": "John",
-  "last_name": "Doe",
-  "email": "john@example.com",
-  "phone": "1234567890",
-  "status": 1,
-  "created_at": "2024-01-20T10:30:00Z"
-}
-```
-
-### Customer Login
-
-Authenticate a customer and receive bearer token.
-
-**Endpoint:**
-```
-POST /api/shop/customer/login
-```
-
-:::tabs
-
-== cURL
+## Customer login — get a token
 
 ```bash
 curl -X POST "https://your-domain.com/api/shop/customer/login" \
   -H "Content-Type: application/json" \
-  -d '{
-    "email": "john@example.com",
-    "password": "SecurePassword123!"
-  }'
+  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
+  -d '{"email":"john@example.com","password":"SecurePass@123"}'
 ```
 
-== Node.js
+The response returns `token` (format `<id>|<secret>`) — send it as `Authorization: Bearer <token>` on every authenticated request. Use `token`, **not** `apiToken` (a legacy field that is not a Bearer). There is no refresh token — on a `401`, log in again. Full field reference on the [Customer Login](/api/rest-api/shop/customers/customer-login) page.
 
-```javascript
-const response = await fetch('https://your-domain.com/api/shop/customer/login', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    email: 'john@example.com',
-    password: 'SecurePassword123!'
-  })
-});
+## Guest — act without login
 
-const data = await response.json();
-localStorage.setItem('authToken', data.access_token);
-console.log('Access Token:', data.access_token);
-```
+A guest can build a cart and place an order using a **cart token** as the Bearer: create a cart to obtain the token — [Create Cart](/api/rest-api/shop/cart/create-cart) — then send it as `Authorization: Bearer <cartToken>` alongside the `X-STOREFRONT-KEY` on cart and checkout calls. See the [Cart](/api/workflows/shop/cart) and [Checkout](/api/workflows/shop/checkout) workflows.
 
-== Python
+## Admin
 
-```python
-import requests
+Admin clients use a pre-issued **Integration token** (no login) sent as `Authorization: Bearer <id>|<token>` to `/api/admin/*`. See [Admin Authentication](/api/rest-api/admin/authentication) for the token model, permissions, IP allowlist, expiry, and rate limits.
 
-response = requests.post(
-    'https://your-domain.com/api/shop/customer/login',
-    headers={'Content-Type': 'application/json'},
-    json={
-        'email': 'john@example.com',
-        'password': 'SecurePassword123!'
-    }
-)
+## Related
 
-data = response.json()
-print(f"Token: {data['access_token']}")
-```
-
-:::
-
-**Response (200 OK):**
-
-```json
-{
-  "@context": "/api/contexts/Customer",
-  "@type": "Token",
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwLCJlbWFpbCI6ImpvaG5AZXhhbXBsZS5jb20ifQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
-  "token_type": "Bearer",
-  "expires_in": 86400,
-  "customer": {
-    "id": 10,
-    "first_name": "John",
-    "last_name": "Doe",
-    "email": "john@example.com"
-  }
-}
-```
-
-### Verify Authentication Token
-
-Verify if authentication token is still valid.
-
-::: tip Checking "am I logged in?"
-There is no dedicated session/status endpoint. To check whether a stored token is still valid, call `POST /api/shop/verify-tokens` — or simply call any protected endpoint (e.g. `GET /api/shop/customer` profile). A `200` means the token is valid; a `401`/`403` means it is missing, invalid, or expired — treat any of those as "not logged in" and send the user back through login (tokens do not auto-refresh; re-login to get a new one).
-:::
-
-**Endpoint:**
-```
-POST /api/shop/verify-tokens
-```
-
-:::tabs
-
-== cURL
-
-```bash
-curl -X POST "https://your-domain.com/api/shop/verify-tokens" \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
-  -H "Content-Type: application/json"
-```
-
-== Node.js
-
-```javascript
-const token = localStorage.getItem('authToken');
-
-const response = await fetch('https://your-domain.com/api/shop/verify-tokens', {
-  method: 'POST',
-  headers: {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  }
-});
-
-const result = await response.json();
-console.log('Token valid:', result.is_valid);
-```
-
-== Python
-
-```python
-import requests
-
-token = 'YOUR_ACCESS_TOKEN'
-
-response = requests.post(
-    'https://your-domain.com/api/shop/verify-tokens',
-    headers={
-        'Authorization': f'Bearer {token}',
-        'Content-Type': 'application/json'
-    }
-)
-
-result = response.json()
-print(f"Token valid: {result['is_valid']}")
-```
-
-:::
-
-**Response (200 OK):**
-
-```json
-{
-  "@type": "TokenVerification",
-  "is_valid": true,
-  "customer_id": 10,
-  "expires_at": "2024-01-21T10:30:00Z"
-}
-```
-
-## Admin Authentication
-
-Admin API requests authenticate with a pre-issued **Integration token** — there is no admin login endpoint. Generate a token from the **Integration** menu in the admin panel (a store owner can generate tokens here and share them with the sub-admins who need API access), then send it on every admin request:
-
-```
-Authorization: Bearer <id>|<token>
-```
-
-See [Admin Authentication](/api/rest-api/admin/authentication) for the full token lifecycle, IP allowlists, and rate limits.
-
-## Cart Token Generation
-
-### Create Cart Token
-
-Generate a guest cart token for unauthenticated users.
-
-**Endpoint:**
-```
-POST /api/shop/cart-tokens
-```
-
-:::tabs
-
-== cURL
-
-```bash
-curl -X POST "https://your-domain.com/api/shop/cart-tokens" \
-  -H "Content-Type: application/json" \
-  -d '{}'
-```
-
-== Node.js
-
-```javascript
-const response = await fetch('https://your-domain.com/api/shop/cart-tokens', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({})
-});
-
-const cart = await response.json();
-localStorage.setItem('cartToken', cart.token);
-console.log('Cart Token:', cart.token);
-```
-
-== Python
-
-```python
-import requests
-
-response = requests.post(
-    'https://your-domain.com/api/shop/cart-tokens',
-    headers={'Content-Type': 'application/json'},
-    json={}
-)
-
-cart = response.json()
-print(f"Cart Token: {cart['token']}")
-```
-
-:::
-
-**Response (201 Created):**
-
-```json
-{
-  "@context": "/api/contexts/Cart",
-  "@id": "/api/shop/cart-tokens/xyz-token-123",
-  "@type": "Cart",
-  "token": "xyz-token-123",
-  "items": [],
-  "total": 0,
-  "created_at": "2024-01-20T10:30:00Z"
-}
-```
-
-## Password Management
-
-### Forgot Password
-
-Request password reset for customer account.
-
-**Endpoint:**
-```
-POST /api/shop/forgot-passwords
-```
-
-:::tabs
-
-== cURL
-
-```bash
-curl -X POST "https://your-domain.com/api/shop/forgot-passwords" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "john@example.com"
-  }'
-```
-
-== Node.js
-
-```javascript
-const response = await fetch('https://your-domain.com/api/shop/forgot-passwords', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    email: 'john@example.com'
-  })
-});
-
-const result = await response.json();
-console.log(result.message);
-```
-
-== Python
-
-```python
-import requests
-
-response = requests.post(
-    'https://your-domain.com/api/shop/forgot-passwords',
-    headers={'Content-Type': 'application/json'},
-    json={'email': 'john@example.com'}
-)
-
-result = response.json()
-print(result['message'])
-```
-
-:::
-
-**Response (200 OK):**
-
-```json
-{
-  "@type": "Message",
-  "message": "If that email address is in our database, we will send you an email with password reset instructions."
-}
-```
-
-### Change Password
-
-There is no standalone change-password endpoint. A logged-in customer changes their password through the **Customer Profile Update** endpoint (`PUT /api/shop/customer-profile-updates/{id}`) by sending the current password alongside the new password.
-
-## Token Revocation
-
-### Logout & Revoke Token
-
-Invalidate current authentication token.
-
-**Endpoint:**
-```
-POST /api/shop/customer/logout
-```
-
-:::tabs
-
-== cURL
-
-```bash
-curl -X POST "https://your-domain.com/api/shop/customer/logout" \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
-  -H "Content-Type: application/json"
-```
-
-== Node.js
-
-```javascript
-const token = localStorage.getItem('authToken');
-
-const response = await fetch('https://your-domain.com/api/shop/customer/logout', {
-  method: 'POST',
-  headers: {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  }
-});
-
-localStorage.removeItem('authToken');
-console.log('Logged out successfully');
-```
-
-== Python
-
-```python
-import requests
-
-token = 'YOUR_ACCESS_TOKEN'
-
-response = requests.post(
-    'https://your-domain.com/api/shop/customer/logout',
-    headers={
-        'Authorization': f'Bearer {token}',
-        'Content-Type': 'application/json'
-    }
-)
-
-print('Logged out successfully')
-```
-
-:::
-
-**Response (200 OK):**
-
-```json
-{
-  "@type": "Message",
-  "message": "Successfully logged out"
-}
-```
-
-### Admin Logout
-
-Admin tokens are not logged out over the API. To revoke an admin Integration token, open the **Integration** menu in the admin panel and click **Revoke** (or use the signed one-click link in the lifecycle email). A revoked token stops working immediately.
-
-## Authentication Headers
-
-### Using Bearer Token
-
-Include bearer token in Authorization header for authenticated requests.
-
-```
-Authorization: Bearer YOUR_ACCESS_TOKEN
-```
-
-### Using Cart Token
-
-Include cart token in X-Cart-Token header for guest cart operations.
-
-```
-X-Cart-Token: YOUR_CART_TOKEN
-```
-
-### Using API Key (if available)
-
-Some endpoints may accept API Key authentication.
-
-```
-X-API-Key: YOUR_API_KEY
-```
-
-## Error Handling
-
-### Authentication Errors
-
-**401 Unauthorized:**
-
-```json
-{
-  "@context": "/api/contexts/Error",
-  "@type": "hydra:Error",
-  "hydra:title": "An error occurred",
-  "hydra:description": "Invalid credentials or expired token"
-}
-```
-
-**403 Forbidden:**
-
-```json
-{
-  "@context": "/api/contexts/Error",
-  "@type": "hydra:Error",
-  "hydra:title": "Access Denied",
-  "hydra:description": "Insufficient permissions for this operation"
-}
-```
-
-## Best Practices
-
-- Store tokens securely (use httpOnly cookies or secure storage)
-- Implement token refresh mechanisms before expiration
-- Use HTTPS for all authentication requests
-- Validate tokens on every request
-- Revoke tokens on logout
-- Implement rate limiting on authentication endpoints
-- Use strong passwords (minimum 8 characters, mixed case, numbers, special characters)
-
-## Related Resources
-
-- [Customer Management](/api/rest-api/customers)
-- [Best Practices](/api/rest-api/best-practices)
-- [Shop Resources](/api/rest-api/shop-resources)
+- [Authentication](/api/authentication) — the full model (public / customer / guest / admin)
+- [Status Codes](/api/errors) — how failures are reported (including `401`)
+- [Pagination](/api/pagination) · [Sorting](/api/sorting)
 
 
 
@@ -114915,6 +113569,434 @@ logger.error('Failed to create order', error, { cartId: '...' });
 - [Cart & Checkout](/api/rest-api/cart-checkout)
 - [Customer Management](/api/rest-api/customers)
 - [Product Management](/api/rest-api/products)
+
+
+
+---
+
+# Integration Guides
+URL: /api/rest-api/integrations
+
+# Integration Guides
+
+Language and framework examples for the Bagisto **REST** API. Every example carries the required headers.
+
+- **Base URL:** `https://your-domain.com/api/shop`
+- **Required on every request:** `X-STOREFRONT-KEY: <your key>` (and `Content-Type: application/json` on writes).
+- **Customer operations** additionally send `Authorization: Bearer <token>` — the `token` from login (not `apiToken`). See [Authentication](/api/rest-api/authentication).
+- **List responses** are a flat JSON array; paging totals come back in `X-Total-Count` / `X-Page` / `X-Per-Page` / `X-Total-Pages` headers (see [Pagination](/api/pagination)). **Errors** are signalled by the HTTP status — see [Status Codes](/api/errors).
+
+Paths used below: products `GET /products`, login `POST /customer/login`, profile `GET /customer-profile`, orders `GET /customer-orders`.
+
+## JavaScript / Node.js
+
+### Using Fetch API
+
+```javascript
+const BASE_URL = 'https://your-domain.com/api/shop';
+const STOREFRONT_KEY = 'pk_storefront_xxxxxxxxxxxxx';
+
+async function api(path, { method = 'GET', body, token } = {}) {
+  const headers = { 'X-STOREFRONT-KEY': STOREFRONT_KEY };
+  if (body) headers['Content-Type'] = 'application/json';
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const res = await fetch(`${BASE_URL}${path}`, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+// Public — list products (with paging + filters)
+async function getProducts() {
+  return api('/products?per_page=20&sort=name-asc');
+}
+
+// Login — returns the customer Bearer token
+async function login(email, password) {
+  const data = await api('/customer/login', { method: 'POST', body: { email, password } });
+  return data.token;
+}
+
+// Authenticated — customer profile
+async function getCustomerProfile(token) {
+  return api('/customer-profile', { token });
+}
+```
+
+### Axios
+
+```bash
+npm install axios
+```
+
+```javascript
+import axios from 'axios';
+
+const client = axios.create({
+  baseURL: 'https://your-domain.com/api/shop',
+  headers: { 'X-STOREFRONT-KEY': 'pk_storefront_xxxxxxxxxxxxx' },
+});
+
+// after login, attach the token:
+// client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+const { data } = await client.get('/products', { params: { per_page: 20, sort: 'price-asc' } });
+```
+
+### Next.js
+
+```typescript
+// lib/api.ts
+export async function api(path: string, init: RequestInit & { token?: string } = {}) {
+  const headers: Record<string, string> = {
+    'X-STOREFRONT-KEY': process.env.STOREFRONT_KEY!,
+    ...(init.body ? { 'Content-Type': 'application/json' } : {}),
+    ...(init.token ? { Authorization: `Bearer ${init.token}` } : {}),
+  };
+  const res = await fetch(`https://your-domain.com/api/shop${path}`, { ...init, headers });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+```
+
+## Python
+
+### Using requests
+
+```python
+import requests
+
+BASE_URL = "https://your-domain.com/api/shop"
+STOREFRONT_KEY = "pk_storefront_xxxxxxxxxxxxx"
+
+def api(path, method="GET", body=None, token=None):
+    headers = {"X-STOREFRONT-KEY": STOREFRONT_KEY}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+
+    res = requests.request(method, f"{BASE_URL}{path}", json=body, headers=headers)
+    res.raise_for_status()
+    return res.json()
+
+def get_products():
+    return api("/products?per_page=20&sort=name-asc")
+
+def login(email, password):
+    data = api("/customer/login", method="POST", body={"email": email, "password": password})
+    return data["token"]
+
+def get_customer_profile(token):
+    return api("/customer-profile", token=token)
+```
+
+### Django
+
+```python
+# services/bagisto.py
+import requests
+from django.conf import settings
+
+def get_products():
+    res = requests.get(
+        "https://your-domain.com/api/shop/products",
+        params={"per_page": 100},
+        headers={"X-STOREFRONT-KEY": settings.BAGISTO_STOREFRONT_KEY},
+    )
+    res.raise_for_status()
+    return res.json()
+```
+
+## PHP
+
+### Using cURL
+
+```php
+<?php
+
+class BagistoRest
+{
+    private string $base;
+    private string $storefrontKey;
+    private ?string $token;
+
+    public function __construct(string $base, string $storefrontKey, ?string $token = null)
+    {
+        $this->base = rtrim($base, '/');
+        $this->storefrontKey = $storefrontKey;
+        $this->token = $token;
+    }
+
+    public function request(string $method, string $path, ?array $body = null): array
+    {
+        $headers = ['X-STOREFRONT-KEY: ' . $this->storefrontKey];
+        if ($body !== null) {
+            $headers[] = 'Content-Type: application/json';
+        }
+        if ($this->token) {
+            $headers[] = 'Authorization: Bearer ' . $this->token;
+        }
+
+        $ch = curl_init($this->base . $path);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        if ($body !== null) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
+        }
+
+        $response = curl_exec($ch);
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($status >= 400) {
+            throw new Exception("HTTP $status: $response");
+        }
+        return json_decode($response, true);
+    }
+
+    public function getProducts(): array
+    {
+        return $this->request('GET', '/products?per_page=20');
+    }
+
+    public function login(string $email, string $password): string
+    {
+        $data = $this->request('POST', '/customer/login', compact('email', 'password'));
+        return $data['token'];
+    }
+}
+
+$client = new BagistoRest('https://your-domain.com/api/shop', 'pk_storefront_xxxxxxxxxxxxx');
+print_r($client->getProducts());
+```
+
+### Using Laravel HTTP Client
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Http;
+
+class BagistoService
+{
+    private string $base = 'https://your-domain.com/api/shop';
+    private string $key = 'pk_storefront_xxxxxxxxxxxxx';
+
+    private function client(?string $token = null)
+    {
+        $request = Http::withHeaders(['X-STOREFRONT-KEY' => $this->key]);
+        return $token ? $request->withToken($token) : $request;
+    }
+
+    public function getProducts(): array
+    {
+        return $this->client()->get("{$this->base}/products", ['per_page' => 20])->throw()->json();
+    }
+
+    public function login(string $email, string $password): string
+    {
+        return $this->client()
+            ->post("{$this->base}/customer/login", compact('email', 'password'))
+            ->throw()->json('token');
+    }
+
+    public function getCustomerOrders(string $token): array
+    {
+        return $this->client($token)->get("{$this->base}/customer-orders")->throw()->json();
+    }
+}
+```
+
+## Ruby
+
+### Using Net::HTTP
+
+```ruby
+require 'net/http'
+require 'json'
+require 'uri'
+
+class BagistoRest
+  def initialize(base, storefront_key, token = nil)
+    @base = base
+    @storefront_key = storefront_key
+    @token = token
+  end
+
+  def request(method, path, body = nil)
+    uri = URI("#{@base}#{path}")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = uri.scheme == 'https'
+
+    klass = method == 'POST' ? Net::HTTP::Post : Net::HTTP::Get
+    req = klass.new(uri)
+    req['X-STOREFRONT-KEY'] = @storefront_key
+    req['Authorization'] = "Bearer #{@token}" if @token
+    if body
+      req['Content-Type'] = 'application/json'
+      req.body = body.to_json
+    end
+
+    res = http.request(req)
+    raise "HTTP #{res.code}" if res.code.to_i >= 400
+    JSON.parse(res.body)
+  end
+
+  def get_products
+    request('GET', '/products?per_page=20')
+  end
+
+  def login(email, password)
+    request('POST', '/customer/login', { email: email, password: password })['token']
+  end
+end
+
+client = BagistoRest.new('https://your-domain.com/api/shop', 'pk_storefront_xxxxxxxxxxxxx')
+puts client.get_products
+```
+
+## Go
+
+```go
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+)
+
+const (
+	baseURL       = "https://your-domain.com/api/shop"
+	storefrontKey = "pk_storefront_xxxxxxxxxxxxx"
+)
+
+func api(method, path string, body interface{}, token string) ([]byte, error) {
+	var reader io.Reader
+	if body != nil {
+		payload, _ := json.Marshal(body)
+		reader = bytes.NewReader(payload)
+	}
+
+	req, _ := http.NewRequest(method, baseURL+path, reader)
+	req.Header.Set("X-STOREFRONT-KEY", storefrontKey)
+	if body != nil {
+		req.Header.Set("Content-Type", "application/json")
+	}
+	if token != "" {
+		req.Header.Set("Authorization", "Bearer "+token)
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	data, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode >= 400 {
+		return nil, fmt.Errorf("HTTP %d: %s", resp.StatusCode, data)
+	}
+	return data, nil
+}
+
+func main() {
+	data, err := api("GET", "/products?per_page=20", nil, "")
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	fmt.Println(string(data))
+}
+```
+
+## Java
+
+### Using OkHttp
+
+```java
+import okhttp3.*;
+
+public class BagistoRestClient {
+    private final String base;
+    private final String storefrontKey;
+    private final String token;
+    private final OkHttpClient client = new OkHttpClient();
+
+    public BagistoRestClient(String base, String storefrontKey, String token) {
+        this.base = base;
+        this.storefrontKey = storefrontKey;
+        this.token = token;
+    }
+
+    public String get(String path) throws Exception {
+        Request.Builder builder = new Request.Builder()
+            .url(base + path)
+            .get()
+            .addHeader("X-STOREFRONT-KEY", storefrontKey);
+
+        if (token != null && !token.isEmpty()) {
+            builder.addHeader("Authorization", "Bearer " + token);
+        }
+
+        try (Response response = client.newCall(builder.build()).execute()) {
+            if (!response.isSuccessful()) {
+                throw new Exception("HTTP " + response.code());
+            }
+            return response.body().string();
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        BagistoRestClient client = new BagistoRestClient(
+            "https://your-domain.com/api/shop",
+            "pk_storefront_xxxxxxxxxxxxx",
+            null
+        );
+        System.out.println(client.get("/products?per_page=20"));
+    }
+}
+```
+
+## cURL
+
+```bash
+# Public — list products (paged + sorted)
+curl -X GET "https://your-domain.com/api/shop/products?per_page=20&sort=name-asc" \
+  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx"
+
+# Login — returns the customer token
+curl -X POST "https://your-domain.com/api/shop/customer/login" \
+  -H "Content-Type: application/json" \
+  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
+  -d '{"email":"user@example.com","password":"password"}'
+
+# Authenticated — customer profile
+curl -X GET "https://your-domain.com/api/shop/customer-profile" \
+  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+## Best practices
+
+- **Always send `X-STOREFRONT-KEY`.** Every shop request needs it; a missing/invalid key returns `401`.
+- **Branch on the HTTP status,** not the message text — `2xx` success, `401` renew credential, `403`/`404` not available, `409`/`422` fix the request, `429` back off. See [Status Codes](/api/errors).
+- **Use `token`, not `apiToken`.** Login returns both; the Bearer is `token`. There is **no refresh token** — on a `401`, log in again.
+- **Read paging headers.** Loop until `X-Page` reaches `X-Total-Pages`; control page size with `per_page` (cap `50`). See [Pagination](/api/pagination).
+- **Rate limiting.** Back off and retry on `429`. See [Rate Limiting](/api/rate-limiting).
+
+## Related Documentation
+
+- [Authentication](/api/rest-api/authentication)
+- [Status Codes](/api/errors)
+- [Pagination](/api/pagination)
+- [REST ↔ GraphQL Mapping](/api/rest-graphql-mapping/)
 
 
 
@@ -134226,14 +133308,14 @@ This JSON schema can be used with:
 
 ---
 
-# REST ↔ GraphQL mapping
+# API Mapping
 URL: /api/rest-graphql-mapping
 
 ---
 outline: false
 ---
 
-# REST ↔ GraphQL mapping
+# API Mapping
 
 REST and GraphQL expose the **same** Bagisto data and behaviour with different syntax. This section is the single reference for translating one to the other — most integration friction comes from mixing the two forms (for example sending a `?parent_id=` shape into the GraphQL `categories` field, which has no such argument).
 
@@ -134262,7 +133344,7 @@ Any key outside the reserved set is treated as a filterable attribute on **both*
 | [Auth & Context](/api/rest-graphql-mapping/shop/auth-context) | Storefront key, customer/guest Bearer, `token` vs `apiToken`, locale/currency/channel headers |
 
 ::: tip Admin mapping
-This section currently covers the **Shop** surface. Admin REST ↔ GraphQL mapping is tracked separately.
+This section currently covers the **Shop** surface. Admin API mapping is tracked separately.
 :::
 
 
@@ -134757,6 +133839,86 @@ Ready to start using the APIs?
 - 🔗 [REST API Guide](./rest-api/introduction.html) - Explore REST API endpoints
 - ⚡ [GraphQL API Guide](./graphql-api/introduction.html) - Discover GraphQL capabilities
 - 🔑 [API Key Management](./storefront-api-key-management-guide) - Generate and manage API keys
+
+
+---
+
+# Sorting
+URL: /api/sorting
+
+# Sorting
+
+How to sort and filter list endpoints. The mechanics are the same across every Shop list, so endpoint pages don't repeat them. For translating a specific call between transports, see [API Mapping](/api/rest-graphql-mapping/).
+
+## Sorting
+
+### REST
+
+Two accepted forms — compound token or split params:
+
+```
+GET /api/shop/products?sort=name-asc
+GET /api/shop/products?sort=name&order=desc
+```
+
+| Sort field | Token examples |
+|-----------|----------------|
+| `name` | `name-asc`, `name-desc` |
+| `price` | `price-asc`, `price-desc` |
+| `created_at` | `created_at-asc`, `created_at-desc` |
+| `updated_at` | `updated_at-asc`, `updated_at-desc` |
+| `id` | `id-asc`, `id-desc` |
+
+String sorts are case-insensitive.
+
+### GraphQL
+
+```graphql
+products(sortKey: PRICE, reverse: false) { edges { node { id } } }
+```
+
+`sortKey` is the field in upper-case (`NAME`, `PRICE`, `CREATED_AT`, `UPDATED_AT`, `ID`); `reverse: true` = descending. So REST `?sort=price-desc` ≡ GraphQL `sortKey: PRICE, reverse: true`.
+
+## Filtering (products)
+
+### REST — query-string params
+
+```
+GET /api/shop/products?type=configurable&category_id=2&price=10,200&new=1
+```
+
+| Filter | Param |
+|--------|-------|
+| Search term | `query` |
+| Type | `type` (simple / configurable / …) |
+| Category | `category_id` |
+| Price range | `price=<from>,<to>` — or `price_from` + `price_to` |
+| New / Featured | `new=1` / `featured=1` |
+| Attribute (e.g. colour, size) | `color=<optionId>`, `size=<optionId>` — any filterable attribute code |
+
+Multiple filters combine with AND. Any query-string key that isn't a reserved one (`query`, `sort`, `order`, `page`, `per_page`, `locale`, `channel`, `filter`) is treated as an attribute filter.
+
+### GraphQL — a JSON `filter` string
+
+The same filters go into a single JSON-encoded `filter` argument:
+
+```graphql
+products(filter: "{\"type\":\"configurable\",\"category_id\":2,\"price\":\"10,200\",\"new\":1}") {
+  edges { node { id name } }
+}
+```
+
+This is the one shape that does not carry over literally between transports — REST spreads filters across query params, GraphQL packs them into the `filter` string. The [Catalog mapping](/api/rest-graphql-mapping/shop/catalog) has the full side-by-side.
+
+## Category children — a common trip-up
+
+REST fetches a category's children with `?parent_id=<id>`. GraphQL has **no `parentId` argument on `categories`** — children come from `treeCategories(parentId: <id>)`. Sending the REST shape into the GraphQL `categories` field returns everything, not the children. See the [Catalog mapping](/api/rest-graphql-mapping/shop/catalog).
+
+## Related
+
+- [Pagination](/api/pagination) — paging the same list endpoints.
+- [API Mapping](/api/rest-graphql-mapping/) — side-by-side REST ↔ GraphQL for a specific call.
+
 
 
 ---
@@ -136373,14 +135535,19 @@ Before building, read [Authentication](/api/authentication) (the credential mode
 ## Start here
 
 - **[Build a Storefront](/api/workflows/shop/build-a-storefront)** — the complete blueprint: every screen (homepage, catalog, product detail, CMS, themes, account) mapped to its API. Read this first for the whole picture, then drill into a focused flow below.
-- Translating a REST call to GraphQL (or vice-versa)? The [REST ↔ GraphQL mapping](/api/rest-graphql-mapping/) has the side-by-side tables per area.
+- Translating a REST call to GraphQL (or vice-versa)? The [API Mapping](/api/rest-graphql-mapping/) has the side-by-side tables per area.
 
 ## Focused flows
 
 | Workflow | What it covers |
 |----------|----------------|
+| [Browse & Filter Catalog](/api/workflows/shop/browse-and-filter-catalog) | Categories, attributes, product listing with filters + sort + pagination, product detail |
 | [Cart](/api/workflows/shop/cart) | Guest vs customer cart, add/update items, coupons, **merge on login** |
 | [Checkout](/api/workflows/shop/checkout) | Addresses → shipping → payment methods → place order, with saved-address reuse |
+| [Customer Account](/api/workflows/shop/customer-account) | Profile, addresses, orders, invoices, downloadable, reviews, wishlist, compare |
+| [Returns / RMA](/api/workflows/shop/returns-rma) | Returnable items → reason → create return → track / message / cancel-reopen-close |
+| [EU Withdrawal](/api/workflows/shop/eu-withdrawal) | File a right-of-withdrawal (customer or guest) → track |
+| [GDPR Requests](/api/workflows/shop/gdpr) | Raise (delete/update) → list → view → revoke → delete (admin-gated) |
 
 ## Guest vs customer
 
@@ -136389,6 +135556,64 @@ The storefront key alone gives read-only access. A **guest can still place an or
 ## How to read a flow page
 
 Intent → Prerequisites → **Mermaid dependency diagram** → ordered call table (links to the exact endpoint pages) → flow notes → customize hook. Flow pages own the sequence; endpoint detail lives on the linked API pages. The prerequisite inputs above are assumed on every flow page and not repeated.
+
+
+
+---
+
+# Browse & Filter Catalog (Shop)
+URL: /api/workflows/shop/browse-and-filter-catalog
+
+---
+outline: false
+---
+
+# Browse & Filter Catalog (Shop)
+
+The storefront browse path — list categories, build the filter UI from attributes, then list products with filters, sort, and pagination, and open a single product. All of this is **public**: the storefront key alone is enough, no customer login.
+
+## Prerequisites
+
+- A valid storefront key ([Setup](/api/setup), [Authentication](/api/authentication)).
+- Optional context via `X-LOCALE` / `X-CURRENCY` / `X-CHANNEL` headers (see [Authentication → Optional Context Headers](/api/authentication#optional-context-headers)).
+
+Paging, sorting, and filter syntax are the same across every list — see the central [Pagination](/api/pagination) and [Sorting](/api/sorting) references.
+
+## Dependency diagram
+
+```mermaid
+flowchart TD
+  key[Storefront key<br/>ask user] --> cats[GET categories]
+  key --> tree[GET category tree<br/>navigation]
+  key --> attrs[GET attributes<br/>build filter UI]
+  cats --> list[GET products<br/>filter + sort + page]
+  attrs --> list
+  list --> detail[GET single product]
+```
+
+## Ordered call table
+
+| # | Step | Endpoint | Depends on | Note |
+|---|------|----------|-----------|------|
+| 1 | List categories | [GET categories](/api/rest-api/shop/categories/get-categories) · [GraphQL](/api/graphql-api/shop/category/) | storefront key | Flat list; filter direct children with `?parent_id=N` |
+| 2 | Category tree (nav) | [GET category tree](/api/rest-api/shop/categories/get-category-tree) · [GraphQL](/api/graphql-api/shop/category/) | storefront key | Nested tree for menus |
+| 3 | Filterable attributes | [GET attributes](/api/rest-api/shop/attributes/get-attributes) · [attribute options](/api/rest-api/shop/attributes/get-attribute-options) | storefront key | Build the filter sidebar (colour, size, …) |
+| 4 | List / filter / sort products | [GET products](/api/rest-api/shop/products/get-products) · [search](/api/rest-api/shop/products/search-product) · [GraphQL](/api/graphql-api/shop/product/) | a category or search term | `?type` `?category_id` `?price` `?new` `?featured` `?<attr>` + `?sort` + `?page`/`?per_page` |
+| 5 | Single product | [GET single product](/api/rest-api/shop/products/get-product) · [GraphQL](/api/graphql-api/shop/product/) | a product id (REST) or `urlKey` (GraphQL) | Full detail — variants, images, price, sub-resources |
+
+> **GraphQL equivalents:** the fields are `categories`, `treeCategories(parentId:)` (children — **not** a `parentId` arg on `categories`), `attributes`, `products`, and `product`. Filters go into a single JSON `filter:` string and sort into `sortKey`/`reverse`. The full side-by-side is on the [Catalog mapping](/api/rest-graphql-mapping/shop/catalog).
+
+## End-to-end sequence
+
+- **Category page:** categories → products (`category_id`, sort, page) → single product.
+- **Search page:** search-product (`query`, filters, sort, page) → single product.
+- **Filtered listing:** attributes (build UI) → products (`?color=…&size=…&price=…`) → single product.
+
+The one thing that does not carry over literally between transports is category children: REST `?parent_id=`, GraphQL `treeCategories(parentId:)`. Everything else maps directly.
+
+## Customize
+
+To change catalog behavior on the server, see [Customization → Shop](/api/workflows/customization/).
 
 
 
@@ -136611,4 +135836,231 @@ Follow each linked endpoint page for the exact request / response body.
 ## Customize
 
 To change checkout behavior on the server, see [Customization → Shop](/api/workflows/customization/).
+
+
+
+---
+
+# Customer Account (Shop)
+URL: /api/workflows/shop/customer-account
+
+---
+outline: false
+---
+
+# Customer Account (Shop)
+
+Everything behind a customer login: profile, addresses, order history and invoices, downloadable products, reviews, wishlist, and compare. Every call here needs both the storefront key **and** the customer Bearer token from login.
+
+## Prerequisites
+
+- A valid storefront key ([Setup](/api/setup), [Authentication](/api/authentication)).
+- A logged-in customer — the Bearer is the `token` field from [login](/api/rest-api/shop/customers/customer-login) (not `apiToken`).
+
+## Dependency diagram
+
+```mermaid
+flowchart TD
+  key[Storefront key] --> login[POST customer login<br/>Bearer token]
+  login --> profile[Profile<br/>get / update]
+  login --> addr[Addresses<br/>list / create / update / delete]
+  login --> orders[Orders<br/>list / detail / invoices]
+  login --> dl[Downloadable products]
+  login --> reviews[Customer reviews]
+  login --> wish[Wishlist]
+  login --> cmp[Compare]
+```
+
+## Ordered call table
+
+| # | Step | Endpoint | Note |
+|---|------|----------|------|
+| 1 | Login | [POST login](/api/rest-api/shop/customers/customer-login) · [GraphQL](/api/graphql-api/shop/customer/) | Returns the customer Bearer `token` |
+| 2 | Get / update profile | [GET profile](/api/rest-api/shop/customers/get-customer-profile) · [update](/api/rest-api/shop/customers/update-customer-profile) · [GraphQL](/api/graphql-api/shop/customer/) | Change password via [change-password](/api/rest-api/shop/customers/change-password) |
+| 3 | Manage addresses | [list](/api/rest-api/shop/customers/get-customer-addresses) · [create](/api/rest-api/shop/customers/create-customer-address) · [update](/api/rest-api/shop/customers/update-customer-address) · [delete](/api/rest-api/shop/customers/delete-customer-address) | Reused at checkout |
+| 4 | Order history | [list orders](/api/rest-api/shop/customer-orders/get-customer-orders) · [order detail](/api/rest-api/shop/customer-orders/get-customer-order) | `?status=` filters the list |
+| 5 | Invoices | [list](/api/rest-api/shop/customer-invoices/get-customer-invoices) · [invoice](/api/rest-api/shop/customer-invoices/get-customer-invoice) · [PDF](/api/rest-api/shop/customer-invoices/download-customer-invoice-pdf) | PDF is a binary download |
+| 6 | Downloadable products | [list](/api/rest-api/shop/customer-downloadable-products/get-customer-downloadable-products) · [item](/api/rest-api/shop/customer-downloadable-products/get-customer-downloadable-product) | Purchased downloadable links |
+| 7 | Reviews | [list](/api/rest-api/shop/customer-reviews/get-customer-reviews) · [review](/api/rest-api/shop/customer-reviews/get-customer-review) · [GraphQL](/api/graphql-api/shop/product-review/) | The customer's own reviews |
+| 8 | Wishlist | [list](/api/rest-api/shop/wishlist/list) · [toggle](/api/rest-api/shop/wishlist/toggle) · [move to cart](/api/rest-api/shop/wishlist/move-to-cart) · [GraphQL](/api/graphql-api/shop/wishlist/) | Channel-scoped |
+| 9 | Compare | [list](/api/rest-api/shop/compare/list) · [create](/api/rest-api/shop/compare/create) · [delete](/api/rest-api/shop/compare/delete) · [GraphQL](/api/graphql-api/shop/compare/) | Not channel-scoped |
+
+> **GraphQL equivalents:** `readCustomerProfile`, `customerOrders`, `wishlists` / `toggleWishlist`, `compareItems`, `productReviews`, plus the address mutations. The full REST↔GraphQL list is on the [Customer Account mapping](/api/rest-graphql-mapping/shop/customer-account).
+
+## Notes
+
+- These are all independent branches off login — call only the ones your screen needs.
+- Every step is owner-scoped: a customer only ever sees their own data. Another customer's id returns `403`/`404` (see [Errors](/api/errors)).
+- Returns (RMA), EU Withdrawal, and GDPR are their own flows — see the pages below.
+
+## Customize
+
+To change account behavior on the server, see [Customization → Shop](/api/workflows/customization/).
+
+
+
+---
+
+# EU Withdrawal (Shop)
+URL: /api/workflows/shop/eu-withdrawal
+
+---
+outline: false
+---
+
+# EU Withdrawal (Shop)
+
+The EU right-of-withdrawal flow — a shopper files a withdrawal against an order, then tracks it. Works for a logged-in customer or a guest (a separate guest endpoint that identifies the order without a login).
+
+## Prerequisites
+
+- A valid storefront key ([Setup](/api/setup), [Authentication](/api/authentication)).
+- **Customer path:** a logged-in customer (Bearer `token`).
+- **Guest path:** no login — the guest endpoint identifies the order from the order reference.
+
+## Dependency diagram
+
+```mermaid
+flowchart TD
+  key[Storefront key] --> who{Logged in?}
+  who -- customer --> cfile[POST file withdrawal]
+  who -- guest --> gfile[POST file withdrawal - guest]
+  cfile --> track[GET list / view withdrawal]
+  gfile --> track
+```
+
+## Ordered call table
+
+| # | Step | Endpoint | Depends on | Note |
+|---|------|----------|-----------|------|
+| 1 | File withdrawal (customer) | [POST file](/api/rest-api/shop/eu-withdrawal/create-eu-withdrawal) · [GraphQL](/api/graphql-api/shop/eu-withdrawal/mutations/create-eu-withdrawal) | logged-in customer + an order | Files against the customer's order |
+| 1b | File withdrawal (guest) | [POST file (guest)](/api/rest-api/shop/eu-withdrawal/create-guest-eu-withdrawal) · [GraphQL](/api/graphql-api/shop/eu-withdrawal/mutations/create-guest-eu-withdrawal) | an order reference | No login; identifies the order directly |
+| 2 | List withdrawals | [GET list](/api/rest-api/shop/eu-withdrawal/list-eu-withdrawals) · [GraphQL](/api/graphql-api/shop/eu-withdrawal/queries/list-eu-withdrawals) | logged-in customer | Customer's filed withdrawals |
+| 3 | View withdrawal | [GET view](/api/rest-api/shop/eu-withdrawal/view-eu-withdrawal) · [GraphQL](/api/graphql-api/shop/eu-withdrawal/queries/view-eu-withdrawal) | a filed withdrawal | Status + detail |
+
+> **GraphQL equivalents:** `euWithdrawals` / `euWithdrawal` (track) and the `createEuWithdrawal` / `createGuestEuWithdrawal` mutations. Select **result fields** on the mutation payload, not `id` — see [Identifiers](/api/graphql-api/identifiers).
+
+## End-to-end sequence
+
+- **Customer:** file withdrawal → list / view to track.
+- **Guest:** file withdrawal (guest) with the order reference — no login, no account listing.
+
+## Customize
+
+To change withdrawal behavior on the server, see [Customization → Shop](/api/workflows/customization/).
+
+
+
+---
+
+# GDPR Requests (Shop)
+URL: /api/workflows/shop/gdpr
+
+---
+outline: false
+---
+
+# GDPR Requests (Shop)
+
+A customer raises a data request (delete or update their data), lists and views their own requests, revokes a pending one, or deletes the record. The whole surface is gated by an admin setting — when GDPR is disabled in the admin configuration, every call returns an error.
+
+## Prerequisites
+
+- A valid storefront key ([Setup](/api/setup), [Authentication](/api/authentication)).
+- A logged-in customer (Bearer `token`) — requests are owner-scoped.
+- GDPR enabled in the admin configuration. If it is off, every endpoint returns `400` with a "GDPR is disabled" message.
+
+## Dependency diagram
+
+```mermaid
+flowchart TD
+  login[Customer login<br/>Bearer token] --> raise[POST raise request<br/>type: delete or update]
+  raise --> list[GET list requests]
+  list --> view[GET view request]
+  view --> act{While pending}
+  act --> revoke[POST revoke]
+  act --> del[DELETE request]
+```
+
+## Ordered call table
+
+| # | Step | Endpoint | Depends on | Note |
+|---|------|----------|-----------|------|
+| 1 | Raise request | [POST raise](/api/rest-api/shop/gdpr-requests/create-gdpr-request) · [GraphQL](/api/graphql-api/shop/gdpr-requests/mutations/create-gdpr-request) | logged-in customer | Body `{ type: delete \| update, message }` → `201` pending |
+| 2 | List own requests | [GET list](/api/rest-api/shop/gdpr-requests/list-gdpr-requests) · [GraphQL](/api/graphql-api/shop/gdpr-requests/queries/list-gdpr-requests) | logged-in customer | Only yours |
+| 3 | View request | [GET view](/api/rest-api/shop/gdpr-requests/view-gdpr-request) · [GraphQL](/api/graphql-api/shop/gdpr-requests/queries/view-gdpr-request) | one of your requests | `404` if not yours |
+| 4 | Revoke | [POST revoke](/api/rest-api/shop/gdpr-requests/revoke-gdpr-request) · [GraphQL](/api/graphql-api/shop/gdpr-requests/mutations/revoke-gdpr-request) | a pending / processing request | `422` if already resolved |
+| 5 | Delete record | [DELETE request](/api/rest-api/shop/gdpr-requests/delete-gdpr-request) · [GraphQL](/api/graphql-api/shop/gdpr-requests/mutations/delete-gdpr-request) | one of your requests | Removes the request record |
+
+> **GraphQL equivalents:** `gdprRequests` / `gdprRequest` (read) and the `createGdprRequest` / `revokeGdprRequest` / `deleteGdprRequest` mutations. Select **result fields** on the mutation payloads, not `id` — see [Identifiers](/api/graphql-api/identifiers).
+
+## End-to-end sequence
+
+raise (delete or update) → list → view → revoke while still pending, or delete the record.
+
+Revoke only applies while the request is `pending` or `processing`; once the store has resolved it, revoke returns `422` (see [Errors](/api/errors)).
+
+## Customize
+
+To change GDPR behavior on the server, see [Customization → Shop](/api/workflows/customization/).
+
+
+
+---
+
+# Returns / RMA (Shop)
+URL: /api/workflows/shop/returns-rma
+
+---
+outline: false
+---
+
+# Returns / RMA (Shop)
+
+A customer files a return against a delivered order, then tracks and messages on it. The flow: find the returnable items on an order, pick a reason, create the return, then track / message / cancel / reopen / close it.
+
+## Prerequisites
+
+- A valid storefront key ([Setup](/api/setup), [Authentication](/api/authentication)).
+- A logged-in customer (Bearer `token`).
+- An order with returnable items — returns are only offered for eligible, delivered items.
+
+## Dependency diagram
+
+```mermaid
+flowchart TD
+  login[Customer login<br/>Bearer token] --> items[GET returnable items<br/>for an order]
+  login --> reasons[GET return reasons]
+  items --> create[POST create return]
+  reasons --> create
+  create --> track[GET returns / view return]
+  track --> msg[Send / list return messages]
+  track --> act{Action}
+  act --> cancel[Cancel return]
+  act --> reopen[Reopen return]
+  act --> close[Close return]
+```
+
+## Ordered call table
+
+| # | Step | Endpoint | Depends on | Note |
+|---|------|----------|-----------|------|
+| 1 | List returnable items | [GET returnable items](/api/rest-api/shop/returns/list-returnable-items) · [GraphQL](/api/graphql-api/shop/returns/queries/list-returnable-items) | an eligible order | Which items on the order can be returned |
+| 2 | List return reasons | [GET reasons](/api/rest-api/shop/returns/list-return-reasons) · [GraphQL](/api/graphql-api/shop/returns/queries/list-return-reasons) | storefront key | Populate the reason dropdown |
+| 3 | Create return | [POST create return](/api/rest-api/shop/returns/create-return) · [GraphQL](/api/graphql-api/shop/returns/mutations/create-return) | returnable items + a reason | Files the RMA request |
+| 4 | Track returns | [list](/api/rest-api/shop/returns/list-returns) · [view](/api/rest-api/shop/returns/view-return) · [GraphQL](/api/graphql-api/shop/returns/queries/list-returns) | a created return | Status + history |
+| 5 | Messages | [send](/api/rest-api/shop/returns/send-return-message) · [list](/api/rest-api/shop/returns/list-return-messages) · [GraphQL](/api/graphql-api/shop/returns/mutations/send-return-message) | a return | Back-and-forth with the store |
+| 6 | Cancel / Reopen / Close | [cancel](/api/rest-api/shop/returns/cancel-return) · [reopen](/api/rest-api/shop/returns/reopen-return) · [close](/api/rest-api/shop/returns/close-return) | a return in the right state | State transitions |
+
+> **GraphQL equivalents:** `customerReturns` / `customerReturn` (track), `returnableItems`, `returnReasons`, and the `createCustomerReturn` / `cancelCustomerReturn` / `reopenCustomerReturn` / `closeCustomerReturn` / `sendReturnMessage` mutations. Select **result fields** (not `id`) on the mutation payloads — see [Identifiers](/api/graphql-api/identifiers).
+
+## End-to-end sequence
+
+returnable items + reasons → create return → view return (track) → send message (if needed) → cancel / reopen / close.
+
+State transitions are gated: an action that doesn't apply to the return's current state returns an error (see [Errors](/api/errors)).
+
+## Customize
+
+To change return behavior on the server, see [Customization → Shop](/api/workflows/customization/).
 

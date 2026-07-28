@@ -94,6 +94,14 @@ Exceeding either limit returns **429 Too Many Requests**.
 
 **Unlimited rate limit** — when generating or editing the token, choose the **Unlimited** option for the per-minute and/or per-day limit. That removes the cap for that bucket; set **both** to Unlimited for a fully unthrottled token.
 
+## Token lifecycle
+
+- **One active token per admin.** Each admin user holds a single active (or draft) token at a time. To issue a new one, revoke or regenerate the existing token first — the generate form only offers admins who don't already have one.
+- **States.** A token moves through **draft** (created but not yet generated — no secret), **active** (generated and usable), **revoked** (manually killed — stops working immediately, kept for audit), and **regenerated** (superseded by a newer token — the old row is retired but kept for audit).
+- **Regenerate.** Issues a fresh secret on a new token row and retires the old one; the new plaintext is shown **once**. Use it when a token may be compromised, without losing the audit trail.
+- **Revoke.** Kills the token immediately — from the Integration menu, or the one-click link in the lifecycle email.
+- **Email notifications.** The owning admin is emailed on generate, regenerate, and revoke. Generate and regenerate emails carry a **signed, 7-day, login-free revoke link** so the owner can kill a token from their inbox. The plaintext token is **never** included in any email.
+
 ## Errors
 
 | Condition | Result |

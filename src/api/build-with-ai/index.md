@@ -4,7 +4,7 @@ outline: false
 
 # Build with AI
 
-This documentation is built to be consumed by AI coding agents (Claude Code, Cursor, Windsurf, and others) as well as humans. If you are building a storefront or an app on the Bagisto API — or extending the API itself — with an AI assistant, point it at the resources on this page.
+This documentation is built to be consumed by AI coding agents (Claude Code, Codex, Antigravity, and other MCP-capable editors) as well as humans. If you are building a storefront or an app on the Bagisto API — or extending the API itself — with an AI assistant, point it at the resources on this page.
 
 Three things make an agent productive here, in order of how much they help:
 
@@ -21,7 +21,7 @@ A single file lists every documented endpoint with a one-line description and a 
 - **Index:** [`/llms.txt`](/llms.txt) — every Shop and Admin endpoint, grouped by transport and menu.
 - **Full content:** [`/llms-full.txt`](/llms-full.txt) — the complete documentation concatenated into one file for full ingestion.
 
-These follow the [llms.txt convention](https://llmstxt.org). The index opens with a **Shop vs Admin** primer and three cross-cutting references every agent should read first — [Authentication](/api/authentication), [Identifiers](/api/graphql-api/identifiers), and the [REST ↔ GraphQL mapping](/api/rest-graphql-mapping/).
+These follow the [llms.txt convention](https://llmstxt.org). The index opens with a **Shop vs Admin** primer and three cross-cutting references every agent should read first — [Authentication](/api/authentication), [Identifiers](/api/graphql-api/identifiers), and the [API Mapping](/api/rest-graphql-mapping/).
 
 ## Where an agent should start
 

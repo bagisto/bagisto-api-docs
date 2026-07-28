@@ -2,9 +2,9 @@
 outline: false
 ---
 
-# REST ↔ GraphQL mapping
+# API Mapping
 
-REST and GraphQL expose the **same** Bagisto data and behaviour with different syntax. This section is the single reference for translating one to the other — most integration friction comes from mixing the two forms (for example sending a `?parent_id=` shape into the GraphQL `categories` field, which has no such argument).
+REST and GraphQL expose the **same** Bagisto data and behaviour with different syntax. This section is the reference for translating one to the other — most integration friction comes from mixing the two forms (for example sending a `?parent_id=` shape into the GraphQL `categories` field, which has no such argument).
 
 Read it **REST-first**: find the REST endpoint you know, then read across to its GraphQL equivalent.
 
@@ -30,6 +30,3 @@ Any key outside the reserved set is treated as a filterable attribute on **both*
 | [Customer Account](/api/rest-graphql-mapping/shop/customer-account) | Profile, addresses, orders, wishlist, compare, downloadable, reviews, returns (RMA), EU withdrawal, GDPR |
 | [Auth & Context](/api/rest-graphql-mapping/shop/auth-context) | Storefront key, customer/guest Bearer, `token` vs `apiToken`, locale/currency/channel headers |
 
-::: tip Admin mapping
-This section currently covers the **Shop** surface. Admin REST ↔ GraphQL mapping is tracked separately.
-:::

@@ -19,14 +19,19 @@ Before building, read [Authentication](/api/authentication) (the credential mode
 ## Start here
 
 - **[Build a Storefront](/api/workflows/shop/build-a-storefront)** — the complete blueprint: every screen (homepage, catalog, product detail, CMS, themes, account) mapped to its API. Read this first for the whole picture, then drill into a focused flow below.
-- Translating a REST call to GraphQL (or vice-versa)? The [REST ↔ GraphQL mapping](/api/rest-graphql-mapping/) has the side-by-side tables per area.
+- Translating a REST call to GraphQL (or vice-versa)? The [API Mapping](/api/rest-graphql-mapping/) has the side-by-side tables per area.
 
 ## Focused flows
 
 | Workflow | What it covers |
 |----------|----------------|
+| [Browse & Filter Catalog](/api/workflows/shop/browse-and-filter-catalog) | Categories, attributes, product listing with filters + sort + pagination, product detail |
 | [Cart](/api/workflows/shop/cart) | Guest vs customer cart, add/update items, coupons, **merge on login** |
 | [Checkout](/api/workflows/shop/checkout) | Addresses → shipping → payment methods → place order, with saved-address reuse |
+| [Customer Account](/api/workflows/shop/customer-account) | Profile, addresses, orders, invoices, downloadable, reviews, wishlist, compare |
+| [Returns / RMA](/api/workflows/shop/returns-rma) | Returnable items → reason → create return → track / message / cancel-reopen-close |
+| [EU Withdrawal](/api/workflows/shop/eu-withdrawal) | File a right-of-withdrawal (customer or guest) → track |
+| [GDPR Requests](/api/workflows/shop/gdpr) | Raise (delete/update) → list → view → revoke → delete (admin-gated) |
 
 ## Guest vs customer
 
