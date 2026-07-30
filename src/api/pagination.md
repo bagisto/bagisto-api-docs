@@ -95,4 +95,3 @@ Page forward by repeating with `after: <endCursor>` (here `after: "MjI="`) until
 ## Related
 
 - [Sorting](/api/sorting) — sort tokens and filters for the same list endpoints.
-- [API Mapping](/api/rest-graphql-mapping/) — side-by-side REST ↔ GraphQL for a specific call.

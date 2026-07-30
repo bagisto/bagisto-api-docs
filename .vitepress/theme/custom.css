@@ -484,47 +484,168 @@
    API Section Customizations
    ======================================== */
 
-/* Hide outline/TOC for API pages */
-:where([data-path^="/api/"]) .VPDocAside {
+/* Hide ONLY the outline/TOC for API pages — NOT the whole .VPDocAside, which
+   also holds the examples panel (#aside-bottom slot). Hiding .VPDocAside nukes
+   the panel at every viewport. */
+.api-page .VPDocAsideOutline {
   display: none !important;
 }
 
-/* Hide spacer element in API pages - multiple selectors */
-:where([data-path^="/api/"]) .spacer,
-[data-path^="/api/"] .spacer,
-:where([data-path^="/api/"]) .VPSidebar .spacer {
+/* Outline is hidden, so drop the aside's top padding — the examples panel then
+   aligns with the top of the content instead of sitting a block lower. */
+.api-page .aside .VPDocAside {
+  padding-top: 0;
+}
+.api-page .examples-sidebar {
+  margin-top: 0 !important;
+}
+
+/* Hide the aside spacer (flex-grow filler) so the panel sits right under the top */
+.api-page .aside .spacer,
+.api-page .VPSidebar .spacer {
   display: none !important;
 }
 
 /* Wider content area when no outline */
-:where([data-path^="/api/"]) .VPDoc .DocContainer {
+.api-page .VPDoc .DocContainer {
   width: 100%;
 }
 
-/* Ensure ExamplesPanel takes full width */
+/* Ensure ExamplesPanel fills its column */
 .examples-sidebar {
   width: 100% !important;
-} 
-
-.aside-container.has-examples .aside-container {
-  width: 350px !important;
-  max-width: 350px !important;
 }
 
-.aside-container.has-examples .content {
-  min-width: 540px !important;
+/* -----------------------------------------------------------------------
+   API-page layout responsiveness.
+   Scope: html.api-page (set at runtime in Layout.vue). This replaces the
+   old [data-path^="/api/"] / .aside-container.has-examples selectors, which
+   never matched anything — VitePress emits neither attribute/class — so all
+   prior layout CSS here was dead and only inline JS widths ever applied.
+   ----------------------------------------------------------------------- */
+
+/* Overflow guard: long code / tables / images scroll INSIDE their own box,
+   never widen the page. Applied to leaf content only — NOT the sticky aside's
+   ancestors — so the aside's position:sticky "Return to top" keeps sticking. */
+.api-page .vp-doc,
+.api-page .content,
+.api-page .content-container {
+  min-width: 0;
+  max-width: 100%;
+}
+.api-page .vp-doc pre,
+.api-page .vp-doc table,
+.api-page .vp-doc img,
+.api-page .code-tabs,
+.api-page .examples-sidebar pre {
+  max-width: 100%;
+}
+.api-page .vp-doc pre,
+.api-page .vp-doc table,
+.api-page .code-tabs .tab-content pre,
+.api-page .examples-sidebar pre {
+  overflow-x: auto;
 }
 
-.aside-container.has-examples .aside {
-  max-width: 400px !important;
+/* >=1280: roomy fixed 3-column (sidebar + content + ~350px examples panel) */
+@media (min-width: 1280px) {
+  .api-page .VPDoc.has-aside .aside-container {
+    width: 350px;
+    max-width: 350px;
+  }
+  .api-page .VPDoc.has-aside .aside {
+    max-width: 400px;
+  }
 }
 
+/* <1280: the in-aside panel isn't visible (VitePress can't fit the 3rd column),
+   so hide the inline aside and serve the examples through the floating button +
+   drawer instead. This removes the 960–1279 "dead band" where the panel was
+   gone AND the button hadn't appeared yet. */
+@media (max-width: 1279px) {
+  .api-page .VPDoc.has-aside .aside {
+    display: none;
+  }
+  .api-page .VPDoc.has-aside .content {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
 
-/* Add smooth transitions for layout changes */
-.aside-container,
-.content,
-.aside {
-  transition: width 0.3s ease, max-width 0.3s ease, min-width 0.3s ease;
+/* ---- Examples floating toggle button + slide-in right drawer (< 1280px) ---- */
+
+/* Floating "Examples" button — only on API pages, only below 1280px */
+.examples-fab {
+  display: none;
+}
+@media (max-width: 1279px) {
+  .api-page .examples-fab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 60;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: var(--vp-c-brand-1, var(--vp-c-brand));
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+  }
+}
+
+.examples-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 70;
+}
+
+.examples-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: min(92vw, 440px);
+  background: var(--vp-c-bg);
+  border-left: 1px solid var(--vp-c-divider);
+  z-index: 80;
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.2);
+  transform: translateX(100%);
+  transition: transform 0.28s ease;
+  overflow-y: auto;
+  /* room at the top for the sticky close button so the panel never overlaps it */
+  padding: 8px 18px 40px;
+}
+.examples-drawer.open {
+  transform: translateX(0);
+}
+/* Panel content sits BELOW the close button in the stack */
+.examples-drawer > .examples-sidebar {
+  position: relative;
+  z-index: 1;
+}
+.examples-drawer-close {
+  position: sticky;
+  top: 8px;
+  z-index: 5;
+  margin-left: auto;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--vp-c-text-1);
+  cursor: pointer;
 }
 
 /* Mermaid diagram labels — only give descenders (g, p, y) room. Do NOT override

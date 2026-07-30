@@ -160,7 +160,7 @@ examples:
 The list endpoint at `GET /api/shop/products` doubles as the **search & filter** endpoint. Every storefront facet — keyword search, category, price range, attribute filters, sort, "new" / "featured" — is just a query parameter. This page is the complete reference for those parameters.
 
 ::: tip Using GraphQL too?
-The GraphQL `products` field expresses these same filters differently (JSON `filter:` string, `sortKey`/`reverse`, cursor pagination). See [REST ↔ GraphQL parameter mapping](/api/rest-graphql-mapping/shop/catalog) for the side-by-side table.
+The GraphQL `products` field expresses these same filters differently (JSON `filter:` string, `sortKey`/`reverse`, cursor pagination). See [REST ↔ GraphQL parameter mapping](/api/graphql-api/shop/queries/get-products#rest-graphql-parameter-mapping) for the side-by-side table.
 :::
 
 ## Endpoint

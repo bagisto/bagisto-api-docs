@@ -19,7 +19,6 @@ Before building, read [Authentication](/api/authentication) (the credential mode
 ## Start here
 
 - **[Build a Storefront](/api/workflows/shop/build-a-storefront)** — the complete blueprint: every screen (homepage, catalog, product detail, CMS, themes, account) mapped to its API. Read this first for the whole picture, then drill into a focused flow below.
-- Translating a REST call to GraphQL (or vice-versa)? The [API Mapping](/api/rest-graphql-mapping/) has the side-by-side tables per area.
 
 ## Focused flows
 

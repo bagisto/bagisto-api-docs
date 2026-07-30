@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: get-products-wishlist-compare-flags
     title: Get Products with Wishlist & Compare Flags
-    description: For a signed-in customer, every product carries `isInWishlist` and `isInCompare`, so you can highlight the wishlist / compare icon directly on each product card without separately fetching and cross-referencing the wishlist or compare lists (which paginate independently of the catalog). Send the customer Bearer token. The flags are `1` (in the list) or `0` (not in the list); over GraphQL they are returned as the strings `"1"` / `"0"`. For guests, both are always `"0"`.
+    description: For a signed-in customer, every product carries 'isInWishlist' and 'isInCompare' fields.
     query: |
       query getProductsWithFlags {
         products(first: 3) {
@@ -59,7 +59,7 @@ examples:
 
   - id: get-products-currency-formatted-prices
     title: Get Products with Currency Formatted Prices
-    description: Fetch products with all formatted price fields that reflect the active currency set via the locale header. Use these formatted fields instead of raw price fields when displaying prices to customers, as they include currency conversion and symbol.
+    description: Fetch products with all formatted price fields that reflect the active currency set via the locale header.
     query: |
       query getProductsSorted {
         products(first: 10) {
@@ -174,7 +174,7 @@ examples:
 
   - id: get-products-type-simple
     title: Get Products - Simple Type
-    description: Retrieve all simple products. Simple products have no variants and include pricing, images, attributes, and categories.
+    description: Retrieve all simple products. Simple products have no variants and include pricing, images, attributes, categories and customizable options.
     query: |
       query getAllSimpleProducts {
         products(filter: "{\"type\": \"simple\"}") {
@@ -188,6 +188,28 @@ examples:
               shortDescription
               price
               specialPrice
+              customizableOptions {
+                edges {
+                  node {
+                    id
+                    _id
+                    type
+                    isRequired
+                    maxCharacters
+                    supportedFileExtensions
+                    sortOrder
+                    customizableOptionPrices {
+                      edges {
+                        node {
+                          label
+                          price
+                          formattedPrice
+                        }
+                      }
+                    }
+                  }   
+                }
+              }
               images(first: 5) {
                 edges {
                   node {
@@ -240,6 +262,9 @@ examples:
                   "shortDescription": "Stay warm and stylish with the Coastal Breeze Men's Blue Zipper Hoodie. This fashionable hoodie features a modern design, making it ideal for casual and active wear.",
                   "price": "100",
                   "specialPrice": null,
+                  "customizableOptions": {
+                    "edges": []
+                  },
                   "images": {
                     "edges": [
                       {
@@ -306,6 +331,9 @@ examples:
                   "shortDescription": "Step into timeless style and comfort with our PureStride Men's Classic White Sneakers.",
                   "price": "189",
                   "specialPrice": null,
+                  "customizableOptions": {
+                    "edges": []
+                  },
                   "images": {
                     "edges": [
                       {
@@ -354,6 +382,9 @@ examples:
                   "shortDescription": "Bagisto branded collectible sticker.",
                   "price": "10",
                   "specialPrice": "8",
+                  "customizableOptions": {
+                    "edges": []
+                  },
                   "images": {
                     "edges": [
                       {
@@ -402,6 +433,9 @@ examples:
                   "shortDescription": "Mechanical keyboard for everyday computing.",
                   "price": "20",
                   "specialPrice": null,
+                  "customizableOptions": {
+                    "edges": []
+                  },
                   "images": {
                     "edges": [
                       {
@@ -1684,21 +1718,13 @@ The `getProducts` query retrieves a paginated list of products from your store w
 - Implementing product search, sorting, and filtering experiences
 - Creating product recommendation systems
 - Syncing product data with external systems
-
-The query supports cursor-based pagination to efficiently handle large product catalogs and includes metadata for:
-
+- The query supports cursor-based pagination to efficiently handle large product catalogs
 - Basic product information (name, SKU, description, vendor)
 - Pricing and inventory details
 - Product images and media
 - Categories, tags, and custom attributes
 - Publication and availability status
 - Created and updated timestamps
-
-::: tip Building a filter UI?
-This page covers **applying** filters via `filter:`. To discover **which filters a category offers** — the attribute facets, their options, swatches, localized labels, and the category's price range — use [Category Attribute Filters](/api/graphql-api/shop/queries/get-category-attribute-filters). Don't hardcode facets, and don't derive them from [Attributes](/api/graphql-api/shop/queries/get-attributes) (that lists every attribute in the catalog, filterable or not).
-:::
-
-> **Currency & Formatted Prices:** All price fields reflect the active currency set via the `X-Currency` header — both numeric fields (e.g. `price`, `specialPrice`, `minimumPrice`) and formatted fields (e.g. `formattedPrice`, `formattedMinimumPrice`) return converted values. The difference is that numeric fields return the converted amount as a number, while formatted fields return the converted amount as a string with the currency symbol prefixed (e.g. `"€84.99"`). See the "Get Products with Currency Formatted Prices" dropdown example above for all available price fields.
 
 ## Wishlist & Compare Flags
 
@@ -1711,13 +1737,12 @@ Every product in the list carries two per-customer boolean flags so you can rend
 
 Why they exist: the wishlist and compare lists are their own endpoints and paginate independently of the catalog — a product on catalog page 1 may have its wishlist entry on a different wishlist page, so matching the two lists on the client is unreliable. These flags answer the question per product, in the same response, so the wishlist/compare icon can be highlighted without any extra requests.
 
-Things to know:
+**Things to know:**
 
 - **Authentication is required.** Send the customer Bearer token. For guests (no token) both flags are always `0`.
 - **The flags are `0` / `1`** — `1` when the product is in the list, `0` when it is not. Over GraphQL they are returned as the strings `"1"` / `"0"` (the REST API returns them as `1` / `0` integers). Either way, `0` is falsy and `1` is truthy.
-- A product is considered "in the list" when its own product ID is in the customer's wishlist / compare list — so a configurable parent is flagged when the parent itself was added.
 
-See the **"Get Products with Wishlist & Compare Flags"** dropdown example above.
+See the **"Get Products with Wishlist & Compare Flags"** dropdown example.
 
 ## Arguments
 
@@ -1732,7 +1757,7 @@ See the **"Get Products with Wishlist & Compare Flags"** dropdown example above.
 | `query` | `String` | Search query string for filtering products. Supports advanced search syntax. |
 | `filter` | `String` | JSON string of filter keys (see below). Pass as a single-line JSON string with escaped quotes. |
 
-### `filter` keys
+### Filter keys
 
 The `filter` argument is a JSON object encoded as a string. Accepted keys:
 
@@ -1753,7 +1778,7 @@ Example: `products(filter: "{\"category_id\": 5, \"price_from\": 10, \"price_to\
 GraphQL uses separate `price_from` / `price_to` keys. The REST-only compound `price=min,max` string form does **not** apply here.
 :::
 
-## REST ↔ GraphQL parameter mapping
+<!-- ## REST and GraphQL parameter mapping
 
 The same catalog operations use different shapes on each transport. Common equivalents:
 
@@ -1765,7 +1790,7 @@ The same catalog operations use different shapes on each transport. Common equiv
 | Sort | `?sort=price-asc` (or `?sort=price&order=asc`) | `sortKey: PRICE, reverse: false` |
 | Category filter | `?category_id=5` | `filter: "{\"category_id\": 5}"` |
 | Attribute filter | `?color=3` | `filter: "{\"color\": \"3\"}"` |
-| Auth Bearer | `Authorization: Bearer <token>` | `Authorization: Bearer <token>` — same `token` field from login; `apiToken` is a legacy field, **not** a Bearer on either transport |
+| Auth Bearer | `Authorization: Bearer <token>` | `Authorization: Bearer <token>` — same `token` field from login; `apiToken` is a legacy field, **not** a Bearer on either transport | -->
 
 ## Possible Returns
 

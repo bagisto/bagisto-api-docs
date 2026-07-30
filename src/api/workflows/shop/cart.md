@@ -43,7 +43,7 @@ flowchart TD
 | 6 | Apply coupon | [POST apply-coupon](/api/rest-api/shop/cart/apply-coupon) | an item in the cart | Remove with [remove-coupon](/api/rest-api/shop/cart/remove-coupon) |
 | 7 | Read cart | [GET get-cart](/api/rest-api/shop/cart/get-cart) · [GraphQL](/api/graphql-api/shop/cart) | any cart mutation | Totals, items, applied coupon |
 
-> **GraphQL equivalents:** the table links REST paths. Each step has a GraphQL operation (`createCartToken`, `createAddProductInCart`, `createUpdateCartItem`, `createApplyCoupon`, `createMergeCart`, `createReadCart`) — the full REST↔GraphQL list is on the [Cart & Checkout mapping](/api/rest-graphql-mapping/shop/cart-checkout).
+> **GraphQL equivalents:** the table links REST paths. Each step has a GraphQL operation (`createCartToken`, `createAddProductInCart`, `createUpdateCartItem`, `createApplyCoupon`, `createMergeCart`, `createReadCart`).
 
 ## End-to-end sequence
 

@@ -26,7 +26,7 @@ The landing screen is built from admin-managed content, not just products:
 ## 2. Catalog
 
 - **Category page** — [Get Categories](/api/rest-api/shop/categories/get-categories) for the category, then list its products (step below) filtered by that category.
-- **Product listing** — [Get Products](/api/rest-api/shop/products/get-products), paginated with `?page=`, `?per_page=`, `?sort=`. Scope and filter it with `?category_id=`, `?price=10,200` (min,max), `?new=1`, `?featured=1`, `?type=`, and any attribute code (`?color=3&size=6`). The complete parameter list is on [Search Products](/api/rest-api/shop/products/search-product); the GraphQL equivalents (`filter:` string, `sortKey`/`reverse`) are in the [Catalog mapping](/api/rest-graphql-mapping/shop/catalog).
+- **Product listing** — [Get Products](/api/rest-api/shop/products/get-products), paginated with `?page=`, `?per_page=`, `?sort=`. Scope and filter it with `?category_id=`, `?price=10,200` (min,max), `?new=1`, `?featured=1`, `?type=`, and any attribute code (`?color=3&size=6`). The complete parameter list is on [Search Products](/api/rest-api/shop/products/search-product).
 - **Category children** — `?parent_id=N` (REST) or `treeCategories(parentId: N)` (GraphQL). The GraphQL `categories` field has **no** `parentId` argument.
 - **Search** — [Search Products](/api/rest-api/shop/products/search-product) — the same endpoint with `?query=`; composes with the filters above.
 - **Filters (faceting sidebar)** — [Get Attributes](/api/rest-api/shop/attributes/get-attributes) (`isFilterable: 1`) and [Attribute Options](/api/rest-api/shop/attributes/get-attribute-options) give you the filter codes and option ids to feed the product-listing filters above (color, size, brand, price).

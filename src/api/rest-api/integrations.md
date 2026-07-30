@@ -417,4 +417,3 @@ curl -X GET "https://your-domain.com/api/shop/customer-profile" \
 - [Authentication](/api/rest-api/authentication)
 - [Status Codes](/api/errors)
 - [Pagination](/api/pagination)
-- [REST ↔ GraphQL Mapping](/api/rest-graphql-mapping/)

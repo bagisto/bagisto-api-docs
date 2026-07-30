@@ -1,6 +1,6 @@
 # Sorting
 
-How to sort and filter list endpoints. The mechanics are the same across every Shop list, so endpoint pages don't repeat them. For translating a specific call between transports, see [API Mapping](/api/rest-graphql-mapping/).
+How to sort and filter list endpoints. The mechanics are the same across every Shop list, so endpoint pages don't repeat them.
 
 ## Sorting
 
@@ -101,13 +101,12 @@ products(filter: "{\"type\":\"configurable\",\"category_id\":2,\"price\":\"10,20
 }
 ```
 
-This is the one shape that does not carry over literally between transports — REST spreads filters across query params, GraphQL packs them into the `filter` string. The [Catalog mapping](/api/rest-graphql-mapping/shop/catalog) has the full side-by-side.
+This is the one shape that does not carry over literally between transports — REST spreads filters across query params, GraphQL packs them into the `filter` string.
 
 ## Category children — a common trip-up
 
-REST fetches a category's children with `?parent_id=<id>`. GraphQL has **no `parentId` argument on `categories`** — children come from `treeCategories(parentId: <id>)`. Sending the REST shape into the GraphQL `categories` field returns everything, not the children. See the [Catalog mapping](/api/rest-graphql-mapping/shop/catalog).
+REST fetches a category's children with `?parent_id=<id>`. GraphQL has **no `parentId` argument on `categories`** — children come from `treeCategories(parentId: <id>)`. Sending the REST shape into the GraphQL `categories` field returns everything, not the children.
 
 ## Related
 
 - [Pagination](/api/pagination) — paging the same list endpoints.
-- [API Mapping](/api/rest-graphql-mapping/) — side-by-side REST ↔ GraphQL for a specific call.

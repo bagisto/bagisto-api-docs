@@ -52,6 +52,10 @@ Installable build-rules that teach an agent the storefront flows, the auth model
 
 An optional local server that lets an agent search these docs on demand from inside the editor — it pulls the exact request and response for an endpoint mid-task instead of guessing. Runs on your machine, indexes the latest published docs. See [MCP Server](/api/build-with-ai/mcp-server).
 
+## Workflows
+
+Individual endpoint pages document one call; the [Workflows](/api/workflows/) show how to **chain** them into a real task — browse & filter catalog, cart, checkout, customer account, returns, and more — each with a dependency diagram and an ordered call table. Start here (agent or human) when building an end-to-end flow rather than a single request.
+
 ## What's Next?
 
 Ready to start building? Choose your preferred API approach:

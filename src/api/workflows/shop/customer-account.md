@@ -39,7 +39,7 @@ flowchart TD
 | 8 | Wishlist | [list](/api/rest-api/shop/wishlist/list) · [toggle](/api/rest-api/shop/wishlist/toggle) · [move to cart](/api/rest-api/shop/wishlist/move-to-cart) · [GraphQL](/api/graphql-api/shop/wishlist/) | Channel-scoped |
 | 9 | Compare | [list](/api/rest-api/shop/compare/list) · [create](/api/rest-api/shop/compare/create) · [delete](/api/rest-api/shop/compare/delete) · [GraphQL](/api/graphql-api/shop/compare/) | Not channel-scoped |
 
-> **GraphQL equivalents:** `readCustomerProfile`, `customerOrders`, `wishlists` / `toggleWishlist`, `compareItems`, `productReviews`, plus the address mutations. The full REST↔GraphQL list is on the [Customer Account mapping](/api/rest-graphql-mapping/shop/customer-account).
+> **GraphQL equivalents:** `readCustomerProfile`, `customerOrders`, `wishlists` / `toggleWishlist`, `compareItems`, `productReviews`, plus the address mutations.
 
 ## Notes
 

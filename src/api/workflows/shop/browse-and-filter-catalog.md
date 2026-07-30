@@ -35,7 +35,7 @@ flowchart TD
 | 4 | List / filter / sort products | [GET products](/api/rest-api/shop/products/get-products) · [search](/api/rest-api/shop/products/search-product) · [GraphQL](/api/graphql-api/shop/product/) | a category or search term | `?type` `?category_id` `?price` `?new` `?featured` `?<attr>` + `?sort` + `?page`/`?per_page` |
 | 5 | Single product | [GET single product](/api/rest-api/shop/products/get-product) · [GraphQL](/api/graphql-api/shop/product/) | a product id (REST) or `urlKey` (GraphQL) | Full detail — variants, images, price, sub-resources |
 
-> **GraphQL equivalents:** the fields are `categories`, `treeCategories(parentId:)` (children — **not** a `parentId` arg on `categories`), `attributes`, `products`, and `product`. Filters go into a single JSON `filter:` string and sort into `sortKey`/`reverse`. The full side-by-side is on the [Catalog mapping](/api/rest-graphql-mapping/shop/catalog).
+> **GraphQL equivalents:** the fields are `categories`, `treeCategories(parentId:)` (children — **not** a `parentId` arg on `categories`), `attributes`, `products`, and `product`. Filters go into a single JSON `filter:` string and sort into `sortKey`/`reverse`.
 
 ## End-to-end sequence
 

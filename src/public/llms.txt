@@ -17,10 +17,9 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 **REST vs GraphQL** — same data, two transports, NOT interchangeable syntax. REST filters go in the query string (`?category_id=&price=&sort=`); GraphQL uses a JSON `filter:` string plus `sortKey`/`reverse` and cursor pagination.
 
-**Read these three cross-cutting references first — they answer what the per-endpoint pages assume you already know:**
+**Read these two cross-cutting references first — they answer what the per-endpoint pages assume you already know:**
 - **Authentication** (https://api-docs.bagisto.com/api/authentication) — which header for which surface; the login `token` (not `apiToken`) is the Bearer for both transports; credential lifetimes; there is **no refresh token** (recover by re-login / regenerate).
 - **Identifiers** (https://api-docs.bagisto.com/api/graphql-api/identifiers) — GraphQL exposes both `id` (IRI string) and `_id` (numeric); REST uses the numeric id. Store/compare `_id`, pass `id` back to operations.
-- **REST ↔ GraphQL mapping** (https://api-docs.bagisto.com/api/rest-graphql-mapping/) — side-by-side table for category children, price, new/featured, sort, pagination, and auth.
 
 ## Build With Ai
 
@@ -852,7 +851,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Pagination](/api/pagination): How to page through list endpoints. The mechanics are the same across every Shop list, so endpoint pages don't repeat them. The two transports page differently…
 - [Rate Limiting](/api/rate-limiting): Bagisto APIs implement rate limiting to ensure fair usage and protect infrastructure from abuse. This guide explains how rate limiting works and how to handle…
 - [Setup & Configuration](/api/setup): Get the Bagisto API up and running in just a few minutes. Choose the installation method that works best for your setup.
-- [Sorting](/api/sorting): How to sort and filter list endpoints. The mechanics are the same across every Shop list, so endpoint pages don't repeat them. For translating a specific call…
+- [Sorting](/api/sorting): How to sort and filter list endpoints. The mechanics are the same across every Shop list, so endpoint pages don't repeat them.
 - [Storefront API Key Management Guide](/api/storefront-api-key-management-guide): Bagisto uses **API keys** to authenticate requests to your storefront and shop API endpoints. Think of your API key as a secure password that identifies your…
 
 ## REST API
@@ -1592,17 +1591,6 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Get Wishlist Items](/api/rest-api/shop/wishlist/list): Retrieve the authenticated customer's wishlist items for the current channel.
 - [Move Wishlist Item to Cart](/api/rest-api/shop/wishlist/move-to-cart): Move a wishlist item to the shopping cart and remove it from the wishlist.
 - [Toggle Wishlist Item](/api/rest-api/shop/wishlist/toggle): Toggle a product in the wishlist. If not present, it is added.
-
-## Rest Graphql Mapping
-
-- [API Mapping](/api/rest-graphql-mapping): REST and GraphQL expose the **same** Bagisto data and behaviour with different syntax. This section is the single reference for translating one to the other —…
-
-## Rest Graphql Mapping › Shop
-
-- [Auth & Context mapping](/api/rest-graphql-mapping/shop/auth-context): Authentication and the locale/currency/channel context are **identical** across REST and GraphQL — same headers, same tokens. Only the catalog filter/sort…
-- [Cart & Checkout mapping](/api/rest-graphql-mapping/shop/cart-checkout): The cart and checkout flow is a sequence — the same on both transports. The difference is naming: REST uses one path per step; GraphQL wraps each step as a…
-- [Catalog mapping — products, categories, attributes](/api/rest-graphql-mapping/shop/catalog): The catalog is where REST and GraphQL differ most. REST puts filters in the query string; GraphQL packs them into one JSON `filter:` string and uses typed…
-- [Customer Account mapping](/api/rest-graphql-mapping/shop/customer-account): Everything behind a logged-in customer's account. All of these require the customer Bearer token (see [Auth &…
 
 ## Workflows
 

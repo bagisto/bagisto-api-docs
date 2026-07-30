@@ -546,4 +546,3 @@ curl -X POST https://your-domain.com/api/graphql \
 - [Status Codes](/api/errors)
 - [Pagination](/api/pagination)
 - [Identifiers (`id` vs `_id`)](/api/graphql-api/identifiers)
-- [REST ↔ GraphQL Mapping](/api/rest-graphql-mapping/)

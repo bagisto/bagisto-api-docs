@@ -689,7 +689,7 @@ The `searchProducts` query enables advanced product search with support for text
 The search supports Bagisto's advanced search syntax for building complex, multi-criteria queries. It efficiently ranks results by relevance while maintaining performance across large product catalogs.
 
 ::: tip Coming from REST?
-The REST `?parent_id`, `?price=`, `?new=1`, `?sort=` query params map onto the GraphQL `filter:` string, `sortKey`/`reverse`, and cursor args. See [REST ↔ GraphQL parameter mapping](/api/rest-graphql-mapping/shop/catalog) for the side-by-side table.
+The REST `?parent_id`, `?price=`, `?new=1`, `?sort=` query params map onto the GraphQL `filter:` string, `sortKey`/`reverse`, and cursor args. See [REST ↔ GraphQL parameter mapping](/api/graphql-api/shop/queries/get-products#rest-graphql-parameter-mapping) for the side-by-side table.
 :::
 
 ## Arguments

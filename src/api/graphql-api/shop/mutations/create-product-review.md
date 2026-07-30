@@ -28,8 +28,7 @@ examples:
           "comment": "Very impressed with the EleganceKnits cardigan sweatercoat. The fabric feels premium and soft, the fitting is perfect, and the collar design adds a classy look. Suitable for office wear as well as casual outings. Lightweight yet warm. Highly recommended.",
           "rating": 5,
           "name": "John Doe",
-          "email": "john.doe@example.com",
-          "status": 0
+          "email": "john.doe@example.com"
         }
       }
     response: |

@@ -13,10 +13,9 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 **REST vs GraphQL** — same data, two transports, NOT interchangeable syntax. REST filters go in the query string (`?category_id=&price=&sort=`); GraphQL uses a JSON `filter:` string plus `sortKey`/`reverse` and cursor pagination.
 
-**Read these three cross-cutting references first — they answer what the per-endpoint pages assume you already know:**
+**Read these two cross-cutting references first — they answer what the per-endpoint pages assume you already know:**
 - **Authentication** (https://api-docs.bagisto.com/api/authentication) — which header for which surface; the login `token` (not `apiToken`) is the Bearer for both transports; credential lifetimes; there is **no refresh token** (recover by re-login / regenerate).
 - **Identifiers** (https://api-docs.bagisto.com/api/graphql-api/identifiers) — GraphQL exposes both `id` (IRI string) and `_id` (numeric); REST uses the numeric id. Store/compare `_id`, pass `id` back to operations.
-- **REST ↔ GraphQL mapping** (https://api-docs.bagisto.com/api/rest-graphql-mapping/) — side-by-side table for category children, price, new/featured, sort, pagination, and auth.
 
 
 
@@ -457,17 +456,17 @@ Three things make an agent productive here, in order of how much they help:
 | Resource | What it gives the agent | Page |
 |---|---|---|
 | **Agent Skills** | The full build playbook — call sequences, gotchas (token model, `id` vs `_id`, filters) baked in, so the agent doesn't rediscover them | [Agent Skills](/api/build-with-ai/agent-skills) |
-| **`llms.txt`** | A one-fetch machine index of every endpoint, grouped by surface + transport | below |
+| **LLM Index** | A one-fetch machine index (`llms.txt`) of every endpoint, grouped by surface + transport | [Build with AI](/api/build-with-ai/#llm-index) |
 | **MCP Server** *(optional)* | Live doc search from inside the editor while coding | [MCP Server](/api/build-with-ai/mcp-server) |
 
-## `llms.txt` — the machine-readable index
+## LLM Index
 
 A single file lists every documented endpoint with a one-line description and a link, so an agent can discover the whole API surface in one fetch:
 
 - **Index:** [`/llms.txt`](/llms.txt) — every Shop and Admin endpoint, grouped by transport and menu.
 - **Full content:** [`/llms-full.txt`](/llms-full.txt) — the complete documentation concatenated into one file for full ingestion.
 
-These follow the [llms.txt convention](https://llmstxt.org). The index opens with a **Shop vs Admin** primer and three cross-cutting references every agent should read first — [Authentication](/api/authentication), [Identifiers](/api/graphql-api/identifiers), and the [API Mapping](/api/rest-graphql-mapping/).
+These follow the [llms.txt convention](https://llmstxt.org). The index opens with a **Shop vs Admin** primer and two cross-cutting references every agent should read first — [Authentication](/api/authentication) and [Identifiers](/api/graphql-api/identifiers).
 
 ## Where an agent should start
 
@@ -660,7 +659,7 @@ URL: /api/errors
 
 # Status Codes
 
-How the API reports failures. The two transports signal errors differently — REST uses the HTTP status, GraphQL always returns `200` and puts the failure in `errors[]` — but both draw from the same set of conditions below. This is the single reference; endpoint pages do not repeat it.
+How the API reports failures. The two transports signal errors differently — REST uses the HTTP status, GraphQL always returns `200` and puts the failure in `errors[]` — but both draw from the same set of conditions below.
 
 ## REST vs GraphQL error shape
 
@@ -44031,7 +44030,6 @@ curl -X POST https://your-domain.com/api/graphql \
 - [Status Codes](/api/errors)
 - [Pagination](/api/pagination)
 - [Identifiers (`id` vs `_id`)](/api/graphql-api/identifiers)
-- [REST ↔ GraphQL Mapping](/api/rest-graphql-mapping/)
 
 
 
@@ -80170,7 +80168,7 @@ The `searchProducts` query enables advanced product search with support for text
 The search supports Bagisto's advanced search syntax for building complex, multi-criteria queries. It efficiently ranks results by relevance while maintaining performance across large product catalogs.
 
 ::: tip Coming from REST?
-The REST `?parent_id`, `?price=`, `?new=1`, `?sort=` query params map onto the GraphQL `filter:` string, `sortKey`/`reverse`, and cursor args. See [REST ↔ GraphQL parameter mapping](/api/rest-graphql-mapping/shop/catalog) for the side-by-side table.
+The REST `?parent_id`, `?price=`, `?new=1`, `?sort=` query params map onto the GraphQL `filter:` string, `sortKey`/`reverse`, and cursor args. See [REST ↔ GraphQL parameter mapping](/api/graphql-api/shop/queries/get-products#rest-graphql-parameter-mapping) for the side-by-side table.
 :::
 
 ## Arguments
@@ -83420,6 +83418,10 @@ Installable build-rules that teach an agent the storefront flows, the auth model
 
 An optional local server that lets an agent search these docs on demand from inside the editor — it pulls the exact request and response for an endpoint mid-task instead of guessing. Runs on your machine, indexes the latest published docs. See [MCP Server](/api/build-with-ai/mcp-server).
 
+## Workflows
+
+Individual endpoint pages document one call; the [Workflows](/api/workflows/) show how to **chain** them into a real task — browse & filter catalog, cart, checkout, customer account, returns, and more — each with a dependency diagram and an ordered call table. Start here (agent or human) when building an end-to-end flow rather than a single request.
+
 ## What's Next?
 
 Ready to start building? Choose your preferred API approach:
@@ -83465,13 +83467,38 @@ GET /api/shop/products?page=2&per_page=20
 
 Loop until `X-Page` reaches `X-Total-Pages`.
 
+**Example**
+
+```bash
+curl -X GET "https://your-domain.com/api/shop/products?page=1&per_page=2" \
+  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx"
+```
+
+The body is a flat array; the paging totals are in the response headers:
+
+```http
+HTTP/1.1 200 OK
+X-Total-Count: 137
+X-Page: 1
+X-Per-Page: 2
+X-Total-Pages: 69
+
+[
+  { "id": 1, "sku": "COASTALBREEZE", "name": "Coastal Breeze Hoodie" },
+  { "id": 2, "sku": "URBANEDGE", "name": "Urban Edge Jacket" }
+]
+```
+
 ## GraphQL — cursor (`first` + `after`)
 
 ```graphql
 query {
   products(first: 20, after: "MjA=") {
     edges {
-      node { id name }
+      node {
+        id
+        name
+      }
       cursor
     }
     pageInfo {
@@ -83487,12 +83514,30 @@ query {
 | `first` | Page size (equivalent to `per_page`) |
 | `after` | Cursor to start after — pass the previous page's `pageInfo.endCursor` |
 
-Page forward by repeating with `after: <endCursor>` until `pageInfo.hasNextPage` is `false`. The cursor is opaque — do not parse or construct it; use the value the API returns.
+Response — each edge carries a `cursor`, and `pageInfo` tells you how to continue:
+
+```json
+{
+  "data": {
+    "products": {
+      "edges": [
+        { "node": { "id": "/api/shop/products/21", "name": "Coastal Breeze Hoodie" }, "cursor": "MjE=" },
+        { "node": { "id": "/api/shop/products/22", "name": "Urban Edge Jacket" }, "cursor": "MjI=" }
+      ],
+      "pageInfo": {
+        "hasNextPage": true,
+        "endCursor": "MjI="
+      }
+    }
+  }
+}
+```
+
+Page forward by repeating with `after: <endCursor>` (here `after: "MjI="`) until `pageInfo.hasNextPage` is `false`. The cursor is opaque — do not parse or construct it; use the value the API returns.
 
 ## Related
 
 - [Sorting](/api/sorting) — sort tokens and filters for the same list endpoints.
-- [API Mapping](/api/rest-graphql-mapping/) — side-by-side REST ↔ GraphQL for a specific call.
 
 
 
@@ -113996,7 +114041,6 @@ curl -X GET "https://your-domain.com/api/shop/customer-profile" \
 - [Authentication](/api/rest-api/authentication)
 - [Status Codes](/api/errors)
 - [Pagination](/api/pagination)
-- [REST ↔ GraphQL Mapping](/api/rest-graphql-mapping/)
 
 
 
@@ -130321,7 +130365,7 @@ examples:
 The list endpoint at `GET /api/shop/products` doubles as the **search & filter** endpoint. Every storefront facet — keyword search, category, price range, attribute filters, sort, "new" / "featured" — is just a query parameter. This page is the complete reference for those parameters.
 
 ::: tip Using GraphQL too?
-The GraphQL `products` field expresses these same filters differently (JSON `filter:` string, `sortKey`/`reverse`, cursor pagination). See [REST ↔ GraphQL parameter mapping](/api/rest-graphql-mapping/shop/catalog) for the side-by-side table.
+The GraphQL `products` field expresses these same filters differently (JSON `filter:` string, `sortKey`/`reverse`, cursor pagination). See [REST ↔ GraphQL parameter mapping](/api/graphql-api/shop/queries/get-products#rest-graphql-parameter-mapping) for the side-by-side table.
 :::
 
 ## Endpoint
@@ -133308,333 +133352,6 @@ This JSON schema can be used with:
 
 ---
 
-# API Mapping
-URL: /api/rest-graphql-mapping
-
----
-outline: false
----
-
-# API Mapping
-
-REST and GraphQL expose the **same** Bagisto data and behaviour with different syntax. This section is the single reference for translating one to the other — most integration friction comes from mixing the two forms (for example sending a `?parent_id=` shape into the GraphQL `categories` field, which has no such argument).
-
-Read it **REST-first**: find the REST endpoint you know, then read across to its GraphQL equivalent.
-
-## The two shapes
-
-| | REST | GraphQL |
-|---|---|---|
-| Endpoint | one URL per operation (`GET /api/shop/products`) | one field per operation (`products`), all on `POST /api/graphql` |
-| Filters | query string — `?category_id=&price=&new=1` | a JSON **string** in `filter:` — `filter: "{\"category_id\":\"22\"}"` |
-| Sort | `?sort=price-asc` | `sortKey: "PRICE", reverse: false` |
-| Pagination | `?page=2&per_page=30` + `X-Total-Count` headers | `first`/`after` cursor + `pageInfo` (Relay connection) |
-| Record id | numeric `id` | `id` is an **IRI** string; `_id` is the numeric id — see [Identifiers](/api/graphql-api/identifiers) |
-| Auth | `X-STOREFRONT-KEY` + `Authorization: Bearer` | same headers |
-
-Any key outside the reserved set is treated as a filterable attribute on **both** transports — REST reserves `query, sort, order, page, per_page, locale, channel, filter`; GraphQL reserves `query, sortKey, reverse, first, after, filter`.
-
-## Shop mapping by area
-
-| Area | What it covers |
-|---|---|
-| [Catalog](/api/rest-graphql-mapping/shop/catalog) | Products, categories, attributes — filters, sort, pagination (the biggest source of REST↔GraphQL confusion) |
-| [Cart & Checkout](/api/rest-graphql-mapping/shop/cart-checkout) | Cart tokens, cart items, coupons, addresses, shipping/payment methods, place order |
-| [Customer Account](/api/rest-graphql-mapping/shop/customer-account) | Profile, addresses, orders, wishlist, compare, downloadable, reviews, returns (RMA), EU withdrawal, GDPR |
-| [Auth & Context](/api/rest-graphql-mapping/shop/auth-context) | Storefront key, customer/guest Bearer, `token` vs `apiToken`, locale/currency/channel headers |
-
-::: tip Admin mapping
-This section currently covers the **Shop** surface. Admin API mapping is tracked separately.
-:::
-
-
-
----
-
-# Auth & Context mapping
-URL: /api/rest-graphql-mapping/shop/auth-context
-
----
-outline: false
----
-
-# Auth & Context mapping
-
-Authentication and the locale/currency/channel context are **identical** across REST and GraphQL — same headers, same tokens. Only the catalog filter/sort syntax differs (see [Catalog](/api/rest-graphql-mapping/shop/catalog)).
-
-## Authentication headers
-
-| Concept | REST | GraphQL |
-|---|---|---|
-| Storefront key | `X-STOREFRONT-KEY` header | `X-STOREFRONT-KEY` header (same) |
-| Customer / guest-cart Bearer | `Authorization: Bearer <token>` | `Authorization: Bearer <token>` (same) |
-| GraphQL endpoint | — | `POST /api/graphql` (shop) |
-
-- **Which login field is the Bearer:** use `token` (format `<id>|<secret>`) — **never** `apiToken`. `apiToken` is a legacy field; sending it returns `Unauthenticated`.
-- **Guest vs customer:** a guest cart/checkout call sends the **cart token** as the Bearer; a logged-in call sends the **customer token**. Both use the same `Authorization: Bearer` header.
-- Credential lifetimes and the "no refresh token" rule: [Authentication](/api/authentication#credential-lifetimes).
-
-## Context headers
-
-| Concept | REST | GraphQL |
-|---|---|---|
-| Locale | `X-LOCALE` header (or `?locale=` on catalog) | `X-LOCALE` header |
-| Currency | `X-CURRENCY` header | `X-CURRENCY` header |
-| Channel | `X-CHANNEL` header (or `?channel=` on catalog) | `X-CHANNEL` header |
-
-Omitting a context header (or passing an unknown value) falls back to the channel default. Discover valid values from [Locales](/api/rest-api/shop/locales/get-locales) and [Channels](/api/rest-api/shop/channels/get-channels) (a channel lists its allowed currencies and locales) — **not** the Countries endpoint (countries are for address forms).
-
-## Response-shape differences
-
-| | REST | GraphQL |
-|---|---|---|
-| Collection wrapper | flat JSON array + `X-Total-Count` / `X-Page` headers | Relay connection — `edges { node }` + `pageInfo` |
-| Record id | numeric `id` | `id` is an **IRI** string; `_id` is the numeric id — [Identifiers](/api/graphql-api/identifiers) |
-| Money fields | numeric | may serialise as strings — render the `formatted*` fields either way |
-| Action results | JSON body with `success` / `message` | select the payload's **value field** (`cartId`, `orderId`, `success`) — not `id` |
-
-
-
----
-
-# Cart & Checkout mapping
-URL: /api/rest-graphql-mapping/shop/cart-checkout
-
----
-outline: false
----
-
-# Cart & Checkout mapping
-
-The cart and checkout flow is a sequence — the same on both transports. The difference is naming: REST uses one path per step; GraphQL wraps each step as a mutation (most prefixed `create…`) and reads as a query.
-
-Auth for this flow: a **guest** cart uses the cart token as the Bearer; a **logged-in** customer uses their customer token. See [Auth & Context](/api/rest-graphql-mapping/shop/auth-context).
-
-## Cart
-
-| Capability | REST | GraphQL |
-|---|---|---|
-| Create guest cart token | `POST /api/shop/cart-tokens` | `createCartToken` |
-| Read cart | `POST /api/shop/cart` | `createReadCart` |
-| Add item | `POST /api/shop/cart/add-to-cart` | `createAddProductInCart` |
-| Update item quantity | `PUT /api/shop/cart/update-cart-item` | `createUpdateCartItem` |
-| Remove item | `POST /api/shop/cart/remove-cart-item` | `createRemoveCartItem` |
-| Apply coupon | `POST /api/shop/cart/apply-coupon` | `createApplyCoupon` |
-| Remove coupon | `POST /api/shop/cart/remove-coupon` | `createRemoveCoupon` |
-| Merge guest cart on login | `POST /api/shop/cart/merge-cart` | `createMergeCart` |
-| Upload customizable-option file | `POST /api/shop/cart/upload-customizable-file` | — REST only (binary upload) |
-
-## Checkout
-
-| Capability | REST | GraphQL |
-|---|---|---|
-| Read saved addresses | `GET /api/shop/checkout/get-addresses` | `collectionGetCheckoutAddresses` |
-| Set billing / shipping address | `POST /api/shop/checkout/set-billing-address` (or `set-shipping-address`) | `createCheckoutAddress` |
-| Get shipping methods (rates) | `GET /api/shop/checkout/get-shipping-methods` | `collectionShippingRates` |
-| Set shipping method | `POST /api/shop/checkout/set-shipping-method` | `createCheckoutShippingMethod` |
-| Get payment methods | `GET /api/shop/checkout/get-payment-methods` | `collectionPaymentMethods` |
-| Set payment method | `POST /api/shop/checkout/set-payment-method` | `createCheckoutPaymentMethod` |
-| Place order | `POST /api/shop/checkout/place-order` | `createCheckoutOrder` |
-
-::: warning Two things every checkout client must know
-- **Shipping rates are empty until an address is saved.** Call set-address first; only then do get-shipping-methods / get-payment-methods return options.
-- **`createCheckoutAddress` input is flat**, not nested — `billingFirstName`, `billingAddress`, `billingCountry`, `billingPostcode`, `useForShipping`, and the `shipping*` equivalents. A nested `{ billing {}, shipping {} }` is rejected.
-:::
-
-## Offsite payment redirect
-
-For gateway methods (Stripe, PayU, PhonePe, Razorpay, PayPal), **set payment method** returns a non-null `paymentGatewayUrl` — redirect the shopper there, and the order is created when they return to the success URL. On-site methods (`cashondelivery`, `moneytransfer`) return `null` and go straight to place-order. See the [Checkout workflow](/api/workflows/shop/checkout).
-
-
-
----
-
-# Catalog mapping — products, categories, attributes
-URL: /api/rest-graphql-mapping/shop/catalog
-
----
-outline: false
----
-
-# Catalog mapping — products, categories, attributes
-
-The catalog is where REST and GraphQL differ most. REST puts filters in the query string; GraphQL packs them into one JSON `filter:` string and uses typed `sortKey`/`reverse` + cursor arguments.
-
-## Products — filters
-
-| Concept | REST | GraphQL |
-|---|---|---|
-| Full-text search | `GET /api/shop/products?query=shirt` | `products(query: "shirt")` |
-| Scope to a category | `?category_id=N` (alias `?categoryId=N`) | `filter: "{\"category_id\":\"N\"}"` |
-| Price range | `?price=10,200` — or `?price_from=10&price_to=200` | `filter: "{\"price\":\"10,200\"}"` |
-| New products | `?new=1` | `filter: "{\"new\":1}"` |
-| Featured products | `?featured=1` | `filter: "{\"featured\":1}"` |
-| Product type | `?type=configurable` | `filter: "{\"type\":\"configurable\"}"` |
-| Attribute facet (color/size/brand/…) | `?color=3&size=6` (or `?filter[color]=3`) | `filter: "{\"color\":\"3\",\"size\":\"6\"}"` |
-| Multiple option ids for one facet | `?color=1,2,3` | `filter: "{\"color\":\"1,2,3\"}"` |
-
-- The `price` value is `"{min},{max}"` — the comma splits min from max, **not** a thousands separator (`?price=10,200` = min 10, max 200).
-- Any key that isn't reserved is a filterable attribute — new attributes (`material`, `pattern`, …) work with no schema change on either transport.
-- Discover filterable attributes + option ids from [Get Attributes](/api/rest-api/shop/attributes/get-attributes) (`isFilterable: 1`).
-
-## Products — sort & pagination
-
-| Concept | REST | GraphQL |
-|---|---|---|
-| Sort | `?sort=price-asc` (or `?sort=price&order=asc`) | `sortKey: "PRICE", reverse: false` |
-| Sort — newest | `?sort=created_at-desc` | `sortKey: "CREATED_AT", reverse: true` |
-| Sort — name | `?sort=name-asc` | `sortKey: "TITLE", reverse: false` |
-| Page size | `?per_page=30` (max 50) | `first: 30` |
-| Next page | `?page=2` | `after: "<endCursor>"` |
-| Total count | `X-Total-Count` response header | `pageInfo` / `totalCount` |
-
-Full parameter and sort-token list: [Search Products (REST)](/api/rest-api/shop/products/search-product) · [Search Products (GraphQL)](/api/graphql-api/shop/queries/search-products).
-
-## Products — read
-
-| Capability | REST | GraphQL |
-|---|---|---|
-| List / search | `GET /api/shop/products` | `products` |
-| Single product (by id) | `GET /api/shop/products/{id}` | `product(id: N)` |
-| Single product (by url_key) | — | `product(urlKey: "slug")` — cross-locale lookup, GraphQL only |
-
-## Categories
-
-| Concept | REST | GraphQL |
-|---|---|---|
-| Flat list | `GET /api/shop/categories` | `categories` (cursor) |
-| **Children of a category** | `?parent_id=N` (alias `?parentId=N`) | `treeCategories(parentId: N)` — **not** `categories`; the `categories` field has **no** `parentId` argument |
-| Nested tree | `GET /api/shop/category-trees` | `treeCategories(parentId: N)` — omit `parentId` for roots |
-| Single category | `GET /api/shop/categories/{id}` | `category(id: N)` |
-
-::: warning The #1 catalog mismatch
-`categories(parentId:)` does **not** exist. To get a category's children, use `treeCategories(parentId: N)` in GraphQL, or `?parent_id=N` in REST. Both list endpoints only return active (status = 1) categories.
-:::
-
-## Attributes
-
-| Capability | REST | GraphQL |
-|---|---|---|
-| List attributes | `GET /api/shop/attributes` | `attributes` |
-| Attribute options | `GET /api/shop/attribute-options` | `attributeOptions` |
-
-Attributes are the source for the facet filter sidebar — read them to learn which filter keys and option ids the product filters above accept.
-
-
-
----
-
-# Customer Account mapping
-URL: /api/rest-graphql-mapping/shop/customer-account
-
----
-outline: false
----
-
-# Customer Account mapping
-
-Everything behind a logged-in customer's account. All of these require the customer Bearer token (see [Auth & Context](/api/rest-graphql-mapping/shop/auth-context)). GraphQL reads are queries; writes are `create…` / `update…` / `delete…` mutations.
-
-## Profile
-
-| Capability | REST | GraphQL |
-|---|---|---|
-| Get profile | `GET /api/shop/customers/get` | `readCustomerProfile` |
-| Update profile | `PUT /api/shop/customer-profile-updates/{id}` | `updateCustomerProfile` |
-| Delete profile | `POST /api/shop/customer-profile-deletes` | `deleteCustomerProfile` |
-
-## Addresses
-
-| Capability | REST | GraphQL |
-|---|---|---|
-| List addresses | `GET /api/shop/customers/get-customer-addresses` | `getCustomerAddresses` |
-| Create address | `POST /api/shop/customers/create-customer-address` | `createAddUpdateCustomerAddress` |
-| Update address | `PUT /api/shop/customers/update-customer-address` | `createAddUpdateCustomerAddress` |
-| Delete address | `DELETE /api/shop/customers/delete-customer-address` | `deleteCustomerAddress` |
-
-## Orders
-
-| Capability | REST | GraphQL | Filters |
-|---|---|---|---|
-| List orders | `GET /api/shop/customer-orders` | `customerOrders` | `status` (pending/processing/completed/canceled/closed/fraud) |
-| Order detail | `GET /api/shop/customer-orders/{id}` | `customerOrder(id:)` | detail lookup needs the **IRI** `id`, not `incrementId` |
-| Cancel order | `POST /api/shop/customer-orders/{id}/cancel` | `createCancelOrder` | |
-| Reorder | `POST /api/shop/customer-orders/{id}/reorder` | `createReorderOrder` | |
-
-## Wishlist
-
-| Capability | REST | GraphQL |
-|---|---|---|
-| List | `GET /api/shop/wishlists` | `wishlists` |
-| Single | `GET /api/shop/wishlists/{id}` | `wishlist(id:)` |
-| Add / toggle | `POST /api/shop/wishlists` | `toggleWishlist` |
-| Move to cart | `POST /api/shop/wishlists/move-to-cart` | `moveWishlistToCart` |
-| Remove | `DELETE /api/shop/wishlists/{id}` | `deleteWishlist` |
-
-## Compare
-
-| Capability | REST | GraphQL |
-|---|---|---|
-| List | `GET /api/shop/compare-items` | `compareItems` |
-| Add | `POST /api/shop/compare-items` | `createCompareItem` |
-| Remove | `DELETE /api/shop/compare-items/{id}` | `deleteCompareItem` |
-| Clear all | `POST /api/shop/delete-all-compare-items` | `createDeleteAllCompareItems` |
-
-## Downloadable products
-
-| Capability | REST | GraphQL | Filters |
-|---|---|---|---|
-| List purchased | `GET /api/shop/customer-downloadable-products` | `customerDownloadableProducts` | `status` |
-
-## Product reviews
-
-| Capability | REST | GraphQL | Filters |
-|---|---|---|---|
-| List a product's reviews | `GET /api/shop/product-reviews` | `productReviews` | `product_id` (required), `status` (default `approved`), `rating` (1–5) |
-| List own reviews | `GET /api/shop/customer-reviews` | `customerReviews` | |
-| Create review | `POST /api/shop/product-reviews` | `createProductReview` | |
-| Update review | `PATCH /api/shop/product-reviews/{id}` | `updateProductReview` | |
-| Delete review | `DELETE /api/shop/product-reviews/{id}` | `deleteProductReview` | |
-
-## Returns (RMA)
-
-| Capability | REST | GraphQL | Filters |
-|---|---|---|---|
-| List returns | `GET /api/shop/returns` | `customerReturns` | `status` (RMA status id) |
-| View return | `GET /api/shop/returns/{id}` | `customerReturn(id:)` | |
-| Returnable items | `GET /api/shop/returns/returnable-items` | `returnableItems` | |
-| Return reasons | `GET /api/shop/returns/reasons` | `returnReasons` | |
-| Create return | `POST /api/shop/returns` | `createCustomerReturn` | |
-| Cancel / reopen / close | `POST /api/shop/returns/{id}/…` | `cancelCustomerReturn` / `reopenCustomerReturn` / `closeCustomerReturn` | |
-| Send message | `POST /api/shop/returns/{id}/messages` | `sendCustomerReturnMessage` | |
-
-## EU withdrawal
-
-| Capability | REST | GraphQL |
-|---|---|---|
-| List withdrawals | `GET /api/shop/eu-withdrawals` | `euWithdrawals` |
-| View withdrawal | `GET /api/shop/eu-withdrawals/{id}` | `euWithdrawal(id:)` |
-| File withdrawal | `POST /api/shop/eu-withdrawals` | `createEuWithdrawal` |
-| File as guest | `POST /api/shop/eu-withdrawals/guest` | `createGuestEuWithdrawal` |
-
-## GDPR requests
-
-| Capability | REST | GraphQL | Filters |
-|---|---|---|---|
-| List own requests | `GET /api/shop/gdpr-requests` | `gdprRequests` | sort `id` \| `created_at`, `order` |
-| View request | `GET /api/shop/gdpr-requests/{id}` | `gdprRequest(id:)` | |
-| Raise request | `POST /api/shop/gdpr-requests` | `createGdprRequest` | |
-| Revoke request | `POST /api/shop/gdpr-requests/{id}/revoke` | `revokeGdprRequest` | |
-| Delete request | `DELETE /api/shop/gdpr-requests/{id}` | `deleteGdprRequest` | |
-
-::: tip Verify a REST path before hard-coding it
-GraphQL operation names above are exact. A few REST sub-paths (returns actions, address verbs) vary by build — open the endpoint's own page (linked from the [Customer Account](/api/rest-api/shop/customers/) sidebar) to confirm the precise route and body.
-:::
-
-
-
----
-
 # Setup & Configuration
 URL: /api/setup
 
@@ -133848,7 +133565,7 @@ URL: /api/sorting
 
 # Sorting
 
-How to sort and filter list endpoints. The mechanics are the same across every Shop list, so endpoint pages don't repeat them. For translating a specific call between transports, see [API Mapping](/api/rest-graphql-mapping/).
+How to sort and filter list endpoints. The mechanics are the same across every Shop list, so endpoint pages don't repeat them.
 
 ## Sorting
 
@@ -133871,10 +133588,46 @@ GET /api/shop/products?sort=name&order=desc
 
 String sorts are case-insensitive.
 
+**Example** — cheapest first:
+
+```bash
+curl -X GET "https://your-domain.com/api/shop/products?sort=price-asc&per_page=2" \
+  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx"
+```
+
+```json
+[
+  { "id": 7, "sku": "BASICTEE", "name": "Basic Tee", "price": "12.00" },
+  { "id": 3, "sku": "CANVASCAP", "name": "Canvas Cap", "price": "15.00" }
+]
+```
+
 ### GraphQL
 
 ```graphql
-products(sortKey: PRICE, reverse: false) { edges { node { id } } }
+query {
+  products(sortKey: PRICE, reverse: false, first: 2) {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}
+```
+
+```json
+{
+  "data": {
+    "products": {
+      "edges": [
+        { "node": { "id": "/api/shop/products/7", "name": "Basic Tee" } },
+        { "node": { "id": "/api/shop/products/3", "name": "Canvas Cap" } }
+      ]
+    }
+  }
+}
 ```
 
 `sortKey` is the field in upper-case (`NAME`, `PRICE`, `CREATED_AT`, `UPDATED_AT`, `ID`); `reverse: true` = descending. So REST `?sort=price-desc` ≡ GraphQL `sortKey: PRICE, reverse: true`.
@@ -133904,20 +133657,24 @@ The same filters go into a single JSON-encoded `filter` argument:
 
 ```graphql
 products(filter: "{\"type\":\"configurable\",\"category_id\":2,\"price\":\"10,200\",\"new\":1}") {
-  edges { node { id name } }
+  edges {
+    node {
+      id
+      name
+    }
+  }
 }
 ```
 
-This is the one shape that does not carry over literally between transports — REST spreads filters across query params, GraphQL packs them into the `filter` string. The [Catalog mapping](/api/rest-graphql-mapping/shop/catalog) has the full side-by-side.
+This is the one shape that does not carry over literally between transports — REST spreads filters across query params, GraphQL packs them into the `filter` string.
 
 ## Category children — a common trip-up
 
-REST fetches a category's children with `?parent_id=<id>`. GraphQL has **no `parentId` argument on `categories`** — children come from `treeCategories(parentId: <id>)`. Sending the REST shape into the GraphQL `categories` field returns everything, not the children. See the [Catalog mapping](/api/rest-graphql-mapping/shop/catalog).
+REST fetches a category's children with `?parent_id=<id>`. GraphQL has **no `parentId` argument on `categories`** — children come from `treeCategories(parentId: <id>)`. Sending the REST shape into the GraphQL `categories` field returns everything, not the children.
 
 ## Related
 
 - [Pagination](/api/pagination) — paging the same list endpoints.
-- [API Mapping](/api/rest-graphql-mapping/) — side-by-side REST ↔ GraphQL for a specific call.
 
 
 
@@ -133932,7 +133689,6 @@ URL: /api/storefront-api-key-management-guide
 
 Bagisto uses **API keys** to authenticate requests to your storefront and shop API endpoints. Think of your API key as a secure password that identifies your application to Bagisto.
 
-> **⚡ Quick Fact:** Storefront API keys are used for public API access and read-only operations on product catalogs, categories, and storefront data.
 
 **Header Format:**
 ```
@@ -133949,8 +133705,8 @@ curl -X GET "https://your-domain.com/api/shop/products" \
 
 - 🔓 **Public APIs Only** - Storefront keys are intended for public, read-only access
 - 👤 **Customer Operations** - Use Bearer tokens (from authentication) for customer-specific operations
-- 👨‍💼 **Admin Operations** - Use admin Bearer tokens for administrative operations
 - 📊 **Rate Limited** - Each key has configurable rate limits to protect your API
+- 🔄 **Never Expires by Default** - A generated key stays valid until you rotate or deactivate it. Rotating issues a fresh key (valid 12 months) and **invalidates the old one** — update your clients with the new key when you rotate.
 
 ---
 
@@ -135535,7 +135291,6 @@ Before building, read [Authentication](/api/authentication) (the credential mode
 ## Start here
 
 - **[Build a Storefront](/api/workflows/shop/build-a-storefront)** — the complete blueprint: every screen (homepage, catalog, product detail, CMS, themes, account) mapped to its API. Read this first for the whole picture, then drill into a focused flow below.
-- Translating a REST call to GraphQL (or vice-versa)? The [API Mapping](/api/rest-graphql-mapping/) has the side-by-side tables per area.
 
 ## Focused flows
 
@@ -135601,7 +135356,7 @@ flowchart TD
 | 4 | List / filter / sort products | [GET products](/api/rest-api/shop/products/get-products) · [search](/api/rest-api/shop/products/search-product) · [GraphQL](/api/graphql-api/shop/product/) | a category or search term | `?type` `?category_id` `?price` `?new` `?featured` `?<attr>` + `?sort` + `?page`/`?per_page` |
 | 5 | Single product | [GET single product](/api/rest-api/shop/products/get-product) · [GraphQL](/api/graphql-api/shop/product/) | a product id (REST) or `urlKey` (GraphQL) | Full detail — variants, images, price, sub-resources |
 
-> **GraphQL equivalents:** the fields are `categories`, `treeCategories(parentId:)` (children — **not** a `parentId` arg on `categories`), `attributes`, `products`, and `product`. Filters go into a single JSON `filter:` string and sort into `sortKey`/`reverse`. The full side-by-side is on the [Catalog mapping](/api/rest-graphql-mapping/shop/catalog).
+> **GraphQL equivalents:** the fields are `categories`, `treeCategories(parentId:)` (children — **not** a `parentId` arg on `categories`), `attributes`, `products`, and `product`. Filters go into a single JSON `filter:` string and sort into `sortKey`/`reverse`.
 
 ## End-to-end sequence
 
@@ -135650,7 +135405,7 @@ The landing screen is built from admin-managed content, not just products:
 ## 2. Catalog
 
 - **Category page** — [Get Categories](/api/rest-api/shop/categories/get-categories) for the category, then list its products (step below) filtered by that category.
-- **Product listing** — [Get Products](/api/rest-api/shop/products/get-products), paginated with `?page=`, `?per_page=`, `?sort=`. Scope and filter it with `?category_id=`, `?price=10,200` (min,max), `?new=1`, `?featured=1`, `?type=`, and any attribute code (`?color=3&size=6`). The complete parameter list is on [Search Products](/api/rest-api/shop/products/search-product); the GraphQL equivalents (`filter:` string, `sortKey`/`reverse`) are in the [Catalog mapping](/api/rest-graphql-mapping/shop/catalog).
+- **Product listing** — [Get Products](/api/rest-api/shop/products/get-products), paginated with `?page=`, `?per_page=`, `?sort=`. Scope and filter it with `?category_id=`, `?price=10,200` (min,max), `?new=1`, `?featured=1`, `?type=`, and any attribute code (`?color=3&size=6`). The complete parameter list is on [Search Products](/api/rest-api/shop/products/search-product).
 - **Category children** — `?parent_id=N` (REST) or `treeCategories(parentId: N)` (GraphQL). The GraphQL `categories` field has **no** `parentId` argument.
 - **Search** — [Search Products](/api/rest-api/shop/products/search-product) — the same endpoint with `?query=`; composes with the filters above.
 - **Filters (faceting sidebar)** — [Get Attributes](/api/rest-api/shop/attributes/get-attributes) (`isFilterable: 1`) and [Attribute Options](/api/rest-api/shop/attributes/get-attribute-options) give you the filter codes and option ids to feed the product-listing filters above (color, size, brand, price).
@@ -135747,7 +135502,7 @@ flowchart TD
 | 6 | Apply coupon | [POST apply-coupon](/api/rest-api/shop/cart/apply-coupon) | an item in the cart | Remove with [remove-coupon](/api/rest-api/shop/cart/remove-coupon) |
 | 7 | Read cart | [GET get-cart](/api/rest-api/shop/cart/get-cart) · [GraphQL](/api/graphql-api/shop/cart) | any cart mutation | Totals, items, applied coupon |
 
-> **GraphQL equivalents:** the table links REST paths. Each step has a GraphQL operation (`createCartToken`, `createAddProductInCart`, `createUpdateCartItem`, `createApplyCoupon`, `createMergeCart`, `createReadCart`) — the full REST↔GraphQL list is on the [Cart & Checkout mapping](/api/rest-graphql-mapping/shop/cart-checkout).
+> **GraphQL equivalents:** the table links REST paths. Each step has a GraphQL operation (`createCartToken`, `createAddProductInCart`, `createUpdateCartItem`, `createApplyCoupon`, `createMergeCart`, `createReadCart`).
 
 ## End-to-end sequence
 
@@ -135809,7 +135564,7 @@ flowchart TD
 | 7 | Set payment method | [POST set-payment-method](/api/rest-api/shop/checkout/set-payment-method) | a chosen payment method | |
 | 8 | Place order | [POST place-order](/api/rest-api/shop/checkout/place-order) · [GraphQL](/api/graphql-api/shop/checkout) | payment method set | Returns the created order |
 
-> **GraphQL equivalents:** the table links REST paths. Each step has a GraphQL operation (`createCheckoutAddress`, `collectionShippingRates`, `createCheckoutShippingMethod`, `collectionPaymentMethods`, `createCheckoutPaymentMethod`, `createCheckoutOrder`) — the full REST↔GraphQL list is on the [Cart & Checkout mapping](/api/rest-graphql-mapping/shop/cart-checkout).
+> **GraphQL equivalents:** the table links REST paths. Each step has a GraphQL operation (`createCheckoutAddress`, `collectionShippingRates`, `createCheckoutShippingMethod`, `collectionPaymentMethods`, `createCheckoutPaymentMethod`, `createCheckoutOrder`).
 
 ## Payment methods & completing the order
 
@@ -135885,7 +135640,7 @@ flowchart TD
 | 8 | Wishlist | [list](/api/rest-api/shop/wishlist/list) · [toggle](/api/rest-api/shop/wishlist/toggle) · [move to cart](/api/rest-api/shop/wishlist/move-to-cart) · [GraphQL](/api/graphql-api/shop/wishlist/) | Channel-scoped |
 | 9 | Compare | [list](/api/rest-api/shop/compare/list) · [create](/api/rest-api/shop/compare/create) · [delete](/api/rest-api/shop/compare/delete) · [GraphQL](/api/graphql-api/shop/compare/) | Not channel-scoped |
 
-> **GraphQL equivalents:** `readCustomerProfile`, `customerOrders`, `wishlists` / `toggleWishlist`, `compareItems`, `productReviews`, plus the address mutations. The full REST↔GraphQL list is on the [Customer Account mapping](/api/rest-graphql-mapping/shop/customer-account).
+> **GraphQL equivalents:** `readCustomerProfile`, `customerOrders`, `wishlists` / `toggleWishlist`, `compareItems`, `productReviews`, plus the address mutations.
 
 ## Notes
 
