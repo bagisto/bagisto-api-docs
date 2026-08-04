@@ -126,43 +126,31 @@ export default defineConfig(({ command, mode }) => {
     },
 
     sidebar: [
-      {
-        text: 'Bagisto APIs',
-        collapsed: true,
-        items: [
-          { text: 'Introduction', link: '/api/introduction' },
-          { text: 'Setup', link: '/api/setup' },
-          { text: 'Authentication', link: '/api/authentication' },
-          { text: 'Storefront Keys', link: '/api/storefront-api-key-management-guide' },
-          { text: 'Rate Limiting', link: '/api/rate-limiting' },
-          { text: 'Status Codes', link: '/api/errors' },
-          { text: 'Pagination', link: '/api/pagination' },
-          { text: 'Sorting', link: '/api/sorting' },
           {
-            text: 'API Mapping',
-            collapsed: true,
-            link: '/api/rest-graphql-mapping/',
+            text: 'Getting Started',
+            collapsed: false,
             items: [
-              { text: 'Overview', link: '/api/rest-graphql-mapping/' },
-              {
-                text: 'Shop',
-                collapsed: true,
-                link: '/api/rest-graphql-mapping/shop/catalog',
-                items: [
-                  { text: 'Catalog', link: '/api/rest-graphql-mapping/shop/catalog' },
-                  { text: 'Cart & Checkout', link: '/api/rest-graphql-mapping/shop/cart-checkout' },
-                  { text: 'Customer Account', link: '/api/rest-graphql-mapping/shop/customer-account' },
-                  { text: 'Auth & Context', link: '/api/rest-graphql-mapping/shop/auth-context' },
-                ],
-              },
+              { text: 'Introduction', link: '/api/introduction' },
+              { text: 'Setup', link: '/api/setup' },
+              { text: 'Authentication', link: '/api/authentication' },
+              { text: 'Storefront Keys', link: '/api/storefront-api-key-management-guide' },
+            ],
+          },
+          {
+            text: 'Core Concepts',
+            collapsed: false,
+            items: [
+              { text: 'Rate Limiting', link: '/api/rate-limiting' },
+              { text: 'Status Codes', link: '/api/errors' },
+              { text: 'Pagination', link: '/api/pagination' },
+              { text: 'Sorting', link: '/api/sorting' },
             ],
           },
           {
             text: 'Build with AI',
             collapsed: true,
-            link: '/api/build-with-ai/',
             items: [
-              { text: 'Overview', link: '/api/build-with-ai/' },
+              { text: 'Introduction', link: '/api/build-with-ai/' },
               { text: 'Agent Skills', link: '/api/build-with-ai/agent-skills' },
               { text: 'MCP Server', link: '/api/build-with-ai/mcp-server' },
             ],
@@ -170,8 +158,8 @@ export default defineConfig(({ command, mode }) => {
           {
             text: 'Workflows',
             collapsed: true,
-            link: '/api/workflows/',
             items: [
+              { text: 'Introduction', link: '/api/workflows/' },
               {
                 text: 'Shop',
                 collapsed: true,
@@ -2354,8 +2342,6 @@ export default defineConfig(({ command, mode }) => {
               { text: 'Best Practices', link: '/api/rest-api/best-practices' },
             ]
           },
-        ]
-      }
     ],
 
     outline: {

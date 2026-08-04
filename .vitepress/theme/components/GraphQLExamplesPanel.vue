@@ -7,12 +7,8 @@
 
       <!-- Example Selector Dropdown -->
       <div class="example-selector">
-        <label for="example-select">Select Example:</label>
-        <select id="example-select" v-model="selectedExampleId" class="example-dropdown">
-          <option v-for="example in examples" :key="example.id" :value="example.id">
-            {{ example.title }}
-          </option>
-        </select>
+        <label class="example-selector-label">Select Example:</label>
+        <ExampleSelect :options="examples" v-model="selectedExampleId" />
       </div>
 
       <!-- Example Content -->
@@ -103,6 +99,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vitepress'
+import ExampleSelect from './ExampleSelect.vue'
 import { GRAPHQL_ENDPOINT, GRAPHQL_ADMIN_ENDPOINT, GRAPHQL_PLAYGROUND, GRAPHQL_ADMIN_PLAYGROUND } from '../config/api.config'
 import { normalizeGraphQLUrl, normalizeStorageUrl } from '../utils/url-normalizer'
 

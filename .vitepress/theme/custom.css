@@ -609,21 +609,23 @@
 .examples-drawer {
   position: fixed;
   top: 0;
-  right: 0;
   height: 100vh;
   width: min(92vw, 440px);
+  /* Animate with `right`, NOT `transform`: a transformed ancestor breaks the
+     anchoring of the native <select> option popup (it jumps to the top-left of
+     the page). Offscreen when closed, slides to 0 when open. */
+  right: calc(-1 * min(92vw, 440px));
   background: var(--vp-c-bg);
   border-left: 1px solid var(--vp-c-divider);
   z-index: 80;
   box-shadow: -8px 0 24px rgba(0, 0, 0, 0.2);
-  transform: translateX(100%);
-  transition: transform 0.28s ease;
+  transition: right 0.28s ease;
   overflow-y: auto;
   /* room at the top for the sticky close button so the panel never overlaps it */
   padding: 8px 18px 40px;
 }
 .examples-drawer.open {
-  transform: translateX(0);
+  right: 0;
 }
 /* Panel content sits BELOW the close button in the stack */
 .examples-drawer > .examples-sidebar {
@@ -646,6 +648,33 @@
   line-height: 1;
   color: var(--vp-c-text-1);
   cursor: pointer;
+}
+
+/* -----------------------------------------------------------------------
+   Top navbar crowding (≈768–1058px).
+   In this band VitePress keeps the full inline nav menu (5 external links +
+   search + language globe + theme toggle). They don't fit, so the bar wraps /
+   overlaps the sidebar. Collapse the inline menu into the hamburger across this
+   band exactly like VitePress already does below 768px — the links then live in
+   the nav overlay the hamburger opens. Search / globe / theme toggle stay inline.
+   ----------------------------------------------------------------------- */
+@media (min-width: 768px) and (max-width: 1170px) {
+  .VPNavBar .VPNavBarMenu {
+    display: none !important;
+  }
+  .VPNavBar .VPNavBarHamburger {
+    display: flex !important;
+  }
+  /* The "..." extra menu (appearance + social) is redundant once the hamburger
+     is shown — the same items live in the nav overlay the hamburger opens. */
+  .VPNavBar .VPNavBarExtra {
+    display: none !important;
+  }
+  /* VitePress force-hides the nav overlay >=768px; re-allow it in this band so
+     the hamburger actually reveals the collapsed links (only in DOM when open). */
+  .VPNavScreen {
+    display: block !important;
+  }
 }
 
 /* Mermaid diagram labels — only give descenders (g, p, y) room. Do NOT override

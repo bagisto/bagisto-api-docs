@@ -5,20 +5,17 @@
       type="button"
       :aria-expanded="open"
       aria-haspopup="listbox"
-      title="Translate this page"
+      :title="`Language: ${currentLabel}`"
+      :aria-label="`Language: ${currentLabel}`"
       @click="toggle"
     >
-      <svg class="translate-globe" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <svg class="translate-globe" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
         <path
           fill="none"
           stroke="currentColor"
           stroke-width="1.6"
           d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm0 0c2.5 2.4 3.75 5.4 3.75 9s-1.25 6.6-3.75 9c-2.5-2.4-3.75-5.4-3.75-9S9.5 5.4 12 3ZM3.5 9h17M3.5 15h17"
         />
-      </svg>
-      <span class="translate-label">{{ currentLabel }}</span>
-      <svg class="translate-caret" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-        <path fill="none" stroke="currentColor" stroke-width="1.8" d="m6 9 6 6 6-6" />
       </svg>
     </button>
 
@@ -301,16 +298,14 @@ onBeforeUnmount(() => {
 .translate-trigger {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  width: 36px;
   height: 36px;
-  padding: 0 8px;
+  padding: 0;
   border: 1px solid transparent;
   border-radius: 8px;
   background: transparent;
   color: var(--vp-c-text-2);
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1;
   cursor: pointer;
   transition: color 0.2s, background 0.2s;
 }
@@ -322,18 +317,6 @@ onBeforeUnmount(() => {
 
 .translate-globe {
   flex-shrink: 0;
-}
-
-.translate-label {
-  max-width: 130px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.translate-caret {
-  flex-shrink: 0;
-  opacity: 0.7;
 }
 
 .translate-panel {
