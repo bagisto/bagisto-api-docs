@@ -223,7 +223,13 @@ Pagination headers (`X-Total-Count`, `X-Page`, `X-Per-Page`, `X-Total-Pages`) ar
 - Resolve a localized state name for a given customer locale by following one of the `translations[]` IRIs.
 - Bulk-export every state for a CSV / SPA cache (use the **flat** collection with `?per_page=50`).
 
+## Best Practices
+
+- **Prefer the nested route for a picker** — `/api/shop/countries/{countryId}/states` returns just that country's states, while this flat collection pages through every state in the world.
+- **Match on `code`, not on the display name** — checkout stores the state code, and names change with the request locale.
+- **Cache alongside the country list** — the data is static reference data.
+
 ## Related Resources
 
 - [Countries](/api/rest-api/shop/countries/get-countries) — the parent resource; emits the same state objects inline under `Country.states[]`
-- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas)
+- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas) — how to dereference the path references in these payloads

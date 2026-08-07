@@ -27,7 +27,7 @@ examples:
     variables: |
       {
         "input": {
-          "id": "/api/shop/compare-items/38"
+          "id": "/api/shop/compare_items/38"
         }
       }
     response: |
@@ -85,7 +85,7 @@ Authorization: Bearer <accessToken>
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `id` | `ID!` | The IRI of the compare item to delete (e.g. `/api/shop/compare-items/606`). |
+| `id` | `ID!` | The IRI of the compare item to delete (e.g. `/api/shop/compare_items/606`). |
 | `clientMutationId` | `String` | Optional client-side mutation identifier for tracking. |
 
 ## Possible Returns

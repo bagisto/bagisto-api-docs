@@ -51,7 +51,7 @@ examples:
       }
     variables: |
       {
-        "id": "/api/shop/compare-items/37"
+        "id": "/api/shop/compare_items/37"
       }
     response: |
       {
@@ -135,13 +135,13 @@ Authorization: Bearer <accessToken>
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `id` | `ID!` | The IRI of the compare item (e.g. `/api/shop/compare-items/606`). |
+| `id` | `ID!` | The IRI of the compare item (e.g. `/api/shop/compare_items/606`). |
 
 ## Possible Returns
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | `ID!` | IRI identifier (e.g. `/api/shop/compare-items/606`). |
+| `id` | `ID!` | IRI identifier (e.g. `/api/shop/compare_items/606`). |
 | `_id` | `Int!` | Numeric identifier. |
 | `product` | `Product!` | Associated product with id, name, sku, price, description, etc. |
 | `product.reviews` | `ReviewCollection!` | Customer reviews left on the product. |

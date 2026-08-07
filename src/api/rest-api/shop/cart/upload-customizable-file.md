@@ -93,5 +93,5 @@ Send the token as the option's value on [Add to Cart](/api/rest-api/shop/cart/ad
 
 ## Related Resources
 
-- [Add to Cart](/api/rest-api/shop/cart/add-to-cart)
-- [Get Product](/api/rest-api/shop/products/get-product)
+- [Add to Cart](/api/rest-api/shop/cart/add-to-cart) — add a product of any type to the cart
+- [Get Product](/api/rest-api/shop/products/get-product) — one product's full detail with its relations inlined

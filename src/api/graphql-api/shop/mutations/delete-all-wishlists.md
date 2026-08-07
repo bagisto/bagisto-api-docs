@@ -43,7 +43,7 @@ The `createDeleteAllWishlists` mutation removes all items from the authenticated
 - Implement a "Clear All" button on the wishlist page
 - Reset the customer's wishlist state
 
-> **Note:** This is an authenticated-only operation. The customer is auto-detected from the Bearer token.
+The wishlist is resolved from the Bearer token, so there is nothing to identify in the input — the mutation always clears the calling customer's own wishlist.
 
 ## Authentication
 
@@ -61,13 +61,14 @@ Authorization: Bearer <accessToken>
 |----------|------|-------------|
 | `clientMutationId` | `String` | Optional client-side mutation identifier for tracking. |
 
-> **Note:** No additional input is required. Pass an empty input `{}`.
+Pass an empty input object; `clientMutationId` is the only field the mutation accepts.
 
 ## Possible Returns
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `deleteAllWishlists.message` | `String!` | Success message confirming deletion. |
-| `deleteAllWishlists.deletedCount` | `Int!` | Number of wishlist items that were removed. |
+| `deleteAllWishlists.id` | `ID!` | Identifier of the operation result. |
+| `deleteAllWishlists.message` | `String` | Message confirming the wishlist was cleared. |
+| `deleteAllWishlists.deletedCount` | `Int` | Number of items removed. `0` when the wishlist was already empty. |
 
-> **Note:** If the customer has no wishlist items, the mutation still succeeds and returns `deletedCount: 0` with the same success message. No error is thrown for an already-empty wishlist.
+Clearing an already-empty wishlist is not an error — the mutation succeeds and returns `deletedCount: 0` with the same message, so a "Clear All" button needs no guard against an empty list.

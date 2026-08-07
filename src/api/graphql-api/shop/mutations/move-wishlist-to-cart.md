@@ -88,7 +88,7 @@ The `moveWishlistToCart` mutation moves a product from the customer's wishlist d
 
 The item is removed from the wishlist after it is successfully added to the cart.
 
-> **Note:** `wishlistItemId` is the numeric `_id` of the wishlist item (not the IRI). The `quantity` field defaults to `1` if omitted.
+The mutation returns the **updated cart**, not the wishlist — so a client can re-render the cart from the response without a follow-up read.
 
 ## Authentication
 
@@ -110,6 +110,16 @@ Authorization: Bearer <accessToken>
 
 ## Possible Returns
 
+The payload is the cart the item landed in. These are the fields worth selecting; the full cart shape is documented on [Get Cart](/api/graphql-api/shop/queries/get-cart).
+
 | Field | Type | Description |
 |-------|------|-------------|
-| `wishlistToCart.message` | `String!` | Success message confirming the item was moved. |
+| `wishlistToCart.id` | `ID!` | IRI-style cart identifier. |
+| `wishlistToCart._id` | `Int` | Numeric cart id. |
+| `wishlistToCart.message` | `String` | Result message confirming the move. |
+| `wishlistToCart.success` | `Boolean` | Whether the move succeeded. |
+| `wishlistToCart.itemsCount` | `Int` | Line items in the cart after the move. |
+| `wishlistToCart.items` | `CartItemCursorConnection` | The cart's items, including the one just moved. |
+| `wishlistToCart.grandTotal` | `Float` | Recalculated grand total. |
+| `wishlistToCart.formattedGrandTotal` | `String` | The same total, currency-formatted. |
+| `wishlistToCart.cartToken` | `String` | Token identifying the cart. |

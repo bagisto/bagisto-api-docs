@@ -88,9 +88,7 @@ This mutation requires an authenticated customer — send the storefront key and
 | `customerReturnMessage.attachmentUrl` | `String` | Public URL of the attachment, or `null`. |
 | `customerReturnMessage.createdAt` | `DateTime!` | Message timestamp. |
 
-::: tip File attachments
-Attaching a file to a message is available over REST only, via a multipart `file` field — files cannot be transported over a JSON GraphQL request.
-:::
+Attaching a file to a message is REST-only, through a multipart `file` field — a JSON GraphQL request cannot carry a file. Send the text here, and use REST when the shopper attaches something.
 
 ## Related Resources
 

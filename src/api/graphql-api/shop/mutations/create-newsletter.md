@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: create-newsletter-basic
     title: Subscribe to Newsletter
-    description: Subscribe the authenticated customer to the newsletter on the current channel.
+    description: Subscribe an email address to the newsletter on the current channel. A customer token is optional and only links the subscription to that account.
     query: |
       mutation createNewsletter($input: createNewsletterInput!) {
         createNewsletter(input: $input) {
@@ -32,7 +32,7 @@ examples:
       }
     commonErrors:
       - error: UNAUTHENTICATED
-        cause: Missing or invalid Bearer token
+        cause: The storefront key header was missing or wrong
         solution: Login and provide a valid customer authentication token
       - error: invalid-email
         cause: The email address provided is not valid
@@ -75,7 +75,7 @@ examples:
       }
     commonErrors:
       - error: UNAUTHENTICATED
-        cause: Missing or invalid Bearer token
+        cause: The storefront key header was missing or wrong
         solution: Login and provide a valid customer authentication token
       - error: validation-error
         cause: The email field fails server-side validation
@@ -86,7 +86,7 @@ examples:
 
 ## About
 
-The `createNewsletter` mutation subscribes the authenticated customer to the store newsletter on the current channel. Use this mutation to:
+The `createNewsletter` mutation subscribes an email address to the store newsletter on the current channel. Use this mutation to:
 
 - Add newsletter opt-in to the storefront footer or account page
 - Re-subscribe a customer who previously unsubscribed
@@ -97,9 +97,9 @@ The subscription is scoped to the current channel.
 
 ## Authentication
 
-This mutation requires customer authentication:
+The mutation is public — the storefront key alone is enough, so a footer signup form works for guests.
 
-- **Authenticated customers**: Provide a valid customer authentication token in the `Authorization` header. Obtain this token via the [Customer Login API](/api/graphql-api/shop/mutations/customer-login).
+A customer token is optional. When one is sent, the subscription is linked to that customer's account; without it the row is stored as a guest subscription.
 
 ```
 Authorization: Bearer <accessToken>

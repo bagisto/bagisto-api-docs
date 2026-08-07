@@ -60,7 +60,7 @@ The administrative API for management operations:
 ## Quick Start
 
 ### 1. Installation
-See the [Installation Guide](/api/installation).**
+See the [Setup Guide](/api/setup).**
 
 ### 2. Enable Swagger UI 
 
@@ -302,14 +302,14 @@ The same token also drives checkout — pass it through the address, shipping-me
 
 > Logged-in customers (who send `Authorization: Bearer …`) do **not** need a cart token. Their cart is identified by the authenticated user, and any guest cart they previously held is merged into their account on login.
 
-> See the [Cart Token endpoint](/api/rest-api/shop/cart/cart-token) and [Add Product to Cart](/api/rest-api/shop/cart/add-product-in-cart) for full request/response shapes.
+> See the [Cart Token endpoint](/api/rest-api/shop/cart/create-cart) and [Add Product to Cart](/api/rest-api/shop/cart/add-to-cart) for full request/response shapes.
 
 ## What's Next?
 
 - 🛍️ [Shop API Resources](/api/rest-api/shop-resources) - Complete shop operations guide
-- 👨‍💼 [Cart & Checkout](/api/rest-api/cart-checkout) - Shopping cart and order management
-- 👤 [Customer Management](/api/rest-api/customers) - Customer profiles and addresses
-- 📦 [Product Management](/api/rest-api/products) - Product operations and details
+- 👨‍💼 [Cart & Checkout](/api/rest-api/shop/cart/) - Shopping cart and order management
+- 👤 [Customer Management](/api/rest-api/shop/customers/) - Customer profiles and addresses
+- 📦 [Products](/api/rest-api/shop/products/) - Catalog listing, search, and product detail
 - 🔐 [Authentication Guide](/api/rest-api/authentication) - Detailed auth methods
 - 💡 [Best Practices](/api/rest-api/best-practices) - Performance and security tips
 

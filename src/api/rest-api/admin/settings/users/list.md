@@ -118,4 +118,3 @@ Both the compound form `?sort=name-asc` and the split form `?sort=name&order=asc
 - `status` is `1` for an active admin (can sign in) and `0` for a deactivated one.
 - `image` is the stored relative avatar path; `imageUrl` is its fully-qualified public URL. Both are `null` for admins without an avatar.
 
-See the [Users overview](./) for field meanings and behaviour.

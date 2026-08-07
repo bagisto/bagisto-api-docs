@@ -174,7 +174,7 @@ Both endpoints return the same shape — the collection wraps an array of these 
 | `translation`     | string (IRI) \| null  | Channel translation for the request locale (single IRI, **not inline**)    |
 | `translations`    | array of IRI strings  | All locale translations                                                    |
 
-> Unlike `Attribute` / `Category`, the channel's `translation` is returned as an **IRI**, not an inline object. Follow it with `GET <iri>` to read `name`, `description`, `maintenanceModeText`, etc. See [IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas).
+Unlike attributes and categories, a channel's `translation` is a **path reference, not an inline object** — fetch it to read `name`, `description`, and `maintenanceModeText`. The channel object itself therefore carries no human-readable name. See [IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas) for how to dereference these paths.
 
 ## Use Cases
 
@@ -183,7 +183,14 @@ Both endpoints return the same shape — the collection wraps an array of these 
 - Read `homeSeo` for the home-page `<title>` and meta tags before any product is loaded.
 - Check `isMaintenanceOn` before showing the storefront; if `1`, fetch the `translation` IRI for the localized maintenance text.
 
+## Best Practices
+
+- **Read `code` first** — it is the value every other endpoint expects in `X-Channel`; the numeric `id` is not accepted there.
+- **Fetch the `translation` path for display text** — the channel object itself carries no name or description.
+- **Do not assume timestamps are set** — seeded channels return `null` for `createdAt` and `updatedAt`.
+- **Check `isMaintenanceOn` before rendering the storefront** — when it is `1`, the localised maintenance message lives in the channel translation.
+
 ## Related Resources
 
-- [Channel Translations](/api/rest-api/shop/channels/get-channel-translations)
-- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas)
+- [Channel Translations](/api/rest-api/shop/channels/get-channel-translations) — a channel's localised name and content
+- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas) — how to dereference the path references in these payloads

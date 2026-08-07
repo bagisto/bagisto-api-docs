@@ -60,7 +60,7 @@ examples:
 
 Logout a customer and invalidate their authentication tokens.
 
-> **Push Notifications:** The `deviceToken` field is only applicable if the [Bagisto Push Notification](https://bagisto.com/en/extensions/push-notifications-for-bagisto/) package is installed. If the customer logged in with a `deviceToken`, the same token must be passed here on logout to properly deregister the device and stop push notifications for that session. If the package is not installed, this field can be omitted.
+The `deviceToken` field applies only when the [Bagisto Push Notification](https://bagisto.com/en/extensions/push-notifications-for-bagisto/) package is installed. If the customer logged in with a `deviceToken`, the same token must be passed here on logout to properly deregister the device and stop push notifications for that session. If the package is not installed, this field can be omitted.
 
 ## Authentication
 

@@ -334,13 +334,11 @@ Use it to:
 - Render colour and image swatches from the merchant's own swatch configuration.
 - Localize filter and option labels.
 
-::: tip Do not build facets from `attributes`
-The [Get Attributes](/api/graphql-api/shop/queries/get-attributes) query lists **every** attribute in the catalog, filterable or not, and is not category-aware. `categoryAttributeFilters` returns only what belongs on that category's filter UI.
-:::
+Build the sidebar from this query rather than from [Get Attributes](/api/graphql-api/shop/queries/get-attributes). That one lists every attribute in the catalog, filterable or not, and is not category-aware, so it cannot tell you which facets belong on a given category.
 
 ## Authentication
 
-Public query — no customer token required. It still needs the storefront key like every shop call; see [Authentication](/api/graphql-api/shop/authentication).
+Public query — no customer token required. It still needs the storefront key like every shop call; see [Authentication](/api/graphql-api/authentication).
 
 If a customer **is** authenticated, `minPrice` / `maxPrice` are calculated against that customer's customer group, so group-specific pricing is reflected in the slider. Guests get the guest-group range.
 
@@ -358,16 +356,19 @@ If a customer **is** authenticated, `minPrice` / `maxPrice` are calculated again
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `edges` | `[CategoryAttributeFilterEdge!]!` | Array of filter edges. |
-| `edges.node` | `CategoryAttributeFilter!` | The filter (attribute) object. |
+| `edges` | `[CategoryAttributeFilterEdge]` | Array of filter edges. |
+| `edges.node` | `CategoryAttributeFilter` | The filter (attribute) object. |
 | `edges.cursor` | `String!` | Pagination cursor for this filter. |
-| `pageInfo` | `PageInfo!` | Pagination metadata. |
-| `pageInfo.hasNextPage` | `Boolean!` | Whether more filters exist after this page. |
-| `pageInfo.hasPreviousPage` | `Boolean!` | Whether filters exist before this page. |
+| `pageInfo` | `CategoryAttributeFilterPageInfo!` | Pagination metadata. |
+| `pageInfo.hasNextPage` | `Boolean` | Whether more filters exist after this page. |
+| `pageInfo.hasPreviousPage` | `Boolean` | Whether filters exist before this page. |
 | `pageInfo.startCursor` | `String` | Cursor of the first filter on this page. |
 | `pageInfo.endCursor` | `String` | Cursor of the last filter on this page. |
+| `totalCount` | `Int!` | Total number of filters available for the category. |
 
 ## CategoryAttributeFilter Fields
+
+The `is*` and `valuePer*` flags are returned as the **strings** `"1"` / `"0"`, not as GraphQL booleans — compare accordingly.
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -401,10 +402,6 @@ If a customer **is** authenticated, `minPrice` / `maxPrice` are calculated again
 | `translation` | `AttributeTranslationFilter` | Label for the current locale — exposes `locale` and `name`. |
 | `translations` | `AttributeTranslationFilterCursorConnection` | Labels for every locale. |
 
-::: warning Boolean-ish fields are strings
-`isFilterable`, `isComparable`, `isRequired` and the other `is*` / `valuePer*` fields return the **strings** `"1"` / `"0"`, not GraphQL booleans. Compare accordingly.
-:::
-
 ## Option Fields
 
 Each entry in `options.edges.node`:
@@ -427,11 +424,14 @@ Take `code` from the filter and `_id` from the chosen option, then pass them to 
 ```graphql
 query getProducts($filter: String) {
   products(first: 12, filter: $filter) {
+    totalCount
     edges {
       node {
-        id
+        _id
+        sku
         name
         formattedPrice
+        minimumPrice
       }
     }
   }
@@ -440,12 +440,17 @@ query getProducts($filter: String) {
 
 ```json
 {
-  "filter": "{\"category_id\":\"22\",\"color\":\"1\",\"price\":\"24.99,150\"}"
+  "filter": "{\"category_id\": \"22\", \"color\": \"1\"}"
 }
 ```
 
-The price range uses the `from,to` form and should stay inside the `minPrice`/`maxPrice` bounds returned here.
+Both values come from this query — `category_id` is the category you fetched the filters for, and `1` is the `_id` of a colour option in its `options` connection.
+
+Two things carry over from the products query:
+
+- **The price slider uses `price_from` and `price_to`**, not a single `from,to` string. Keep both inside the `minPrice` / `maxPrice` bounds returned here.
+- **A price bound above `0` excludes configurable and bundle products**, because the range matches each product's own `price` attribute and a parent's real price lives in its variants. See [Filter behaviour](/api/graphql-api/shop/queries/get-products#filter-behaviour).
 
 ## REST equivalent
 
-There is no dedicated REST endpoint. The same data is embedded in the category payload — `GET /api/shop/categories/{id}` returns `filterableAttributes` (each with its options and translations) plus the category's `minPrice` and `maxPrice`. See [Get Category](/api/rest-api/shop/categories/get-category).
+There is no dedicated REST endpoint. The same data is embedded in the category payload — `GET /api/shop/categories/{id}` returns `filterableAttributes` (each with its options and translations) plus the category's `minPrice` and `maxPrice`. See [Get Categories](/api/rest-api/shop/categories/get-categories).

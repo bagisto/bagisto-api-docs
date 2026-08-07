@@ -63,6 +63,7 @@ If GDPR data requests are disabled in the store's admin configuration, the mutat
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `id` | `ID!` | ✅ Yes | The request IRI, e.g. `/api/shop/gdpr-requests/12`. |
+| `clientMutationId` | `String` | ❌ No | Arbitrary string echoed back in the payload. |
 
 ## Possible Returns
 

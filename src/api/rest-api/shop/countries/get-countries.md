@@ -155,7 +155,14 @@ Each entry has the same fields as `/country-states/{id}` — see the [Country St
 - Resolve a country's localized display name from `translations[]` based on the customer's locale.
 - Chain to the country's states for a country/state cascade picker (use the [nested states endpoint](/api/rest-api/shop/countries/get-country-states) to skip refetching the country payload).
 
+## Best Practices
+
+- **Cache the list** — there are 254 countries and the set effectively never changes; refetching it on every checkout render wastes a round trip.
+- **Raise `per_page` to 50 and page through** — the default of 10 means 26 requests to collect the full list.
+- **Read the states from the country's own `states` block** — it is inline, so a country/state picker needs no second call per country.
+- **Send `X-Locale` rather than reading `translations`** — country names already follow the request locale.
+
 ## Related Resources
 
-- [Country States](/api/rest-api/shop/countries/get-country-states)
-- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas)
+- [Country States](/api/rest-api/shop/countries/get-country-states) — state and region rows for address forms
+- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas) — how to dereference the path references in these payloads

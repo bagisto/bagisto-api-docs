@@ -20,9 +20,7 @@ examples:
         "createdAt": "2026-06-25T10:30:00.000000Z",
         "updatedAt": "2026-06-25T11:05:00.000000Z",
         "successMessage": "Your GDPR data request has been revoked successfully.",
-        "customer": {
-          "_id": 7
-        }
+        "customer": "/api/shop/customers/7"
       }
     commonErrors:
       - error: 400 Bad Request
@@ -34,7 +32,7 @@ examples:
       - error: 404 Not Found
         cause: The request does not exist or is not owned by the authenticated customer
         solution: Only request IDs belonging to the logged-in customer can be revoked
-      - error: 401 Unauthorized
+      - error: 403 Forbidden
         cause: Missing or invalid customer Bearer token
         solution: Log in and provide a valid customer authentication token
 ---
@@ -86,8 +84,7 @@ If GDPR data requests are disabled in the store's admin configuration, the endpo
 | `createdAt` | string | ISO 8601 creation timestamp. |
 | `updatedAt` | string | ISO 8601 last update timestamp. |
 | `successMessage` | string | Confirmation message — present on create / revoke / delete results. |
-| `customer` | object | The customer who owns the request. |
-| `customer._id` | integer | Numeric customer ID of the owner. |
+| `customer` | string | Path of the owning customer, e.g. `/api/shop/customers/7`. Not a nested object. |
 
 ## Status Codes
 
@@ -95,13 +92,13 @@ If GDPR data requests are disabled in the store's admin configuration, the endpo
 |--------|---------|
 | `200 OK` | Request revoked. |
 | `400 Bad Request` | GDPR is disabled in the store's admin configuration. |
-| `401 Unauthorized` | Missing or invalid customer Bearer token. |
-| `403 Forbidden` | Missing or invalid storefront key. |
+| `401 Unauthorized` | Missing or invalid storefront key. |
+| `403 Forbidden` | Missing or invalid customer Bearer token. |
 | `404 Not Found` | The request does not exist or is not owned by the customer. |
 | `422 Unprocessable Entity` | The request is not in a `pending` or `processing` state. |
 
 ## Related Resources
 
-- [Raise a GDPR Request](/api/rest-api/shop/gdpr-requests/create-gdpr-request)
-- [Delete a GDPR Request](/api/rest-api/shop/gdpr-requests/delete-gdpr-request)
-- [GDPR Requests Overview](/api/rest-api/shop/gdpr-requests/)
+- [Raise a GDPR Request](/api/rest-api/shop/gdpr-requests/create-gdpr-request) — raise a delete or update request
+- [Delete a GDPR Request](/api/rest-api/shop/gdpr-requests/delete-gdpr-request) — remove the request record
+- [GDPR Requests Overview](/api/rest-api/shop/gdpr-requests/) — the GDPR menu overview, including the setting that gates it

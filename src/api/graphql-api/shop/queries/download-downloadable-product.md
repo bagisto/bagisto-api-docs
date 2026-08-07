@@ -80,7 +80,7 @@ curl -X GET "https://your-domain.com/api/shop/customer-downloadable-products/403
 
 ## Implementation Guide
 
-> **Important:** When implementing the purchased product download in your application, do **not** directly save the response to a file (i.e. do not use `-o` on the first request). Instead, first make the request **without** `-o` and check the response. If authentication fails, the API returns a JSON error response instead of the file content. If you blindly save with `-o`, you may end up saving the error JSON as your "downloaded file."
+When implementing the download in a client, do **not** save the response straight to a file — that is, do not pass `-o` on the first request. Instead, first make the request **without** `-o` and check the response. If authentication fails, the API returns a JSON error response instead of the file content. If you blindly save with `-o`, you may end up saving the error JSON as your "downloaded file."
 
 **Recommended two-step approach:**
 

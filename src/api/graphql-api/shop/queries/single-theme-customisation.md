@@ -295,7 +295,7 @@ Retrieve HTML/CSS static content sections for rendering on pages.
 
 ## Related Resources
 
-- [Theme Customisations](/api/graphql-api/shop/queries/get-theme-customisations) - Get all theme customisations with pagination
+- [Theme Customisations](/api/graphql-api/shop/queries/theme-customisations) - Get all theme customisations with pagination
 - [Get Category](/api/graphql-api/shop/queries/get-category) - Query individual category details
 - [Get Products](/api/graphql-api/shop/queries/get-products) - Query products
 - [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation

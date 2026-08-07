@@ -586,5 +586,5 @@ query {
 
 **Related Topics:**
 - [Best Practices](/api/graphql-api/best-practices) - General API best practices
-- [Performance](/getting-started/performance) - Optimize API performance
+- [Best Practices](/api/rest-api/best-practices) - Optimize API usage
 - [Authentication](/api/graphql-api/authentication) - Secure your requests

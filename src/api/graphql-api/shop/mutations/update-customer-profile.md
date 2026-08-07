@@ -137,7 +137,7 @@ examples:
 
 Update the authenticated customer's profile information. All input fields are optional — send only the fields you want to change.
 
-> **Note on password fields:** `currentPassword`, `password`, and `confirmPassword` are **only required when the customer wants to change their password**. For a regular profile update (name, email, phone, date of birth, etc.) you can omit all three. If you do change the password, you must send all three together — `currentPassword` to verify the existing password, plus `password` and `confirmPassword` for the new password (which must match).
+The password fields `currentPassword`, `password`, and `confirmPassword` are **only required when the customer is changing their password**. For a regular profile update (name, email, phone, date of birth, etc.) you can omit all three. If you do change the password, you must send all three together — `currentPassword` to verify the existing password, plus `password` and `confirmPassword` for the new password (which must match).
 
 The same mutation also handles profile image updates via the `image` (base64 upload) or `deleteImage` (remove existing) fields.
 

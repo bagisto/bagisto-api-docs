@@ -28,10 +28,10 @@ examples:
       - error: 400 Bad Request
         cause: The message field is missing
         solution: Provide a non-empty message
-      - error: 401 Unauthorized
+      - error: 403 Forbidden
         cause: Missing or invalid customer Bearer token
         solution: Log in and provide a valid customer authentication token
-      - error: 403 Forbidden
+      - error: 401 Unauthorized
         cause: Storefront key is missing or invalid
         solution: Provide a valid X-STOREFRONT-KEY header
       - error: 404 Not Found
@@ -77,9 +77,7 @@ This endpoint requires an authenticated customer — send the storefront key and
 | `return_id` | integer | Yes | Id of the return to add the message to. Must belong to the authenticated customer. |
 | `message` | string | Yes | The message text. |
 
-::: tip File attachments
-An optional file can be attached to the message by sending the request as `multipart/form-data` with a `file` field alongside the fields above.
-:::
+A file can be attached to the message by sending the request as `multipart/form-data` with a `file` field alongside the fields above, instead of a JSON body.
 
 ## Response Fields (201 Created)
 
@@ -99,12 +97,12 @@ An optional file can be attached to the message by sending the request as `multi
 |--------|---------|
 | `201 Created` | Message added to the return conversation. |
 | `400 Bad Request` | `message` is missing. |
-| `401 Unauthorized` | Missing or invalid customer Bearer token. |
-| `403 Forbidden` | Missing or invalid storefront key. |
+| `401 Unauthorized` | Missing or invalid storefront key. |
+| `403 Forbidden` | Missing or invalid customer Bearer token. |
 | `404 Not Found` | The return does not exist or is not the customer's. |
 
 ## Related Resources
 
-- [List Return Messages](/api/rest-api/shop/returns/list-return-messages)
-- [View Return](/api/rest-api/shop/returns/view-return)
-- [Returns Overview](/api/rest-api/shop/returns/)
+- [List Return Messages](/api/rest-api/shop/returns/list-return-messages) — the conversation thread on a return
+- [View Return](/api/rest-api/shop/returns/view-return) — one return with its status flags
+- [Returns Overview](/api/rest-api/shop/returns/) — the returns menu overview, including the settings that gate it

@@ -159,9 +159,7 @@ examples:
 
 The list endpoint at `GET /api/shop/products` doubles as the **search & filter** endpoint. Every storefront facet — keyword search, category, price range, attribute filters, sort, "new" / "featured" — is just a query parameter. This page is the complete reference for those parameters.
 
-::: tip Using GraphQL too?
-The GraphQL `products` field expresses these same filters differently (JSON `filter:` string, `sortKey`/`reverse`, cursor pagination). See [REST ↔ GraphQL parameter mapping](/api/graphql-api/shop/queries/get-products#rest-graphql-parameter-mapping) for the side-by-side table.
-:::
+The GraphQL `products` field expresses the same filters differently — a JSON `filter:` string, `sortKey` / `reverse`, and cursor pagination instead of query parameters. See [List Products](/api/graphql-api/shop/queries/get-products) on the GraphQL side.
 
 ## Endpoint
 
@@ -195,7 +193,7 @@ These names are interpreted by the search/sort/pagination layer — never as att
 
 ## Attribute filters (anything else)
 
-> **Any query parameter not listed above is treated as a filterable attribute.** No schema changes are required when admins add new filterable attributes — the URL just works.
+Any query parameter not listed above is treated as a filterable attribute code. Nothing needs changing when a merchant adds a new filterable attribute — the parameter works as soon as the attribute exists.
 
 | Pattern                    | Example                            | Effect                                                                                                       |
 |----------------------------|------------------------------------|--------------------------------------------------------------------------------------------------------------|
@@ -244,7 +242,7 @@ GET /api/shop/products?
 
 `200 OK` — JSON array of card-level product objects (same shape as [Products](/api/rest-api/shop/products/get-products#card-level-fields)). Pagination headers always emitted.
 
-> An empty filter result returns an empty array `[]` with `200 OK` and `X-Total-Count: 0`. It does **not** 404.
+A filter that matches nothing returns an empty array with `200 OK` and `X-Total-Count: 0`. It does not 404.
 
 ## Common pitfalls
 
@@ -253,12 +251,12 @@ GET /api/shop/products?
 - Filtering by an attribute *code* but passing an option *label* (e.g. `?color=Red`) — values are matched against option **IDs**, not labels.
 - Reading the comma in `price` as a thousands separator — it isn't. `?price=10,200` is **min 10 / max 200**, not "10200". Never group digits (`?price=1,000` is invalid); write `?price=1000,5000`.
 - Combining `price` + `price_from`/`price_to` — pick one. The compound form wins if both are present.
+- Assuming an unknown `sort` token errors — it does not. `?sort=bogus-desc` answers `200` with the default catalog order, so a typo looks like "sorting is broken" rather than a rejected request.
 
 ## Related Resources
 
-- [REST ↔ GraphQL parameter mapping](/api/graphql-api/shop/queries/get-products#rest-graphql-parameter-mapping) — how these filters translate to GraphQL (`treeCategories`, `sortKey`/`reverse`, `price_from`/`price_to`)
 - [Products](/api/rest-api/shop/products/get-products) — same endpoint with no filters
 - [Single Product](/api/rest-api/shop/products/get-product) — fetch one product after the user picks a result
 - [Categories](/api/rest-api/shop/categories/get-categories) — discover category IDs for `?category_id=N`
 - [Attributes](/api/rest-api/shop/attributes/get-attributes) — discover filterable attribute codes
-- [Pagination](/api/rest-api/introduction#pagination)
+- [Pagination](/api/rest-api/introduction#pagination) — the page, per_page, and header conventions used here

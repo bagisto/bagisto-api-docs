@@ -49,7 +49,7 @@ examples:
 
 Locale-specific names for attributes. The single endpoint is the destination of the IRI strings emitted in the `translations[]` array of [`GET /api/shop/attributes/{id}`](/api/rest-api/shop/attributes/get-attributes) — for example `/api/shop/attribute_translations/23`.
 
-> ⚠️ The URL uses an **underscore**: `attribute_translations`, not `attribute-translations`.
+The URL uses an underscore — `attribute_translations`, not `attribute-translations`. It is the framework's default snake-case route, kept because the resource declares no explicit path.
 
 Most clients won't call this collection directly — they'll either:
 - read the inline `translation` object on the parent attribute (current locale only), or
@@ -114,5 +114,5 @@ You don't need to know the translation ID up front — read the `translations[]`
 ## Related Resources
 
 - [Attributes](/api/rest-api/shop/attributes/get-attributes) — returns inline `translation` for the request locale and `translations[]` IRIs for the rest
-- [Attribute Options](/api/rest-api/shop/attributes/get-attribute-options)
-- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas)
+- [Attribute Options](/api/rest-api/shop/attributes/get-attribute-options) — the flat collection of every option row
+- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas) — how to dereference the path references in these payloads

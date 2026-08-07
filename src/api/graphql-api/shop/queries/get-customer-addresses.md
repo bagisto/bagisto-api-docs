@@ -615,7 +615,7 @@ This query requires a valid customer authentication token in the `Authorization`
 | `createdAt` | DateTime | Creation timestamp |
 | `updatedAt` | DateTime | Last update timestamp |
 
-## cURL Example
+## Example with cURL
 
 ```bash
 curl -X POST "https://api-demo.bagisto.com/api/graphql" \

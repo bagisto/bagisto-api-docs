@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: get-product-by-id
     title: Get Product by ID
-    description: Retrieve a single product by its ID. `isInWishlist` / `isInCompare` need the customer Bearer token — see the field notes below.
+    description: Retrieve a single product by its ID. `isInWishlist` / `isInCompare` need the customer Bearer token and are `"0"` for guests.
     query: |
       query getProduct($id: ID!) {
         product(id: $id) {
@@ -1626,81 +1626,36 @@ examples:
 
 ## About
 
-The `product` query retrieves a single product by its unique identifier, SKU, or URL key. Use this query to:
+The `product` query returns one product's full detail, looked up by ID, SKU, or URL key. Use it to:
 
-- Fetch individual products for detail pages
-- Look up products by different identifier types (ID, SKU, URL)
-- Display complete product information including images, variants, and attributes
-- Show product pricing, descriptions, and SEO metadata
-- Retrieve inventory and availability status
-- Build product-specific API integrations
-- Generate product detail pages with all metadata
+- Render a product detail page
+- Resolve a storefront slug straight to a product, with no ID lookup first
+- Read pricing, descriptions, images, variants, and SEO metadata in one call
+- Read the type-specific structure of a bundle, grouped, downloadable, or booking product
 
-This query supports multiple lookup methods (ID, SKU, or URL key) and can return minimal data for previews or comprehensive data for full product detail pages, making it flexible for various use cases.
+Every product type shares the same core fields — `name`, `sku`, `price`, `images`, `attributeValues` — and is fetched with the same query. What differs is the type-specific connection each one populates: `variants` and `superAttributeOptions` for configurable, `bundleOptions` for bundle, `groupedProducts` for grouped, `downloadableLinks` for downloadable, and `bookingProducts` for booking. Booking goes one level further — each of its five sub-types (Appointment, Rental, Default, Table, Event) exposes a different slot relationship, which is why each has its own dropdown example.
 
-::: info Why Booking Product Types Are Documented Separately
-All product types (simple, configurable, grouped, bundle, downloadable, virtual) share the same core fields (`name`, `sku`, `price`, `images`, `variants`, `attributeValues`, etc.) and can be queried using the same base query structure. However, **booking products** are documented with separate examples because each booking type (Appointment, Rental, Default, Table, Event) exposes its own unique relationship and slot structure through the `bookingProducts` field. These sub-types have different fields and response shapes (e.g., `appointmentSlot`, `rentalSlot`, `defaultSlot`, `tableSlot`, `eventTickets`), so dedicated examples are provided to show how to query each one correctly.
-:::
+Select only the fields you need. The full field list is in [Product Fields Reference](#product-fields-reference) and [Product Relationships Reference](#product-relationships-reference) below.
 
 ## Arguments
 
+Supply exactly one of `id`, `sku`, or `urlKey` to identify the product.
+
 | Argument | Type | Description |
 |----------|------|-------------|
-| `id` | `ID` | Product's unique system identifier. Use this for direct lookups. |
-| `sku` | `String` | Stock Keeping Unit. Alternative identifier for product lookup. |
-| `urlKey` | `String` | URL-friendly product slug. Alternative lookup method. Matched across **all locales** — a slug created in any locale resolves regardless of the request's `locale`. |
-| `include_variants` | `Boolean` | Include product variants (colors, sizes, options). Default: `false` |
-| `include_images` | `Boolean` | Include product images. Default: `false` |
-| `include_attributes` | `Boolean` | Include custom product attributes. Default: `true` |
-| `image_resolution` | `String` | Image quality: `thumbnail`, `medium`, `large`, `original`. Default: `large` |
-| `include_recommendations` | `Boolean` | Include related and recommended products. Default: `false` |
+| `id` | `ID` | Product identifier — IRI (`/api/shop/products/1`) or numeric (`1`). |
+| `sku` | `String` | Stock Keeping Unit. Alternative lookup. |
+| `urlKey` | `String` | URL-friendly product slug. Alternative lookup. Matched across **all locales** — a slug created in any locale resolves regardless of the request's `locale`. |
+| `locale` | `String` | Locale for translated values. Overrides the `X-Locale` header for this query. |
+| `channel` | `String` | Channel to read the product against. Overrides the `X-Channel` header for this query. |
 
-## Possible Returns
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | `ID!` | Unique product identifier. |
-| `name` | `String!` | Product display name. |
-| `sku` | `String!` | Stock Keeping Unit for inventory tracking. |
-| `urlKey` | `String!` | URL-friendly product slug for SEO. |
-| `type` | `String!` | Product type (simple, configurable, grouped, bundle). |
-| `description` | `String` | Full product description with formatting. |
-| `shortDescription` | `String` | Brief product summary. |
-| `price` | `Float!` | Base product price. |
-| `specialPrice` | `Float` | Promotional/discounted price if applicable. |
-| `superAttributeOptions` | `String (JSON)` | JSON-encoded array of configurable attribute options (e.g. color, size) with their available values. Only populated for **configurable** products — returns the attributes and selectable options that define the product's variants. |
-| `combinations` | `String (JSON)` | JSON-encoded object mapping variant product IDs to their attribute option combinations. Each key is a variant ID and the value contains the attribute option IDs that define that variant. Only populated for **configurable** products. |
-| `taxClass` | `String` | Tax classification for the product. |
-| `images` | `[ProductImage!]` | Array of product images with URLs and metadata. |
-| `images.url` | `String!` | Image URL. |
-| `images.altText` | `String` | Image alt text for accessibility. |
-| `images.position` | `Int` | Image order in gallery. |
-| `images.width` | `Int` | Image width in pixels. |
-| `images.height` | `Int` | Image height in pixels. |
-| `attributes` | `[ProductAttribute!]` | Custom product attributes and values. |
-| `variants` | `[ProductVariant!]` | Product variants (colors, sizes, options). |
-| `variants.sku` | `String!` | Variant SKU. |
-| `variants.price` | `Float!` | Variant-specific price. |
-| `inventory` | `InventoryInfo!` | Stock availability information. |
-| `inventory.stock` | `Int!` | Current stock quantity. |
-| `inventory.status` | `String!` | Stock status (in_stock, out_of_stock, low_stock). |
-| `categories` | `[Category!]!` | Categories this product belongs to. |
-| `tags` | `[String!]` | Product tags and labels. |
-| `seo` | `ProductSEO!` | SEO metadata. |
-| `status` | `String!` | Product status (active, draft, inactive). |
-| `visibility` | `String!` | Visibility status (visible, not visible, search only). |
-| `createdAt` | `DateTime!` | Product creation date. |
-| `updatedAt` | `DateTime!` | Last modification date. |
-| `isInWishlist` | `Int` | Whether the signed-in customer has this product in their **wishlist** (active channel): `1` = yes, `0` = no. |
-| `isInCompare` | `Int` | Whether the signed-in customer has this product in their **compare list**: `1` = yes, `0` = no. |
-
-> **Wishlist & compare flags:** `isInWishlist` and `isInCompare` let you highlight the wishlist / compare icon directly from the product response instead of separately fetching and cross-referencing those lists. They require the customer Bearer token — for guests both are `0`. The values are `0` / `1`; over GraphQL they are returned as the strings `"1"` (in the list) / `"0"` (not in the list), while the REST API returns them as `1` / `0` integers.
+There are no arguments for including or excluding parts of the response — GraphQL field selection already controls that. Ask for `images` and you get images; leave it out and you do not.
 
 ## Configurable Products
 
 A **configurable product** is a product that has multiple variants based on attributes like color, size, or material. For example, a T-shirt that comes in 3 colors and 2 sizes would have 6 variants. When querying a configurable product, two additional fields are returned that are essential for building a variant selection UI:
 
-### `superAttributeOptions`
+### Selectable options — `superAttributeOptions`
 
 This field returns a JSON-encoded string containing the configurable attributes and their selectable options. Each entry includes:
 
@@ -1710,7 +1665,7 @@ This field returns a JSON-encoded string containing the configurable attributes 
 
 Use this field to render attribute dropdowns (e.g. color picker, size selector) on the product detail page.
 
-### `combinations`
+### Variant map — `combinations`
 
 This field returns a JSON-encoded object that maps each **variant product ID** to its specific attribute option combination. For example:
 
@@ -1726,17 +1681,17 @@ This means variant ID `8` is the product with color option `3` and size option `
 2. When the customer selects options (e.g. Color: Blue, Size: M), match their selection against the `combinations` object to find the corresponding variant ID
 3. Use that variant ID to display the correct price, stock status, and images for the selected variant
 
-> For non-configurable product types (simple, grouped, bundle, etc.), both `superAttributeOptions` and `combinations` will be `null`.
+For non-configurable product types (simple, grouped, bundle, and the rest), both `superAttributeOptions` and `combinations` are `null`.
 
 ## Downloadable Products
 
 A **downloadable** product contains digital files that customers can download after purchase. Each downloadable product can have two types of sample files:
 
-### `downloadableLinks`
+### Purchasable files — `downloadableLinks`
 
 These are the individual download links that make up the product (e.g. Track 1, Track 2 for a music album, or Chapter 1, Chapter 2 for an e-book). Each link has its own price and can optionally have a **sample file** attached for preview. The fields `sampleFile`, `sampleFileUrl`, and `sampleUrl` provide details about the sample associated with each link.
 
-### `downloadableSamples`
+### Product-level samples — `downloadableSamples`
 
 These are **product-level samples** — general preview files for the entire product rather than a specific link. The `_id` from each sample node is used to download the sample via:
 
@@ -1748,13 +1703,13 @@ GET /api/shop/downloadable/download-sample/sample/{_id}
 
 After a customer purchases a downloadable product, the purchased files can be downloaded using the `_id` from the [Get Downloadable Products](/api/graphql-api/shop/queries/get-customer-downloadable-products) query (not the product query). See the [Download Downloadable Product](/api/graphql-api/shop/queries/download-downloadable-product) page for full details.
 
-> Sample downloads are free and do not require authentication. Purchased file downloads require customer authentication and have a limited number of downloads.
+Sample downloads are free and need no authentication. Purchased file downloads require customer authentication and are capped at a limited number of downloads.
 
 ## Grouped Products
 
 A **grouped product** bundles multiple simple products together, allowing customers to purchase them as a set. Unlike a bundle product where the customer selects options, a grouped product presents each child product with a default quantity that the customer can adjust before adding to cart.
 
-### `groupedProducts`
+### Associated children — `groupedProducts`
 
 This field returns the list of associated child products via the `groupedProducts` connection. Each node contains:
 
@@ -1772,7 +1727,7 @@ A grouped product's own `price` is always `0` because it does not have a standal
 
 The customer's total depends on which child products they select and in what quantities.
 
-> For non-grouped product types, the `groupedProducts` field will return an empty edges array.
+For non-grouped product types, `groupedProducts` returns an empty edges array.
 
 ## Booking Product Types
 
@@ -1788,9 +1743,7 @@ The `bookingProducts` field returns a `type` that determines which slot/ticket r
 | **Table** | `tableSlot` | `priceType`, `guestLimit`, `duration`, `breakTime`, `preventSchedulingBefore`, `slots` | Restaurant reservations, meeting rooms |
 | **Event** | `eventTickets` | `price`, `qty`, `specialPrice`, `specialPriceFrom`, `specialPriceTo` | Concerts, workshops, conferences |
 
-::: tip
-Only the relationship matching the product's booking type will contain data. For example, an appointment booking product will have data in `appointmentSlot` but not in `rentalSlot` or `tableSlot`. Always check the `type` field first to determine which relationship to query.
-:::
+Only the relationship matching the product's booking type carries data — an appointment product populates `appointmentSlot` and leaves `rentalSlot` and `tableSlot` empty. Read the `type` field first to decide which relationship to query.
 
 ### Starting-from price
 
@@ -1891,6 +1844,9 @@ Below is a complete reference of all available fields on the `Product` type. Use
 | `visibleIndividually` | `String` | Whether the product appears in catalog listings (`1` = yes) |
 | `guestCheckout` | `String` | Whether guest users can purchase this product (`1` = yes) |
 | `manageStock` | `String` | Whether stock is managed for this product (`1` = yes) |
+| `isInWishlist` | `String` | Whether the product is in the signed-in customer's wishlist for the active channel (`"1"` = yes). Needs the customer Bearer token; always `"0"` for guests. |
+| `isInCompare` | `String` | Whether the product is in the signed-in customer's compare list (`"1"` = yes). Needs the customer Bearer token; always `"0"` for guests. |
+| `bookingType` | `String` | Booking sub-type for booking products (`appointment`, `rental`, `default`, `table`, `event`). `null` for every other type. |
 
 ### Configurable Product Fields
 
@@ -1913,11 +1869,11 @@ These are the connection/relationship fields available on the `Product` type. Ea
 
 | Relationship | Return Type | Description |
 |---|---|---|
-| `images` | `ProductImageCursorConnection` | Product gallery images with `id`, `publicPath`, and `position` |
-| `videos` | `ProductVideoCursorConnection` | Product videos |
+| `images` | `ProductImagesCursorConnection` | Product gallery images with `id`, `publicPath`, and `position` |
+| `videos` | `ProductVideosCursorConnection` | Product videos |
 | `categories` | `CategoryCursorConnection` | Categories the product belongs to, with `translation { name }` |
 | `attributeValues` | `AttributeValueCursorConnection` | All attribute values with `value` and `attribute { code, adminName }` |
-| `attributeFamily` | `AttributeFamily!` | The attribute family this product belongs to (not paginated) |
+| `attributeFamily` | `AttributeFamily` | The attribute family this product belongs to (not paginated) |
 | `channels` | `ChannelCursorConnection` | Channels this product is assigned to |
 
 ### Variant & Configuration
@@ -1926,7 +1882,7 @@ These are the connection/relationship fields available on the `Product` type. Ea
 |---|---|---|
 | `variants` | `ProductCursorConnection` | Child variant products (for configurable products). Each variant is a full `Product` with its own `id`, `name`, `sku`, `price`, and `attributeValues`. |
 | `superAttributes` | `AttributeCursorConnection` | The attributes used for configurable options (e.g. Color, Size) |
-| `parent` | `Product!` | Parent product (for variant products — returns the configurable parent) |
+| `parent` | `Product` | Parent product (for variant products — returns the configurable parent) |
 
 ### Product Type-Specific
 
@@ -1954,6 +1910,4 @@ These are the connection/relationship fields available on the `Product` type. Ea
 | `reviews` | `ProductReviewCursorConnection` | All reviews for this product (all statuses) |
 | `approvedReviews` | `ProductReviewCursorConnection` | Only admin-approved reviews — use this for public-facing display |
 
-::: tip
-All relationship fields support cursor-based pagination with `first`, `last`, `before`, and `after` arguments. For example: `images(first: 5)` returns only the first 5 images. Use the nested `pageInfo { hasNextPage, endCursor }` to paginate through large collections.
-:::
+Every relationship above is cursor-paginated and accepts `first`, `last`, `before`, and `after` — `images(first: 5)` returns only the first five images. Page through a large collection with the nested `pageInfo { hasNextPage endCursor }`.

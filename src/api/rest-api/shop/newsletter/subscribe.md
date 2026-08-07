@@ -3,34 +3,38 @@ outline: false
 examples:
   - id: subscribe-newsletter
     title: Subscribe to Newsletter
-    description: Subscribe the authenticated customer to the newsletter on the current channel.
+    description: Subscribe an email address to the newsletter on the current channel. A customer token is optional — send it only to link the subscription to that account.
     request: |
       POST /api/shop/newsletters
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
-      Authorization: Bearer <accessToken>
 
       {
         "customerEmail": "jane@example.com"
       }
     response: |
+      HTTP/1.1 201 Created
+
       {
         "success": true,
-        "message": "You have subscribed to the newsletter successfully."
+        "message": "You have successfully subscribed to our newsletter."
       }
     commonErrors:
-      - error: 401 Unauthorized
-        cause: Missing or invalid Bearer token
-        solution: Login and provide a valid customer authentication token
-      - error: 422 Validation Error
-        cause: Email is missing, invalid, or already subscribed
-        solution: Provide a valid email that is not already in the subscribers list
+      - error: 400 Bad Request — The customer email has already been taken.
+        cause: That address is already in the subscribers list
+        solution: Treat it as already subscribed; there is no re-subscribe call
+      - error: 400 Bad Request — The customer email field must be a valid email address.
+        cause: The value is not a well-formed email
+        solution: Validate the address client-side before submitting
+      - error: 400 Bad Request — The customer email field is required.
+        cause: customerEmail was missing from the body
+        solution: Send customerEmail as a string
 
 ---
 
 # Subscribe to Newsletter
 
-Subscribe the authenticated customer to the store newsletter for the current channel.
+Subscribe an email address to the store newsletter for the current channel.
 
 ## Endpoint
 
@@ -44,7 +48,7 @@ POST /api/shop/newsletters
 |--------|----------|-------------|
 | `Content-Type` | Yes | application/json |
 | `X-STOREFRONT-KEY` | Yes | Your storefront API key |
-| `Authorization` | Yes | Customer Bearer token (`Bearer <accessToken>`) |
+| `Authorization` | No | Customer Bearer token. Optional — when sent, the subscription is linked to that customer; without it the row is stored as a guest subscription. |
 
 ## Request Body
 
@@ -67,22 +71,27 @@ POST /api/shop/newsletters
 
 ## Validation
 
-- `customerEmail` is required and must be a valid email format.
-- The email must not already exist in the subscribers list for the channel.
-- A valid customer Bearer token is required.
+| Rule | Failure |
+|------|---------|
+| `customerEmail` is required | `400` — `The customer email field is required.` |
+| It must be a valid email address | `400` — `The customer email field must be a valid email address.` |
+| It must not already be subscribed | `400` — `The customer email has already been taken.` |
+
+Uniqueness is checked across the whole subscribers list, not per channel, so an address subscribed on one channel cannot be subscribed again on another.
 
 ## Use Cases
 
-- Newsletter opt-in from the storefront footer or account page
-- Re-subscribe a customer who previously unsubscribed
-- Capture marketing consent at checkout or registration
+- **Footer opt-in form** — post the typed address with the storefront key alone; no login step is needed.
+- **Opt-in during registration or checkout** — send the customer's token as well so the subscription is attached to their account and follows them in the admin panel.
 
-## Notes
+## Best Practices
 
-- The subscription is scoped to the current channel (resolved from the storefront key).
-- Field names are camelCase (`customerEmail`).
+- **Rate-limit the form yourself** — the endpoint is public, so an unguarded field invites automated signups.
+- **Treat "already been taken" as success in the UI** — the shopper is subscribed either way, and surfacing it as an error reads as a fault.
+- **Send the customer token when one exists** — otherwise a logged-in shopper's subscription is stored unlinked and the store cannot tie it to their account.
+- **Validate the address before posting** — the server check is exact-match, so a typo is stored as a real subscriber that only an admin can remove.
 
 ## Related Resources
 
-- [Contact Us](/api/rest-api/shop/customers)
-- [Create Newsletter (GraphQL)](/api/graphql-api/shop/mutations/create-newsletter)
+- [Get Customer Profile](/api/rest-api/shop/customers/get-customer-profile) — read the authenticated customer's account details
+- [Create Newsletter (GraphQL)](/api/graphql-api/shop/mutations/create-newsletter) — the same subscription over GraphQL

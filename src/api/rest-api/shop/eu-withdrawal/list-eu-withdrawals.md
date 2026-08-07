@@ -31,10 +31,10 @@ examples:
         }
       ]
     commonErrors:
-      - error: 401 Unauthorized
+      - error: 403 Forbidden
         cause: Missing or invalid customer Bearer token
         solution: Log in and provide a valid customer authentication token
-      - error: 403 Forbidden
+      - error: 401 Unauthorized
         cause: Storefront key is missing or invalid
         solution: Provide a valid X-STOREFRONT-KEY header
 ---
@@ -97,11 +97,11 @@ When the customer has no declarations, the response is an empty array:
 | Status | Meaning |
 |--------|---------|
 | `200 OK` | Declarations returned. |
-| `401 Unauthorized` | Missing or invalid customer Bearer token. |
-| `403 Forbidden` | Missing or invalid storefront key. |
+| `401 Unauthorized` | Missing or invalid storefront key. |
+| `403 Forbidden` | Missing or invalid customer Bearer token. |
 
 ## Related Resources
 
-- [View EU Withdrawal](/api/rest-api/shop/eu-withdrawal/view-eu-withdrawal)
-- [File a Withdrawal](/api/rest-api/shop/eu-withdrawal/create-eu-withdrawal)
-- [EU Withdrawal Overview](/api/rest-api/shop/eu-withdrawal/)
+- [View EU Withdrawal](/api/rest-api/shop/eu-withdrawal/view-eu-withdrawal) — one declaration by id
+- [File a Withdrawal](/api/rest-api/shop/eu-withdrawal/create-eu-withdrawal) — file against one of the customer's own orders
+- [EU Withdrawal Overview](/api/rest-api/shop/eu-withdrawal/) — the withdrawal menu overview, including the setting that gates it

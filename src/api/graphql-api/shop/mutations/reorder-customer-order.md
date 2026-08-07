@@ -41,37 +41,17 @@ examples:
         cause: No items could be added to cart (all out of stock or unavailable)
         solution: Check product availability - some items may be discontinued or out of stock
 
-  - id: reorder-customer-order-with-cart
-    title: Reorder and Fetch Updated Cart
-    description: Reorder items and retrieve the updated cart with all items and totals.
+  - id: reorder-customer-order-then-read-cart
+    title: Reorder, Then Read the Cart
+    description: Reorder an order's items, then read the cart the items were added to. Reading the cart is a separate operation — the reorder payload reports only what it added.
     query: |
-      mutation {
+      mutation reorderThenReadCart {
         createReorderOrder(input: { orderId: 3 }) {
           reorderOrder {
             success
             message
             orderId
             itemsAddedCount
-          }
-        }
-      }
-      
-      query {
-        cart {
-          id
-          itemsCount
-          items {
-            id
-            productId
-            name
-            quantity
-            price
-          }
-          totals {
-            subtotal
-            tax
-            shipping
-            grandTotal
           }
         }
       }
@@ -87,32 +67,6 @@ examples:
               "orderId": 3,
               "itemsAddedCount": 2
             }
-          },
-          "cart": {
-            "id": "1",
-            "itemsCount": 2,
-            "items": [
-              {
-                "id": "101",
-                "productId": "1",
-                "name": "Blue T-Shirt",
-                "quantity": 1,
-                "price": "29.99"
-              },
-              {
-                "id": "102",
-                "productId": "2",
-                "name": "Black Jeans",
-                "quantity": 1,
-                "price": "79.99"
-              }
-            ],
-            "totals": {
-              "subtotal": "109.98",
-              "tax": "9.10",
-              "shipping": "10.00",
-              "grandTotal": "129.08"
-            }
           }
         }
       }
@@ -123,18 +77,19 @@ examples:
       - error: NOT_FOUND
         cause: Order does not exist or belongs to another customer
         solution: Verify the order ID and ensure it belongs to the authenticated customer
-
 ---
 
 # Reorder Customer Order
 
 ## About
 
-The `reorderOrder` mutation allows authenticated customers to quickly re-add items from a previous order to their cart. This enables:
+The `createReorderOrder` mutation re-adds every item from a previous order to the customer's cart. It enables:
 
 - One-click reordering of frequently purchased items
 - Convenient replenishment of consumables or recurring purchases
 - Enhanced customer experience by reducing re-selection friction
+
+The payload reports what was added, not the resulting cart. Read the cart itself with [Get Cart](/api/graphql-api/shop/queries/get-cart) once the mutation succeeds.
 - Support for reordering from any order status (pending, completed, shipped, canceled, etc.)
 
 When items are reordered:

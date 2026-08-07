@@ -152,9 +152,7 @@ This mutation requires an authenticated customer — send the storefront key and
 | `customerReturn.createdAt` | `DateTime!` | Return creation timestamp. |
 | `customerReturn.updatedAt` | `DateTime!` | Return last update timestamp. |
 
-::: tip Image attachments
-Attaching image files to a return is available over REST only, via a multipart `images[]` field — files cannot be transported over a JSON GraphQL request.
-:::
+Attaching image files to a return is REST-only, through a multipart `images[]` field — a JSON GraphQL request cannot carry a file. Raise the return here, then upload the images over REST if the shopper attached any.
 
 ## Related Resources
 

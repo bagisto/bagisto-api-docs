@@ -520,168 +520,117 @@ examples:
 
 ## About
 
-The `getAttributeOptions` query retrieves attribute options (values) for a specific attribute. This query is essential for:
+The `attributeOptions` query returns attribute option values — the individual entries behind a select, multiselect, or checkbox attribute, such as *Red*, *Green*, *Large*.
 
-- Building product filter and search interfaces
-- Displaying color swatches and size options
-- Creating configurable product selectors
-- Building faceted navigation systems
-- Multi-language product attribute support
+The query is **not scoped to an attribute**. It pages through every option in the catalog, so `Red` from Colour and `Large` from Size arrive in the same list with nothing on a node to say which attribute it belongs to. To read the options of one attribute, query that attribute instead and select its `options` connection — see [Get Attribute](/api/graphql-api/shop/queries/get-attribute).
 
-The query supports cursor-based pagination and optional translation fetching, making it ideal for displaying product attribute values in various UI contexts.
+Use this query when a client wants the whole option set at once, typically to build a lookup table of option ID to label that it can reuse across screens.
 
 ## Arguments
 
 | Argument | Type | Required | Description |
 |----------|------|----------|-------------|
-| `first` | `Int` | ❌ No | Number of options to retrieve from the start (forward pagination). Max: 100. |
+| `first` | `Int` | ❌ No | Number of options to return from the start (forward pagination). Default: `10` |
 | `after` | `String` | ❌ No | Cursor to start after for forward pagination. |
-| `last` | `Int` | ❌ No | Number of options to retrieve from the end (backward pagination). Max: 100. |
+| `last` | `Int` | ❌ No | Number of options to return from the end (backward pagination). Default: `10` |
 | `before` | `String` | ❌ No | Cursor to start before for backward pagination. |
+
+There is no argument to filter by attribute, by swatch type, or by label.
 
 ## Possible Returns
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `edges` | `[AttributeOptionEdge!]!` | Array of attribute option edges containing options and cursors. |
-| `edges.node` | `AttributeOption!` | The actual attribute option object with id, name, swatch, and translations. |
-| `edges.cursor` | `String!` | Pagination cursor for this option. Use with `after` or `before` arguments. |
-| `pageInfo` | `PageInfo!` | Pagination metadata object. |
-| `pageInfo.hasNextPage` | `Boolean!` | Whether more options exist after the current page. |
-| `pageInfo.hasPreviousPage` | `Boolean!` | Whether options exist before the current page. |
-| `pageInfo.startCursor` | `String` | Cursor of the first option on the current page. |
-| `pageInfo.endCursor` | `String` | Cursor of the last option on the current page. |
+| `edges` | `[AttributeOptionEdge]` | Option edges for the current page. |
+| `edges.node` | `AttributeOption` | A single option — fields below. |
+| `edges.cursor` | `String!` | Cursor for this option, used as `after` on the next request. |
+| `pageInfo` | `AttributeOptionPageInfo!` | Pagination metadata. |
+| `pageInfo.hasNextPage` | `Boolean` | Whether more options follow the current page. |
+| `pageInfo.hasPreviousPage` | `Boolean` | Whether options precede the current page. |
+| `pageInfo.startCursor` | `String` | Cursor of the first option on the page. |
+| `pageInfo.endCursor` | `String` | Cursor of the last option on the page. |
+| `totalCount` | `Int!` | Total options across every attribute in the catalog. |
 
-## AttributeOption Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | `String!` | Unique option identifier in format `/api/shop/attribute-options/{id}`. |
-| `_id` | `Int!` | Numeric ID of the option. |
-| `adminName` | `String!` | Admin-facing name (e.g., "Red", "Large", "Cotton"). |
-| `sortOrder` | `Int!` | Display order of the option (0, 1, 2, ...). |
-| `swatchValue` | `String` | Swatch value - hex color code for color attributes or text representation. |
-| `swatchValueUrl` | `String` | URL to swatch image file for image-based swatches. |
-| `translation` | `OptionTranslation` | Single translation for the default/current locale. |
-| `translations` | `[OptionTranslation!]` | Collection of all translations for multi-language support. |
-
-## Translation Fields
+### AttributeOption Fields
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | `String!` | Translation ID in format `/api/attribute_option_translations/{id}`. |
+| `id` | `ID!` | IRI-style identifier (`/api/shop/attribute-options/{id}`). |
+| `_id` | `Int!` | Numeric option ID. **This is the value to send when filtering products.** |
+| `adminName` | `String` | Admin-facing option name. Use `translation` for the shopper-facing label. |
+| `sortOrder` | `Int` | Display order within the option's own attribute. |
+| `swatchValue` | `String` | Hex colour for a colour swatch, or the text value. `null` when the attribute uses no swatch. |
+| `swatchValueUrl` | `String` | URL of the swatch image, for image swatches. |
+| `translation` | `AttributeOptionTranslation` | The option's label in the current locale. |
+| `translations` | `AttributeOptionTranslationCursorConnection` | The option's label in every locale. |
+
+### Translation Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `ID!` | IRI-style translation identifier. |
 | `_id` | `Int!` | Numeric translation ID. |
-| `locale` | `String!` | Language locale code (e.g., "en", "ar", "fr", "de"). |
-| `label` | `String!` | Translated label for the option in the specified locale. |
+| `attributeOptionId` | `String!` | ID of the option this translation belongs to. |
+| `locale` | `String!` | Locale code, e.g. `en`, `ar`. |
+| `label` | `String` | Translated label for the option. |
 
-## Common Use Cases
+## Use Cases
 
-### Display Color Picker in Product Page
+### 1. Caching an option-ID lookup table
+
+A client that renders filters and product attribute values keeps hitting the same option IDs. Page the full set once and cache it:
 
 ```graphql
-query ColorPicker {
-  attributeOptions(first: 50) {
+query optionLookup($after: String) {
+  attributeOptions(first: 100, after: $after) {
     edges {
       node {
+        _id
         adminName
         swatchValue
-        translation { label }
-      }
-    }
-  }
-}
-```
-
-### Build Size Selector with Sorting
-
-```graphql
-query SizeSelector {
-  attributeOptions(first: 100) {
-    edges {
-      node {
-        adminName
-        sortOrder
-        translation { label }
-      }
-    }
-  }
-}
-```
-
-### Multi-language Attribute Support
-
-```graphql
-query MultiLanguageOptions {
-  attributeOptions(first: 20) {
-    edges {
-      node {
-        adminName
-        translations(first: 10) {
-          edges {
-            node {
-              locale
-              label
-            }
-          }
+        translation {
+          label
         }
       }
+      cursor
     }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
   }
 }
 ```
 
-## Error Handling
+Repeat with the returned `endCursor` while `hasNextPage` is true.
 
-### Missing Attribute ID
+### 2. Resolving an option ID that came back on a product
 
-```json
-{
-  "errors": [
-    {
-      "message": "Field \"attributeOptions\" argument \"attributeId\" of type \"Int!\" is required but not provided."
-    }
-  ]
-}
-```
+A product's `attributeValues` carry option IDs rather than labels. A cached lookup built from this query turns those IDs into text without a request per product.
 
-### Non-existent Attribute
+### 3. Reading the options of one attribute
 
-```json
-{
-  "data": {
-    "attributeOptions": {
-      "edges": [],
-      "pageInfo": {
-        "hasNextPage": false,
-        "endCursor": null
-      }
-    }
-  }
-}
-```
-
-### Invalid Pagination Cursor
-
-```json
-{
-  "errors": [
-    {
-      "message": "Invalid cursor provided"
-    }
-  ]
-}
-```
+This query cannot do it — use [Get Attribute](/api/graphql-api/shop/queries/get-attribute) and select its `options` connection, which returns only that attribute's values in their configured order.
 
 ## Best Practices
 
-1. **Use Appropriate Pagination Size** - Request 10-50 options per page
-2. **Cache Results** - Attribute options change infrequently, cache them
-3. **Request Translations When Needed** - Only fetch translations if supporting multiple languages
-4. **Optimize Field Selection** - Request only fields your UI actually needs
+1. **Do not use this to populate one attribute's control** — the result spans every attribute and carries no attribute reference, so a colour picker built from it would list sizes too; query the attribute directly instead
+2. **Page with `first` and `after`** — the default page is 10 options, which is smaller than most single attributes
+3. **Never pass a made-up cursor** — an `after` value that did not come from a previous response fails the request outright rather than returning an empty page
+4. **Show `translation.label`, not `adminName`** — `adminName` is the internal admin label and is never translated
+5. **Cache the result** — options change only when a merchant edits an attribute, so the whole set caches well and saves a request per screen
+
+## Error Scenarios
+
+| Scenario | Cause |
+|----------|-------|
+| Invalid cursor | The `after` or `before` value is not a cursor returned by a previous response. |
 
 ## Related Resources
 
+- [Get Attribute](/api/graphql-api/shop/queries/get-attribute) - One attribute with its own options
+- [Attributes](/api/graphql-api/shop/queries/get-attributes) - List every attribute
+- [Category Attribute Filters](/api/graphql-api/shop/queries/get-category-attribute-filters) - Filterable attributes for one category
 - [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation
-- [Attribute Options API](/api/graphql-api/shop/attribute-options) - Detailed API documentation
-- [Products API](/api/graphql-api/shop/queries/get-products) - Related product queries
 - [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources

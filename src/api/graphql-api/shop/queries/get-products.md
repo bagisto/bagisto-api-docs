@@ -1712,47 +1712,35 @@ examples:
 
 ## About
 
-The `getProducts` query retrieves a paginated list of products from your store with support for advanced sorting and filtering. This query is essential for:
+The `products` query returns a cursor-paginated list of catalog products with filtering and sorting. It is the canonical reference for both — [Search Products](/api/graphql-api/shop/queries/search-products) is the same field with its `query` argument supplied, and uses the identical filter keys and sort keys documented below. Use it to:
 
-- Building product catalog browsing interfaces
-- Implementing product search, sorting, and filtering experiences
-- Creating product recommendation systems
-- Syncing product data with external systems
-- The query supports cursor-based pagination to efficiently handle large product catalogs
-- Basic product information (name, SKU, description, vendor)
-- Pricing and inventory details
-- Product images and media
-- Categories, tags, and custom attributes
-- Publication and availability status
-- Created and updated timestamps
+- Build product catalog browsing interfaces
+- Drive listing, filtering, and sorting experiences
+- Create product recommendation rails
+- Sync product data with external systems
+
+Each product node carries its basic information (name, SKU, descriptions), pricing, images, categories and custom attributes, availability status, and timestamps.
 
 ## Wishlist & Compare Flags
 
-Every product in the list carries two per-customer boolean flags so you can render the wishlist and compare icon states directly from the catalog response:
+Every product carries two per-customer flags so the wishlist and compare icons can be rendered straight from the catalog response. The wishlist and compare endpoints paginate independently of the catalog, so matching those lists against catalog rows on the client is unreliable.
 
 | Field | Description |
 |-------|-------------|
-| `isInWishlist` | Whether this product is in the signed-in customer's **wishlist** for the active channel. |
-| `isInCompare` | Whether this product is in the signed-in customer's **compare list**. |
+| `isInWishlist` | `"1"` when the product is in the signed-in customer's wishlist for the active channel, `"0"` when it is not. |
+| `isInCompare` | `"1"` when the product is in the signed-in customer's compare list, `"0"` when it is not. |
 
-Why they exist: the wishlist and compare lists are their own endpoints and paginate independently of the catalog — a product on catalog page 1 may have its wishlist entry on a different wishlist page, so matching the two lists on the client is unreliable. These flags answer the question per product, in the same response, so the wishlist/compare icon can be highlighted without any extra requests.
-
-**Things to know:**
-
-- **Authentication is required.** Send the customer Bearer token. For guests (no token) both flags are always `0`.
-- **The flags are `0` / `1`** — `1` when the product is in the list, `0` when it is not. Over GraphQL they are returned as the strings `"1"` / `"0"` (the REST API returns them as `1` / `0` integers). Either way, `0` is falsy and `1` is truthy.
-
-See the **"Get Products with Wishlist & Compare Flags"** dropdown example.
+Both need the customer Bearer token and are always `"0"` for guests. GraphQL returns them as the strings `"1"` / `"0"`; the REST API returns the same flags as the integers `1` / `0`.
 
 ## Arguments
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `first` | `Int` | The number of products to return per page (max: 250). Used for forward pagination. |
+| `first` | `Int` | The number of products to return per page. Used for forward pagination. Default: `30` |
 | `after` | `String` | The cursor of the product to start after. Used with `first` for pagination. |
-| `last` | `Int` | The number of products to return in reverse (max: 250). Used for backward pagination. |
+| `last` | `Int` | The number of products to return in reverse. Used for backward pagination. Default: `30` |
 | `before` | `String` | The cursor to start before. Used with `last` for reverse pagination. |
-| `sortKey` | `ProductSortKeys` | Field to sort by: `TITLE`, `PRICE`, `CREATED_AT`, `UPDATED_AT`. Default: `TITLE` |
+| `sortKey` | `String` | Field to sort by: `ID`, `TITLE` (alias `NAME`), `PRICE`, `CREATED_AT`, `UPDATED_AT`. Case-insensitive. Default: `ID` |
 | `reverse` | `Boolean` | Reverse the sort order. Default: `false` |
 | `query` | `String` | Search query string for filtering products. Supports advanced search syntax. |
 | `filter` | `String` | JSON string of filter keys (see below). Pass as a single-line JSON string with escaped quotes. |
@@ -1772,11 +1760,120 @@ The `filter` argument is a JSON object encoded as a string. Accepted keys:
 | `featured` | Boolean | `true` → only products flagged "featured". |
 | `<attribute_code>` | String | Any filterable attribute code (e.g. `color`, `size`, `brand`). Value is the option id; comma-separate for multiple (`"3,4"`). |
 
-Example: `products(filter: "{\"category_id\": 5, \"price_from\": 10, \"price_to\": 200, \"featured\": true}")`.
+Write the filter as a normal JSON object first:
 
-::: tip Price range over GraphQL
-GraphQL uses separate `price_from` / `price_to` keys. The REST-only compound `price=min,max` string form does **not** apply here.
-:::
+```json
+{
+  "type": "simple",
+  "price_from": 10,
+  "price_to": 200
+}
+```
+
+Then pass it to `filter` as a single-line string with its quotes escaped:
+
+```graphql
+query getFilteredProducts {
+  products(
+    filter: "{\"type\": \"simple\", \"price_from\": 10, \"price_to\": 200}"
+    first: 10
+  ) {
+    totalCount
+    edges {
+      node {
+        _id
+        sku
+        name
+        price
+        formattedPrice
+      }
+    }
+  }
+}
+```
+
+Escaping is avoided entirely by writing the filter as a GraphQL block string, which accepts embedded quotes as-is:
+
+```graphql
+query getFilteredProducts {
+  products(
+    filter: """{"type": "simple", "price_from": 10, "price_to": 200}"""
+    first: 10
+  ) {
+    totalCount
+    edges {
+      node {
+        _id
+        sku
+        name
+        price
+        formattedPrice
+      }
+    }
+  }
+}
+```
+
+A variable keeps the query document static, which is what most clients want:
+
+```graphql
+query getFilteredProducts($filter: String) {
+  products(filter: $filter, first: 10) {
+    totalCount
+    edges {
+      node {
+        _id
+        sku
+        name
+        price
+        formattedPrice
+      }
+    }
+  }
+}
+```
+
+```json
+{
+  "filter": "{\"type\": \"simple\", \"price_from\": 10, \"price_to\": 200}"
+}
+```
+
+### Filter behaviour
+
+Four rules decide what a filter actually returns:
+
+| Rule | What it means |
+|------|---------------|
+| **Keys combine** | Every key you add narrows the result. Filters intersect — they never widen the set. |
+| **The value is always a string** | `filter` is a `String` scalar, not an input object, so a real JSON object is rejected before the query runs. Build the string in the client — `JSON.stringify({ type: 'simple', price_from: 10 })` — and the escaping is handled for you. |
+| **A price range needs two keys** | Use `price_from` and `price_to`. The compound `price=min,max` form is REST-only and has no effect here. |
+| **Price matches the product's own `price`** | That attribute is `0` on configurable and bundle parents, whose real price lives in their variants or selections. Any `price_from` above `0` therefore drops both types — filter them by `type` and read `minimumPrice` / `maximumPrice` instead. |
+
+### Sorting
+
+Use `sortKey` to pick the column and `reverse` to flip the direction. The common combinations:
+
+| Sort | `sortKey` | `reverse` |
+|------|-----------|-----------|
+| A → Z | `"TITLE"` | `false` |
+| Z → A | `"TITLE"` | `true` |
+| Newest first | `"CREATED_AT"` | `true` |
+| Oldest first | `"CREATED_AT"` | `false` |
+| Cheapest first | `"PRICE"` | `false` |
+| Most expensive first | `"PRICE"` | `true` |
+
+Omitting `sortKey` orders by product ID, so a listing that cares about order should always set one.
+
+#### How price sorting works
+
+Sorting by `PRICE` does not order on the `price` field. It orders on `minimumPrice` — the effective price the shopper sees, which accounts for:
+
+- **Special price** — a discounted price replaces the regular one.
+- **Configurable variants** — the parent takes the lowest price across its variants.
+- **Neither applies** — `minimumPrice` equals `price`.
+
+Display `minimumPrice` alongside price-sorted results, otherwise the order and the numbers on screen disagree.
 
 <!-- ## REST and GraphQL parameter mapping
 
@@ -1823,8 +1920,6 @@ The same catalog operations use different shapes on each transport. Common equiv
 | `formattedRegularMinimumPrice` | `String` | Same as `regularMinimumPrice` but with the currency symbol prefixed. |
 | `regularMaximumPrice` | `Float` | The regular (non-discounted) maximum price before any special price is applied. Reflects currency conversion. |
 | `formattedRegularMaximumPrice` | `String` | Same as `regularMaximumPrice` but with the currency symbol prefixed. |
-
-> The difference between numeric and formatted price fields is purely presentational: numeric fields (e.g. `price`) return the converted amount as a number, while formatted fields (e.g. `formattedPrice`) return the same converted amount as a string with the currency symbol (e.g. `"€84.99"`). Both reflect the active currency set via the `X-Currency` header.
 
 ## Product Types
 

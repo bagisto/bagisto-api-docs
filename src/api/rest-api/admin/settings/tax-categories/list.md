@@ -106,4 +106,3 @@ Both the compound form `?sort=name-asc` and the split form `?sort=name&order=asc
 
 - `taxRates` lists the attached rate ids. It is **detail-only** — empty (`[]`) on the listing to keep the list query light. Fetch a single category to read its attached rates.
 
-See the [Tax Categories overview](./) for field meanings and behaviour.

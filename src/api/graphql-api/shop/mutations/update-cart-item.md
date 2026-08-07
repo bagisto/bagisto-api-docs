@@ -213,9 +213,11 @@ The `updateCartItem` mutation modifies the quantity or options of an existing ca
 
 This mutation validates the new quantity against available inventory and updates cart totals including any applicable discounts and taxes.
 
-::: warning Quantity Update Not Supported for All Product Types
-**Event booking** and **appointment booking** products do not support quantity updates after being added to the cart. These products have fixed quantities tied to their booking configuration — event bookings have ticket quantities set during add-to-cart, and appointment bookings are always for a single slot. You can identify these items by checking the `canChangeQty` field on the cart item, which will be `false` for these product types. To change the quantity, the customer must remove the item and re-add it with the desired configuration.
-:::
+## Items whose quantity cannot change
+
+Event and appointment booking products reject a quantity update once they are in the cart. Their quantity is fixed by the booking itself — an event booking's ticket counts are set at add-to-cart time, and an appointment booking is always a single slot.
+
+Read `canChangeQty` on the cart item to tell the two apart: it is `false` for these products. Changing the amount then means removing the item and adding it again with the new configuration, which is what the storefront does.
 
 ## Arguments
 
@@ -224,7 +226,7 @@ This mutation validates the new quantity against available inventory and updates
 | `cartItemId` | `Int!` | The numeric ID of the cart item to update. |
 | `quantity` | `Int!` | The new quantity to set for the cart item. |
 
-> **How to get `cartItemId`:** This is the `id` field returned on each cart item from the [Add to Cart](/api/graphql-api/shop/mutations/add-to-cart) or [Get Cart](/api/graphql-api/shop/queries/get-cart) response, available under `items.edges[].node.id`.
+Take `cartItemId` from the `id` field on a cart item — [Add to Cart](/api/graphql-api/shop/mutations/add-to-cart) and [Get Cart](/api/graphql-api/shop/queries/get-cart) both return it at `items.edges[].node.id`.
 
 ## Authentication
 

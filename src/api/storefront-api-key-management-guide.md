@@ -651,5 +651,5 @@ curl -X GET 'https://your-domain.com/api/shop/products' \
 - 🔐 [Authentication Guide](./authentication) - Learn about API authentication methods
 - 🔗 [REST API Guide](./rest-api/introduction.html) - Explore REST API endpoints
 - ⚡ [GraphQL API Guide](./graphql-api/introduction.html) - Discover GraphQL capabilities
-- 🚀 [Integration Guides](./integrations) - Real-world integration examples
+- 🚀 [Integration Guides](/api/rest-api/integrations) - Real-world integration examples
 - 📈 [Rate Limit Headers](./rate-limiting#headers) - Understanding rate limit response headers

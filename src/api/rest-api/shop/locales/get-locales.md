@@ -62,7 +62,8 @@ GET /api/shop/locales
 | `name` | string | English locale name |
 | `direction` | string | Text direction (ltr=left-to-right, rtl=right-to-left) |
 | `logoPath` | string | Logo path in storage |
-| `logoUrl` | string | Full URL to locale logo |
+| `logoUrl` | string | Fully-qualified URL of the locale logo, `null` when no logo is set. |
+| `createdAt` / `updatedAt` | string | ISO 8601 timestamps. Locales seeded with the store carry `null` here. |
 
 ## cURL Example
 
@@ -96,6 +97,10 @@ fetch('https://your-domain.com/api/shop/locales?page=1', {
 | `X-RateLimit-Remaining` | Remaining requests in current window (e.g., `95`) |
 | `X-RateLimit-Reset` | Unix timestamp when limit resets |
 | `X-Built-With` | `Bagisto` |
+| `X-Total-Count` | Total locales available |
+| `X-Page` | Current page |
+| `X-Per-Page` | Locales per page (default 10) |
+| `X-Total-Pages` | Total page count |
 
 ## Error Responses
 
@@ -152,6 +157,13 @@ Common ISO 639-1 codes:
 - Load locale-specific product information
 - Render RTL layouts for Arabic/Hebrew
 
+## Best Practices
+
+- **Use `code` for `X-Locale`** — the numeric `id` is not accepted as a locale header value.
+- **Honour `direction`** — an `rtl` locale needs the layout flipped; the field exists precisely so the client does not have to hardcode a language list.
+- **Treat `null` timestamps as normal** — locales installed with the store carry no created or updated date.
+- **Cache the list** — locales change only when a store admin adds one.
+
 ## Related Resources
 
-- [Get Single Locale](/api/rest-api/shop/locales/get-single-locale)
+- [Get Single Locale](/api/rest-api/shop/locales/get-single-locale) — one locale's full detail by id

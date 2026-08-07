@@ -7,25 +7,13 @@ examples:
     query: |
       query CustomerReturnMessages($returnId: Int!) {
         customerReturnMessages(returnId: $returnId) {
-          edges {
-            cursor
-            node {
-              _id
-              rmaId
-              message
-              isAdmin
-              attachment
-              attachmentUrl
-              createdAt
-            }
-          }
-          pageInfo {
-            startCursor
-            endCursor
-            hasNextPage
-            hasPreviousPage
-          }
-          totalCount
+          _id
+          rmaId
+          message
+          isAdmin
+          attachment
+          attachmentUrl
+          createdAt
         }
       }
     variables: |
@@ -35,41 +23,26 @@ examples:
     response: |
       {
         "data": {
-          "customerReturnMessages": {
-            "edges": [
-              {
-                "cursor": "MQ==",
-                "node": {
-                  "_id": 88,
-                  "rmaId": 12,
-                  "message": "We have received your request and will inspect the item.",
-                  "isAdmin": true,
-                  "attachment": null,
-                  "attachmentUrl": null,
-                  "createdAt": "2026-07-20T10:40:00+00:00"
-                }
-              },
-              {
-                "cursor": "Mg==",
-                "node": {
-                  "_id": 87,
-                  "rmaId": 12,
-                  "message": "The hoodie zipper is broken.",
-                  "isAdmin": false,
-                  "attachment": "rma/12/messages/zipper.jpg",
-                  "attachmentUrl": "https://example.com/storage/rma/12/messages/zipper.jpg",
-                  "createdAt": "2026-07-20T10:20:00+00:00"
-                }
-              }
-            ],
-            "pageInfo": {
-              "startCursor": "MQ==",
-              "endCursor": "Mg==",
-              "hasNextPage": false,
-              "hasPreviousPage": false
+          "customerReturnMessages": [
+            {
+              "_id": 88,
+              "rmaId": 12,
+              "message": "We have received your request and will inspect the item.",
+              "isAdmin": true,
+              "attachment": null,
+              "attachmentUrl": null,
+              "createdAt": "2026-07-20T10:40:00+00:00"
             },
-            "totalCount": 2
-          }
+            {
+              "_id": 87,
+              "rmaId": 12,
+              "message": "The hoodie zipper is broken.",
+              "isAdmin": false,
+              "attachment": "rma/12/messages/zipper.jpg",
+              "attachmentUrl": "https://example.com/storage/rma/12/messages/zipper.jpg",
+              "createdAt": "2026-07-20T10:20:00+00:00"
+            }
+          ]
         }
       }
     commonErrors:
@@ -102,24 +75,17 @@ This query requires an authenticated customer — send the storefront key and a 
 
 ## Possible Returns
 
+The query returns a plain list of messages, not a cursor connection — there is no `edges`, `pageInfo`, or `totalCount` to select, and no pagination arguments. The whole thread comes back in one response.
+
 | Field | Type | Description |
 |-------|------|-------------|
-| `edges` | `[CustomerReturnMessageEdge!]` | Array of message edges with cursor and node. |
-| `edges.cursor` | `String!` | Cursor for this edge, used in pagination. |
-| `edges.node` | `CustomerReturnMessage!` | The message object. |
-| `edges.node._id` | `Int!` | Numeric message id. |
-| `edges.node.rmaId` | `Int!` | Id of the return the message belongs to. |
-| `edges.node.message` | `String!` | The message text. |
-| `edges.node.isAdmin` | `Boolean!` | `true` if sent by the store, `false` if sent by the customer. |
-| `edges.node.attachment` | `String` | Stored attachment path, or `null`. |
-| `edges.node.attachmentUrl` | `String` | Public URL of the attachment, or `null`. |
-| `edges.node.createdAt` | `DateTime!` | Message timestamp. |
-| `pageInfo` | `PageInfo!` | Pagination metadata. |
-| `pageInfo.startCursor` | `String` | Cursor for the first item in the page. |
-| `pageInfo.endCursor` | `String` | Cursor for the last item in the page. |
-| `pageInfo.hasNextPage` | `Boolean!` | Whether more pages exist forward. |
-| `pageInfo.hasPreviousPage` | `Boolean!` | Whether more pages exist backward. |
-| `totalCount` | `Int!` | Total number of messages on the return. |
+| `_id` | `Int!` | Numeric message id. |
+| `rmaId` | `Int!` | Id of the return the message belongs to. |
+| `message` | `String!` | The message text. |
+| `isAdmin` | `Boolean!` | `true` if sent by the store, `false` if sent by the customer. |
+| `attachment` | `String` | Stored attachment path, or `null`. |
+| `attachmentUrl` | `String` | Public URL of the attachment, or `null`. |
+| `createdAt` | `DateTime!` | Message timestamp. |
 
 ## Related Resources
 

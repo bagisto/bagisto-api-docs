@@ -313,9 +313,7 @@ X-STOREFRONT-KEY: <storefrontKey>
 |----------|------|----------|-------------|
 | `id` | `ID!` | ✅ Yes | The IRI identifier of the customer order (e.g. `/api/shop/customer-orders/1`). |
 
-::: warning Use the IRI `id`, not `incrementId`
-The lookup key is the order's **IRI `id`** (`/api/shop/customer-orders/{id}`), not the human-readable `incrementId`. Passing `incrementId` (e.g. `"1000000123"`) returns not found. The [`customerOrders`](/api/graphql-api/shop/queries/get-customer-orders) list returns **both** fields on each row — read a row's `id` and feed it here; `incrementId` is display-only.
-:::
+The lookup key is the order's IRI `id` (`/api/shop/customer-orders/{id}`), not the human-readable `incrementId` — passing an increment ID such as `"1000000123"` returns not found. The [`customerOrders`](/api/graphql-api/shop/queries/get-customer-orders) list returns both fields on every row, so read a row's `id` and feed it here; `incrementId` is display-only.
 
 ## Possible Returns
 
@@ -458,7 +456,7 @@ The `additional` field on each order item is a JSON-encoded string that contains
 }
 ```
 
-> Always parse this field as JSON in your application. Use the `attributes` array to render selected options on order detail pages, and the `booking` object for booking-specific products.
+Parse this field as JSON before use — read the `attributes` array to render the options the shopper selected, and the `booking` object for booking products.
 
 ## Error Handling
 

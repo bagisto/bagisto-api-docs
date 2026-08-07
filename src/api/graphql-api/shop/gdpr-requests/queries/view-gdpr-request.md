@@ -81,12 +81,13 @@ If GDPR data requests are disabled in the store's admin configuration, the query
 | `_id` | `Int!` | Numeric request ID. |
 | `type` | `String!` | Request type: `delete` or `update`. |
 | `status` | `String!` | Request status: `pending`, `processing`, `declined`, `approved`, `revoked`. |
-| `message` | `String` | The customer's message describing the request. |
+| `message` | `String!` | The customer's message describing the request. |
 | `email` | `String!` | Email address tied to the request. |
-| `revokedAt` | `DateTime` | Timestamp when the request was revoked, or `null`. |
-| `createdAt` | `DateTime!` | Request creation timestamp. |
-| `updatedAt` | `DateTime!` | Request last update timestamp. |
-| `customer` | `Customer!` | The customer who owns the request. |
+| `revokedAt` | `String` | Timestamp when the request was revoked, or `null`. |
+| `createdAt` | `String` | Request creation timestamp. |
+| `updatedAt` | `String` | Request last update timestamp. |
+| `successMessage` | `String` | Confirmation text. Populated only on create, revoke, and delete results — `null` when reading. |
+| `customer` | `Customer` | The customer who owns the request. |
 | `customer._id` | `Int!` | Numeric customer ID of the owner. |
 
 ## Related Resources

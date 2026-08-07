@@ -248,7 +248,7 @@ GET /api/shop/products/{id}
 
 Same shape as items in [Products](/api/rest-api/shop/products/get-products#card-level-fields) — see that page for the field table. This includes the per-customer `isInWishlist` and `isInCompare` booleans.
 
-> **Wishlist & compare flags:** `isInWishlist` (active channel) and `isInCompare` tell you whether the signed-in customer already has this product in their wishlist / compare list (`1` = yes, `0` = no), so you can highlight the wishlist / compare icon on the product page without a separate lookup. Include the customer Bearer token alongside the storefront key — for guests both are `0`. REST returns `1` / `0` integers (over GraphQL the same flags come back as the strings `"1"` / `"0"`).
+The `isInWishlist` and `isInCompare` flags report whether the signed-in customer already has this product saved, so the product page can highlight both icons without a separate lookup. `isInWishlist` is scoped to the active channel. Send the customer Bearer token alongside the storefront key; for guests both are `0`. REST returns them as the integers `1` / `0`, where GraphQL returns the strings `"1"` / `"0"`.
 
 ### Always-present extras (over the list)
 
@@ -270,7 +270,7 @@ The default-family product output includes top-level shortcuts for the common fi
 | `size`   | object \| null  | Same shape, for `size`                   |
 | `brand`  | object \| null  | Same shape, for `brand`                  |
 
-> The exact set depends on the active attribute family — these three are present for the default family.
+The exact set depends on the product's attribute family. These three are present for the default family.
 
 ### Embedded relations (always present, may be empty `[]`)
 
@@ -292,7 +292,7 @@ The default-family product output includes top-level shortcuts for the common fi
 | `upSells`               | array  | "Upgrade to" cards                                                                                          |
 | `crossSells`            | array  | "Pairs well with" cards (shown in the cart/checkout)                                                        |
 
-> Empty `[]` for product types that don't apply — a `simple` product has no `variants`, a `booking` product has no `bundleOptions`, etc. Clients should treat these as "render only if non-empty".
+Blocks that do not apply to the product's type come back as an empty array rather than being absent — a `simple` product has no `variants`, a `booking` product has no `bundleOptions`. Render each only when it is non-empty.
 
 ## What this endpoint deliberately omits
 
@@ -330,10 +330,18 @@ The extra is the **cheapest event ticket** (`event`) or the **minimum rental uni
 - Bundle builder: walk `bundleOptions[]` for the selectable groups; each group has its member products inlined.
 - Determine product type at render time via `type` (`simple`, `configurable`, `bundle`, …) and `bookingType` (`default`, `appointment`, `rental`, `event`, `table` for booking products).
 
+## Best Practices
+
+- **Look up by numeric id** — the path takes the product ID only; a slug answers `404`. Resolve a storefront slug through the GraphQL `product(urlKey:)` lookup, or match `urlKey` from the listing.
+- **Render blocks conditionally on length, not on type** — every relation key is present on every product, so `variants` and `bundleOptions` exist as empty arrays on a simple product.
+- **Check `isSaleable` before enabling add-to-cart** — a product can be published yet out of stock, and only this flag combines the checks.
+- **Read booking slots separately** — `bookingProducts` describes the configuration; the bookable times for a date come from [Booking Slots](/api/rest-api/shop/products/get-booking-slots).
+- **Send the customer token** — without it `isInWishlist` and `isInCompare` are `0`, and the product page renders both icons as unset.
+
 ## Related Resources
 
 - [Products](/api/rest-api/shop/products/get-products) — paginated card-level list
 - [Search Products](/api/rest-api/shop/products/search-product) — full filter / sort / search reference
 - [Booking Slots](/api/rest-api/shop/products/get-booking-slots) — runtime availability for booking products
-- [Categories](/api/rest-api/shop/categories/get-categories)
-- [Attributes](/api/rest-api/shop/attributes/get-attributes)
+- [Categories](/api/rest-api/shop/categories/get-categories) — category ids and slugs for filtering the catalog
+- [Attributes](/api/rest-api/shop/attributes/get-attributes) — attribute definitions with their options inlined

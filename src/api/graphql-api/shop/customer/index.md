@@ -14,67 +14,67 @@ A customer registers, then logs in to receive a **Bearer token**. That token is 
 
 - **Profile** — read, update, or delete the signed-in customer's account.
 - **Orders** — list the customer's orders, view one order in detail, view its shipments, and cancel or reorder an order.
-- **Invoices** — list invoices, view one, and download an invoice PDF.
-- **Downloadable products** — list the customer's purchased downloadable products and download a file.
+- **Invoices** — list invoices and view one. The PDF itself is fetched over REST from the invoice's `downloadUrl`.
+- **Downloadable products** — list the customer's purchased downloads and read how many uses remain. The file itself is fetched over REST.
 - **Addresses** — list, create, update, and delete saved addresses (the address book).
-- **Reviews** — read the reviews the customer has written.
+- **Reviews** — read the reviews the customer has written. Submitting one is on [Create Product Review](/api/graphql-api/shop/mutations/create-product-review).
 
-## Operations in this menu
+## Operations
 
-### Profile & session
+### Profile and session
 
-| Operation | GraphQL field |
-|-----------|---------------|
-| [Customer Registration](/api/graphql-api/shop/mutations/customer-registration) | `createCustomer` mutation |
-| [Customer Login](/api/graphql-api/shop/mutations/customer-login) | `tokenCreate` mutation |
-| [Customer Verify Token](/api/graphql-api/shop/mutations/customer-verify-token) | `verifyToken` mutation |
-| [Customer Logout](/api/graphql-api/shop/mutations/customer-logout) | `logout` mutation |
-| [Forgot Password](/api/graphql-api/shop/mutations/forgot-password) | `forgotPassword` mutation |
-| [Get Customer Profile](/api/graphql-api/shop/queries/get-customer-profile) | `customer` query |
-| [Update Customer Profile](/api/graphql-api/shop/mutations/update-customer-profile) | `updateCustomerProfile` mutation |
-| [Delete Customer Profile](/api/graphql-api/shop/mutations/delete-customer-profile) | `deleteCustomerProfile` mutation |
+| Operation | GraphQL field | Description |
+|-----------|---------------|-------------|
+| Register | [`createCustomer`](/api/graphql-api/shop/mutations/customer-registration) | Create a customer account. |
+| Log in | [`createCustomerLogin`](/api/graphql-api/shop/mutations/customer-login) | Exchange credentials for a Bearer token. |
+| Verify a token | [`createVerifyToken`](/api/graphql-api/shop/mutations/customer-verify-token) | Check whether a stored token is still valid. |
+| Log out | [`createLogout`](/api/graphql-api/shop/mutations/customer-logout) | Invalidate the current token. |
+| Start a password reset | [`createForgotPassword`](/api/graphql-api/shop/mutations/forgot-password) | Email the customer a reset link. |
+| Read the profile | [`readCustomerProfile`](/api/graphql-api/shop/queries/get-customer-profile) | The signed-in customer's account details. |
+| Update the profile | [`createCustomerProfileUpdate`](/api/graphql-api/shop/mutations/update-customer-profile) | Change name, email, phone, or password. |
+| Delete the account | [`createCustomerProfileDelete`](/api/graphql-api/shop/mutations/delete-customer-profile) | Close the customer's own account. |
 
 ### Orders
 
-| Operation | GraphQL field |
-|-----------|---------------|
-| [Get Customer Orders](/api/graphql-api/shop/queries/get-customer-orders) | `customerOrders` query |
-| [Get Customer Order](/api/graphql-api/shop/queries/get-customer-order) | `customerOrder(id:)` query |
-| [Get Customer Order Shipments](/api/graphql-api/shop/queries/get-customer-order-shipments) | `customerOrderShipments` query |
-| [Get Customer Order Shipment](/api/graphql-api/shop/queries/get-customer-order-shipment) | `customerOrderShipment(id:)` query |
-| [Cancel Customer Order](/api/graphql-api/shop/mutations/cancel-customer-order) | `cancelOrder` mutation |
-| [Reorder Customer Order](/api/graphql-api/shop/mutations/reorder-customer-order) | `reorder` mutation |
+| Operation | GraphQL field | Description |
+|-----------|---------------|-------------|
+| List orders | [`customerOrders`](/api/graphql-api/shop/queries/get-customer-orders) | The customer's own orders, paginated. |
+| View one order | [`customerOrder`](/api/graphql-api/shop/queries/get-customer-order) | Full order detail with items, addresses, and payment. |
+| List shipments | [`customerOrderShipments`](/api/graphql-api/shop/queries/get-customer-order-shipments) | Shipments across the customer's orders. |
+| View one shipment | [`customerOrderShipment`](/api/graphql-api/shop/queries/get-customer-order-shipment) | A single shipment with its items. |
+| Cancel an order | [`createCancelOrder`](/api/graphql-api/shop/mutations/cancel-customer-order) | Cancel an order that is still cancellable. |
+| Reorder | [`createReorderOrder`](/api/graphql-api/shop/mutations/reorder-customer-order) | Rebuild a cart from a past order. |
 
 ### Invoices
 
-| Operation | GraphQL field |
-|-----------|---------------|
-| [Get Customer Invoices](/api/graphql-api/shop/queries/get-customer-invoices) | `customerInvoices` query |
-| [Get Customer Invoice](/api/graphql-api/shop/queries/get-customer-invoice) | `customerInvoice(id:)` query |
-| [Download Invoice](/api/graphql-api/shop/queries/download-invoice) | `downloadInvoice` query |
+| Operation | GraphQL field | Description |
+|-----------|---------------|-------------|
+| List invoices | [`customerInvoices`](/api/graphql-api/shop/queries/get-customer-invoices) | Invoices raised against the customer's orders. |
+| View one invoice | [`customerInvoice`](/api/graphql-api/shop/queries/get-customer-invoice) | A single invoice with its totals and items. |
+| Download the PDF | [`customerInvoice`](/api/graphql-api/shop/queries/download-invoice) | Read `downloadUrl` from the invoice, then fetch the PDF over REST — GraphQL cannot return a binary. |
 
 ### Downloadable products
 
-| Operation | GraphQL field |
-|-----------|---------------|
-| [Get Downloadable Products](/api/graphql-api/shop/queries/get-customer-downloadable-products) | `downloadableProducts` query |
-| [Get Downloadable Product](/api/graphql-api/shop/queries/get-customer-downloadable-product) | `downloadableProduct(id:)` query |
-| [Download Downloadable Product](/api/graphql-api/shop/queries/download-downloadable-product) | `downloadDownloadableProduct` query |
+| Operation | GraphQL field | Description |
+|-----------|---------------|-------------|
+| List purchases | [`customerDownloadableProducts`](/api/graphql-api/shop/queries/get-customer-downloadable-products) | Downloadable products the customer has bought, with remaining downloads. |
+| View one purchase | [`customerDownloadableProduct`](/api/graphql-api/shop/queries/get-customer-downloadable-product) | A single purchased download. |
+| Download the file | [REST only](/api/graphql-api/shop/queries/download-downloadable-product) | The file is served over REST; use the `downloadUrl` from the queries above. |
 
 ### Addresses
 
-| Operation | GraphQL field |
-|-----------|---------------|
-| [Get Customer Addresses](/api/graphql-api/shop/queries/get-customer-addresses) | `addresses` query |
-| [Create Customer Address](/api/graphql-api/shop/mutations/create-customer-address) | `createAddress` mutation |
-| [Update Customer Address](/api/graphql-api/shop/mutations/update-customer-address) | `updateAddress` mutation |
-| [Delete Customer Address](/api/graphql-api/shop/mutations/delete-customer-address) | `deleteAddress` mutation |
+| Operation | GraphQL field | Description |
+|-----------|---------------|-------------|
+| List addresses | [`getCustomerAddresses`](/api/graphql-api/shop/queries/get-customer-addresses) | The customer's saved address book. |
+| Create an address | [`createAddUpdateCustomerAddress`](/api/graphql-api/shop/mutations/create-customer-address) | Add a new address. |
+| Update an address | [`createAddUpdateCustomerAddress`](/api/graphql-api/shop/mutations/update-customer-address) | The same mutation — supplying an existing address ID updates it instead of adding one. |
+| Delete an address | [`createDeleteCustomerAddress`](/api/graphql-api/shop/mutations/delete-customer-address) | Remove an address from the book. |
 
 ### Reviews
 
-| Operation | GraphQL field |
-|-----------|---------------|
-| [Get Customer Reviews](/api/graphql-api/shop/queries/get-customer-reviews) | `customerReviews` query |
-| [Get Customer Review](/api/graphql-api/shop/queries/get-customer-review) | `customerReview(id:)` query |
+| Operation | GraphQL field | Description |
+|-----------|---------------|-------------|
+| List own reviews | [`customerReviews`](/api/graphql-api/shop/queries/get-customer-reviews) | Reviews the customer has written. |
+| View one review | [`customerReview`](/api/graphql-api/shop/queries/get-customer-review) | A single review the customer owns. |
 
 Registration, Login, and Forgot Password are public (storefront key only); every other operation requires a customer Bearer token — see [Authentication](/api/graphql-api/authentication).

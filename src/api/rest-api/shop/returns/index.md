@@ -10,6 +10,20 @@ Returns — also called RMA (Return Merchandise Authorization) — let a logged-
 
 All return endpoints require an authenticated **customer** — provide the storefront key and a customer Bearer token. See the [Authentication](/api/rest-api/authentication) page for how to obtain and send them.
 
+## Returns must be switched on first
+
+Returns are off out of the box. Nothing in the API errors when they are — [`GET /api/shop/returnable-items`](/api/rest-api/shop/returns/list-returnable-items) simply comes back empty, and a client sees an order with no returnable rows rather than a message explaining why. Three things have to line up, all configured on the admin side:
+
+| Requirement | Where it lives | Effect when unset |
+|-------------|----------------|-------------------|
+| **Allowed product types** | Configuration → Sales → RMA → *Allowed product types* | An empty setting makes **nothing** returnable — it does not mean "all types". A product whose type is absent from the list is never eligible. |
+| **Allow RMA on the product** | The product's own `allow_rma` attribute, off by default | That product's order items are never returnable. |
+| **Return window** | The product's active RMA rule, otherwise Configuration → Sales → RMA → *Default allow days* (default `7`) | Falls back to the configured default. |
+
+The decision is made **when the order is placed**, not when the return is requested: the resolved window is written onto the order item and frozen there. Enabling RMA later therefore does not make existing orders returnable — only orders placed after the change qualify. A client testing the flow against pre-existing orders will see an empty list no matter how the settings are changed.
+
+An item then stays returnable while the order date plus that window has not passed, and while some quantity remains unrefunded and uncanceled.
+
 ## How a return works
 
 1. **Find eligible items.** Call [`GET /api/shop/returnable-items`](/api/rest-api/shop/returns/list-returnable-items) for an order to see which items are still within their return window and how many units can be returned or canceled.

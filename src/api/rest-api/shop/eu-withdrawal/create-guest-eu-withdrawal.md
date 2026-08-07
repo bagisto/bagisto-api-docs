@@ -32,7 +32,7 @@ examples:
       - error: 400 Bad Request
         cause: order_increment_id or email is missing
         solution: Provide both the guest order number and the email used on the order
-      - error: 403 Forbidden
+      - error: 401 Unauthorized
         cause: Storefront key is missing or invalid
         solution: Provide a valid X-STOREFRONT-KEY header
       - error: 404 Not Found
@@ -103,10 +103,10 @@ This endpoint requires only the storefront key — no customer token. See the [A
 |--------|---------|
 | `201 Created` | Declaration filed (or the existing one returned); status is `received`. |
 | `400 Bad Request` | `order_increment_id` or `email` is missing. |
-| `403 Forbidden` | Missing or invalid storefront key. |
+| `401 Unauthorized` | Missing or invalid storefront key. |
 | `404 Not Found` | The order increment id and email do not match a guest order on an EU-withdrawal-enabled channel. |
 
 ## Related Resources
 
-- [File an EU Withdrawal (authenticated)](/api/rest-api/shop/eu-withdrawal/create-eu-withdrawal)
-- [EU Withdrawal Overview](/api/rest-api/shop/eu-withdrawal/)
+- [File an EU Withdrawal (authenticated)](/api/rest-api/shop/eu-withdrawal/create-eu-withdrawal) — file against one of the customer's own orders
+- [EU Withdrawal Overview](/api/rest-api/shop/eu-withdrawal/) — the withdrawal menu overview, including the setting that gates it

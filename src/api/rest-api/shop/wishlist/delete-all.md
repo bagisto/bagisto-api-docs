@@ -12,14 +12,19 @@ examples:
 
       {}
     response: |
+      HTTP/1.1 201 Created
+
       {
-        "message": "All wishlist items removed successfully",
-        "deletedCount": 4
+        "message": "All wishlist items have been removed successfully",
+        "deletedCount": 3
       }
     commonErrors:
-      - error: 401 Unauthorized
-        cause: Missing or invalid Bearer token
-        solution: Login and provide a valid customer authentication token
+      - error: 403 Forbidden
+        cause: No customer Bearer token was sent
+        solution: Log the customer in; guests hold no wishlist
+      - error: deletedCount of 0
+        cause: The wishlist was already empty on this channel
+        solution: This is a success, not a failure — the call is safe to repeat
 
 ---
 
@@ -49,24 +54,31 @@ No fields are required. Send an empty JSON object:
 {}
 ```
 
-## Response Fields (200 OK)
+## Response Fields (201 Created)
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `message` | string | Confirmation message |
-| `deletedCount` | integer | Number of wishlist items removed |
+| `message` | string | `All wishlist items have been removed successfully`. |
+| `deletedCount` | integer | How many rows were removed. `0` when the wishlist was already empty. |
+
+## Behaviour
+
+- Clears only the authenticated customer's rows, and only on the **current channel** — items saved on another channel survive.
+- Repeating the call is safe; the second one answers `201` with `deletedCount: 0`.
+- The message is the same whether rows were removed or not, so read `deletedCount` to know what happened.
 
 ## Use Cases
 
-- "Clear wishlist" action on the wishlist page
-- Reset a customer's saved products in one call
+- **"Clear wishlist" button** — one call empties the list, and `deletedCount` tells the UI how many rows to drop without a re-fetch.
+- **Reset after a bulk move to cart** — [Move to Cart](/api/rest-api/shop/wishlist/move-to-cart) removes rows one at a time; this clears whatever remains in a single request.
 
-## Notes
+## Best Practices
 
-- Only the authenticated customer's items are removed.
-- Returns `deletedCount: 0` when the wishlist is already empty.
+- **Confirm in the UI first** — the call is irreversible and takes no ID, so a mis-tap wipes the whole list.
+- **Read `deletedCount`, not `message`** — the message reads the same on an empty wishlist.
+- **Remember the channel scope** — a multi-channel storefront needs one call per channel to clear everything.
 
 ## Related Resources
 
-- [Get Wishlist Items](/api/rest-api/shop/wishlist/list)
-- [Delete Wishlist Item](/api/rest-api/shop/wishlist/delete)
+- [Get Wishlist Items](/api/rest-api/shop/wishlist/list) — the customer's saved products
+- [Delete Wishlist Item](/api/rest-api/shop/wishlist/delete) — remove one saved row by its id

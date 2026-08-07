@@ -319,7 +319,7 @@ query GetCustomerDownloadableProducts {
 | `X-STOREFRONT-KEY` | `pk_storefront_xxx` | Yes | Storefront API key |
 | `Authorization` | `Bearer {token}` | Yes | Customer authentication token |
 
-## cURL Example
+## Example with cURL
 
 ```bash
 curl -X POST "https://api-demo.bagisto.com/api/graphql" \

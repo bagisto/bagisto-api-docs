@@ -10,22 +10,22 @@ examples:
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     response: |
-      {
-        "data": [
-          {
-            "id": 1,
-            "title": "Great product",
-            "comment": "Really enjoyed using this product.",
-            "rating": 5,
-            "status": "approved",
-            "name": "John",
-            "product": { "id": 2 },
-            "customer": { "id": 1 },
-            "createdAt": "2026-02-18T10:30:00+00:00",
-            "updatedAt": "2026-02-18T10:30:00+00:00"
-          }
-        ]
-      }
+      HTTP/1.1 200 OK
+
+      [
+        {
+          "id": 44,
+          "name": "John Doe",
+          "title": "Solid",
+          "rating": 4,
+          "comment": "Works well.",
+          "status": "approved",
+          "createdAt": "2026-08-07T16:10:51+05:30",
+          "updatedAt": "2026-08-07T16:10:51+05:30",
+          "product": "/api/shop/products/127",
+          "customer": "/api/shop/customers/122"
+        }
+      ]
     commonErrors:
       - error: 401 Unauthorized
         cause: Missing or invalid Bearer token
@@ -43,26 +43,26 @@ examples:
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     response: |
-      {
-        "data": [
-          {
-            "id": 1,
-            "title": "Great product",
-            "comment": "Really enjoyed using this product.",
-            "rating": 5,
-            "status": "approved",
-            "name": "John",
-            "product": { "id": 2 },
-            "customer": { "id": 1 },
-            "createdAt": "2026-02-18T10:30:00+00:00",
-            "updatedAt": "2026-02-18T10:30:00+00:00"
-          }
-        ]
-      }
+      HTTP/1.1 200 OK
+
+      [
+        {
+          "id": 44,
+          "name": "John Doe",
+          "title": "Solid",
+          "rating": 4,
+          "comment": "Works well.",
+          "status": "approved",
+          "createdAt": "2026-08-07T16:10:51+05:30",
+          "updatedAt": "2026-08-07T16:10:51+05:30",
+          "product": "/api/shop/products/127",
+          "customer": "/api/shop/customers/122"
+        }
+      ]
     commonErrors:
       - error: 400 Bad Request
         cause: Invalid status value provided
-        solution: Use one of pending, approved, or rejected
+        solution: Use one of pending, approved, or disapproved
 
   - id: get-customer-reviews-filtered-rating
     title: Get Customer Reviews - Filter by Rating
@@ -73,22 +73,22 @@ examples:
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     response: |
-      {
-        "data": [
-          {
-            "id": 1,
-            "title": "Great product",
-            "comment": "Really enjoyed using this product.",
-            "rating": 5,
-            "status": "approved",
-            "name": "John",
-            "product": { "id": 2 },
-            "customer": { "id": 1 },
-            "createdAt": "2026-02-18T10:30:00+00:00",
-            "updatedAt": "2026-02-18T10:30:00+00:00"
-          }
-        ]
-      }
+      HTTP/1.1 200 OK
+
+      [
+        {
+          "id": 44,
+          "name": "John Doe",
+          "title": "Solid",
+          "rating": 4,
+          "comment": "Works well.",
+          "status": "approved",
+          "createdAt": "2026-08-07T16:10:51+05:30",
+          "updatedAt": "2026-08-07T16:10:51+05:30",
+          "product": "/api/shop/products/127",
+          "customer": "/api/shop/customers/122"
+        }
+      ]
     commonErrors:
       - error: 400 Bad Request
         cause: Invalid rating value provided
@@ -103,22 +103,22 @@ examples:
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     response: |
-      {
-        "data": [
-          {
-            "id": 1,
-            "title": "Great product",
-            "comment": "Really enjoyed using this product.",
-            "rating": 5,
-            "status": "approved",
-            "name": "John",
-            "product": { "id": 2 },
-            "customer": { "id": 1 },
-            "createdAt": "2026-02-18T10:30:00+00:00",
-            "updatedAt": "2026-02-18T10:30:00+00:00"
-          }
-        ]
-      }
+      HTTP/1.1 200 OK
+
+      [
+        {
+          "id": 44,
+          "name": "John Doe",
+          "title": "Solid",
+          "rating": 4,
+          "comment": "Works well.",
+          "status": "approved",
+          "createdAt": "2026-08-07T16:10:51+05:30",
+          "updatedAt": "2026-08-07T16:10:51+05:30",
+          "product": "/api/shop/products/127",
+          "customer": "/api/shop/customers/122"
+        }
+      ]
     commonErrors:
       - error: 401 Unauthorized
         cause: Missing or invalid Bearer token
@@ -148,61 +148,60 @@ GET /api/shop/customer-reviews
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `status` | string | - | Filter by review status (`pending`, `approved`, `rejected`) |
+| `status` | string | - | Filter by review status (`pending`, `approved`, `disapproved`) |
 | `rating` | integer | - | Filter by star rating (`1`–`5`) |
 
-## Response Fields (200 OK)
+## Response
+
+A bare JSON array of the customer's own reviews, newest first. The product and customer are **path references, not nested objects**.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | integer | Review ID |
-| `title` | string | Review title |
-| `comment` | string | Review body text |
-| `rating` | integer | Star rating (1–5) |
-| `status` | string | Review status: `pending`, `approved`, or `rejected` |
-| `name` | string | Reviewer display name |
-| `product` | object | Associated product (nested resource) |
-| `customer` | object | Customer who wrote the review (nested resource) |
-| `createdAt` | string | ISO 8601 creation timestamp |
-| `updatedAt` | string | ISO 8601 last update timestamp |
+| `id` | integer | Review ID. |
+| `name` | string | Display name submitted with the review. |
+| `title` / `comment` | string | Review text. |
+| `rating` | integer | Star rating, 1 to 5. |
+| `status` | string | `pending`, `approved`, or `disapproved`. |
+| `product` | string | Path of the reviewed product, e.g. `/api/shop/products/127`. |
+| `customer` | string | Path of the author — always the authenticated customer. |
+| `createdAt` / `updatedAt` | string | ISO 8601 timestamps. |
+
+Pagination is reported in headers: `X-Total-Count`, `X-Page`, `X-Per-Page`, `X-Total-Pages`. The page size is fixed at 10 — `per_page` and `page` are accepted by the URL but do not change the result. Walk a longer history over GraphQL, where the same rows are a cursor connection.
 
 ## Status Values
 
 | Status | Description |
 |--------|-------------|
-| `pending` | Awaiting approval |
-| `approved` | Published on storefront |
-| `rejected` | Not published |
+| `pending` | Submitted and awaiting moderation. Not visible on the product page. |
+| `approved` | Published on the storefront. |
+| `disapproved` | Reviewed by an admin and not published. |
+
+Unlike the product-review listing, this endpoint applies **no default status filter** — a customer sees all of their own reviews, pending ones included.
 
 ## Filters
 
-```bash
-# Get approved reviews only
-GET /api/shop/customer-reviews?status=approved
+| Parameter | Description |
+|-----------|-------------|
+| `status` | One status value per request. |
+| `rating` | One rating from 1 to 5. |
 
-# Get 5-star reviews only
-GET /api/shop/customer-reviews?rating=5
-
-# Get approved 5-star reviews
-GET /api/shop/customer-reviews?status=approved&rating=5
-
-# Get pending reviews
-GET /api/shop/customer-reviews?status=pending
-
-# Get rejected reviews
-GET /api/shop/customer-reviews?status=rejected
-```
+Supplying both narrows the result: `?status=approved&rating=5` returns only published five-star reviews.
 
 ## Use Cases
 
-- Display customer's review history in account dashboard
-- Show pending reviews awaiting approval
-- Filter reviews by rating or status
-- Build review management UI for customers
+- **"My reviews" in the account area** — call with no parameters; unapproved reviews are included, which is what lets the shopper see their own submission before it goes live.
+- **"Awaiting approval" section** — `?status=pending` isolates the reviews the shopper cannot yet see on the product page.
+- **Link back to the product** — take the numeric ID from the end of the `product` path and fetch the product for its name and image; they are not in this payload.
+
+## Best Practices
+
+- **Do not expect product names here** — the row carries a path only, so a review history that shows product titles needs a second fetch per product.
+- **Read `X-Total-Count` for the count** — the body is one fixed page of 10.
+- **Use `disapproved`, not `rejected`** — an unrecognised status value silently matches nothing and returns an empty array.
 
 ## Related Resources
 
-- [Get Single Customer Review](/api/rest-api/shop/customer-reviews/get-customer-review)
-- [Get Product Reviews](/api/rest-api/shop/product-reviews/get-product-reviews)
-- [Create Product Review](/api/rest-api/shop/product-reviews/create-product-review)
-- [Get Customer Profile](/api/rest-api/shop/customers/get-customer-profile)
+- [Get Single Customer Review](/api/rest-api/shop/customer-reviews/get-customer-review) — one of the customer's own reviews
+- [Get Product Reviews](/api/rest-api/shop/product-reviews/get-product-reviews) — a product's reviews, approved only by default
+- [Create Product Review](/api/rest-api/shop/product-reviews/create-product-review) — submit a review; it starts as pending
+- [Get Customer Profile](/api/rest-api/shop/customers/get-customer-profile) — read the authenticated customer's account details

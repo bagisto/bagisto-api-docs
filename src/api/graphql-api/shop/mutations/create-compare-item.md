@@ -131,7 +131,7 @@ Authorization: Bearer <accessToken>
 | Field | Type | Description |
 |-------|------|-------------|
 | `compareItem` | `CompareItem!` | The newly created compare item. |
-| `compareItem.id` | `ID!` | IRI identifier (e.g. `/api/shop/compare-items/607`). |
+| `compareItem.id` | `ID!` | IRI identifier (e.g. `/api/shop/compare_items/607`). |
 | `compareItem._id` | `Int!` | Numeric identifier. |
 | `compareItem.product` | `Product!` | The associated product. |
 | `compareItem.customer` | `Customer!` | The authenticated customer. |

@@ -10,61 +10,51 @@ examples:
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     response: |
+      HTTP/1.1 200 OK
+
       [
         {
           "id": 1,
           "productName": "Laravel E-Book",
           "name": "PDF Download",
-          "url": null,
           "file": "downloadable/laravel-ebook.pdf",
           "fileName": "laravel-ebook.pdf",
           "type": "file",
           "downloadBought": 5,
           "downloadUsed": 1,
-          "downloadCanceled": 0,
           "status": "available",
+          "downloadCanceled": 0,
+          "createdAt": "2026-06-15T10:30:00+05:30",
+          "updatedAt": "2026-06-15T10:30:00+05:30",
           "remainingDownloads": 4,
-          "customerId": 1,
-          "orderId": 101,
-          "orderItemId": 201,
-          "order": {
-            "id": 101,
-            "incrementId": "101",
-            "status": "completed"
-          },
-          "createdAt": "2025-06-15T10:30:00.000000Z",
-          "updatedAt": "2025-06-15T10:30:00.000000Z"
+          "downloadUrl": "https://yourstore.com/api/shop/customer-downloadable-products/1/download",
+          "customer": "/api/shop/customers/122",
+          "order": "/api/shop/customer-orders/101"
         },
         {
           "id": 2,
           "productName": "Stock Photo Pack",
           "name": "High-Res Bundle",
           "url": "https://cdn.example.com/photo-pack.zip",
-          "file": null,
           "fileName": "photo-pack.zip",
           "type": "url",
           "downloadBought": 3,
           "downloadUsed": 3,
-          "downloadCanceled": 0,
           "status": "expired",
+          "downloadCanceled": 0,
+          "createdAt": "2026-06-10T08:00:00+05:30",
+          "updatedAt": "2026-06-12T14:00:00+05:30",
           "remainingDownloads": 0,
-          "customerId": 1,
-          "orderId": 102,
-          "orderItemId": 202,
-          "order": {
-            "id": 102,
-            "incrementId": "102",
-            "status": "completed"
-          },
-          "createdAt": "2025-06-10T08:00:00.000000Z",
-          "updatedAt": "2025-06-12T14:00:00.000000Z"
+          "downloadUrl": "https://yourstore.com/api/shop/customer-downloadable-products/2/download",
+          "customer": "/api/shop/customers/122",
+          "order": "/api/shop/customer-orders/102"
         }
       ]
     commonErrors:
-      - error: 401 Unauthorized
-        cause: Missing or invalid Bearer token
-        solution: Login and provide a valid customer authentication token
       - error: 403 Forbidden
+        cause: Missing or invalid customer Bearer token
+        solution: Login and provide a valid customer authentication token
+      - error: 401 Unauthorized
         cause: Storefront key is missing or invalid
         solution: Provide a valid X-STOREFRONT-KEY header
 
@@ -95,19 +85,18 @@ GET /api/shop/customer-downloadable-products
 | `id` | Integer | Downloadable link purchase ID |
 | `productName` | String | Name of the purchased product |
 | `name` | String | Name of the downloadable link |
-| `url` | String\|null | External download URL (for URL-type links) |
-| `file` | String\|null | File path (for file-type links) |
+| `url` | String | Source URL of a `url`-type link. Absent on a `file`-type purchase. |
+| `file` | String | Stored path of a `file`-type link. Absent on a `url`-type purchase. |
 | `fileName` | String | Display name of the file |
 | `type` | String | Link type: `file` or `url` |
 | `downloadBought` | Integer | Total number of allowed downloads |
 | `downloadUsed` | Integer | Number of times downloaded |
 | `downloadCanceled` | Integer | Number of canceled downloads |
 | `status` | String | Purchase status: `available`, `expired`, or `pending` |
-| `remainingDownloads` | Integer | Computed remaining downloads (`null` if unlimited) |
-| `customerId` | Integer | ID of the customer who purchased |
-| `orderId` | Integer | Associated order ID |
-| `orderItemId` | Integer | Associated order item ID |
-| `order` | Object | Associated order details |
+| `remainingDownloads` | Integer | `downloadBought` minus used and canceled. `null` when the purchase has no download cap. |
+| `order` | String | Path of the order, e.g. `/api/shop/customer-orders/384`. Not a nested object. |
+| `customer` | String | Path of the owning customer. |
+| `downloadUrl` | String | Absolute URL of the download route. It needs both auth headers, so it is a request URL rather than a shareable link. |
 | `createdAt` | DateTime | Purchase creation date |
 | `updatedAt` | DateTime | Purchase last update date |
 

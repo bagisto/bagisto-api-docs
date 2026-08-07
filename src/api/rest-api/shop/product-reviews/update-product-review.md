@@ -3,116 +3,127 @@ outline: false
 examples:
   - id: update-product-review
     title: Update Product Review
-    description: Update an existing product review.
+    description: Edit a review the authenticated customer wrote. The method is PATCH and the body must be sent as merge-patch JSON.
     request: |
-      PUT /api/shop/reviews/1
-      Content-Type: application/json
+      PATCH /api/shop/reviews/40
+      Content-Type: application/merge-patch+json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
-      Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      Authorization: Bearer 12|Iy8NExampleCustomerAccessToken
 
       {
-        "title": "Great product!",
-        "comment": "Updated review - even better than expected",
-        "rating": 5
+        "title": "Great air fryer",
+        "rating": 4
       }
     response: |
+      HTTP/1.1 200 OK
+
       {
-        "data": {
-          "id": 1,
-          "productId": 1,
-          "title": "Great product!",
-          "comment": "Updated review - even better than expected",
-          "rating": 5,
-          "authorName": "John Doe",
-          "authorEmail": "john@example.com",
-          "status": "pending",
-          "updatedAt": "2024-01-21T10:15:00Z"
-        },
-        "message": "Review updated successfully"
+        "id": 40,
+        "name": "John Doe",
+        "title": "Great air fryer",
+        "rating": 4,
+        "comment": "Very satisfied with this purchase. Great quality and fast delivery.",
+        "status": "pending",
+        "createdAt": "2026-08-07T16:04:39+05:30",
+        "updatedAt": "2026-08-07T16:04:51+05:30"
       }
     commonErrors:
-      - error: 401 Unauthorized
-        cause: Not authenticated or not review author
-        solution: Ensure you own the review and provide valid token
-      - error: 403 Forbidden
-        cause: User is not the review author
-        solution: Only review author can update their review
+      - error: 415 Unsupported Media Type
+        cause: The request used Content-Type application/json
+        solution: Send Content-Type application/merge-patch+json — this endpoint accepts nothing else
+      - error: 403 Forbidden — This review was not written by you
+        cause: The review belongs to another customer, or to a guest
+        solution: A review can only be edited by the customer who wrote it
+      - error: 403 Forbidden — Please login to manage your review
+        cause: No customer Bearer token was sent
+        solution: Log the customer in and retry
+      - error: 400 Bad Request — Rating must be between 1 and 5
+        cause: rating fell outside 1–5
+        solution: Send an integer from 1 to 5
       - error: 404 Not Found
-        cause: Review does not exist
-        solution: Verify the review ID
+        cause: No review carries that ID
+        solution: Use an ID returned when the review was created, or from the customer's own review list
 
 ---
 
 # Update Product Review
 
-Update an existing product review. Only the review author can update their own review.
+Edit a review the authenticated customer wrote.
 
 ## Endpoint
 
 ```
-PUT /api/shop/reviews/{reviewId}
+PATCH /api/shop/reviews/{reviewId}
 ```
+
+The verb is `PATCH`, and the body must carry `Content-Type: application/merge-patch+json`. `PUT` is not routed, and a plain `application/json` body is rejected with `415`.
 
 ## Request Headers
 
 | Header | Required | Description |
 |--------|----------|-------------|
-| `Content-Type` | Yes | application/json |
+| `Content-Type` | Yes | `application/merge-patch+json` |
 | `X-STOREFRONT-KEY` | Yes | Your storefront API key |
-| `Authorization` | Yes | Bearer token (review author required) |
+| `Authorization` | Yes | Bearer token of the customer who wrote the review |
 
 ## Path Parameters
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `productId` | integer | Yes | Product ID |
-| `reviewId` | integer | Yes | Review ID to update |
+| `reviewId` | integer | Yes | The review to edit. No product ID is part of the path. |
 
 ## Request Body
 
 ```json
 {
-  "title": "string",
-  "comment": "string",
-  "rating": "integer (1-5)"
+  "title": "Great air fryer",
+  "rating": 4
 }
 ```
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `title` | string | No | Updated review title |
-| `comment` | string | No | Updated review content |
-| `rating` | integer | No | Updated rating (1-5) |
+| `title` | string | No | New headline. |
+| `comment` | string | No | New body text. |
+| `rating` | integer | No | New star rating, 1 to 5. |
+| `name` | string | No | New display name. |
+
+Every field is optional — the update is a partial patch, and anything omitted keeps its stored value.
 
 ## Response Fields (200 OK)
 
+The updated review, flat — the same shape [Create](/api/rest-api/shop/product-reviews/create-product-review) returns.
+
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | integer | Review ID |
-| `productId` | integer | Product ID |
-| `title` | string | Review title |
-| `comment` | string | Review content |
-| `rating` | integer | Star rating |
-| `authorName` | string | Reviewer name |
-| `authorEmail` | string | Reviewer email |
-| `status` | string | Review status |
-| `updatedAt` | string | Last update timestamp |
+| `id` | integer | Review ID. |
+| `name` | string | Display name. |
+| `title` / `comment` | string | Review text after the edit. |
+| `rating` | integer | Star rating after the edit. |
+| `status` | string | Moderation status. Editing does not reset it. |
+| `createdAt` / `updatedAt` | string | ISO 8601 timestamps; only `updatedAt` moves. |
+
+## Ownership
+
+A review may only be edited by the customer who wrote it. The check is on the stored author, not on the token alone, so:
+
+- Another customer's review answers `403`.
+- A review submitted by a guest carries no author and can never be edited — also `403`.
+- Editing an already-approved review leaves it approved; the store's moderation status is untouched.
 
 ## Use Cases
 
-- Allow customers to edit their reviews
-- Update reviews based on new experience
-- Correct mistakes or typos in reviews
-- Change ratings if opinion changes
+- **"Edit your review" on a product page** — send only the changed fields; the response carries the full row for immediate re-render.
+- **Fix a wrong rating without retyping the text** — a body of `{"rating": 4}` alone is valid.
 
-## Permissions
+## Best Practices
 
-- Only review author can update their review
-- Admin users can update any review
-- Updated reviews may require re-approval
+- **Set the merge-patch content type** — sending `application/json` is the most common failure here and returns `415` rather than a validation error.
+- **Do not resend the whole review** — a partial body avoids overwriting text the shopper edited in another tab.
+- **Expect the status to stay as it was** — an edit is not resubmitted for approval, so an approved review stays live with the new text.
 
 ## Related Resources
 
-- [Get Product Review](/api/rest-api/shop/product-reviews/get-product-review)
-- [Create Product Review](/api/rest-api/shop/product-reviews/create-product-review)
-- [Delete Product Review](/api/rest-api/shop/product-reviews/delete-product-review)
+- [Create Product Review](/api/rest-api/shop/product-reviews/create-product-review) — submit a review; it starts as pending
+- [Delete Product Review](/api/rest-api/shop/product-reviews/delete-product-review) — remove the customer's own review
+- [Get Product Review](/api/rest-api/shop/product-reviews/get-product-review) — one review by id, whatever its status

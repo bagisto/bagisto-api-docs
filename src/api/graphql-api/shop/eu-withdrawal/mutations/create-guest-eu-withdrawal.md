@@ -67,7 +67,7 @@ examples:
         solution: Provide the email address used on the guest order
       - error: NOT_FOUND
         cause: The order increment id and email do not match a guest order on an EU-withdrawal-enabled channel
-        solution: Ensure both the order number and email match the guest order exactly
+        solution: Check the order number and email match the guest order exactly, then confirm the order's channel has EU withdrawal enabled — a disabled channel returns this same message
 ---
 
 # File a Guest EU Withdrawal
@@ -81,6 +81,10 @@ Filing is **idempotent** — a second call for the same order returns the existi
 ## Authentication
 
 This mutation requires only the storefront key — no customer token. See the [Authentication](/api/graphql-api/authentication) page.
+
+## The channel must have withdrawal enabled
+
+Filing only works when EU right of withdrawal is switched on for the channel the **order** belongs to. The setting is off by default. When it is off the mutation fails with the same not-found message an unknown order produces, so check the configuration before assuming the identifiers are wrong — see the [overview](/api/graphql-api/shop/eu-withdrawal/).
 
 ## Input Fields
 

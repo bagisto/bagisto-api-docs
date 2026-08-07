@@ -40,7 +40,7 @@ mutation {
 }
 ```
 
-Send `token` (format `<id>|<secret>`) as `Authorization: Bearer <token>` on every authenticated request. Use `token`, **not** `apiToken` (a legacy field that is not a Bearer). There is no refresh token — on a `401`, log in again. Full field reference on the [Customer Login](/api/graphql-api/shop/mutations/customer-login) page.
+Send `token` (format `<id>|<secret>`) as `Authorization: Bearer <token>` on every authenticated request. Use `token`, **not** `apiToken` (a legacy field that is not a Bearer). Full field reference on the [Customer Login](/api/graphql-api/shop/mutations/customer-login) page.
 
 ## Guest — act without login
 

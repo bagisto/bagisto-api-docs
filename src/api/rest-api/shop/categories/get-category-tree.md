@@ -92,11 +92,11 @@ examples:
 
 Retrieve the **active** category tree as a nested structure. Children are inlined recursively up to the requested depth, so a single request renders the full menu/sidebar without follow-up calls.
 
-> The endpoint URL is plural and hyphenated: `/category-trees`.
->
-> Always filtered to active categories (`status=1`). Disabled categories never appear in the response.
->
-> ⚠️ **You must pass `?parentId=N`** — without it the response is an empty array. Pass the root category ID for your channel (commonly `1`) to get the full menu.
+Three things decide what this endpoint returns:
+
+- **The URL is plural and hyphenated** — `/category-trees`.
+- **Only active categories appear.** The tree is filtered to `status = 1` at every level, so a disabled category and everything under it is absent.
+- **`parentId` is optional.** Supplying it returns that category's children; omitting it returns the root categories instead. An unknown `parentId` returns an empty array.
 
 ## Endpoint
 
@@ -120,7 +120,7 @@ GET /api/shop/category-trees
 | `parentId`  | integer | —       | **Required.** Return descendants of this category. Use the root category ID (e.g. `1`) for the full menu. |
 | `depth`     | integer | 4       | Maximum nesting depth — how many child levels to inline                     |
 
-> Pagination headers (`X-Total-Count`, `X-Page`, `X-Per-Page`, `X-Total-Pages`) are **not** emitted on this endpoint — the entire tree is returned in one response.
+Pagination headers are not emitted on this endpoint. The whole tree comes back in one response, however deep it runs.
 
 ## Response
 
@@ -128,7 +128,7 @@ GET /api/shop/category-trees
 
 ### Tree Node Fields
 
-Each node carries a slimmer shape than the flat-list category endpoint — `parent`, `translations[]`, `filterableAttributes`, and image URLs are **not** included. Use [Get Single Category](/api/rest-api/shop/categories/get-category) when you need those.
+Each node carries a slimmer shape than the flat-list category endpoint — `parent`, `translations[]`, `filterableAttributes`, and image URLs are **not** included. Use [Get Categories](/api/rest-api/shop/categories/get-categories) when you need those.
 
 | Field          | Type              | Description                                                |
 |----------------|-------------------|------------------------------------------------------------|
@@ -160,8 +160,14 @@ The inline `translation` contains the same fields as the inline translation on [
 | Depth control            | n/a (one level at a time via `?parent_id`)     | `?depth=N`                             |
 | Embeds                   | `parent`, `translations[]`, `filterableAttributes`, `logoUrl`, `children` (inline 1 level) | Recursive `children[]`, single `translation` |
 
+## Best Practices
+
+- **Use this rather than following `children` from the flat listing** — the tree nests real objects, so a full menu is one request instead of one per level.
+- **Read `translation.name` and `translation.slug`** — the node itself carries no display name.
+- **Ignore `_lft` and `_rgt`** — they are internal ordering pointers, not something a client should sort on; `position` is the display order.
+
 ## Related Resources
 
 - [Get Categories](/api/rest-api/shop/categories/get-categories) — flat collection
-- [Get Category](/api/rest-api/shop/categories/get-category) — full detail for a single category
+- [Get Categories](/api/rest-api/shop/categories/get-categories) — the flat listing, and the single-category endpoint with full detail
 - [Get Products](/api/rest-api/shop/products/get-products) — `?category_id=N` to scope products

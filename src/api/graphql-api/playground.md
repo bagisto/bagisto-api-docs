@@ -273,7 +273,7 @@ mutation LoginCustomer($email: String!, $password: String!) {
 ```
 
 **After running:**
-1. Copy the `accessToken` value
+1. Copy the `token` value
 2. Add to request headers (see below)
 
 ### 8. Get Customer Profile (Requires Auth)

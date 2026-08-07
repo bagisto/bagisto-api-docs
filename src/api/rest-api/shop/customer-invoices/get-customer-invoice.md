@@ -10,38 +10,42 @@ examples:
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     response: |
+      HTTP/1.1 200 OK
+
       {
-        "id": 1,
-        "incrementId": "INV-001",
+        "id": 5,
+        "incrementId": "5",
         "state": "paid",
-        "totalQty": 2,
         "emailSent": true,
-        "subTotal": 100.00,
-        "baseSubTotal": 100.00,
-        "grandTotal": 110.00,
-        "baseGrandTotal": 110.00,
-        "shippingAmount": 5.00,
-        "baseShippingAmount": 5.00,
-        "taxAmount": 5.00,
-        "baseTaxAmount": 5.00,
-        "discountAmount": 0.00,
-        "baseDiscountAmount": 0.00,
-        "shippingTaxAmount": 0.00,
-        "baseShippingTaxAmount": 0.00,
-        "subTotalInclTax": 105.00,
-        "baseSubTotalInclTax": 105.00,
-        "shippingAmountInclTax": 5.00,
-        "baseShippingAmountInclTax": 5.00,
-        "baseCurrencyCode": "USD",
-        "channelCurrencyCode": "USD",
+        "totalQty": 1,
         "orderCurrencyCode": "USD",
-        "transactionId": "TXN-12345",
+        "subTotal": 24.99,
+        "baseSubTotal": 24.99,
+        "grandTotal": 34.99,
+        "baseGrandTotal": 34.99,
+        "shippingAmount": 10,
+        "baseShippingAmount": 10,
+        "taxAmount": 0,
+        "baseTaxAmount": 0,
+        "discountAmount": 0,
+        "baseDiscountAmount": 0,
+        "shippingTaxAmount": 0,
+        "baseShippingTaxAmount": 0,
+        "subTotalInclTax": 24.99,
+        "baseSubTotalInclTax": 24.99,
+        "shippingAmountInclTax": 10,
+        "baseShippingAmountInclTax": 10,
         "reminders": 0,
-        "nextReminderAt": null,
-        "order": "/api/shop/customer-orders/1",
-        "items": ["/api/shop/invoice-items/1", "/api/shop/invoice-items/2"],
-        "createdAt": "2025-02-10T10:30:00.000000Z",
-        "updatedAt": "2025-02-10T10:30:00.000000Z"
+        "createdAt": "2026-07-21T17:58:29+05:30",
+        "updatedAt": "2026-07-21T17:58:30+05:30",
+        "downloadUrl": "https://yourstore.com/api/shop/customer-invoices/5/pdf",
+        "items": [
+          "/api/customer_invoice_items/11"
+        ],
+        "addresses": [
+          "/api/customer_invoice_addresses/210",
+          "/api/customer_invoice_addresses/211"
+        ]
       }
     commonErrors:
       - error: 404 Not Found
@@ -82,77 +86,50 @@ GET /api/shop/customer-invoices/{id}
 
 ## Response Fields (200 OK)
 
+One invoice, flat. The field set is identical to a row of [Get Customer Invoices](/api/rest-api/shop/customer-invoices/get-customer-invoices) — there is no extra detail on this endpoint.
+
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | integer | Invoice ID |
-| `incrementId` | string | Human-readable invoice number (e.g. `INV-001`) |
-| `state` | string | Invoice state |
-| `totalQty` | integer | Total quantity of items in the invoice |
-| `emailSent` | boolean | Whether the invoice email was sent |
-| `subTotal` | float | Sub total |
-| `baseSubTotal` | float | Base sub total |
-| `grandTotal` | float | Grand total |
-| `baseGrandTotal` | float | Base grand total |
-| `shippingAmount` | float | Shipping amount |
-| `baseShippingAmount` | float | Base shipping amount |
-| `taxAmount` | float | Tax amount |
-| `baseTaxAmount` | float | Base tax amount |
-| `discountAmount` | float | Discount amount |
-| `baseDiscountAmount` | float | Base discount amount |
-| `shippingTaxAmount` | float | Shipping tax amount |
-| `baseShippingTaxAmount` | float | Base shipping tax amount |
-| `subTotalInclTax` | float | Sub total including tax |
-| `baseSubTotalInclTax` | float | Base sub total including tax |
-| `shippingAmountInclTax` | float | Shipping amount including tax |
-| `baseShippingAmountInclTax` | float | Base shipping amount including tax |
-| `baseCurrencyCode` | string | Base currency code (e.g. `USD`) |
-| `channelCurrencyCode` | string | Channel currency code |
-| `orderCurrencyCode` | string | Order currency code |
-| `transactionId` | string | Payment transaction ID |
-| `reminders` | integer | Number of reminders sent |
-| `nextReminderAt` | string | Next reminder scheduled date |
-| `order` | string | Associated order IRI (e.g. `/api/shop/customer-orders/1`) |
-| `items` | array | Invoice line item IRIs |
-| `createdAt` | string | ISO 8601 creation timestamp |
-| `updatedAt` | string | ISO 8601 last update timestamp |
+| `id` | integer | Invoice ID. |
+| `incrementId` | string | Invoice number shown to the customer. |
+| `state` | string | `pending`, `pending_payment`, `paid`, or `overdue`. |
+| `emailSent` | boolean | Whether the invoice email has gone out. |
+| `totalQty` | integer | Units covered by this invoice. |
+| `orderCurrencyCode` | string | Currency the order was placed in. |
+| `subTotal` / `baseSubTotal` / `subTotalInclTax` / `baseSubTotalInclTax` | float | Line total, before and including tax. |
+| `grandTotal` / `baseGrandTotal` | float | Invoice total. |
+| `shippingAmount` / `baseShippingAmount` / `shippingAmountInclTax` / `baseShippingAmountInclTax` | float | Shipping charged. |
+| `taxAmount` / `baseTaxAmount` / `shippingTaxAmount` / `baseShippingTaxAmount` | float | Tax charged. |
+| `discountAmount` / `baseDiscountAmount` | float | Discount applied. |
+| `reminders` | integer | Payment reminders sent so far. |
+| `downloadUrl` | string | Absolute URL of the PDF. It still requires both auth headers, so it is a request URL rather than a shareable link. |
+| `items` / `addresses` | array | References to the invoice lines and the order's addresses. |
+| `createdAt` / `updatedAt` | string | ISO 8601 timestamps. |
+
+The invoiced line items are available from the parent order's `items` block on [Get Customer Order](/api/rest-api/shop/customer-orders/get-customer-order), and on the invoice PDF. Over GraphQL the `customerInvoice` query returns them as selectable nested objects.
 
 ## Error Responses
 
-**Not Found (404):**
-```json
-{
-  "message": "Customer invoice with ID \"999\" not found."
-}
-```
-
-**Unauthenticated (401):**
-```json
-{
-  "message": "Customer is not logged in."
-}
-```
-
-**Accessing Another Customer's Invoice (404):**
-
-Requesting an invoice that belongs to a different customer's order returns the same 404 response, preventing enumeration attacks:
-
-```json
-{
-  "message": "Customer invoice with ID \"5\" not found."
-}
-```
+| Status | Body `detail` | Cause |
+|--------|---------------|-------|
+| `404` | `Customer invoice with ID "999999" not found` | No such invoice, **or** it belongs to another customer's order. The two cases are deliberately indistinguishable. |
+| `403` | `Unauthenticated. Please login to perform this action` | No customer Bearer token was sent. |
+| `401` | — | The storefront key header was missing or wrong. |
 
 ## Use Cases
 
-- Display detailed invoice page in customer account
-- Show full financial breakdown of an invoice
-- Track payment state and transaction ID
-- View tax, shipping, and discount details
-- Check if invoice email was sent
+- **Invoice detail screen** — read one invoice by the `id` carried in the list, and offer the PDF from `downloadUrl`.
+- **Payment-status check** — re-read after an offline payment to see `state` move from `pending_payment` to `paid`.
+
+## Best Practices
+
+- **Fetch the list instead when showing several invoices** — this endpoint returns no more fields than a list row, so per-invoice calls add nothing.
+- **Read the line items from the parent order** — the order detail carries them in full.
+- **Treat `404` as "not yours or not there"** — the message quotes the requested ID and is not proof the invoice is missing store-wide.
 
 ## Related Resources
 
-- [Get All Customer Invoices](/api/rest-api/shop/customer-invoices/get-customer-invoices)
-- [Download Invoice PDF](/api/rest-api/shop/customer-invoices/download-customer-invoice-pdf)
-- [Get Customer Orders](/api/rest-api/shop/customer-orders/get-customer-orders)
-- [Get Customer Profile](/api/rest-api/shop/customers/get-customer-profile)
+- [Get All Customer Invoices](/api/rest-api/shop/customer-invoices/get-customer-invoices) — every invoice raised against the customer's orders
+- [Download Invoice PDF](/api/rest-api/shop/customer-invoices/download-customer-invoice-pdf) — the invoice as a PDF stream
+- [Get Customer Orders](/api/rest-api/shop/customer-orders/get-customer-orders) — the customer's order history
+- [Get Customer Profile](/api/rest-api/shop/customers/get-customer-profile) — read the authenticated customer's account details

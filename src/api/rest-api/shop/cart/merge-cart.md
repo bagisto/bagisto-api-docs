@@ -11,42 +11,40 @@ examples:
       Authorization: Bearer 867|DlQxl04kMnUjSpduZpd2gaVWX8oi3vvGY3RZn4pE
 
       {
-        "cart_id": 6884
+        "cartId": 6884
       }
     response: |
       {
-        "data": {
-          "id": 6885,
-          "cartToken": "6885",
-          "customerId": 1533,
-          "channelId": 1,
-          "itemsCount": 1,
-          "itemsQty": 1,
-          "items": [
-            {
-              "id": 7763,
-              "cartId": 6885,
-              "productId": 1,
-              "name": "Coastal Breeze Men's Blue Zipper Hoodie",
-              "sku": "COASTALBREEZEMENSHOODIE",
-              "quantity": 1,
-              "price": 100,
-              "total": 100,
-              "type": "simple",
-              "formattedPrice": "$100.00",
-              "formattedTotal": "$100.00"
-            }
-          ],
-          "subtotal": 100,
-          "grandTotal": 100,
-          "taxAmount": 0,
-          "discountAmount": 0,
-          "couponCode": null,
-          "formattedSubtotal": "$100.00",
-          "formattedGrandTotal": "$100.00",
-          "success": true,
-          "message": "Cart merged successfully."
-        }
+        "id": 6885,
+        "cartToken": "6885",
+        "customerId": 1533,
+        "channelId": 1,
+        "itemsCount": 1,
+        "itemsQty": 1,
+        "items": [
+          {
+            "id": 7763,
+            "cartId": 6885,
+            "productId": 1,
+            "name": "Coastal Breeze Men's Blue Zipper Hoodie",
+            "sku": "COASTALBREEZEMENSHOODIE",
+            "quantity": 1,
+            "price": 100,
+            "total": 100,
+            "type": "simple",
+            "formattedPrice": "$100.00",
+            "formattedTotal": "$100.00"
+          }
+        ],
+        "subtotal": 100,
+        "grandTotal": 100,
+        "taxAmount": 0,
+        "discountAmount": 0,
+        "couponCode": null,
+        "formattedSubtotal": "$100.00",
+        "formattedGrandTotal": "$100.00",
+        "success": true,
+        "message": "Cart merged successfully."
       }
     commonErrors:
       - error: 401 Unauthorized
@@ -80,18 +78,18 @@ POST /api/shop/merge-carts
 
 ```json
 {
-  "cart_id": 6884
+  "cartId": 6884
 }
 ```
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `cart_id` | integer | Yes | The id of the guest cart to merge into the customer cart |
+| `cartId` | integer | Yes | The id of the guest cart to merge into the customer cart |
 
 ## How the merge works
 
 1. **Auth is required** — the request must carry a customer Bearer token. A guest (no token) is rejected with `401`.
-2. **The guest cart is looked up by `cart_id`** — an unknown id returns `404`.
+2. **The guest cart is looked up by `cartId`** — an unknown id returns `404`.
 3. The items are merged into the customer's **active** cart (one is created if the customer has none):
    - An item already in the customer cart with the **same product and type** has its **quantities added together**.
    - Any other item is **copied** into the customer cart (a configurable product's selected-variant child is copied too).
@@ -122,11 +120,11 @@ POST /api/shop/merge-carts
 
 ## Notes
 
-- Send the **customer** token, not the guest cart token — the guest cart is identified by the `cart_id` in the body.
+- Send the **customer** token, not the guest cart token — the guest cart is identified by the `cartId` in the body.
 - After a successful merge the guest cart is inactive; continue with the returned customer cart through checkout.
 
 ## Related Resources
 
-- [Create Cart](/api/rest-api/shop/cart/create-cart)
-- [Get Cart](/api/rest-api/shop/cart/get-cart)
-- [Cart workflow](/api/workflows/shop/cart)
+- [Create Cart](/api/rest-api/shop/cart/create-cart) — obtain the cart token every other cart call needs
+- [Get Cart](/api/rest-api/shop/cart/get-cart) — read the current items and recalculated totals
+- [Cart workflow](/api/workflows/shop/cart) — the guest-to-customer cart flow end to end

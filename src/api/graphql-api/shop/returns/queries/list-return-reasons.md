@@ -7,21 +7,9 @@ examples:
     query: |
       query ReturnReasons($resolutionType: String!) {
         returnReasons(resolutionType: $resolutionType) {
-          edges {
-            cursor
-            node {
-              _id
-              title
-              position
-            }
-          }
-          pageInfo {
-            startCursor
-            endCursor
-            hasNextPage
-            hasPreviousPage
-          }
-          totalCount
+          _id
+          title
+          position
         }
       }
     variables: |
@@ -31,41 +19,23 @@ examples:
     response: |
       {
         "data": {
-          "returnReasons": {
-            "edges": [
-              {
-                "cursor": "MQ==",
-                "node": {
-                  "_id": 2,
-                  "title": "Damaged product",
-                  "position": 1
-                }
-              },
-              {
-                "cursor": "Mg==",
-                "node": {
-                  "_id": 3,
-                  "title": "Wrong item delivered",
-                  "position": 2
-                }
-              },
-              {
-                "cursor": "Mw==",
-                "node": {
-                  "_id": 4,
-                  "title": "No longer needed",
-                  "position": 3
-                }
-              }
-            ],
-            "pageInfo": {
-              "startCursor": "MQ==",
-              "endCursor": "Mw==",
-              "hasNextPage": false,
-              "hasPreviousPage": false
+          "returnReasons": [
+            {
+              "_id": 2,
+              "title": "Damaged product",
+              "position": 1
             },
-            "totalCount": 3
-          }
+            {
+              "_id": 3,
+              "title": "Wrong item delivered",
+              "position": 2
+            },
+            {
+              "_id": 4,
+              "title": "No longer needed",
+              "position": 3
+            }
+          ]
         }
       }
     commonErrors:
@@ -95,20 +65,13 @@ This query requires an authenticated customer — send the storefront key and a 
 
 ## Possible Returns
 
+The query returns a plain list of reasons, not a cursor connection — there is no `edges`, `pageInfo`, or `totalCount` to select, and no pagination arguments. Every active reason for the resolution type comes back in one response.
+
 | Field | Type | Description |
 |-------|------|-------------|
-| `edges` | `[ReturnReasonEdge!]` | Array of reason edges with cursor and node. |
-| `edges.cursor` | `String!` | Cursor for this edge, used in pagination. |
-| `edges.node` | `ReturnReason!` | The return reason object. |
-| `edges.node._id` | `Int!` | Numeric reason id — use as `rmaReasonId` when raising a return. |
-| `edges.node.title` | `String!` | Reason label, e.g. `Damaged product`. |
-| `edges.node.position` | `Int!` | Display order position. |
-| `pageInfo` | `PageInfo!` | Pagination metadata. |
-| `pageInfo.startCursor` | `String` | Cursor for the first item in the page. |
-| `pageInfo.endCursor` | `String` | Cursor for the last item in the page. |
-| `pageInfo.hasNextPage` | `Boolean!` | Whether more pages exist forward. |
-| `pageInfo.hasPreviousPage` | `Boolean!` | Whether more pages exist backward. |
-| `totalCount` | `Int!` | Total number of active reasons for the resolution type. |
+| `_id` | `Int!` | Numeric reason id — use as `rmaReasonId` when raising a return. |
+| `title` | `String!` | Reason label, e.g. `Damaged product`. |
+| `position` | `Int!` | Display order position. |
 
 ## Related Resources
 

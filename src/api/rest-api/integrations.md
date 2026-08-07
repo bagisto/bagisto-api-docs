@@ -414,6 +414,6 @@ curl -X GET "https://your-domain.com/api/shop/customer-profile" \
 
 ## Related Documentation
 
-- [Authentication](/api/rest-api/authentication)
-- [Status Codes](/api/errors)
-- [Pagination](/api/pagination)
+- [Authentication](/api/rest-api/authentication) — storefront key, customer tokens, and cart tokens
+- [Status Codes](/api/errors) — HTTP status codes and the error body shape
+- [Pagination](/api/pagination) — page, per_page, and the pagination response headers

@@ -46,18 +46,21 @@ examples:
         "message": "This payment method requires the shopper to complete payment on the gateway. Send them to redirectUrl; the order is created once the gateway confirms the payment."
       }
     commonErrors:
-      - error: 401 Unauthorized
-        cause: Customer not authenticated
-        solution: Provide valid Bearer token
-      - error: 400 Bad Request
-        cause: Missing required checkout details
-        solution: Ensure shipping address, method, and payment method are set
-      - error: 409 Conflict
-        cause: Cart is empty
-        solution: Add items to cart first
-      - error: 422 Unprocessable Entity
-        cause: Inventory not available
-        solution: Verify product stock
+      - error: 500 Internal Server Error — Cart is empty
+        cause: The cart has no items, or a previous place-order already emptied it
+        solution: Add items before placing; a repeated call after success fails this way
+      - error: 500 Internal Server Error — Billing address is required
+        cause: The checkout address step has not been completed for this cart
+        solution: Save the address with Set Checkout Address, then set shipping and payment
+      - error: 500 Internal Server Error — Shipping method is required
+        cause: The cart holds shippable items but no shipping method is saved
+        solution: Pick a rate from Get Shipping Methods and save it
+      - error: 500 Internal Server Error — Payment method is required
+        cause: No payment method is saved on the cart
+        solution: Save one with Set Payment Method
+      - error: 401 Unauthorized — Authentication token is required
+        cause: No cart or customer token was sent as the Bearer token
+        solution: Send the cartToken from Create Cart, or a logged-in customer's token
 
 ---
 
@@ -108,52 +111,43 @@ On a genuine failure (empty cart, missing address/shipping/payment, suspended ac
 
 ## Order Status Values
 
-- `pending` - Awaiting payment confirmation
-- `processing` - Payment confirmed, preparing shipment
-- `shipped` - Order shipped
-- `delivered` - Order delivered
-- `canceled` - Order canceled
-- `failed` - Payment failed
+A newly placed order starts at `pending`, or `processing` once payment is confirmed. The full set a storefront can see is listed on [Get Customer Orders](/api/rest-api/shop/customer-orders/get-customer-orders).
 
-## Pre-requisites
+## Prerequisites
 
-All of these must be completed before placing order:
-1. Cart must have items
-2. Shipping address must be set
-3. Shipping method must be selected
-4. Billing address must be set
-5. Payment method must be selected
-6. All items in stock
+Each step writes to the cart, and place-order reads what they left behind. They must run in this order:
 
-## After Order Placement
+1. A cart with at least one item — otherwise `Cart is empty`.
+2. A billing address, and a shipping address when the cart holds shippable items — otherwise `Billing address is required`.
+3. A shipping method, for a cart with shippable items.
+4. A payment method.
 
-- Cart is automatically cleared
-- Customer receives confirmation email
-- Order status can be tracked
-- Invoice becomes available
-- Payment processing may redirect customer
+Every failure is reported as a `500` with the reason in `detail`, not as a `4xx` and not as `success: false`. Read `detail` to know which step is missing.
 
-## Validation Rules
+## After the Order Is Placed
 
-- Cart cannot be empty
-- All addresses must be complete
-- Inventory must be available for all items
-- Shipping method must match location
-- Payment method must be valid
+- The cart is emptied and its token can no longer be used for checkout.
+- The order confirmation email goes out to the address captured at checkout.
+- The order appears in [Get Customer Orders](/api/rest-api/shop/customer-orders/get-customer-orders) for a logged-in shopper. A guest order is not listed there — keep the returned `orderId` client-side.
+- The invoice is created by the store, not at checkout, so [Get Customer Invoices](/api/rest-api/shop/customer-invoices/get-customer-invoices) may be empty right after placing.
 
 ## Use Cases
 
-- Complete customer checkout
-- Create order for in-store pickup
-- Process cash on delivery
-- Execute payment gateway transaction
-- Generate order confirmation and invoice
+- **Finish a guest checkout** — the whole flow works with the cart token alone; capture `orderId` from the response, since a guest cannot look the order up afterwards.
+- **Gateway checkout** — when `redirect` is `true`, hand the shopper to `redirectUrl` and wait for the gateway to return; do not treat the missing `orderId` as a failure.
+
+## Best Practices
+
+- **Branch on `redirect` before reading `orderId`** — on the redirect path there is no order yet and `orderId` is `null`.
+- **Read `detail` on a failure, not the status code** — every missing prerequisite is a `500`, so only the message identifies which step to send the shopper back to.
+- **Store `orderId` for guests immediately** — there is no guest order-lookup endpoint.
+- **Do not retry blindly after a success** — the cart is emptied, so a second call fails with `Cart is empty` rather than duplicating the order.
 
 ## Related Resources
 
-- [Get Cart](/api/rest-api/shop/cart/get-cart)
-- [Set Shipping Address](/api/rest-api/shop/checkout/set-shipping-address)
-- [Set Billing Address](/api/rest-api/shop/checkout/set-billing-address)
-- [Set Shipping Method](/api/rest-api/shop/checkout/set-shipping-method)
-- [Set Payment Method](/api/rest-api/shop/checkout/set-payment-method)
-- [Get Customer Orders](/api/rest-api/shop/customers/get-customer-orders)
+- [Get Cart](/api/rest-api/shop/cart/get-cart) — read the current items and recalculated totals
+- [Set Shipping Address](/api/rest-api/shop/checkout/set-shipping-address) — the same call with a separate delivery address
+- [Set Billing Address](/api/rest-api/shop/checkout/set-billing-address) — save both checkout addresses in one call
+- [Set Shipping Method](/api/rest-api/shop/checkout/set-shipping-method) — save the chosen rate on the cart
+- [Set Payment Method](/api/rest-api/shop/checkout/set-payment-method) — save the chosen payment method on the cart
+- [Get Customer Orders](/api/rest-api/shop/customer-orders/get-customer-orders) — the customer's order history

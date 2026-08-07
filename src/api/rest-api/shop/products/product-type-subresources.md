@@ -272,10 +272,16 @@ examples:
 
 The endpoints in this group expose the type-specific configuration of products that aren't just `simple`: configurable variants, booking slots, bundle option groups, grouped associations, downloadable links and samples. Most of this data is also inlined on [Single Product](/api/rest-api/shop/products/get-product) — these dedicated endpoints exist for clients that need just one slice.
 
-> ⚠️ **Naming pattern alert**:
-> - `*-bundle-option-products`, `*-downloadable-links`, `*-downloadable-samples`, `booking-products`, `booking-slots` use **dashed** root URLs.
-> - `product_bundle_options`, `product_grouped_products`, `booking_product_default_slots`, `booking_product_appointment_slots`, `booking_product_rental_slots`, `booking_product_event_tickets`, `booking_product_table_slots`, plus all `*_translations` endpoints use **underscored** root URLs.
-> - When in doubt, copy the URL from a parent resource's IRI — they're authoritative.
+## URL naming is not uniform
+
+Root URLs in this group use two different separators, so a path cannot be guessed from the resource name:
+
+| Separator | Endpoints |
+|-----------|-----------|
+| Dashed | `*-bundle-option-products`, `*-downloadable-links`, `*-downloadable-samples`, `booking-products`, `booking-slots` |
+| Underscored | `product_bundle_options`, `product_grouped_products`, `booking_product_default_slots`, `booking_product_appointment_slots`, `booking_product_rental_slots`, `booking_product_event_tickets`, `booking_product_table_slots`, and every `*_translations` endpoint |
+
+Copy the URL from the parent resource's IRI rather than assembling it by hand — the IRIs in a response are authoritative.
 
 For runtime slot availability (a date-specific list of bookable times) see the dedicated [Booking Slots](/api/rest-api/shop/products/get-booking-slots) page — it's separate from the static **slot config** endpoints documented here.
 
@@ -469,4 +475,4 @@ Same shape as a card-level [Product](/api/rest-api/shop/products/get-products#ca
 - [Single Product](/api/rest-api/shop/products/get-product) — embeds `variants`, `bookingProducts`, `bundleOptions`, `groupedProducts`, `downloadableLinks`, `downloadableSamples` inline
 - [Booking Slots](/api/rest-api/shop/products/get-booking-slots) — date-specific runtime availability
 - [Product Sub-Resources](/api/rest-api/shop/products/product-subresources) — the `Product` tag (images, videos, customer-group prices, customizable options, attribute values)
-- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas)
+- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas) — how to dereference the path references in these payloads

@@ -146,4 +146,4 @@ fetch('https://your-domain.com/api/shop/locales/1', {
 
 ## Related Resources
 
-- [Get All Locales](/api/rest-api/shop/locales/get-locales)
+- [Get All Locales](/api/rest-api/shop/locales/get-locales) — every locale with its code and text direction

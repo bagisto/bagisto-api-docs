@@ -723,7 +723,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Create Compare Item](/api/graphql-api/shop/mutations/create-compare-item): Add a product to the authenticated customer's comparison list. The customer is auto-detected from the Bearer token.
 - [Create Contact Us](/api/graphql-api/shop/mutations/create-contact-us): Submit a contact us form with name, email, contact number, and message.
 - [Create Customer Address](/api/graphql-api/shop/mutations/create-customer-address): Create a new address for the authenticated customer.
-- [Create Newsletter](/api/graphql-api/shop/mutations/create-newsletter): Subscribe the authenticated customer to the newsletter on the current channel.
+- [Create Newsletter](/api/graphql-api/shop/mutations/create-newsletter): Subscribe an email address to the newsletter on the current channel. A customer token is optional and only links the subscription to that account.
 - [Create Product Review](/api/graphql-api/shop/mutations/create-product-review): Create a basic product review with title, comment, and rating.
 - [Create Wishlist Item](/api/graphql-api/shop/mutations/create-wishlist): Add a product to the authenticated customer's wishlist.
 - [Customer Login](/api/graphql-api/shop/mutations/customer-login): Authenticate a customer with email and password.
@@ -760,7 +760,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 ## GraphQL API › Shop › Product
 
-- [Product](/api/graphql-api/shop/product): The Product menu is the storefront catalog — listing products, searching and filtering them, fetching one product's full detail, and (for booking products)…
+- [Product](/api/graphql-api/shop/product): The Product menu is the storefront catalog. It powers three screens: a product-listing page, a search results page, and a product-detail page. Everything here…
 
 ## GraphQL API › Shop › Product Review
 
@@ -801,12 +801,12 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Get Customer Profile](/api/graphql-api/shop/queries/get-customer-profile): Retrieve the authenticated customer's profile information.
 - [Get Customer Review](/api/graphql-api/shop/queries/get-customer-review): Retrieve a specific product review by ID for the authenticated customer.
 - [Get Customer Reviews](/api/graphql-api/shop/queries/get-customer-reviews): Retrieve all product reviews submitted by the authenticated customer with pagination.
-- [Single CMS Page](/api/graphql-api/shop/queries/get-page): Retrieve a single CMS page by its IRI-style ID, including full translation details.
+- [Single CMS Page](/api/graphql-api/shop/queries/get-page): Retrieve a single CMS page by its ID, including the resolved-locale translation and every stored translation.
 - [CMS Pages](/api/graphql-api/shop/queries/get-pages): Retrieve all CMS pages with their translation details using cursor-based pagination.
 - [Get Payment Methods](/api/graphql-api/shop/queries/get-payment-methods): Retrieve available payment methods for checkout.
-- [Single Product](/api/graphql-api/shop/queries/get-product): Retrieve a single product by its ID. `isInWishlist` / `isInCompare` need the customer Bearer token — see the field notes below.
+- [Single Product](/api/graphql-api/shop/queries/get-product): Retrieve a single product by its ID. `isInWishlist` / `isInCompare` need the customer Bearer token and are `"0"` for guests.
 - [Product Reviews](/api/graphql-api/shop/queries/get-product-reviews): Retrieve product reviews with basic fields and pagination.
-- [Get Products](/api/graphql-api/shop/queries/get-products): For a signed-in customer, every product carries `isInWishlist` and `isInCompare`, so you can highlight the wishlist / compare icon directly on each product…
+- [Get Products](/api/graphql-api/shop/queries/get-products): For a signed-in customer, every product carries 'isInWishlist' and 'isInCompare' fields.
 - [Get Shipping Methods](/api/graphql-api/shop/queries/get-shipping-methods): Retrieve available shipping methods for checkout.
 - [Get Wishlist Item](/api/graphql-api/shop/queries/get-wishlist): Retrieve a specific wishlist item by its IRI.
 - [Get Wishlists](/api/graphql-api/shop/queries/get-wishlists): Retrieve paginated wishlist items for the authenticated customer using cursor-based pagination.
@@ -860,7 +860,6 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [REST API Best Practices](/api/rest-api/best-practices): This guide provides best practices and recommendations for building robust, scalable, and secure applications using the Bagisto REST API.
 - [Integration Guides](/api/rest-api/integrations): Language and framework examples for the Bagisto **REST** API. Every example carries the required headers.
 - [REST API - Introduction](/api/rest-api/introduction): Welcome to the Bagisto REST API documentation! This guide will help you build modern, efficient e-commerce applications using our comprehensive REST API…
-- [Product Management](/api/rest-api/products): Complete guide to product operations including CRUD operations, images, videos, reviews, bundles, and variants using the REST API.
 - [Shop API Resources](/api/rest-api/shop-resources): The Shop API provides comprehensive endpoints for customer-facing e-commerce operations. This resource covers product browsing, catalog management, and basic…
 - [Testing & Debugging REST APIs](/api/rest-api/testing-debugging): This guide covers how to test and debug Bagisto REST API endpoints using various tools and methods.
 
@@ -1414,10 +1413,6 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [List Admin Users](/api/rest-api/admin/settings/users/list): Paginated list of every admin user (back-office account) configured in the store.
 - [Update Admin User](/api/rest-api/admin/settings/users/update): Partial. Permission: `settings.users.edit`.
 
-## REST API › Shop
-
-- [Customer Management](/api/rest-api/shop/customers): Complete guide to customer operations including registration, authentication, profile management, and address management using the REST API.
-
 ## REST API › Shop › Attributes
 
 - [Attribute](/api/rest-api/shop/attributes): The Attribute menu exposes the catalog's attribute definitions — the named properties products carry (such as colour, size or brand) along with their…
@@ -1430,17 +1425,17 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Cart](/api/rest-api/shop/cart): The Cart menu is the shopping basket: create a cart, add and update items, remove items, and apply or remove a coupon. Every response returns the up-to-date…
 - [Add to Cart](/api/rest-api/shop/cart/add-to-cart): Add a simple or virtual product. Only productId and quantity are needed.
 - [Apply Coupon](/api/rest-api/shop/cart/apply-coupon): Apply a discount coupon code to the shopping cart.
-- [Create Cart](/api/rest-api/shop/cart/create-cart): Create a new shopping cart.
-- [Get Cart](/api/rest-api/shop/cart/get-cart): Retrieve the current shopping cart with items.
+- [Create Cart](/api/rest-api/shop/cart/create-cart): Start a cart and receive the cart token that identifies it on every later call.
+- [Get Cart](/api/rest-api/shop/cart/get-cart): Read the current cart with its items and recalculated totals. The cart is identified by the token sent in the Authorization header.
 - [Merge Cart](/api/rest-api/shop/cart/merge-cart): After a guest logs in, merge the guest cart's items into the authenticated customer's cart. Send the customer's Bearer token and the guest cart's id.
-- [Remove Cart Item](/api/rest-api/shop/cart/remove-cart-item): Remove a product from the shopping cart.
+- [Remove Cart Item](/api/rest-api/shop/cart/remove-cart-item): Remove a single line from the cart. The cart is identified by its token, the line by its cart-item id.
 - [Remove Coupon](/api/rest-api/shop/cart/remove-coupon): Remove a discount coupon code from the shopping cart.
-- [Update Cart Item](/api/rest-api/shop/cart/update-cart-item): Update quantity or attributes of an item in cart.
+- [Update Cart Item](/api/rest-api/shop/cart/update-cart-item): Change the quantity of a cart line. Both cartItemId and quantity are required.
 - [Upload Customizable-Option File](/api/rest-api/shop/cart/upload-customizable-file): Stage a file for a file-type customizable option and get a token. Send the token on Add to Cart as customizableOptions with the option id.
 
 ## REST API › Shop › Categories
 
-- [Categories](/api/rest-api/shop/categories): The Categories menu exposes the store's catalog category structure — the browsable departments and sub-departments a shopper navigates. You can read categories…
+- [Categories](/api/rest-api/shop/categories): The Categories menu exposes the store's catalog structure — the browsable departments and sub-departments a shopper navigates. Two endpoints read the same data…
 - [Categories](/api/rest-api/shop/categories/get-categories): Retrieve a paginated, flat list of active categories with optional parent filtering.
 - [Get Category Tree](/api/rest-api/shop/categories/get-category-tree): Retrieve the active category tree as a nested structure, scoped to a parent.
 
@@ -1454,12 +1449,12 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 - [Checkout](/api/rest-api/shop/checkout): The Checkout menu turns a prepared cart into a placed order. It runs as a sequence: set the addresses, choose a shipping method, choose a payment method, then…
 - [Get Checkout Addresses](/api/rest-api/shop/checkout/get-addresses): Retrieve the guest / authenticated customer's saved checkout addresses to select as shipping or billing address during checkout.
-- [Get Payment Methods](/api/rest-api/shop/checkout/get-payment-methods): Retrieve available payment methods for checkout.
+- [Get Payment Methods](/api/rest-api/shop/checkout/get-payment-methods): List the payment methods the store offers for the current cart. Requires the cart token; the list is empty until a checkout address and shipping method are…
 - [Get Shipping Methods](/api/rest-api/shop/checkout/get-shipping-methods): Retrieve available shipping methods for checkout.
 - [Place Order](/api/rest-api/shop/checkout/place-order): Cash-on-delivery or money-transfer — the order is created immediately. Address, shipping method, and payment method must already be set on the cart, so the…
-- [Set Billing Address](/api/rest-api/shop/checkout/set-billing-address): Set the billing address for checkout.
+- [Set Checkout Address](/api/rest-api/shop/checkout/set-billing-address): Save the checkout address with useForShipping true, which copies the billing fields to the shipping address. This is the common case.
 - [Set Payment Method](/api/rest-api/shop/checkout/set-payment-method): Select a payment method for the order.
-- [Set Shipping Address](/api/rest-api/shop/checkout/set-shipping-address): Set the shipping address for checkout.
+- [Set Shipping Address](/api/rest-api/shop/checkout/set-shipping-address): Send useForShipping false together with the shipping fields so the parcel goes somewhere other than the billing address. Both addresses are saved by the same…
 - [Set Shipping Method](/api/rest-api/shop/checkout/set-shipping-method): Select a shipping method for the order.
 
 ## REST API › Shop › Compare
@@ -1479,6 +1474,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 ## REST API › Shop › Customer Downloadable Products
 
+- [Download a Purchased Downloadable Product](/api/rest-api/shop/customer-downloadable-products/download-customer-downloadable-product): Stream the file behind a downloadable purchase. The response is binary, and each successful call consumes one of the customer's remaining downloads.
 - [Get Customer Downloadable Product](/api/rest-api/shop/customer-downloadable-products/get-customer-downloadable-product): Retrieve details of a specific downloadable product purchase by its ID.
 - [Get Customer Downloadable Products](/api/rest-api/shop/customer-downloadable-products/get-customer-downloadable-products): Retrieve all downloadable product purchases for the authenticated customer.
 
@@ -1491,7 +1487,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 ## REST API › Shop › Customer Orders
 
 - [Get Customer Order](/api/rest-api/shop/customer-orders/get-customer-order): Retrieve details of a specific customer order by ID.
-- [Get Customer Orders](/api/rest-api/shop/customer-orders/get-customer-orders): Retrieve all orders for the authenticated customer.
+- [Get Customer Orders](/api/rest-api/shop/customer-orders/get-customer-orders): Retrieve the authenticated customer's orders, newest first.
 
 ## REST API › Shop › Customer Reviews
 
@@ -1508,10 +1504,9 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Register Customer](/api/rest-api/shop/customers/customer-registration): Create a new customer account with complete profile information.
 - [Verify Customer Token](/api/rest-api/shop/customers/customer-verify-token): Verify if the customer authentication token is still valid.
 - [Delete Customer Address](/api/rest-api/shop/customers/delete-customer-address): Remove an address from the customer's address book.
-- [Delete Customer Profile](/api/rest-api/shop/customers/delete-customer-profile): Delete the authenticated customer's account.
+- [Delete Customer Profile](/api/rest-api/shop/customers/delete-customer-profile): Permanently delete the authenticated customer's account. The account is identified by the Bearer token; the body carries nothing.
 - [Forgot Password](/api/rest-api/shop/customers/forgot-password): Request a password reset email.
 - [Get Customer Addresses](/api/rest-api/shop/customers/get-customer-addresses): Retrieve all saved addresses for the authenticated customer.
-- [Get Customer Orders](/api/rest-api/shop/customers/get-customer-orders): Retrieve all orders for the authenticated customer.
 - [Get Customer Profile](/api/rest-api/shop/customers/get-customer-profile): Retrieve the authenticated customer's profile information.
 - [Update Customer Address](/api/rest-api/shop/customers/update-customer-address): Update an existing customer address.
 - [Update Customer Profile](/api/rest-api/shop/customers/update-customer-profile): Update the authenticated customer's profile information.
@@ -1541,17 +1536,17 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 ## REST API › Shop › Newsletter
 
-- [Newsletter](/api/rest-api/shop/newsletter): The Newsletter menu lets a customer subscribe to the store's newsletter on the current channel. Use it to wire a "subscribe" action into the storefront so…
-- [Subscribe to Newsletter](/api/rest-api/shop/newsletter/subscribe): Subscribe the authenticated customer to the newsletter on the current channel.
+- [Newsletter](/api/rest-api/shop/newsletter): The Newsletter menu lets a shopper opt in to the store's marketing emails. It is a single endpoint, and it is **public** — a footer signup form works for…
+- [Subscribe to Newsletter](/api/rest-api/shop/newsletter/subscribe): Subscribe an email address to the newsletter on the current channel. A customer token is optional — send it only to link the subscription to that account.
 
 ## REST API › Shop › Product Reviews
 
 - [Product Review](/api/rest-api/shop/product-reviews): The Product Review menu covers the ratings and reviews shoppers leave on products. Anyone can read the reviews on a product; a logged-in customer can write a…
-- [Create Product Review](/api/rest-api/shop/product-reviews/create-product-review): Create a new product review or rating.
+- [Create Product Review](/api/rest-api/shop/product-reviews/create-product-review): Submit a review for a product. The product is named in the body, not in the path, and the review is stored as pending until an admin approves it.
 - [Delete Product Review](/api/rest-api/shop/product-reviews/delete-product-review): Delete an existing product review.
 - [Get Product Review](/api/rest-api/shop/product-reviews/get-product-review): Retrieve detailed information for a specific product review.
 - [Get Product Reviews](/api/rest-api/shop/product-reviews/get-product-reviews): Approved reviews for a product (default).
-- [Update Product Review](/api/rest-api/shop/product-reviews/update-product-review): Update an existing product review.
+- [Update Product Review](/api/rest-api/shop/product-reviews/update-product-review): Edit a review the authenticated customer wrote. The method is PATCH and the body must be sent as merge-patch JSON.
 
 ## REST API › Shop › Products
 
@@ -1588,9 +1583,9 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Create Wishlist Item](/api/rest-api/shop/wishlist/create): Add a product to the authenticated customer's wishlist.
 - [Delete Wishlist Item](/api/rest-api/shop/wishlist/delete): Remove a single item from the authenticated customer's wishlist by ID.
 - [Delete All Wishlist Items](/api/rest-api/shop/wishlist/delete-all): Remove every wishlist item for the authenticated customer.
-- [Get Wishlist Items](/api/rest-api/shop/wishlist/list): Retrieve the authenticated customer's wishlist items for the current channel.
+- [Get Wishlist Items](/api/rest-api/shop/wishlist/list): Retrieve the authenticated customer's wishlist items for the current channel, oldest first.
 - [Move Wishlist Item to Cart](/api/rest-api/shop/wishlist/move-to-cart): Move a wishlist item to the shopping cart and remove it from the wishlist.
-- [Toggle Wishlist Item](/api/rest-api/shop/wishlist/toggle): Toggle a product in the wishlist. If not present, it is added.
+- [Toggle Wishlist Item](/api/rest-api/shop/wishlist/toggle): The product is not saved yet, so this call adds it. The message states which way the toggle went.
 
 ## Workflows
 

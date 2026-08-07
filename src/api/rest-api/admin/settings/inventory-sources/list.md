@@ -19,7 +19,7 @@ examples:
 Returns every inventory source configured in the store in the `{ data, meta }` envelope. Every column is populated on each row, so you can read whatever you need without a follow-up call.
 
 ::: tip How this menu works
-For what an inventory source is, field meanings, and the delete guards, see the [Inventory Sources overview](/api/rest-api/admin/settings/inventory-sources/).
+For what an inventory source is, field meanings, and the delete guards, see the [Inventory Sources overview](/api/rest-api/admin/settings/inventory-sources/list).
 :::
 
 ## Pagination
@@ -55,4 +55,4 @@ Both the compound form `?sort=name-asc` and the split form `?sort=name&order=asc
 - `latitude` / `longitude` are `null` when the source has no geo-coordinates configured.
 - Seeded core sources (such as the `default` source) may have `null` `createdAt` / `updatedAt`.
 
-See the [Inventory Sources overview](/api/rest-api/admin/settings/inventory-sources/) for field meanings and behaviour.
+See the [Inventory Sources overview](/api/rest-api/admin/settings/inventory-sources/list) for field meanings and behaviour.

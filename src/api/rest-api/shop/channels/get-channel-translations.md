@@ -156,5 +156,5 @@ You don't need to know the translation ID up front — read the parent channel's
 
 ## Related Resources
 
-- [Channels](/api/rest-api/shop/channels/get-channels)
-- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas)
+- [Channels](/api/rest-api/shop/channels/get-channels) — channel codes, locales, and currencies
+- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas) — how to dereference the path references in these payloads
