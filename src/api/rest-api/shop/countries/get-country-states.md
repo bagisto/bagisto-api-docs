@@ -174,9 +174,10 @@ The same resource is exposed under **two URL shapes** so clients can choose the 
 | GET    | `/api/shop/country-states`                        | **Flat** — every state across every country in one paginated stream             |
 | GET    | `/api/shop/country-states/{id}`                   | **Flat** — single state by global ID                                            |
 
-The response shape is **identical** in all four — the only difference is the URL/scoping. Use the example switcher above the curl block to flip through them.
+Two things hold across all four:
 
-> Both shapes return state IDs from the same global sequence — `id: 66` is "Alberta" whether you reach it via `/countries/40/states/66` or `/country-states/66`.
+- The response shape is **identical** — only the URL and its scoping differ. Use the example switcher above the curl block to flip through them.
+- State IDs come from **one global sequence**, so `id: 66` is Alberta whether you reach it through `/countries/40/states/66` or `/country-states/66`.
 
 ## When to use which
 
@@ -212,9 +213,7 @@ Pagination headers (`X-Total-Count`, `X-Page`, `X-Per-Page`, `X-Total-Pages`) ar
 | `countryCode`  | string                | ISO country code of the parent (`CA`, `US`, …)                                           |
 | `code`         | string                | State/province code within the country (`AB`, `CA`, `MH`, …)                             |
 | `defaultName`  | string                | Default English name                                                                     |
-| `translations` | array of IRI strings  | One IRI per locale translation. `GET /api/shop/country_state_translations/{id}` to dereference |
-
-> Unlike `Country`, where `translations` is inlined, `country state` translations are returned as IRI strings. This keeps the flat list (~586 rows) lean. See [IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas).
+| `translations` | array of path references | One reference per locale. Fetch `GET /api/shop/country_state_translations/{id}` to read one. Countries inline their translations, but states do not — keeping the flat 586-row collection lean. See [IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas). |
 
 ## Use Cases
 

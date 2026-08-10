@@ -1488,6 +1488,7 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Download Invoice PDF', link: '/api/rest-api/shop/customer-invoices/download-customer-invoice-pdf' },
                           { text: 'Get Downloadable Products', link: '/api/rest-api/shop/customer-downloadable-products/get-customer-downloadable-products' },
                           { text: 'Get Downloadable Product', link: '/api/rest-api/shop/customer-downloadable-products/get-customer-downloadable-product' },
+                          { text: 'Download Downloadable Product', link: '/api/rest-api/shop/customer-downloadable-products/download-customer-downloadable-product' },
                           { text: 'Get Customer Reviews', link: '/api/rest-api/shop/customer-reviews/get-customer-reviews' },
                           { text: 'Get Customer Review', link: '/api/rest-api/shop/customer-reviews/get-customer-review' },
                     ]

@@ -88,9 +88,10 @@ examples:
 
 The locale-specific copy for a channel — its display name, tagline, maintenance-mode text, and per-locale home-page SEO.
 
-> ⚠️ The URL uses an **underscore**: `channel_translations`, not `channel-translations`. This matches the IRI strings emitted by `/api/shop/channels/{id}` (`translation` and `translations[]`).
+Two things to know before calling it:
 
-Most clients reach a single row by following the `translation` / `translations[]` IRIs on a Channel response. The collection endpoint is mostly useful for bulk auditing or pre-caching every locale.
+- The URL uses an **underscore** — `channel_translations`, not `channel-translations`. It matches the path references a channel emits in its `translation` and `translations[]` fields.
+- Most clients never call it directly: they follow those references from a [channel](/api/rest-api/shop/channels/get-channels) response. The collection endpoint is for bulk auditing or pre-caching every locale.
 
 ## Endpoints
 
