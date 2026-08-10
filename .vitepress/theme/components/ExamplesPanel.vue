@@ -5,7 +5,6 @@
         <h3>Examples</h3>
       </div>
 
-      <!-- Example Selector Dropdown -->
       <div class="example-selector">
         <label for="example-select">Select Example:</label>
         <select id="example-select" v-model="selectedExampleId" class="example-dropdown">
@@ -15,14 +14,12 @@
         </select>
       </div>
 
-      <!-- Example Content -->
       <div v-if="selectedExample" class="example-content">
         <h4>{{ selectedExample.title }}</h4>
         <p v-if="selectedExample.description" class="example-description">
           {{ selectedExample.description }}
         </p>
 
-        <!-- Tabs for different language implementations -->
         <div class="language-tabs">
           <div class="language-tabs-header">
             <button
@@ -35,7 +32,6 @@
             </button>
           </div>
 
-          <!-- Query Content (varies by language tab) -->
           <div class="language-tab-content">
             <div class="code-block">
               <div class="btn-group">
@@ -54,7 +50,6 @@
           </div>
         </div>
 
-        <!-- Variables Section (below tabs) -->
         <div class="section-variables">
           <h5>Variables</h5>
           <div class="code-block">
@@ -67,7 +62,6 @@
           </div>
         </div>
 
-        <!-- Response Section (below tabs) -->
         <div class="section-response">
           <h5>Response</h5>
           <div class="code-block">
@@ -80,7 +74,6 @@
           </div>
         </div>
 
-        <!-- Common Errors Section (below response) -->
         <div v-if="selectedExample.commonErrors && selectedExample.commonErrors.length > 0" class="section-errors">
           <h5>Common Errors</h5>
           <div class="errors-list">
@@ -138,7 +131,6 @@ const languageTabs = [
   { id: 'ruby', label: 'Ruby' }
 ]
 
-// Auto-select first example when examples change
 watch(() => props.examples, (newExamples) => {
   if (newExamples.length > 0) {
     selectedExampleId.value = newExamples[0].id
@@ -151,11 +143,9 @@ const selectedExample = computed(() => {
   return props.examples.find(ex => ex.id === selectedExampleId.value)
 })
 
-// Get language-specific code
 const getLanguageCode = (): string => {
   if (!selectedExample.value) return ''
   
-  // Determine language for highlighting
   let lang = 'graphql'
   let code = selectedExample.value.query
   
@@ -176,7 +166,7 @@ const getLanguageCode = (): string => {
       lang = 'ruby'
       code = generateRubyCode()
       break
-    default: // gql
+    default:
       lang = 'graphql'
       code = selectedExample.value.query
   }
@@ -184,7 +174,6 @@ const getLanguageCode = (): string => {
   return highlightCode(code, lang)
 }
 
-// Generate curl command
 const generateCurlCode = (): string => {
   if (!selectedExample.value) return ''
   const query = selectedExample.value.query.replace(/"/g, '\\"')
@@ -197,7 +186,6 @@ const generateCurlCode = (): string => {
   }'`
 }
 
-// Generate Node.js code
 const generateNodeCode = (): string => {
   if (!selectedExample.value) return ''
   return `const query = \`${selectedExample.value.query}\`;
@@ -216,7 +204,6 @@ const data = await response.json();
 console.log(data);`
 }
 
-// Generate React code
 const generateReactCode = (): string => {
   if (!selectedExample.value) return ''
   return `import { useQuery, gql } from '@apollo/client';
@@ -235,7 +222,6 @@ function MyComponent() {
 }`
 }
 
-// Generate Ruby code
 const generateRubyCode = (): string => {
   if (!selectedExample.value) return ''
   return `require 'json'
@@ -260,7 +246,7 @@ puts result`
 }
 
 const highlightCode = (code: string, lang: string): string => {
-  // Simple HTML escaping with basic syntax highlighting
+
   const escaped = code
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -291,7 +277,7 @@ const copyCode = (tabType: 'query' | 'variables' | 'response') => {
   let codeText = ''
   
   if (tabType === 'query') {
-    // Copy the language-specific code based on active language tab
+
     switch (activeLanguageTab.value) {
       case 'curl':
         codeText = generateCurlCode()
@@ -305,7 +291,7 @@ const copyCode = (tabType: 'query' | 'variables' | 'response') => {
       case 'ruby':
         codeText = generateRubyCode()
         break
-      default: // gql
+      default:
         codeText = selectedExample.value.query
     }
   } else if (tabType === 'variables') {
@@ -314,16 +300,15 @@ const copyCode = (tabType: 'query' | 'variables' | 'response') => {
     codeText = selectedExample.value.response
   }
 
-  // Use Clipboard API
   if (navigator.clipboard) {
     navigator.clipboard.writeText(codeText).then(() => {
-      // Show copied feedback
+
       copiedButton.value = tabType
       setTimeout(() => {
         copiedButton.value = null
       }, 2000)
     }).catch(() => {
-      // Fallback to older method
+
       fallbackCopy(codeText, tabType)
     })
   } else {
@@ -353,14 +338,11 @@ const runGraphiQL = () => {
   const variables = selectedExample.value.variables
   const graphqlEndpoint = 'https://api-demo.bagisto.com/api/graphql'
   
-  // Encode query and variables for URL
   const encodedQuery = encodeURIComponent(query)
   const encodedVariables = encodeURIComponent(variables || '{}')
   
-  // Build GraphiQL URL with query and variables pre-filled
   const graphiQLUrl = `${graphqlEndpoint}?query=${encodedQuery}&variables=${encodedVariables}`
   
-  // Open in new tab
   window.open(graphiQLUrl, '_blank')
 }
 </script>
@@ -522,7 +504,6 @@ const runGraphiQL = () => {
   padding: 0 !important
 }
 
-/* Sections below tabs */
 .section-variables,
 .section-response {
   margin-top: 16px;
@@ -676,7 +657,6 @@ const runGraphiQL = () => {
   color: var(--vp-c-text-2);
 }
 
-/* Syntax highlighting colors */
 :deep(.keyword) {
   color: #d73a49;
 }
@@ -701,7 +681,6 @@ const runGraphiQL = () => {
   color: #005cc5;
 }
 
-/* Dark mode adjustments */
 :root.dark {
   --keyword-color: #f97583;
   --type-color: #b392f0;
@@ -735,7 +714,6 @@ const runGraphiQL = () => {
   color: #85e89d;
 }
 
-/* Dark mode tab styles */
 :root.dark .language-tab-btn:hover {
   background: var(--vp-c-bg-mute);
 }
@@ -744,7 +722,6 @@ const runGraphiQL = () => {
   background: rgba(var(--vp-c-brand-rgb), 0.15);
 }
 
-/* Common Errors Section */
 .section-errors {
   margin-top: 16px;
 }
@@ -804,12 +781,10 @@ const runGraphiQL = () => {
   background: rgba(0, 0, 0, 0.2);
 }
 
-/* Dark mode dropdown icon */
 :root.dark .example-dropdown {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23aaa' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
 }
 
-/* Responsive adjustments */
 @media (max-width: 1200px) {
   .examples-sidebar {
     position: static;
