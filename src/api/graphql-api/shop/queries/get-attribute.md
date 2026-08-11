@@ -731,222 +731,152 @@ examples:
 
 ## About
 
-The `getAttribute` query retrieves a single attribute by ID with support for nested options, translations, and detailed configuration metadata. This query is essential for:
+The `attribute` query returns one product attribute with its configuration, its selectable options, and its per-locale names. Use it to:
 
-- Building product filter interfaces with attribute options
-- Displaying attribute details in admin/management interfaces
-- Creating product configuration forms
-- Fetching attribute properties and validation rules
-- Building faceted navigation systems with swatch support
+- Read one attribute's option list to render a colour, size, or brand control
+- Check how an attribute behaves before using it — whether it is filterable, whether it drives configurable variants, whether its value varies per locale or channel
+- Read the swatch data behind a colour or image picker
+- Fetch an attribute's label in every locale a store supports
 
-The query supports nested pagination for options and translations, making it flexible for various UI requirements.
+Use [Attributes](/api/graphql-api/shop/queries/get-attributes) to list them, or [Category Attribute Filters](/api/graphql-api/shop/queries/get-category-attribute-filters) to get only the attributes that belong on a given category's filter sidebar.
 
 ## Arguments
 
 | Argument | Type | Required | Description |
 |----------|------|----------|-------------|
-| `id` | `String!` | ✅ Yes | Attribute ID in format `/api/shop/attributes/{id}` or numeric ID |
+| `id` | `ID!` | ✅ Yes | Identifies the attribute. Accepts the IRI form (`/api/shop/attributes/23`) or a plain numeric ID (`"23"`). |
 
-**Supported ID Formats:**
-
-```graphql
-# Format 1: Full URI
-query { attribute(id: "/api/shop/attributes/23") { id } }
-
-# Format 2: Numeric ID
-query { attribute(id: "23") { id } }
-```
+An ID that is neither form is rejected as an invalid format, and an ID that resolves to no attribute returns `data.attribute` as `null` with an entry in `errors`.
 
 ## Possible Returns
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | `String!` | Unique attribute identifier in IRI format `/api/shop/attributes/{id}` |
-| `code` | `String!` | Unique code identifier (e.g., "color", "size", "brand") |
-| `name` | `String!` | Display name of the attribute |
-| `type` | `String!` | Attribute type (text, select, date, checkbox, textarea, etc.) |
-| `sortOrder` | `Int!` | Display order for sorting |
-| `isFilterable` | `Boolean!` | Can be used for product filtering |
-| `isSearchable` | `Boolean!` | Can be used in product search |
-| `isConfigurable` | `Boolean!` | Can be configured for products |
-| `isVisibleOnFront` | `Boolean!` | Visible to frontend customers |
-| `isRequired` | `Boolean!` | Required for product assignment |
-| `defaultValue` | `String` | Default value (nullable) |
-| `createdAt` | `DateTime!` | Creation timestamp (ISO 8601) |
-| `updatedAt` | `DateTime!` | Last update timestamp (ISO 8601) |
-| `options` | `Connection` | Attribute options with pagination support |
-
-## Attribute Fields
+The `is*` and `valuePer*` flags come back as the **strings** `"1"` / `"0"`, not as GraphQL booleans.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | `String!` | Unique identifier in format `/api/shop/attributes/{id}` |
-| `code` | `String!` | Unique code identifier for attribute |
-| `name` | `String!` | Display name of the attribute |
-| `type` | `String!` | Attribute type (text, select, date, etc.) |
-| `sortOrder` | `Int!` | Display sort order |
-| `isFilterable` | `Boolean!` | Usable for product filtering |
-| `isSearchable` | `Boolean!` | Usable for search |
-| `isConfigurable` | `Boolean!` | Can be configured for products |
-| `isVisibleOnFront` | `Boolean!` | Visible on storefront |
-| `isRequired` | `Boolean!` | Required for products |
-| `defaultValue` | `String` | Default value if any |
-| `createdAt` | `String!` | Creation date |
-| `updatedAt` | `String!` | Last update date |
-| `options` | `Connection` | Nested attribute options with pagination |
+| `id` | `ID!` | IRI-style identifier (`/api/shop/attributes/23`). |
+| `_id` | `Int!` | Numeric attribute ID. |
+| `code` | `String!` | Machine-readable code — `color`, `size`, `brand`, `sku`. This is the key you pass to a product filter. |
+| `adminName` | `String!` | Admin-facing name. Use `translation` for the shopper-facing label. |
+| `type` | `String!` | Input type — `text`, `textarea`, `select`, `multiselect`, `boolean`, `date`, `datetime`, `price`, `image`, `file`, `checkbox`. Decides which control to render. |
+| `swatchType` | `String` | `color`, `image`, `text`, or `null`. When `color`, render each option's `swatchValue`; when `image`, render `swatchValueUrl`. |
+| `position` | `Int` | Sort order among attributes. |
+| `isRequired` | `String!` | `"1"` when the attribute is mandatory on the product form. |
+| `isUnique` | `String!` | `"1"` when values must be unique across products. |
+| `isFilterable` | `String!` | `"1"` when the attribute can drive layered navigation. |
+| `isComparable` | `String!` | `"1"` when the attribute appears on the compare page. |
+| `isConfigurable` | `String!` | `"1"` when the attribute can define configurable-product variants. |
+| `isUserDefined` | `String!` | `"1"` for a merchant-created attribute, `"0"` for a system one. |
+| `isVisibleOnFront` | `String!` | `"1"` when the attribute is shown on the product page. |
+| `valuePerLocale` | `String!` | `"1"` when the value differs per locale. |
+| `valuePerChannel` | `String!` | `"1"` when the value differs per channel. |
+| `defaultValue` | `Int` | Default option ID, when the attribute defines one. |
+| `validation` | `String` | Validation rule applied to the value, e.g. `decimal`, `numeric`, `email`. |
+| `validations` | `String` | Additional validation metadata. |
+| `regex` | `String` | Regular expression the value must match, when configured. |
+| `columnName` | `String` | Underlying storage column, when applicable. |
+| `enableWysiwyg` | `String!` | `"1"` when the admin editor uses a rich-text field. |
+| `createdAt` | `String` | ISO 8601 creation timestamp. |
+| `updatedAt` | `String` | ISO 8601 timestamp of the last change. |
+| `options` | `AttributeOptionCursorConnection` | Selectable values. Empty for free-text and price attributes. |
+| `translation` | `AttributeTranslation` | The attribute's name in the current locale. |
+| `translations` | `AttributeTranslationCursorConnection` | The attribute's name in every locale. |
 
-## Common Use Cases
+### Option Fields
 
-### Get Attribute for Filter UI
+Each node in the `options` connection:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `ID!` | IRI-style option identifier. |
+| `_id` | `Int!` | Numeric option ID. **This is the value to send when filtering products.** |
+| `adminName` | `String` | Admin-facing option name. Use `translation` for the shopper-facing label. |
+| `sortOrder` | `Int` | Display order within the attribute. |
+| `swatchValue` | `String` | Hex colour for a colour swatch, or the text value. |
+| `swatchValueUrl` | `String` | URL of the swatch image, for image swatches. |
+| `translation` | `AttributeOptionTranslation` | The option's label in the current locale. |
+| `translations` | `AttributeOptionTranslationCursorConnection` | The option's label in every locale. |
+
+### Translation Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `ID!` | IRI-style translation identifier. |
+| `_id` | `Int!` | Numeric translation ID. |
+| `locale` | `String!` | Locale code this translation belongs to. |
+| `attributeId` | `String!` | Parent attribute ID, on an attribute translation. |
+| `attributeOptionId` | `String!` | Parent option ID, on an option translation. |
+| `name` | `String` | Attribute name in that locale. |
+| `label` | `String` | Option label in that locale. |
+
+## Use Cases
+
+### 1. Rendering a colour swatch picker
+
+Read `swatchType` to decide how to draw each option, then read the options themselves.
 
 ```graphql
-query GetAttributeFilter($id: String!) {
-  attribute(id: $id) {
-    id
+query colourPicker {
+  attribute(id: "/api/shop/attributes/23") {
     code
-    name
-    isFilterable
-    options(first: 100) {
-      edges {
-        node {
-          id
-          adminName
-          translation {
-            label
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-### Get Attribute with Option Swatches
-
-```graphql
-query GetColorAttribute($id: String!) {
-  attribute(id: $id) {
-    id
-    code
-    name
-    type
+    swatchType
     options(first: 50) {
       edges {
         node {
-          id
+          _id
           adminName
           swatchValue
+          swatchValueUrl
           translation {
             label
           }
         }
       }
+      totalCount
     }
   }
 }
 ```
 
-### Build Product Configuration Form
+Render `swatchValue` as a colour chip when `swatchType` is `color`, and `swatchValueUrl` as an image when it is `image`. Show `translation.label` rather than `adminName`, which is an internal name.
 
-```graphql
-query GetAttributeForForm($id: String!) {
-  attribute(id: $id) {
-    id
-    code
-    name
-    type
-    isRequired
-    defaultValue
-    options(first: 100) {
-      edges {
-        node {
-          id
-          adminName
-          sortOrder
-          translation {
-            label
-          }
-        }
-      }
-    }
-  }
-}
-```
+### 2. Turning a selection into a product filter
 
-### Get Multi-language Attribute
-
-```graphql
-query GetMultiLanguageAttribute($id: String!) {
-  attribute(id: $id) {
-    id
-    code
-    name
-    options(first: 20) {
-      edges {
-        node {
-          id
-          adminName
-          translations(first: 10) {
-            edges {
-              node {
-                locale
-                label
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-## Error Handling
-
-### Missing ID Parameter
+An option's `_id` is the value the product listing expects, keyed by the attribute's `code`:
 
 ```json
 {
-  "errors": [
-    {
-      "message": "Field \"attribute\" argument \"id\" of type \"String!\" is required but not provided."
-    }
-  ]
+  "filter": "{"color": "3"}"
 }
 ```
 
-### Attribute Not Found
+Pass that to [List Products](/api/graphql-api/shop/queries/get-products). Comma-separate several option IDs to match any of them.
 
-```json
-{
-  "data": {
-    "attribute": null
-  }
-}
-```
+### 3. Building a language switcher for attribute labels
 
-### Invalid ID Format
-
-```json
-{
-  "data": {
-    "attribute": null
-  }
-}
-```
+Read `translations` on the attribute and on each option to cache every locale in one request, instead of re-querying per language.
 
 ## Best Practices
 
-1. **Use Variables** - Always use GraphQL variables for dynamic IDs
-2. **Request Specific Fields** - Only fetch fields your UI needs
-3. **Handle Pagination** - Use `hasNextPage` and `endCursor` for nested options
-4. **Cache Results** - Attributes rarely change, implement caching
-5. **Limit Option Requests** - Start with reasonable limits (20-50) then load more on demand
+1. **Filter by `code`, select by `_id`** — the product filter key is the attribute's `code` and the value is the option's `_id`; neither the IRI nor `adminName` works there
+2. **Display `translation.label`, never `adminName`** — `adminName` is the internal admin label and is not translated
+3. **Compare the flags against strings** — `isFilterable` and its siblings return `"1"` / `"0"`, so a truthiness test on the string `"0"` reports the wrong answer in most languages
+4. **Read `swatchType` before rendering options** — it decides whether an option carries a colour, an image URL, or neither
+5. **Page the `options` connection on large attributes** — a brand list runs to hundreds of options, and the connection defaults to 10 per page
+6. **Prefer [Category Attribute Filters](/api/graphql-api/shop/queries/get-category-attribute-filters) for a filter sidebar** — it returns only the attributes marked filterable for that category, already scoped
+
+## Error Scenarios
+
+| Scenario | Cause |
+|----------|-------|
+| Attribute not found | The ID resolves to no attribute. `data.attribute` is `null` with an entry in `errors`. |
+| Invalid ID format | The ID is neither an IRI nor numeric. |
+| Missing ID | The `id` argument was omitted. GraphQL rejects the document before the query runs. |
 
 ## Related Resources
 
-- [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation
-- [Attribute Collection](/api/graphql-api/shop/queries/get-attributes) - Query multiple attributes
-- [Attribute Options API](/api/graphql-api/shop/queries/get-attribute-options) - Detailed option queries
-- [Attributes API](/api/graphql-api/shop/attribute-options) - Full attributes documentation
+- [Attributes](/api/graphql-api/shop/queries/get-attributes) - List every attribute
+- [Attribute Options](/api/graphql-api/shop/queries/get-attribute-options) - List option values across attributes
+- [Category Attribute Filters](/api/graphql-api/shop/queries/get-category-attribute-filters) - Filterable attributes for one category
+- [List Products](/api/graphql-api/shop/queries/get-products) - Apply an attribute filter
 - [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources

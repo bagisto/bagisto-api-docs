@@ -81,9 +81,9 @@ examples:
 
 Attribute options are the selectable values for a `select` / `multiselect` attribute (color values, sizes, brands, etc.).
 
-> Most clients should prefer reading options inline via [`GET /api/shop/attributes/{id}`](/api/rest-api/shop/attributes/get-attributes) — that returns options scoped to a single attribute. Use these endpoints when you need the full option catalog or want to look up an option by ID without knowing its parent attribute.
+Prefer reading options inline through [`GET /api/shop/attributes/{id}`](/api/rest-api/shop/attributes/get-attributes), which scopes them to one attribute. Use the endpoints here when you want the whole option catalog, or need to resolve an option by ID without knowing its parent attribute.
 >
-> ⚠️ The URL is **flat**, not nested under an attribute: `/attribute-options`, NOT `/attributes/{id}/options`.
+The URL is flat rather than nested under its attribute — `/attribute-options`, not `/attributes/{id}/options`.
 
 ## Endpoints
 
@@ -118,7 +118,7 @@ Pagination headers are emitted on the collection. See [Pagination](/api/rest-api
 | `translation`  | object  | Current-locale translation: `{ id, attributeOptionId, locale, label }`                   |
 | `translations` | array   | All locale-specific labels (each `{ id, attributeOptionId, locale, label }`). Empty `[]` if no other locales have stored labels. |
 
-> The parent attribute is **not** embedded in this response. To find which attribute an option belongs to, fetch the attribute itself.
+The parent attribute is not embedded in the response, so an option on its own does not say which attribute it belongs to. Read the attribute when that matters.
 
 ## Use Cases
 
@@ -127,7 +127,13 @@ Pagination headers are emitted on the collection. See [Pagination](/api/rest-api
 - Build admin-style "find option by label" search.
 - Look up the localized label for a specific option in a non-default locale.
 
+## Best Practices
+
+- **Prefer the attribute's inline `options`** — [Get Attributes](/api/rest-api/shop/attributes/get-attributes) already embeds them, and this flat collection cannot be filtered to one attribute.
+- **Order by `sortOrder`** — it is the order the store configured for display, and it is not guaranteed to match ID order.
+- **Read the localised label from `translation`** — `adminName` is the back-office label, not what a shopper should see.
+
 ## Related Resources
 
 - [Attributes](/api/rest-api/shop/attributes/get-attributes) — preferred when you only need options for one attribute
-- [Attribute Translations](/api/rest-api/shop/attributes/get-attribute-translations)
+- [Attribute Translations](/api/rest-api/shop/attributes/get-attribute-translations) — localised attribute labels, keyed by locale

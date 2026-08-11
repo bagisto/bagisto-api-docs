@@ -194,7 +194,7 @@ The `type` filter accepts any of these exact strings:
 | `footer_links`      | Footer link columns (privacy, terms, about, customer service, …)   |
 | `services_content`  | "Services" / USP strip (free shipping, 24×7 support, refund policy, …) |
 
-> Unsupported values are accepted by the filter but return an empty array (`[]`) — the validation isn't strict.
+An unsupported value is accepted by the filter and returns an empty array rather than an error — the filter is not validated against the type list.
 
 ## Customization Object Fields
 
@@ -213,9 +213,9 @@ Both endpoints return the same shape — the collection wraps an array of these 
 | `translation`  | object \| null        | Inline translation for the request locale: `{ id, themeCustomizationId, locale, options }` |
 | `translations` | array of objects      | All locale translations as **inline objects** (not IRI strings)                          |
 
-> Both `translation` and `translations[]` are inlined — there are no IRIs to follow on this resource. The `options` field inside each translation is a **JSON string**, not a parsed object — you have to `JSON.parse(translation.options)` on the client.
+Both `translation` and `translations[]` are inlined — there are no IRIs to follow on this resource. The `options` field inside each translation is a **JSON string**, not a parsed object — you have to `JSON.parse(translation.options)` on the client.
 
-> **Content is locale-specific — pass `X-Locale`.** The `translation` field returns the block's content for the **requested locale**, selected by the `X-Locale` request header (e.g. `X-Locale: ar`); omit it and you get the store default locale. The `translations[]` array always carries every locale, so you can also read them all and pick client-side.
+Content is locale-specific, so pass `X-Locale`. The `translation` field returns the block's content for the **requested locale**, selected by the `X-Locale` request header (e.g. `X-Locale: ar`); omit it and you get the store default locale. The `translations[]` array always carries every locale, so you can also read them all and pick client-side.
 
 ### Shape of the `options` payload (per type)
 
@@ -230,9 +230,9 @@ The `options` JSON string varies by `type`. Common shapes:
 | `footer_links`      | `{ "column_1": [{ "url": "...", "title": "...", "sort_order": "3" }, …], "column_2": […], … }` |
 | `services_content`  | `{ "services": [{ "service_icon": "storage/…", "title": "...", "description": "..." }, …] }`  |
 
-> The client must **parse the JSON string** before using it. The API stores `options` as a TEXT column and returns it verbatim.
+The client must parse that JSON string before using it — the value is stored and returned verbatim as text.
 
-> **`static_content` images:** the stored `html` is authored for the storefront web theme, where `<img>` tags carry the real source in a **`data-src`** attribute (lazy-loading) and a placeholder in `src`. If you render this HTML in your own frontend, read `data-src`, not `src`, or images won't load.
+Images inside `static_content` need care: the stored `html` is authored for the storefront web theme, where `<img>` tags carry the real source in a **`data-src`** attribute (lazy-loading) and a placeholder in `src`. If you render this HTML in your own frontend, read `data-src`, not `src`, or images won't load.
 
 ## Use Cases
 
@@ -241,8 +241,15 @@ The `options` JSON string varies by `type`. Common shapes:
 - Build an admin preview of every locale: read all `translations[]` entries side-by-side.
 - Auto-detect new home-page blocks added by store admins by polling the collection — anything with `status=1` will appear.
 
+## Best Practices
+
+- **Parse `options` before use** — it is a JSON string, not an object, on every translation.
+- **Branch on `type`** — four block types render straight from `options`, while `product_carousel` and `category_carousel` only carry filters you must then send to the product or category endpoints.
+- **Send `X-Locale`** — `translation` follows the request locale, and the default locale is what you get otherwise.
+- **Read `data-src`, not `src`, inside `static_content` HTML** — the markup is authored for lazy loading, so `src` holds a placeholder.
+
 ## Related Resources
 
 - [Channels](/api/rest-api/shop/channels/get-channels) — `channelId` on each customization points at one of these
 - [Categories](/api/rest-api/shop/categories/get-categories) — referenced by `category_carousel` and `product_carousel` filters
-- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas)
+- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas) — how to dereference the path references in these payloads

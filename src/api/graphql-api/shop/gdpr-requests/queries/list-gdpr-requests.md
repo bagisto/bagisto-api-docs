@@ -104,9 +104,9 @@ If GDPR data requests are disabled in the store's admin configuration, the query
 
 | Argument | Type | Required | Description |
 |----------|------|----------|-------------|
-| `first` | `Int` | ❌ No | Number of items to return (forward pagination). |
+| `first` | `Int` | ❌ No | Number of items to return (forward pagination). Default: `30` |
 | `after` | `String` | ❌ No | Cursor for forward pagination. Use `endCursor` from a previous response. |
-| `last` | `Int` | ❌ No | Number of items for backward pagination. |
+| `last` | `Int` | ❌ No | Number of items for backward pagination. Default: `30` |
 | `before` | `String` | ❌ No | Cursor for backward pagination. Use `startCursor` from a previous response. |
 | `sort` | `String` | ❌ No | Sort column: `id` or `created_at`. Default `id`. |
 | `order` | `String` | ❌ No | Sort direction: `asc` or `desc`. Default `desc`. |
@@ -115,20 +115,21 @@ If GDPR data requests are disabled in the store's admin configuration, the query
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `edges` | `[GdprRequestEdge!]` | Array of request edges with cursor and node. |
+| `edges` | `[GdprRequestEdge]` | Array of request edges with cursor and node. |
 | `edges.cursor` | `String!` | Cursor for this edge, used in pagination. |
-| `edges.node` | `GdprRequest!` | The GDPR request object. |
+| `edges.node` | `GdprRequest` | The GDPR request object. |
 | `edges.node._id` | `Int!` | Numeric request ID. |
 | `edges.node.type` | `String!` | Request type: `delete` or `update`. |
 | `edges.node.status` | `String!` | Request status: `pending`, `processing`, `declined`, `approved`, `revoked`. |
-| `edges.node.message` | `String` | The customer's message describing the request. |
+| `edges.node.message` | `String!` | The customer's message describing the request. |
 | `edges.node.email` | `String!` | Email address tied to the request. |
-| `edges.node.revokedAt` | `DateTime` | Timestamp when the request was revoked, or `null`. |
-| `edges.node.createdAt` | `DateTime!` | Request creation timestamp. |
-| `edges.node.updatedAt` | `DateTime!` | Request last update timestamp. |
-| `edges.node.customer` | `Customer!` | The customer who owns the request. |
+| `edges.node.revokedAt` | `String` | Timestamp when the request was revoked, or `null`. |
+| `edges.node.createdAt` | `String` | Request creation timestamp. |
+| `edges.node.updatedAt` | `String` | Request last update timestamp. |
+| `edges.node.successMessage` | `String` | Confirmation text. Populated only on create, revoke, and delete results — `null` when listing. |
+| `edges.node.customer` | `Customer` | The customer who owns the request. |
 | `edges.node.customer._id` | `Int!` | Numeric customer ID of the owner. |
-| `pageInfo` | `PageInfo!` | Pagination metadata. |
+| `pageInfo` | `GdprRequestPageInfo!` | Pagination metadata. |
 | `pageInfo.startCursor` | `String` | Cursor for the first item in the page. |
 | `pageInfo.endCursor` | `String` | Cursor for the last item in the page. |
 | `pageInfo.hasNextPage` | `Boolean!` | Whether more pages exist forward. |

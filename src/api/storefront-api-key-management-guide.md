@@ -4,7 +4,6 @@
 
 Bagisto uses **API keys** to authenticate requests to your storefront and shop API endpoints. Think of your API key as a secure password that identifies your application to Bagisto.
 
-> **⚡ Quick Fact:** Storefront API keys are used for public API access and read-only operations on product catalogs, categories, and storefront data.
 
 **Header Format:**
 ```
@@ -21,8 +20,8 @@ curl -X GET "https://your-domain.com/api/shop/products" \
 
 - 🔓 **Public APIs Only** - Storefront keys are intended for public, read-only access
 - 👤 **Customer Operations** - Use Bearer tokens (from authentication) for customer-specific operations
-- 👨‍💼 **Admin Operations** - Use admin Bearer tokens for administrative operations
 - 📊 **Rate Limited** - Each key has configurable rate limits to protect your API
+- 🔄 **Never Expires by Default** - A generated key stays valid until you rotate or deactivate it. Rotating issues a fresh key (valid 12 months) and **invalidates the old one** — update your clients with the new key when you rotate.
 
 ---
 
@@ -652,5 +651,5 @@ curl -X GET 'https://your-domain.com/api/shop/products' \
 - 🔐 [Authentication Guide](./authentication) - Learn about API authentication methods
 - 🔗 [REST API Guide](./rest-api/introduction.html) - Explore REST API endpoints
 - ⚡ [GraphQL API Guide](./graphql-api/introduction.html) - Discover GraphQL capabilities
-- 🚀 [Integration Guides](./integrations) - Real-world integration examples
+- 🚀 [Integration Guides](/api/rest-api/integrations) - Real-world integration examples
 - 📈 [Rate Limit Headers](./rate-limiting#headers) - Understanding rate limit response headers

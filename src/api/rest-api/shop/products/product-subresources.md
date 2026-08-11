@@ -115,27 +115,6 @@ examples:
         }
       ]
 
-  - id: get-customer-group-price
-    title: Customer Group Prices — Single (nested or flat)
-    description: |
-      Resolve a single tier-price row. Available under both `/products/{productId}/customer-group-prices/{id}` and `/customer-group-prices/{id}` — same response.
-    request: |
-      curl -X GET "http://localhost/api/shop/customer-group-prices/4" \
-        -H "Accept: application/json" \
-        -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-    response: |
-      HTTP/1.1 200 OK
-
-      {
-        "id": 4,
-        "qty": 5,
-        "valueType": "fixed",
-        "value": 80,
-        "customerGroupId": 2,
-        "uniqueId": "2|2|5",
-        "productId": 2
-      }
-
   - id: list-customizable-options
     title: Customizable Options — List for a product
     description: |
@@ -166,9 +145,9 @@ examples:
   - id: get-customizable-option
     title: Customizable Options — Single (snake_case URL)
     description: |
-      Resolve a single customizable option by ID. **Note the underscored URL** — `product_customizable_options`, not `product-customizable-options`.
+      Resolve a single customizable option by ID. The URL is underscored — `product_customizable_options`, not `product-customizable-options`. There is no collection at that path; reach the list through `/products/{productId}/customizable-options`, whose rows carry these IRIs.
     request: |
-      curl -X GET "http://localhost/api/shop/product_customizable_options/1" \
+      curl -X GET "http://localhost/api/shop/product_customizable_options/12" \
         -H "Accept: application/json" \
         -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     response: |
@@ -262,11 +241,16 @@ examples:
 
 Sub-resources of a product — gallery assets, tier prices, customizable options and their pricing/translations, raw EAV values. Most of these are already inlined on the [Single Product](/api/rest-api/shop/products/get-product) response; the dedicated endpoints listed here exist when you need just one slice without re-fetching the whole PDP.
 
-> ⚠️ **Naming pattern alert**:
-> - `*-images`, `*-videos`, `*-bundle-option-products`, `*-downloadable-links`, `*-downloadable-samples` use **dashed** root URLs.
-> - `product_customizable_options`, `product_customizable_option_prices`, `product_customizable_option_translations`, `product_bundle_options`, `product_grouped_products` use **underscored** root URLs (API Platform's default snake-case route).
->
-> Always copy the URL from a parent resource's IRI when in doubt — the IRIs are authoritative.
+## URL naming is not uniform
+
+Root URLs in this group use two different separators, so a path cannot be guessed from the resource name:
+
+| Separator | Endpoints |
+|-----------|-----------|
+| Dashed | `*-images`, `*-videos`, `*-bundle-option-products`, `*-downloadable-links`, `*-downloadable-samples` |
+| Underscored | `product_customizable_options`, `product_customizable_option_prices`, `product_customizable_option_translations`, `product_bundle_options`, `product_grouped_products` |
+
+The underscored form is the framework's default snake-case route, kept where no explicit path was declared. Copy the URL from the parent resource's IRI rather than assembling it by hand — the IRIs in a response are authoritative.
 
 ## Endpoints in this group
 
@@ -292,11 +276,9 @@ Same response shape as Images, with `type: "videos"`.
 
 | Method | Path                                                            | Purpose                                |
 |--------|-----------------------------------------------------------------|----------------------------------------|
-| GET    | `/api/shop/products/{productId}/customer-group-prices`          | Tier prices for a product (nested)     |
-| GET    | `/api/shop/products/{productId}/customer-group-prices/{id}`     | Single tier-price row (nested)         |
-| GET    | `/api/shop/customer-group-prices/{id}`                          | Single tier-price row by global ID     |
+| GET    | `/api/shop/products/{productId}/customer-group-prices`          | Tier prices for a product              |
 
-> The root collection at `/api/shop/customer-group-prices` is **not exposed** — it's an admin-only concept. Always scope by product or fetch by ID.
+The nested list is the only tier-price endpoint. There is no single-row route and no root collection — reading one row means reading the product's list and picking it out.
 
 ### Customizable Options + Prices + Translations
 
@@ -315,7 +297,7 @@ Same response shape as Images, with `type: "videos"`.
 |--------|---------------------------------------------------------|----------------------------------------|
 | GET    | `/api/shop/products/{productId}/attribute-values`       | Every attribute value row for a product |
 
-> No root collection. The single-row endpoint isn't exposed either — fetch the parent product instead.
+There is no root collection and no single-row endpoint. Read the values through the product itself.
 
 ## Response field reference
 
@@ -397,5 +379,5 @@ Same response shape as Images, with `type: "videos"`.
 ## Related Resources
 
 - [Single Product](/api/rest-api/shop/products/get-product) — embeds `images`, `videos`, `customizableOptions`, … inline
-- [Product Type Sub-Resources](/api/rest-api/shop/products/product-type-subresources)
-- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas)
+- [Product Type Sub-Resources](/api/rest-api/shop/products/product-type-subresources) — the per-type structure behind variants, bundles, and downloadables
+- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas) — how to dereference the path references in these payloads

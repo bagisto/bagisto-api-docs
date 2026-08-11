@@ -9,7 +9,7 @@ Build a cart for a guest or a logged-in customer: create/obtain the cart, add an
 ## Prerequisites
 
 - A valid storefront key ([Setup](/api/setup), [Authentication](/api/authentication)).
-- For the customer path: a logged-in customer ([Customer login](/api/rest-api/shop/customers)).
+- For the customer path: a logged-in customer ([Customer login](/api/rest-api/shop/customers/customer-login)).
 
 **When does a merge happen?** A guest adds items to a guest cart, then decides to log in. On login you call **mergeCart** with the guest cart token — the guest cart's items are merged into the customer's own cart so nothing is lost.
 
@@ -43,7 +43,7 @@ flowchart TD
 | 6 | Apply coupon | [POST apply-coupon](/api/rest-api/shop/cart/apply-coupon) | an item in the cart | Remove with [remove-coupon](/api/rest-api/shop/cart/remove-coupon) |
 | 7 | Read cart | [GET get-cart](/api/rest-api/shop/cart/get-cart) · [GraphQL](/api/graphql-api/shop/cart) | any cart mutation | Totals, items, applied coupon |
 
-> **GraphQL equivalents:** the table links REST paths. Each step has a GraphQL operation (`createCartToken`, `createAddProductInCart`, `createUpdateCartItem`, `createApplyCoupon`, `createMergeCart`, `createReadCart`) — the full REST↔GraphQL list is on the [Cart & Checkout mapping](/api/rest-graphql-mapping/shop/cart-checkout).
+> **GraphQL equivalents:** the table links REST paths. Each step has a GraphQL operation (`createCartToken`, `createAddProductInCart`, `createUpdateCartItem`, `createApplyCoupon`, `createMergeCart`, `createReadCart`).
 
 ## End-to-end sequence
 

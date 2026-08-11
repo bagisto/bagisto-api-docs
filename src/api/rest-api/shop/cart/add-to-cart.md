@@ -337,7 +337,7 @@ A `file`-type option needs a file upload, which cannot travel in a JSON body. Up
 
 The full flow, endpoint, and rules are on the [Upload Customizable File](/api/rest-api/shop/cart/upload-customizable-file) page.
 
-> Use the example dropdown (top-right) to see the exact body for each product type.
+The example dropdown carries a ready-made body for each product type.
 
 ## Response
 
@@ -363,8 +363,8 @@ On success the endpoint returns the **full updated cart** (HTTP 200), not just t
 ## Related Resources
 
 - [Create Cart](/api/rest-api/shop/cart/create-cart) — get a guest cart token first
-- [Get Cart](/api/rest-api/shop/cart/get-cart)
-- [Update Cart Item](/api/rest-api/shop/cart/update-cart-item)
-- [Remove Cart Item](/api/rest-api/shop/cart/remove-cart-item)
+- [Get Cart](/api/rest-api/shop/cart/get-cart) — read the current items and recalculated totals
+- [Update Cart Item](/api/rest-api/shop/cart/update-cart-item) — change a line's quantity
+- [Remove Cart Item](/api/rest-api/shop/cart/remove-cart-item) — remove one line, or several in one call
 - [Upload Customizable File](/api/rest-api/shop/cart/upload-customizable-file) — stage a file-option file, then reference the token here
 - [Get Product](/api/rest-api/shop/products/get-product) — read a product's customizable options and supported file extensions

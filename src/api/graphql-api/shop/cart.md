@@ -180,6 +180,6 @@ mutation RemoveCoupon($cartId: String!) {
 ```
 
 ## Related Resources
-- [Products](/api/graphql-api/shop/products)
+- [Products](/api/graphql-api/shop/product/)
 - [Checkout](/api/graphql-api/shop/checkout)
 - [Orders](/api/graphql-api/shop/queries/get-customer-orders)

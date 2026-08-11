@@ -26,7 +26,7 @@ Fetch the theme customizations for the current channel when building the homepag
 | `product_carousel` | Send `options.filters` as query params to `GET /api/shop/products`, render the returned products under `options.title`. | **Yes → [Products](/api/rest-api/shop/products/search-product)** |
 | `category_carousel` | Call `GET /api/shop/categories?parent_id={options.filters.parent_id}` (or the [category tree](/api/rest-api/shop/categories/get-categories)), render the categories under `options.title`. | **Yes → [Categories](/api/rest-api/shop/categories/get-categories)** |
 
-> **Key point:** `image_carousel`, `static_content`, `footer_links` and `services_content` are self-contained — render straight from `options`. `product_carousel` and `category_carousel` are only *configuration*: their `options.filters` tell you what to request from the Products / Categories endpoints — the block itself carries no products or categories.
+The blocks split into two kinds. `image_carousel`, `static_content`, `footer_links` and `services_content` are self-contained — render straight from `options`. `product_carousel` and `category_carousel` are only *configuration*: their `options.filters` tell you what to request from the Products / Categories endpoints — the block itself carries no products or categories.
 
 ## Operations in this menu
 

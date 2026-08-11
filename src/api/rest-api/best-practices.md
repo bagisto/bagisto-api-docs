@@ -544,8 +544,8 @@ logger.error('Failed to create order', error, { cartId: '...' });
 
 ## Related Resources
 
-- [REST API Introduction](/api/rest-api/introduction)
-- [Shop Resources](/api/rest-api/shop-resources)
-- [Cart & Checkout](/api/rest-api/cart-checkout)
-- [Customer Management](/api/rest-api/customers)
-- [Product Management](/api/rest-api/products)
+- [REST API Introduction](/api/rest-api/introduction) — base URL, headers, and response conventions
+- [Shop Resources](/api/rest-api/shop-resources) — every storefront resource in one reference
+- [Cart & Checkout](/api/rest-api/shop/cart/) — the cart menu overview
+- [Customer Management](/api/rest-api/shop/customers/) — the account menu overview
+- [Products](/api/rest-api/shop/products/) — the catalog menu overview

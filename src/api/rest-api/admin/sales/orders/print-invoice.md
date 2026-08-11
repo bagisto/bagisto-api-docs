@@ -47,7 +47,7 @@ Content-Type: application/pdf
 Content-Disposition: attachment; filename="invoice-{id}.pdf"
 ```
 
-> The body is a raw PDF — do not JSON-decode it.
+The body is a raw PDF stream, so do not JSON-decode it.
 
 ## GraphQL
 

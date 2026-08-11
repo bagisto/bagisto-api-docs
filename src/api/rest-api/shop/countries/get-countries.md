@@ -140,9 +140,9 @@ Both endpoints return the same shape — the collection wraps an array of these 
 | `code`         | string  | ISO 3166-1 alpha-2 country code (`AF`, `CA`, `US`, `IN`, …)                          |
 | `name`         | string  | Default English name                                                                 |
 | `states`       | array   | Inline list of [country states](/api/rest-api/shop/countries/get-country-states) for this country. Empty `[]` for countries with no sub-divisions in Bagisto's data |
-| `translations` | array   | All locale translations as **inline objects**: `{ id, countryId, locale, name }`     |
+| `translations` | array   | All locale translations as **inline objects**: `{ id, countryId, locale, name }`. Unlike attributes, channels, and categories, these are full objects rather than path references, so no extra call is needed per locale. |
 
-> ⚠️ Unlike `Attribute` / `Channel` / `Category`, `translations` on Country is returned as **inline objects** (not IRI strings). This avoids an extra round-trip per locale. There is no `translation` field for the request locale — pick the entry that matches your `X-Locale`.
+There is no `translation` field holding just the request locale, as there is on other resources — pick the entry from `translations` whose `locale` matches your `X-Locale`.
 
 ### Inline `states[]` shape
 
@@ -155,7 +155,14 @@ Each entry has the same fields as `/country-states/{id}` — see the [Country St
 - Resolve a country's localized display name from `translations[]` based on the customer's locale.
 - Chain to the country's states for a country/state cascade picker (use the [nested states endpoint](/api/rest-api/shop/countries/get-country-states) to skip refetching the country payload).
 
+## Best Practices
+
+- **Cache the list** — there are 254 countries and the set effectively never changes; refetching it on every checkout render wastes a round trip.
+- **Raise `per_page` to 50 and page through** — the default of 10 means 26 requests to collect the full list.
+- **Read the states from the country's own `states` block** — it is inline, so a country/state picker needs no second call per country.
+- **Send `X-Locale` rather than reading `translations`** — country names already follow the request locale.
+
 ## Related Resources
 
-- [Country States](/api/rest-api/shop/countries/get-country-states)
-- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas)
+- [Country States](/api/rest-api/shop/countries/get-country-states) — state and region rows for address forms
+- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas) — how to dereference the path references in these payloads

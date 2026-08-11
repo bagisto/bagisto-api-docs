@@ -117,4 +117,3 @@ Both the compound form `?sort=name-asc` and the split form `?sort=name&order=asc
 - `permissions` is a string array of permission keys for a `custom` role. For an `all` role it is `null` (full access — no explicit key list is stored).
 - Seeded core roles (such as Administrator) may have `null` `createdAt` / `updatedAt`.
 
-See the [Roles overview](./) for field meanings and behaviour.

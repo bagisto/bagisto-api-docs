@@ -53,4 +53,4 @@ Returns a single RMA rule by its IRI.
 
 Pass the resource IRI (`/api/admin/rma/rules/{id}`) as `id`. Select `_id` for the numeric id.
 
-For field meanings, see the [menu overview](./).
+For field meanings, see the [menu overview](../).

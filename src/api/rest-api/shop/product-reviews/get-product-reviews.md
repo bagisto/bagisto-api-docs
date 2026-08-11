@@ -134,20 +134,9 @@ GET /api/shop/products/{productId}/reviews
 | `page` | integer | 1 | Page number (1-based). |
 | `per_page` | integer | 30 | Reviews per page. Alias: `limit`. Maximum 50. |
 
-::: tip Filtered request examples
-```
-GET /api/shop/products/1/reviews?rating=5
-GET /api/shop/products/1/reviews?status=pending
-GET /api/shop/products/1/reviews?status=approved&rating=4
-GET /api/shop/products/1/reviews?per_page=10&page=2
-```
-:::
+Combining filters narrows the result — `?status=approved&rating=4` returns only four-star approved reviews. Sorting is not configurable; rows always come back oldest first, by ID.
 
-::: info Approved by default — overridable
-A storefront product page shows only approved reviews, so this endpoint returns
-`status=approved` when no `status` is supplied. To build moderation or preview
-tooling, request a specific status explicitly (e.g. `?status=pending`).
-:::
+A storefront product page shows approved reviews only, which is why `status` defaults to `approved`. Moderation or preview tooling has to ask for another status explicitly, one value per request.
 
 ## Response (200 OK)
 
@@ -177,13 +166,19 @@ Pagination metadata is returned in **response headers** (not the body):
 
 ## Use Cases
 
-- Display approved product reviews on detail pages
-- Filter reviews by rating
-- Paginate through a product's reviews
-- Build review moderation tooling (`?status=pending`)
+- **Review block on a product page** — call with no parameters; the default already excludes anything unapproved, so nothing needs filtering client-side.
+- **Rating breakdown** — the endpoint returns rows, not aggregates, so a "5 star (12)" histogram needs one call per rating with `?rating=n`, reading `X-Total-Count` from each.
+- **"Your review is awaiting approval" state** — after a customer submits, `?status=pending` is the only way to show it back to them; it is absent from the default list.
+
+## Best Practices
+
+- **Read the count from `X-Total-Count`** — the body is one page, so `array.length` under-reports whenever a product has more than 30 reviews.
+- **Raise the page size instead of looping** — `per_page` accepts up to 50 and silently caps there; a larger value does not error, it just returns 50.
+- **Do not expect newest-first** — the order is by ID ascending, so a "latest reviews" widget must request the last page or reverse the array itself.
+- **Ask for one status at a time** — `status` takes a single value; a moderation queue showing both pending and approved needs two calls.
 
 ## Related Resources
 
-- [Get Product Review](/api/rest-api/shop/product-reviews/get-product-review)
-- [Create Product Review](/api/rest-api/shop/product-reviews/create-product-review)
-- [Get Product](/api/rest-api/shop/products/get-product)
+- [Get Product Review](/api/rest-api/shop/product-reviews/get-product-review) — one review by id, whatever its status
+- [Create Product Review](/api/rest-api/shop/product-reviews/create-product-review) — submit a review; it starts as pending
+- [Get Product](/api/rest-api/shop/products/get-product) — one product's full detail with its relations inlined

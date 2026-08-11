@@ -52,8 +52,8 @@ examples:
             "customer": {
               "id": "/api/shop/customers/1",
               "_id": 1,
-              "channelId": null,
-              "customerGroupId": null,
+              "channelId": "1",
+              "customerGroupId": "2",
               "dateOfBirth": "1990-01-15",
               "email": "john.doe@example.com",
               "gender": "Male",
@@ -125,8 +125,8 @@ examples:
             "customer": {
               "id": "/api/shop/customers/1",
               "_id": 1,
-              "channelId": null,
-              "customerGroupId": null,
+              "channelId": "1",
+              "customerGroupId": "2",
               "dateOfBirth": "1990-01-15",
               "email": "john.doe@example.com",
               "gender": "Male",
@@ -151,7 +151,7 @@ examples:
 
 Register a new customer account with Bagisto.
 
-> **Push Notifications:** The `deviceToken` field is only applicable if the [Bagisto Push Notification](https://bagisto.com/en/extensions/push-notifications-for-bagisto/) package is installed. Pass the FCM device token here during registration to immediately associate the device with the new customer account for push notification delivery. If the package is not installed, this field can be omitted.
+The `deviceToken` field applies only when the [Bagisto Push Notification](https://bagisto.com/en/extensions/push-notifications-for-bagisto/) package is installed. Pass the FCM device token here during registration to immediately associate the device with the new customer account for push notification delivery. If the package is not installed, this field can be omitted.
 
 ## Arguments
 
@@ -167,6 +167,8 @@ Register a new customer account with Bagisto.
 | `dateOfBirth` | String | ❌ No | Date of birth in `MM/DD/YYYY` format |
 | `subscribedToNewsLetter` | Boolean | ❌ No | Opt-in to marketing emails. Default: `false` |
 | `deviceToken` | String | ❌ No | FCM device token for push notifications. Only required if the [Bagisto Push Notification](https://bagisto.com/en/extensions/push-notifications-for-bagisto/) package is installed. |
+
+The account's **channel** and **customer group** are not arguments. The server assigns them automatically — the channel from the request's storefront, and the store's default customer group — exactly as the web storefront sign-up does. Select `channelId` and `customerGroupId` to read them back.
 
 ## Response
 
@@ -186,6 +188,8 @@ Register a new customer account with Bagisto.
 | `gender` | String | Customer's gender |
 | `dateOfBirth` | String | Customer's date of birth |
 | `phone` | String | Customer's phone number |
+| `channelId` | String | Channel the account is registered under. Assigned automatically from the request's storefront — not a client argument. |
+| `customerGroupId` | String | Customer group the account is placed in (the store's default group). Assigned automatically — not a client argument. |
 | `deviceToken` | String | Associated FCM device token (if Push Notification package is installed) |
 
 ## Token Usage

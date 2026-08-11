@@ -88,7 +88,7 @@ GET /api/shop/booking-slots
 | `id`      | integer | Yes      | **Booking product ID** — i.e. `bookingProducts[].id` from a parent product, **not** the parent product's `id`.       |
 | `date`    | string  | Yes      | Target date in `YYYY-MM-DD` format. Times in the response are computed against the channel's timezone for that date. |
 
-> Pagination headers are **not** emitted — the response is the full list of slots for the date in one shot.
+Pagination headers are not emitted. The response is the full list of slots for that date in one shot.
 
 ## Response shape — by booking type
 
@@ -161,4 +161,4 @@ A `200 OK` with an empty array `[]` means "the product is bookable in principle 
 
 - [Single Product](/api/rest-api/shop/products/get-product) — embeds the `bookingProducts[]` slot config that this endpoint dereferences
 - [Products](/api/rest-api/shop/products/get-products) — discover booking products via `?type=booking`
-- [Search Products](/api/rest-api/shop/products/search-product)
+- [Search Products](/api/rest-api/shop/products/search-product) — the full filter, sort, and search reference

@@ -5,59 +5,40 @@ examples:
     title: Get Compare Items
     description: Retrieve the authenticated customer's product comparison list.
     request: |
-      GET /api/shop/compare-items
-      Content-Type: application/json
+      GET /api/shop/compare_items
+      Accept: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
-      Authorization: Bearer <accessToken>
+      Authorization: Bearer 12|Iy8NExampleCustomerAccessToken
     response: |
+      HTTP/1.1 200 OK
+      X-Total-Count: 2
+      X-Page: 1
+      X-Per-Page: 30
+      X-Total-Pages: 1
+
       [
         {
-          "id": 36,
-          "product": {
-            "id": 2495,
-            "sku": "IVORY-OVERCOAT-001",
-            "type": "configurable",
-            "name": "Ivory Frost Classic Overcoat",
-            "shortDescription": "A sleek ivory overcoat with a tailored fit and soft warmth.",
-            "price": "0",
-            "formattedPrice": "$0.00",
-            "minimumPrice": "500",
-            "formattedMinimumPrice": "$500.00"
-          },
-          "customer": {
-            "id": 122,
-            "firstName": "John",
-            "lastName": "Doe"
-          },
-          "createdAt": "2026-04-06T18:47:53+05:30",
-          "updatedAt": "2026-04-06T18:47:53+05:30"
+          "id": 155,
+          "createdAt": "2026-08-07T15:56:42+05:30",
+          "updatedAt": "2026-08-07T15:56:42+05:30",
+          "product": "/api/shop/products/126",
+          "customer": "/api/shop/customers/122"
         },
         {
-          "id": 37,
-          "product": {
-            "id": 2500,
-            "sku": "MINT-BLAZER-001",
-            "type": "configurable",
-            "name": "Mint Axis Unisex Tailored Blazer",
-            "shortDescription": "A modern mint blazer with a sharp tailored fit.",
-            "price": "0",
-            "formattedPrice": "$0.00",
-            "minimumPrice": "544",
-            "formattedMinimumPrice": "$544.00"
-          },
-          "customer": {
-            "id": 122,
-            "firstName": "John",
-            "lastName": "Doe"
-          },
-          "createdAt": "2026-04-06T18:47:53+05:30",
-          "updatedAt": "2026-04-06T18:47:53+05:30"
+          "id": 156,
+          "createdAt": "2026-08-07T15:57:10+05:30",
+          "updatedAt": "2026-08-07T15:57:10+05:30",
+          "product": "/api/shop/products/127",
+          "customer": "/api/shop/customers/122"
         }
       ]
     commonErrors:
-      - error: 401 Unauthorized
-        cause: Missing or invalid Bearer token
-        solution: Login and provide a valid customer authentication token
+      - error: 403 Forbidden
+        cause: No customer Bearer token was sent
+        solution: Log the customer in; guests hold no comparison list
+      - error: Empty array
+        cause: The customer has added nothing to compare
+        solution: This is a normal empty state, not an error
 
 ---
 
@@ -68,7 +49,7 @@ Retrieve the products in the authenticated customer's comparison list.
 ## Endpoint
 
 ```
-GET /api/shop/compare-items
+GET /api/shop/compare_items
 ```
 
 ## Request Headers
@@ -79,34 +60,37 @@ GET /api/shop/compare-items
 | `X-STOREFRONT-KEY` | Yes | Your storefront API key |
 | `Authorization` | Yes | Customer Bearer token (`Bearer <accessToken>`) |
 
-## Response Fields (200 OK)
+## Response
+
+A bare JSON array of comparison rows. Each row identifies its product and customer by **path reference, not as a nested object** — the product's name, price, and attributes are not in this payload.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | integer | Compare item ID |
-| `product` | object | Associated product (id, sku, type, name, price, formattedPrice, etc.) |
-| `customer` | object | Customer who added the item (id, firstName, lastName) |
-| `createdAt` | string | Timestamp when the item was added |
-| `updatedAt` | string | Timestamp when the item was last updated |
+| `id` | integer | Comparison row ID. Use it on [Get One](/api/rest-api/shop/compare/get) and [Delete](/api/rest-api/shop/compare/delete). |
+| `product` | string | Path of the compared product, e.g. `/api/shop/products/126`. The trailing segment is the product ID. |
+| `customer` | string | Path of the owning customer. |
+| `createdAt` / `updatedAt` | string | ISO 8601 timestamps. |
 
-::: tip
-The response is a plain JSON array of compare items. Pagination metadata is exposed via the `X-Total-Count` / `X-Page` / `X-Per-Page` / `X-Total-Pages` response headers.
-:::
+Pagination is reported in headers, not in the body: `X-Total-Count`, `X-Page`, `X-Per-Page`, `X-Total-Pages`.
+
+Unlike the wishlist, the comparison list is **not scoped to a channel** — the same rows come back on every channel.
+
+Over GraphQL the same rows expose `product` and `customer` as nested objects selectable in one query — see [Get Compare Items](/api/graphql-api/shop/queries/get-compare-items).
 
 ## Use Cases
 
-- Display the product comparison page
-- Build comparison tables across saved products
-- Show a compare count in navigation
+- **Comparison table** — read the rows, take the numeric ID from the end of each `product` path, and fetch those products with their attribute values to build the table columns.
+- **"Compare (n)" badge** — read `X-Total-Count`; the array holds only the current page.
 
-## Notes
+## Best Practices
 
-- Compare items are scoped to the authenticated customer (not channel-scoped).
-- Guests cannot have compare lists — a valid customer token is required.
+- **Do not expect product attributes here** — the row is a pointer, so a comparison view always needs a second round of product fetches, or the GraphQL query instead.
+- **Fetch the products in one call** — the product listing endpoint accepts filters, so a single request can return every compared product rather than one request per row.
+- **Keep the row `id` alongside the product ID** — deletion addresses the comparison row, not the product.
 
 ## Related Resources
 
-- [Get Single Compare Item](/api/rest-api/shop/compare/get)
-- [Create Compare Item](/api/rest-api/shop/compare/create)
-- [Delete Compare Item](/api/rest-api/shop/compare/delete)
-- [Delete All Compare Items](/api/rest-api/shop/compare/delete-all)
+- [Get Single Compare Item](/api/rest-api/shop/compare/get) — one comparison row by id
+- [Create Compare Item](/api/rest-api/shop/compare/create) — add a product to the comparison list
+- [Delete Compare Item](/api/rest-api/shop/compare/delete) — remove one comparison row
+- [Delete All Compare Items](/api/rest-api/shop/compare/delete-all) — clear the whole comparison list

@@ -90,8 +90,9 @@ If GDPR data requests are disabled in the store's admin configuration, the mutat
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `type` | `String!` | ✅ Yes | Request type — `delete` (delete account data) or `update` (update personal data). |
-| `message` | `String!` | ✅ Yes | A message describing what the customer is requesting. |
+| `type` | `String` | ✅ Yes | Request type — `delete` (delete account data) or `update` (update personal data). Optional in the schema but rejected when absent, so treat it as required. |
+| `message` | `String` | ✅ Yes | A message describing what the customer is requesting. Optional in the schema but rejected when absent. |
+| `clientMutationId` | `String` | ❌ No | Arbitrary string echoed back in the payload, for correlating a response with its request. |
 
 ## Possible Returns
 
@@ -100,13 +101,13 @@ If GDPR data requests are disabled in the store's admin configuration, the mutat
 | `gdprRequest._id` | `Int!` | Numeric request ID. |
 | `gdprRequest.type` | `String!` | Request type: `delete` or `update`. |
 | `gdprRequest.status` | `String!` | Request status — `pending` for a freshly raised request. |
-| `gdprRequest.message` | `String` | The message supplied in the request. |
+| `gdprRequest.message` | `String!` | The message supplied in the request. |
 | `gdprRequest.email` | `String!` | Email address tied to the request. |
-| `gdprRequest.revokedAt` | `DateTime` | Timestamp when the request was revoked, or `null`. |
-| `gdprRequest.createdAt` | `DateTime!` | Request creation timestamp. |
-| `gdprRequest.updatedAt` | `DateTime!` | Request last update timestamp. |
+| `gdprRequest.revokedAt` | `String` | Timestamp when the request was revoked, or `null`. |
+| `gdprRequest.createdAt` | `String` | Request creation timestamp. |
+| `gdprRequest.updatedAt` | `String` | Request last update timestamp. |
 | `gdprRequest.successMessage` | `String` | Confirmation message — present on create / revoke / delete results. |
-| `gdprRequest.customer` | `Customer!` | The customer who owns the request. |
+| `gdprRequest.customer` | `Customer` | The customer who owns the request. |
 | `gdprRequest.customer._id` | `Int!` | Numeric customer ID of the owner. |
 
 ## Related Resources

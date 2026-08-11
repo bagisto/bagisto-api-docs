@@ -93,7 +93,7 @@ Authorization: Bearer 3627|DfkAK11F8qdqtaFVJPvBxlJyNbCSMNl8TFWhWm4G5c9660e4
 
 ## Related Resources
 
-- [Customer Registration](/api/rest-api/shop/customers/customer-registration)
-- [Verify Customer Token](/api/rest-api/shop/customers/customer-verify-token)
-- [Customer Logout](/api/rest-api/shop/customers/customer-logout)
-- [Get Customer Profile](/api/rest-api/shop/customers/get-customer-profile)
+- [Customer Registration](/api/rest-api/shop/customers/customer-registration) — create an account and receive a token
+- [Verify Customer Token](/api/rest-api/shop/customers/customer-verify-token) — check whether a stored token still resolves
+- [Customer Logout](/api/rest-api/shop/customers/customer-logout) — revoke the token used on the request
+- [Get Customer Profile](/api/rest-api/shop/customers/get-customer-profile) — read the authenticated customer's account details

@@ -310,7 +310,7 @@ Merge:
      → Guest cart items are now in the customer's cart
 ```
 
-> **Note:** After a successful merge, the guest cart is invalidated. The `cartToken` from the guest session can no longer be used. All subsequent cart operations should use the customer's Bearer token.
+A successful merge invalidates the guest cart. The guest session's `cartToken` stops working from that point, so every later cart call must use the customer's Bearer token instead.
 
 ## Related Documentation
 

@@ -204,7 +204,7 @@ The `getCart` query retrieves the contents and summary information for a custome
 
 This query returns complete cart information including all items, quantities, prices, and applicable discounts/taxes needed for checkout and order processing.
 
-> **Note:** A cart session is only created when a product is added to the cart. If the cart is empty or no cart session exists, this query will return a `"Cart not found"` error. Make sure to add at least one product to the cart before calling this query.
+A cart exists only once a product has been added to it. Reading before that — or after the last item is removed — returns a `Cart not found` error rather than an empty cart, so treat that error as "no cart yet" rather than a failure.
  
 ## Possible Returns
 

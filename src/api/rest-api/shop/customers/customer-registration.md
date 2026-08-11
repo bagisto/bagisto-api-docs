@@ -34,13 +34,14 @@ examples:
         "phone": "1234567890",
         "status": 1,
         "apiToken": "LXrSaQRvrKfSNz5CtHr2r2hBZQ7HtWGVKvNoORHOcsmo0aYpSi7MVPk5dOV3Kjcqjr57MSSQ2eM2lcrg",
-        "customerGroupId": null,
-        "channelId": null,
+        "customerGroupId": 2,
+        "channelId": 1,
         "subscribedToNewsLetter": true,
         "isVerified": 0,
         "isSuspended": 0,
-        "token": "269336856151628b51b1e3107906a2bf",
+        "token": "1535|cusalnrd79pvOpEDorYMISQOwQh3P22DrAzcMvE7835a8e31",
         "rememberToken": null,
+        "deviceToken": null,
         "name": "John Doe"
       }
     commonErrors:
@@ -81,13 +82,14 @@ examples:
         "phone": "9876543210",
         "status": 1,
         "apiToken": "aBcDeFgHiJkLmNoPqRsTuVwXyZ1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9",
-        "customerGroupId": null,
-        "channelId": null,
+        "customerGroupId": 2,
+        "channelId": 1,
         "subscribedToNewsLetter": true,
         "isVerified": 0,
         "isSuspended": 0,
-        "token": "36d4d8a94f2c94e5c2a1b0d3f9e8a7c6",
+        "token": "1536|hZq2YJGjxgcB1NHnAVGPHlUURp1SK5PnO5Btk4c7d1a90",
         "rememberToken": null,
+        "deviceToken": null,
         "name": "Jane Smith"
       }
     commonErrors:
@@ -141,6 +143,8 @@ POST /api/shop/customers
 | `dateOfBirth` | string | No | Date of birth (YYYY-MM-DD) |
 | `subscribedToNewsLetter` | boolean | No | Newsletter subscription (default: false) |
 
+The account's **channel** and **customer group** are not part of the request body. The server assigns them automatically — the channel from the request's storefront, and the store's default customer group — exactly as the web storefront sign-up does. They come back in the response as `channelId` and `customerGroupId`.
+
 ## Response Fields (201 Created)
 
 | Field | Type | Description |
@@ -159,8 +163,8 @@ POST /api/shop/customers
 | `isVerified` | integer | Email verification status (0=not verified) |
 | `isSuspended` | integer | Suspension status (0=active) |
 | `name` | string | Full customer name |
-| `customerGroupId` | mixed | Customer group ID |
-| `channelId` | mixed | Channel ID |
+| `customerGroupId` | integer | Customer group the account is placed in. Assigned automatically by the server (the store's default customer group) — not sent by the client. |
+| `channelId` | integer | Channel the account is registered under. Assigned automatically from the request's storefront channel — not sent by the client. |
 | `rememberToken` | mixed | Remember token |
 
 ## Password Requirements
@@ -174,6 +178,6 @@ Passwords must contain:
 
 ## Related Resources
 
-- [Customer Login](/api/rest-api/customers/mutations/login-customer)
-- [Update Profile](/api/rest-api/customers/mutations/update-profile)
-- [Get Profile](/api/rest-api/customers/queries/get-profile)
+- [Customer Login](/api/rest-api/shop/customers/customer-login) — authenticate and receive a customer token
+- [Update Profile](/api/rest-api/shop/customers/update-customer-profile) — patch name, email, phone, and other profile fields
+- [Get Profile](/api/rest-api/shop/customers/get-customer-profile) — read the authenticated customer's account details

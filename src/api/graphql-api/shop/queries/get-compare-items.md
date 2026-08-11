@@ -265,7 +265,7 @@ Authorization: Bearer <accessToken>
 | `edges` | `[CompareItemEdge!]` | Array of compare item edges with cursor and node. |
 | `edges.cursor` | `String!` | Cursor for this edge, used in pagination. |
 | `edges.node` | `CompareItem!` | The compare item object. |
-| `edges.node.id` | `ID!` | IRI identifier (e.g. `/api/shop/compare-items/606`). |
+| `edges.node.id` | `ID!` | IRI identifier (e.g. `/api/shop/compare_items/606`). |
 | `edges.node._id` | `Int!` | Numeric identifier. |
 | `edges.node.product` | `Product!` | Associated product with id, name, sku, price, etc. |
 | `edges.node.product.reviews` | `ReviewCollection!` | Customer reviews left on the product. |

@@ -99,7 +99,7 @@ examples:
 
 Authenticate a customer account with email and password.
 
-> **Push Notifications:** The `deviceToken` field is only applicable if the [Bagisto Push Notification](https://bagisto.com/en/extensions/push-notifications-for-bagisto/) package is installed. Pass the FCM device token here to associate the device with the customer session for push notification delivery. If the package is not installed, this field can be omitted.
+The `deviceToken` field applies only when the [Bagisto Push Notification](https://bagisto.com/en/extensions/push-notifications-for-bagisto/) package is installed. Pass the FCM device token here to associate the device with the customer session for push notification delivery. If the package is not installed, this field can be omitted.
 
 ## Arguments
 

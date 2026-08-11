@@ -135,7 +135,7 @@ examples:
     commonErrors:
       - error: invalid-status
         cause: Invalid status value provided
-        solution: Use one of pending, approved, or rejected
+        solution: Use one of pending, approved, or disapproved
 
   - id: get-customer-reviews-rating
     title: Get Customer Reviews - Filter by Rating
@@ -306,7 +306,7 @@ X-STOREFRONT-KEY: <storefrontKey>
 | `after` | `String` | ❌ No | Cursor for forward pagination. Use `endCursor` from previous response. |
 | `last` | `Int` | ❌ No | Number of items for backward pagination. Max: 100. |
 | `before` | `String` | ❌ No | Cursor for backward pagination. Use `startCursor` from previous response. |
-| `status` | `String` | ❌ No | Filter by review status: `pending`, `approved`, or `rejected`. |
+| `status` | `String` | ❌ No | Filter by review status: `pending`, `approved`, or `disapproved`. |
 | `rating` | `Int` | ❌ No | Filter by star rating (1–5). |
 
 ## Possible Returns
@@ -321,7 +321,7 @@ X-STOREFRONT-KEY: <storefrontKey>
 | `edges.node.title` | `String!` | Review title. |
 | `edges.node.comment` | `String!` | Review body text. |
 | `edges.node.rating` | `Int!` | Star rating (1–5). |
-| `edges.node.status` | `String!` | Review status: `pending`, `approved`, or `rejected`. |
+| `edges.node.status` | `String!` | Review status: `pending`, `approved`, or `disapproved`. |
 | `edges.node.name` | `String!` | Reviewer display name. |
 | `edges.node.product` | `Product!` | Associated product with id, _id, sku, type. |
 | `edges.node.customer` | `Customer!` | Customer who wrote the review with id, _id. |
@@ -338,7 +338,7 @@ X-STOREFRONT-KEY: <storefrontKey>
 
 | Parameter | Type | Values | Description |
 |-----------|------|--------|-------------|
-| `status` | String | `pending`, `approved`, `rejected` | Filter by review approval status |
+| `status` | String | `pending`, `approved`, `disapproved` | Filter by review approval status |
 | `rating` | Int | `1`–`5` | Filter by star rating |
 
 ## Pagination Parameters
@@ -370,7 +370,7 @@ Combine status and rating filters to help customers manage and track their revie
 2. **Show Status** — Display the review status so customers know which reviews are live
 3. **Cache Results** — Cache review lists as they change infrequently
 4. **Handle Empty States** — Provide helpful UI when the customer has no reviews
-5. **Filter by Status** — Allow customers to filter by pending/approved/rejected for easy management
+5. **Filter by Status** — Allow customers to filter by pending, approved, or disapproved for easy management
 
 ## Related Resources
 

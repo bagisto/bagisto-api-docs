@@ -19,10 +19,10 @@ examples:
       - error: 400 Bad Request
         cause: The resolution_type parameter is missing or not one of return / cancel_items
         solution: Provide a valid resolution_type — either return or cancel_items
-      - error: 401 Unauthorized
+      - error: 403 Forbidden
         cause: Missing or invalid customer Bearer token
         solution: Log in and provide a valid customer authentication token
-      - error: 403 Forbidden
+      - error: 401 Unauthorized
         cause: Storefront key is missing or invalid
         solution: Provide a valid X-STOREFRONT-KEY header
 ---
@@ -71,11 +71,11 @@ The response is a plain JSON array. Each item is a reason object.
 |--------|---------|
 | `200 OK` | Reasons retrieved. |
 | `400 Bad Request` | `resolution_type` is missing or invalid. |
-| `401 Unauthorized` | Missing or invalid customer Bearer token. |
-| `403 Forbidden` | Missing or invalid storefront key. |
+| `401 Unauthorized` | Missing or invalid storefront key. |
+| `403 Forbidden` | Missing or invalid customer Bearer token. |
 
 ## Related Resources
 
-- [List Returnable Items](/api/rest-api/shop/returns/list-returnable-items)
-- [Raise a Return](/api/rest-api/shop/returns/create-return)
-- [Returns Overview](/api/rest-api/shop/returns/)
+- [List Returnable Items](/api/rest-api/shop/returns/list-returnable-items) — which order items are still eligible, and for how many units
+- [Raise a Return](/api/rest-api/shop/returns/create-return) — raise a return against one order item
+- [Returns Overview](/api/rest-api/shop/returns/) — the returns menu overview, including the settings that gate it

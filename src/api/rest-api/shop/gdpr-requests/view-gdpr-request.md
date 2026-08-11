@@ -19,15 +19,13 @@ examples:
         "revokedAt": null,
         "createdAt": "2026-06-25T10:30:00.000000Z",
         "updatedAt": "2026-06-25T10:30:00.000000Z",
-        "customer": {
-          "_id": 7
-        }
+        "customer": "/api/shop/customers/7"
       }
     commonErrors:
       - error: 400 Bad Request
         cause: GDPR data requests are turned off in the store's admin configuration
         solution: Re-enable GDPR from the admin configuration before calling this endpoint
-      - error: 401 Unauthorized
+      - error: 403 Forbidden
         cause: Missing or invalid customer Bearer token
         solution: Log in and provide a valid customer authentication token
       - error: 404 Not Found
@@ -79,8 +77,7 @@ If GDPR data requests are disabled in the store's admin configuration, the endpo
 | `revokedAt` | string | ISO 8601 timestamp when revoked, or `null`. |
 | `createdAt` | string | ISO 8601 creation timestamp. |
 | `updatedAt` | string | ISO 8601 last update timestamp. |
-| `customer` | object | The customer who owns the request. |
-| `customer._id` | integer | Numeric customer ID of the owner. |
+| `customer` | string | Path of the owning customer, e.g. `/api/shop/customers/7`. Not a nested object. |
 
 ## Status Codes
 
@@ -88,12 +85,12 @@ If GDPR data requests are disabled in the store's admin configuration, the endpo
 |--------|---------|
 | `200 OK` | Request returned. |
 | `400 Bad Request` | GDPR is disabled in the store's admin configuration. |
-| `401 Unauthorized` | Missing or invalid customer Bearer token. |
-| `403 Forbidden` | Missing or invalid storefront key. |
+| `401 Unauthorized` | Missing or invalid storefront key. |
+| `403 Forbidden` | Missing or invalid customer Bearer token. |
 | `404 Not Found` | The request does not exist or is not owned by the customer. |
 
 ## Related Resources
 
-- [List GDPR Requests](/api/rest-api/shop/gdpr-requests/list-gdpr-requests)
-- [Revoke a GDPR Request](/api/rest-api/shop/gdpr-requests/revoke-gdpr-request)
-- [GDPR Requests Overview](/api/rest-api/shop/gdpr-requests/)
+- [List GDPR Requests](/api/rest-api/shop/gdpr-requests/list-gdpr-requests) — the customer's own data requests
+- [Revoke a GDPR Request](/api/rest-api/shop/gdpr-requests/revoke-gdpr-request) — withdraw a request still being processed
+- [GDPR Requests Overview](/api/rest-api/shop/gdpr-requests/) — the GDPR menu overview, including the setting that gates it

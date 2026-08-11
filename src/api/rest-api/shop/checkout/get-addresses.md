@@ -10,33 +10,65 @@ examples:
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     response: |
-      {
-        "data": {
-          "addresses": [
-            {
-              "id": 1,
-              "firstName": "John",
-              "lastName": "Doe",
-              "email": "john@example.com",
-              "address": "123 Main St",
-              "city": "New York",
-              "state": "NY",
-              "country": "US",
-              "postcode": "10001",
-              "phone": "1234567890"
-            }
-          ],
-          "defaultShippingId": 1,
-          "defaultBillingId": 1
+      HTTP/1.1 200 OK
+
+      [
+        {
+          "id": 281,
+          "addressType": "cart_billing",
+          "parentAddressId": null,
+          "orderId": null,
+          "firstName": "Jane",
+          "lastName": "Doe",
+          "gender": null,
+          "companyName": null,
+          "address": "12 Elm Street",
+          "city": "New York",
+          "state": "NY",
+          "country": "US",
+          "postcode": "10001",
+          "email": "jane@example.com",
+          "phone": "12125550111",
+          "vatId": null,
+          "defaultAddress": false,
+          "useForShipping": false,
+          "additional": null,
+          "createdAt": "2026-08-07T17:27:28+05:30",
+          "updatedAt": "2026-08-07T17:27:28+05:30",
+          "name": "Jane Doe"
+        },
+        {
+          "id": 282,
+          "addressType": "cart_shipping",
+          "parentAddressId": null,
+          "orderId": null,
+          "firstName": "Jane",
+          "lastName": "Doe",
+          "gender": null,
+          "companyName": null,
+          "address": "12 Elm Street",
+          "city": "New York",
+          "state": "NY",
+          "country": "US",
+          "postcode": "10001",
+          "email": "jane@example.com",
+          "phone": "12125550111",
+          "vatId": null,
+          "defaultAddress": false,
+          "useForShipping": false,
+          "additional": null,
+          "createdAt": "2026-08-07T17:27:28+05:30",
+          "updatedAt": "2026-08-07T17:27:28+05:30",
+          "name": "Jane Doe"
         }
-      }
+      ]
     commonErrors:
-      - error: 401 Unauthorized
-        cause: Customer not authenticated
-        solution: Provide valid Bearer token
-      - error: 404 Not Found
-        cause: Customer has no saved addresses
-        solution: Add new address first
+      - error: Empty array
+        cause: No checkout address has been saved on this cart yet
+        solution: Save one with Set Checkout Address; an empty list is a 200, not an error
+      - error: 401 Unauthorized — Authentication token is required
+        cause: No cart or customer token was sent as the Bearer token
+        solution: Send the cartToken from Create Cart, or a logged-in customer's token
 
 ---
 
@@ -54,49 +86,46 @@ GET /api/shop/checkout-addresses
 
 | Header | Required | Description |
 |--------|----------|-------------|
-| `Content-Type` | Yes | application/json |
+| `Accept` | Yes | application/json |
 | `X-STOREFRONT-KEY` | Yes | Your storefront API key |
-| `Authorization` | Yes | Bearer token (customer login required) |
+| `Authorization` | Yes | The cart's own token as a Bearer token, or a logged-in customer's token. |
 
 ## Response Fields (200 OK)
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `addresses` | array | List of customer addresses |
-| `defaultShippingId` | integer | ID of default shipping address |
-| `defaultBillingId` | integer | ID of default billing address |
-
-## Address Fields
+A bare array of the addresses saved **on this cart** — typically two entries, the billing one and the shipping one, told apart by `addressType`. This is not the customer's address book; that is [Get Customer Addresses](/api/rest-api/shop/customers/get-customer-addresses).
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | integer | Address ID |
-| `firstName` | string | First name |
-| `lastName` | string | Last name |
-| `email` | string | Email address |
-| `address` | string | Street address |
-| `city` | string | City |
-| `state` | string | State/Province |
-| `country` | string | Country code |
-| `postcode` | string | Postal code |
-| `phone` | string | Phone number |
+| `id` | integer | Address record ID. |
+| `addressType` | string | `cart_billing` or `cart_shipping`. |
+| `firstName` / `lastName` / `name` | string | Recipient. `name` is the two joined. |
+| `address` | string | Street address. Note the read returns `address`, while the save call takes `billingAddress` / `shippingAddress`. |
+| `city` / `state` / `country` / `postcode` | string | Location. |
+| `email` / `phone` | string | Contact details. |
+| `companyName` / `vatId` / `gender` | string | Optional details, `null` when not supplied. |
+| `defaultAddress` / `useForShipping` | boolean | Flags carried on the row; both read `false` on a cart address regardless of the `useForShipping` sent when saving. |
+| `parentAddressId` | integer | The address-book entry this was copied from, `null` when typed in at checkout. |
+| `orderId` | integer | `null` until the cart becomes an order. |
+| `additional` | object | Extra stored data, usually `null`. |
+| `createdAt` / `updatedAt` | string | ISO 8601 timestamps. |
+
+Before the address step runs, the response is `[]`.
 
 ## Use Cases
 
-- Populate shipping address dropdown
-- Populate billing address dropdown
-- Show saved addresses in checkout
-- Allow address selection during checkout
-- Set default addresses
+- **Re-render the checkout review step** — read both addresses back after a page reload without re-asking the shopper.
+- **Confirm "ship to billing" took effect** — with `useForShipping` sent as `true`, two rows come back holding the same details.
+
+## Best Practices
+
+- **Split the array by `addressType`** — both rows live in one list, so a page rendering `[0]` as billing will be wrong whenever the order differs.
+- **Do not read `useForShipping` from this payload** — it reflects the stored row, not the flag you sent, and is `false` on both rows.
+- **Treat `[]` as "step not done"** — it is a normal state before the address is saved, not an error.
 
 ## Related Resources
 
-- [Set Shipping Address](/api/rest-api/shop/checkout/set-shipping-address)
-- [Set Billing Address](/api/rest-api/shop/checkout/set-billing-address)
-- [Get Shipping Methods](/api/rest-api/shop/checkout/get-shipping-methods)
+- [Set Shipping Address](/api/rest-api/shop/checkout/set-shipping-address) — the same call with a separate delivery address
+- [Set Billing Address](/api/rest-api/shop/checkout/set-billing-address) — save both checkout addresses in one call
+- [Get Shipping Methods](/api/rest-api/shop/checkout/get-shipping-methods) — the rates available for the saved address
 
-::: tip Fetching Customer Addresses
-To retrieve the full list of a customer's saved addresses (outside of checkout), use the dedicated customer address queries:
-- **GraphQL:** [Get Customer Addresses](/api/graphql-api/shop/queries/get-customer-addresses)
-- **REST:** [Get Customer Addresses](/api/rest-api/shop/customers/get-customer-addresses)
-:::
+This endpoint returns only the addresses attached to the current checkout, one row per type. It is not the customer's address book — read that with [Get Customer Addresses](/api/rest-api/shop/customers/get-customer-addresses).

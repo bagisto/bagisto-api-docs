@@ -3,118 +3,78 @@ outline: false
 examples:
   - id: list-wishlists
     title: Get Wishlist Items
-    description: Retrieve the authenticated customer's wishlist items for the current channel.
+    description: Retrieve the authenticated customer's wishlist items for the current channel, oldest first.
     request: |
       GET /api/shop/wishlists
-      Content-Type: application/json
+      Accept: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
-      Authorization: Bearer <accessToken>
+      Authorization: Bearer 12|Iy8NExampleCustomerAccessToken
     response: |
+      HTTP/1.1 200 OK
+      X-Total-Count: 2
+      X-Page: 1
+      X-Per-Page: 30
+      X-Total-Pages: 1
+
       [
         {
-          "id": 78,
-          "product": {
-            "id": 2500,
-            "name": "Mint Axis Unisex Tailored Blazer",
-            "sku": "MINT-BLAZER-001",
-            "type": "configurable",
-            "price": "0",
-            "baseImageUrl": "https://api-demo.bagisto.com/storage/product/2500/T97yKJVNKlmi6GXoqKl8FNqfM8115Wxo6jw4WhPF.webp"
-          },
-          "customer": {
-            "id": 122,
-            "email": "john.doe@example.com"
-          },
-          "channel": {
-            "id": 1,
-            "code": "default"
-          },
-          "createdAt": "2026-04-06T18:44:50+05:30",
-          "updatedAt": "2026-04-06T18:44:50+05:30"
+          "id": 210,
+          "createdAt": "2026-08-07T15:48:07+05:30",
+          "updatedAt": "2026-08-07T15:48:07+05:30",
+          "product": "/api/shop/products/126",
+          "customer": "/api/shop/customers/122",
+          "channel": "/api/shop/channels/1"
         },
         {
-          "id": 81,
-          "product": {
-            "id": 122,
-            "name": "Classic Cowboy Hat",
-            "sku": "COWBOY-HAT-001",
-            "type": "simple",
-            "price": "149.99",
-            "baseImageUrl": "https://api-demo.bagisto.com/storage/product/122/P9n1dbmgM4UOBT3zUAEGCn4wpKi0GjPGhgS1jZe7.webp"
-          },
-          "customer": {
-            "id": 122,
-            "email": "john.doe@example.com"
-          },
-          "channel": {
-            "id": 1,
-            "code": "default"
-          },
-          "createdAt": "2026-04-06T18:44:55+05:30",
-          "updatedAt": "2026-04-06T18:44:55+05:30"
+          "id": 211,
+          "createdAt": "2026-08-07T15:52:41+05:30",
+          "updatedAt": "2026-08-07T15:52:41+05:30",
+          "product": "/api/shop/products/127",
+          "customer": "/api/shop/customers/122",
+          "channel": "/api/shop/channels/1"
         }
       ]
     commonErrors:
       - error: 401 Unauthorized
         cause: Missing or invalid Bearer token
         solution: Login and provide a valid customer authentication token
+      - error: Empty array
+        cause: The customer has saved nothing on the current channel
+        solution: The wishlist is per channel — an item saved on another channel does not appear here
+
   - id: list-wishlists-newest-first
     title: Get Wishlist Items (newest first)
     description: Sort the wishlist so the most recently added item appears first.
     request: |
       GET /api/shop/wishlists?sort=created_at&order=desc
-      Content-Type: application/json
+      Accept: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
-      Authorization: Bearer <accessToken>
+      Authorization: Bearer 12|Iy8NExampleCustomerAccessToken
     response: |
+      HTTP/1.1 200 OK
+
       [
         {
-          "id": 81,
-          "product": {
-            "id": 122,
-            "name": "Classic Cowboy Hat",
-            "sku": "COWBOY-HAT-001",
-            "type": "simple",
-            "price": "149.99",
-            "baseImageUrl": "https://api-demo.bagisto.com/storage/product/122/P9n1dbmgM4UOBT3zUAEGCn4wpKi0GjPGhgS1jZe7.webp"
-          },
-          "customer": {
-            "id": 122,
-            "email": "john.doe@example.com"
-          },
-          "channel": {
-            "id": 1,
-            "code": "default"
-          },
-          "createdAt": "2026-04-06T18:44:55+05:30",
-          "updatedAt": "2026-04-06T18:44:55+05:30"
+          "id": 211,
+          "createdAt": "2026-08-07T15:52:41+05:30",
+          "updatedAt": "2026-08-07T15:52:41+05:30",
+          "product": "/api/shop/products/127",
+          "customer": "/api/shop/customers/122",
+          "channel": "/api/shop/channels/1"
         },
         {
-          "id": 78,
-          "product": {
-            "id": 2500,
-            "name": "Mint Axis Unisex Tailored Blazer",
-            "sku": "MINT-BLAZER-001",
-            "type": "configurable",
-            "price": "0",
-            "baseImageUrl": "https://api-demo.bagisto.com/storage/product/2500/T97yKJVNKlmi6GXoqKl8FNqfM8115Wxo6jw4WhPF.webp"
-          },
-          "customer": {
-            "id": 122,
-            "email": "john.doe@example.com"
-          },
-          "channel": {
-            "id": 1,
-            "code": "default"
-          },
-          "createdAt": "2026-04-06T18:44:50+05:30",
-          "updatedAt": "2026-04-06T18:44:50+05:30"
+          "id": 210,
+          "createdAt": "2026-08-07T15:48:07+05:30",
+          "updatedAt": "2026-08-07T15:48:07+05:30",
+          "product": "/api/shop/products/126",
+          "customer": "/api/shop/customers/122",
+          "channel": "/api/shop/channels/1"
         }
       ]
     commonErrors:
-      - error: 401 Unauthorized
-        cause: Missing or invalid Bearer token
-        solution: Login and provide a valid customer authentication token
+      - error: Order unchanged
+        cause: sort names a column the endpoint does not accept, so it falls back to id ascending
+        solution: Sort by id or created_at only
 
 ---
 
@@ -145,35 +105,37 @@ GET /api/shop/wishlists
 
 By default the wishlist is returned oldest-first (the order items were added). To show the newest item at the top, pass `?sort=created_at&order=desc` (or the shorthand `?sort=created_at-desc`).
 
-## Response Fields (200 OK)
+## Response
+
+A bare JSON array of wishlist rows. Each row identifies its product, customer, and channel by **path reference, not as a nested object** — fetch the product separately to render a card.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | integer | Wishlist item ID |
-| `product` | object | Associated product (id, name, sku, type, price, baseImageUrl) |
-| `customer` | object | Customer who added the item (id, email) |
-| `channel` | object | Channel where the item was added (id, code) |
-| `createdAt` | string | Timestamp when the item was added |
-| `updatedAt` | string | Timestamp when the item was last updated |
+| `id` | integer | Wishlist row ID. Use it on [Delete](/api/rest-api/shop/wishlist/delete) and [Move to Cart](/api/rest-api/shop/wishlist/move-to-cart). |
+| `product` | string | Path of the saved product, e.g. `/api/shop/products/126`. The trailing segment is the product ID. |
+| `customer` | string | Path of the owning customer. |
+| `channel` | string | Path of the channel the item was saved on. |
+| `createdAt` / `updatedAt` | string | ISO 8601 timestamps. |
 
-::: tip
-The response is a plain JSON array of wishlist items. Pagination metadata is exposed via the `X-Total-Count` / `X-Page` / `X-Per-Page` / `X-Total-Pages` response headers.
-:::
+Pagination is reported in headers, not in the body: `X-Total-Count`, `X-Page`, `X-Per-Page`, `X-Total-Pages`.
+
+Over GraphQL the same rows expose `product`, `customer`, and `channel` as nested objects that can be selected in one query — see [Get Wishlist](/api/graphql-api/shop/queries/get-wishlist).
 
 ## Use Cases
 
-- Display the customer's wishlist page
-- Show a wishlist count in navigation
-- Build saved-for-later product lists
+- **Wishlist page** — read the array, take the numeric ID from the end of each `product` path, and fetch those products to render names, prices, and images.
+- **"Saved" badge count** — read `X-Total-Count` from the headers instead of counting the array, which only holds the current page.
+- **Newest-first view** — `?sort=created_at&order=desc` puts the latest save on top, which matches the "just added" confirmation a heart button produces.
 
-## Notes
+## Best Practices
 
-- Wishlist items are scoped to the customer and the current channel.
-- Guests cannot have wishlists — a valid customer token is required.
+- **Do not expect product details inline** — the row carries a path only; a page that renders products needs a second call per product, or the GraphQL query instead.
+- **Read the count from the header** — the body is one page, so `array.length` under-reports a long wishlist.
+- **Remember the channel scope** — the same customer sees a different wishlist per channel, so a missing item usually means a different channel, not a lost row.
 
 ## Related Resources
 
-- [Create Wishlist Item](/api/rest-api/shop/wishlist/create)
-- [Toggle Wishlist Item](/api/rest-api/shop/wishlist/toggle)
-- [Move Wishlist Item to Cart](/api/rest-api/shop/wishlist/move-to-cart)
-- [Delete All Wishlist Items](/api/rest-api/shop/wishlist/delete-all)
+- [Create Wishlist Item](/api/rest-api/shop/wishlist/create) — add a product; rejects one already saved
+- [Toggle Wishlist Item](/api/rest-api/shop/wishlist/toggle) — add or remove in one call, for a heart icon
+- [Move Wishlist Item to Cart](/api/rest-api/shop/wishlist/move-to-cart) — add the saved product to the cart and drop the row
+- [Delete All Wishlist Items](/api/rest-api/shop/wishlist/delete-all) — clear the whole wishlist on this channel

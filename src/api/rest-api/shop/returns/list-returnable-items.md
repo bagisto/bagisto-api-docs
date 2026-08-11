@@ -29,10 +29,10 @@ examples:
         }
       ]
     commonErrors:
-      - error: 401 Unauthorized
+      - error: 403 Forbidden
         cause: Missing or invalid customer Bearer token
         solution: Log in and provide a valid customer authentication token
-      - error: 403 Forbidden
+      - error: 401 Unauthorized
         cause: Storefront key is missing or invalid
         solution: Provide a valid X-STOREFRONT-KEY header
       - error: 404 Not Found
@@ -94,12 +94,12 @@ The response is a plain JSON array. Each item is a returnable-item object.
 | Status | Meaning |
 |--------|---------|
 | `200 OK` | Returnable items retrieved. |
-| `401 Unauthorized` | Missing or invalid customer Bearer token. |
-| `403 Forbidden` | Missing or invalid storefront key. |
+| `401 Unauthorized` | Missing or invalid storefront key. |
+| `403 Forbidden` | Missing or invalid customer Bearer token. |
 | `404 Not Found` | The order does not exist or is not the customer's. |
 
 ## Related Resources
 
-- [List Return Reasons](/api/rest-api/shop/returns/list-return-reasons)
-- [Raise a Return](/api/rest-api/shop/returns/create-return)
-- [Returns Overview](/api/rest-api/shop/returns/)
+- [List Return Reasons](/api/rest-api/shop/returns/list-return-reasons) — the reason ids to choose from
+- [Raise a Return](/api/rest-api/shop/returns/create-return) — raise a return against one order item
+- [Returns Overview](/api/rest-api/shop/returns/) — the returns menu overview, including the settings that gate it

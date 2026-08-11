@@ -3,57 +3,63 @@ outline: false
 examples:
   - id: create-product-review
     title: Create Product Review
-    description: Create a new product review or rating.
+    description: Submit a review for a product. The product is named in the body, not in the path, and the review is stored as pending until an admin approves it.
     request: |
-      POST /api/shop/products/1/reviews
+      POST /api/shop/reviews
       Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
-      Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      Authorization: Bearer 12|Iy8NExampleCustomerAccessToken
 
       {
+        "productId": 126,
         "title": "Excellent product!",
         "comment": "Very satisfied with this purchase. Great quality and fast delivery.",
         "rating": 5,
-        "authorName": "John Doe",
-        "authorEmail": "john@example.com"
+        "name": "John Doe"
       }
     response: |
+      HTTP/1.1 201 Created
+
       {
-        "data": {
-          "id": 1,
-          "productId": 1,
-          "title": "Excellent product!",
-          "comment": "Very satisfied with this purchase. Great quality and fast delivery.",
-          "rating": 5,
-          "authorName": "John Doe",
-          "authorEmail": "john@example.com",
-          "status": "pending",
-          "createdAt": "2024-01-20T15:30:00Z"
-        },
-        "message": "Review submitted successfully and is pending approval"
+        "id": 40,
+        "name": "John Doe",
+        "title": "Excellent product!",
+        "rating": 5,
+        "comment": "Very satisfied with this purchase. Great quality and fast delivery.",
+        "status": "pending",
+        "createdAt": "2026-08-07T16:04:39+05:30",
+        "updatedAt": "2026-08-07T16:04:39+05:30"
       }
     commonErrors:
-      - error: 401 Unauthorized
-        cause: Customer not authenticated
-        solution: Provide valid Bearer token
-      - error: 422 Validation Error
-        cause: Rating not between 1-5 or title is empty
-        solution: Ensure rating is 1-5 and provide valid title
-      - error: 404 Not Found
-        cause: Product does not exist
-        solution: Verify the product ID
+      - error: 400 Bad Request — Review title is required
+        cause: title was empty or missing
+        solution: Send a non-empty title; comment is required the same way
+      - error: 400 Bad Request — Rating must be between 1 and 5
+        cause: rating fell outside 1–5
+        solution: Send an integer from 1 to 5
+      - error: 404 Not Found — Product not found
+        cause: No product carries that productId
+        solution: Use an ID returned by the product endpoints
+      - error: 403 Forbidden — Guest reviews are not allowed
+        cause: No customer token was sent and the store has guest reviews switched off
+        solution: Log the customer in, or have the store enable guest reviews
+      - error: 403 Forbidden — Reviews are disabled
+        cause: The store has customer reviews switched off entirely
+        solution: Nothing client-side; reviews must be enabled in the admin panel
 
 ---
 
 # Create Product Review
 
-Submit a new review and rating for a product. Reviews are typically pending approval before being displayed.
+Submit a review and rating for a product.
 
 ## Endpoint
 
 ```
-POST /api/shop/products/{productId}/reviews
+POST /api/shop/reviews
 ```
+
+The product is identified by `productId` **in the body**. There is no `POST /products/{id}/reviews` route — that path exists for reading only.
 
 ## Request Headers
 
@@ -61,67 +67,68 @@ POST /api/shop/products/{productId}/reviews
 |--------|----------|-------------|
 | `Content-Type` | Yes | application/json |
 | `X-STOREFRONT-KEY` | Yes | Your storefront API key |
-| `Authorization` | Yes | Bearer token (customer login required) |
-
-## Path Parameters
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `productId` | integer | Yes | Product ID being reviewed |
+| `Authorization` | Depends | Customer Bearer token. Required unless the store allows guest reviews. |
 
 ## Request Body
 
 ```json
 {
-  "title": "string",
-  "comment": "string",
-  "rating": "integer (1-5)",
-  "authorName": "string",
-  "authorEmail": "string"
+  "productId": 126,
+  "title": "Excellent product!",
+  "comment": "Very satisfied with this purchase.",
+  "rating": 5,
+  "name": "John Doe"
 }
 ```
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `title` | string | Yes | Review title (max 255 characters) |
-| `comment` | string | Yes | Review content/comment (min 10 characters) |
-| `rating` | integer | Yes | Rating (1=Poor, 5=Excellent) |
-| `authorName` | string | No | Reviewer name (defaults to customer name) |
-| `authorEmail` | string | No | Reviewer email (defaults to customer email) |
+| `productId` | integer | Yes | The product being reviewed. `product_id` is accepted as well. |
+| `title` | string | Yes | Review headline. |
+| `comment` | string | Yes | Review body. No minimum length is enforced. |
+| `rating` | integer | Yes | Star rating from 1 to 5. |
+| `name` | string | No | Display name shown with the review. |
 
 ## Response Fields (201 Created)
 
+The stored review, flat — there is no wrapper object and no message.
+
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | integer | Review ID |
-| `productId` | integer | Product ID |
-| `title` | string | Review title |
-| `comment` | string | Review content |
-| `rating` | integer | Star rating |
-| `authorName` | string | Reviewer name |
-| `authorEmail` | string | Reviewer email |
-| `status` | string | Review status (pending, approved, rejected) |
-| `createdAt` | string | Creation timestamp |
+| `id` | integer | Review ID. Needed for [Update](/api/rest-api/shop/product-reviews/update-product-review) and [Delete](/api/rest-api/shop/product-reviews/delete-product-review). |
+| `name` | string | Display name as submitted. |
+| `title` / `comment` | string | Review text as submitted. |
+| `rating` | integer | Star rating. |
+| `status` | string | Always `pending` on creation. |
+| `createdAt` / `updatedAt` | string | ISO 8601 timestamps. |
+
+The product ID is not echoed back — keep it client-side if the confirmation screen needs it.
+
+## Who Can Review
+
+Two store settings gate this endpoint, and both are enforced here.
+
+| Setting | Effect when off |
+|---------|-----------------|
+| Customer reviews | Every submission is refused with `403`, token or not. |
+| Guest reviews | A submission without a customer token is refused with `403`. Logged-in customers are unaffected. |
+
+Nothing stops the same customer reviewing the same product more than once — enforce a one-review rule in the client if the store wants one.
 
 ## Use Cases
 
-- Allow customers to submit product reviews
-- Collect product feedback and ratings
-- Build social proof on product pages
-- Moderate reviews before publishing
-- Track customer satisfaction
+- **Review form on a product page** — post the four fields and show the returned `status` of `pending`, since the review will not appear in the default listing until it is approved.
+- **Show the customer their own submission** — the default product-review listing excludes pending rows, so read it back with `?status=pending` on [Get Product Reviews](/api/rest-api/shop/product-reviews/get-product-reviews).
 
-## Rules
+## Best Practices
 
-- Customer must be authenticated
-- One review per customer per product recommended
-- Reviews require approval before display
-- Minimum comment length: 10 characters
-- Rating must be 1-5 stars
+- **Tell the shopper the review is awaiting approval** — a `201` here does not mean the review is visible; it is stored as `pending`.
+- **Validate the rating before sending** — the server rejects anything outside 1–5, and a slider that allows 0 produces a `400` after the shopper has typed a review.
+- **Send `name` explicitly** — it is optional and is not filled in from the customer's profile, so a review submitted without it displays with an empty author.
+- **Check the store's review settings before rendering the form** — a store with reviews disabled answers `403` on every submission, so the form should not be shown at all.
 
 ## Related Resources
 
-- [Get Product Reviews](/api/rest-api/shop/product-reviews/get-product-reviews)
-- [Update Product Review](/api/rest-api/shop/product-reviews/update-product-review)
-- [Delete Product Review](/api/rest-api/shop/product-reviews/delete-product-review)
-- [Get Product](/api/rest-api/shop/products/get-product)
+- [Get Product Reviews](/api/rest-api/shop/product-reviews/get-product-reviews) — a product's reviews, approved only by default
+- [Update Product Review](/api/rest-api/shop/product-reviews/update-product-review) — edit the customer's own review
+- [Delete Product Review](/api/rest-api/shop/product-reviews/delete-product-review) — remove the customer's own review

@@ -99,4 +99,3 @@ Both the compound form `?sort=name-asc` and the split form `?sort=name&order=asc
 - Listing rows are **slim**: the detail-only nested data — `locales`, `currencies`, `inventorySources`, and `translations` — is not included here. Fetch a single channel with the detail endpoint to get it populated.
 - `code` and `hostname` match against the channel row; `name` matches against the channel's translation for the current locale.
 
-See the [Channels overview](./) for field meanings and behaviour.

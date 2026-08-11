@@ -44,7 +44,7 @@ npx skills add bagisto/agent-skills --skill "pest-testing"
 npx skills add bagisto/agent-skills
 ```
 
-Target a specific agent with `-a claude-code` or `-a cursor`.
+Target a specific agent with `-a <agent>` — `claude-code`, `codex`, or `antigravity`.
 
 ## The skills
 

@@ -12,14 +12,19 @@ examples:
 
       {}
     response: |
+      HTTP/1.1 201 Created
+
       {
-        "message": "All compare items removed successfully",
+        "message": "All compare items have been removed successfully",
         "deletedCount": 2
       }
     commonErrors:
-      - error: 401 Unauthorized
-        cause: Missing or invalid Bearer token
-        solution: Login and provide a valid customer authentication token
+      - error: 403 Forbidden
+        cause: No customer Bearer token was sent
+        solution: Log the customer in; guests hold no comparison list
+      - error: deletedCount of 0
+        cause: The comparison list was already empty
+        solution: This is a success, not a failure — the call is safe to repeat
 
 ---
 
@@ -49,24 +54,30 @@ No fields are required. Send an empty JSON object:
 {}
 ```
 
-## Response Fields (200 OK)
+## Response Fields (201 Created)
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `message` | string | Confirmation message |
-| `deletedCount` | integer | Number of compare items removed |
+| `message` | string | `All compare items have been removed successfully`. |
+| `deletedCount` | integer | How many rows were removed. `0` when the list was already empty. |
+
+## Behaviour
+
+- Clears only the authenticated customer's rows. The comparison list is not channel-scoped, so one call empties it everywhere.
+- Repeating the call is safe; the second one answers `201` with `deletedCount: 0`.
+- The message reads the same whether rows were removed or not — read `deletedCount` to know what happened.
 
 ## Use Cases
 
-- "Clear comparison" action on the compare page
-- Reset a customer's comparison list in one call
+- **"Clear comparison" button** — one call empties the table, and `deletedCount` tells the UI how many columns to drop without a re-fetch.
+- **Reset between comparison sessions** — clearing is cheaper than deleting each row when the shopper starts a new set.
 
-## Notes
+## Best Practices
 
-- Only the authenticated customer's items are removed.
-- Returns `deletedCount: 0` when the comparison list is already empty.
+- **Confirm in the UI first** — the call takes no ID and is irreversible.
+- **Read `deletedCount`, not `message`** — the message is identical on an empty list.
 
 ## Related Resources
 
-- [Get Compare Items](/api/rest-api/shop/compare/list)
-- [Delete Compare Item](/api/rest-api/shop/compare/delete)
+- [Get Compare Items](/api/rest-api/shop/compare/list) — the customer's comparison rows
+- [Delete Compare Item](/api/rest-api/shop/compare/delete) — remove one comparison row

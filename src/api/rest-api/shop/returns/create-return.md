@@ -53,10 +53,10 @@ examples:
       - error: 400 Bad Request
         cause: The item is outside its return window / already returned, the quantity is invalid, or agreement was not true
         solution: Query returnable-items first and send an eligible item, a valid quantity and agreement as true
-      - error: 401 Unauthorized
+      - error: 403 Forbidden
         cause: Missing or invalid customer Bearer token
         solution: Log in and provide a valid customer authentication token
-      - error: 403 Forbidden
+      - error: 401 Unauthorized
         cause: Storefront key is missing or invalid
         solution: Provide a valid X-STOREFRONT-KEY header
       - error: 404 Not Found
@@ -114,9 +114,7 @@ This endpoint requires an authenticated customer — send the storefront key and
 | `package_condition` | string | No | Reported package condition, e.g. `opened`. |
 | `agreement` | boolean | Yes | Must be `true` to confirm the return terms. |
 
-::: tip Image attachments
-Optional image files can be attached to the return by sending the request as `multipart/form-data` with an `images[]` field alongside the fields above.
-:::
+Images can be attached to the return by sending the request as `multipart/form-data` with an `images[]` field alongside the fields above, instead of a JSON body.
 
 ## Response Fields (201 Created)
 
@@ -145,13 +143,13 @@ Optional image files can be attached to the return by sending the request as `mu
 |--------|---------|
 | `201 Created` | Return raised; status is `Pending`. |
 | `400 Bad Request` | Item not eligible, invalid quantity, or `agreement` not `true`. |
-| `401 Unauthorized` | Missing or invalid customer Bearer token. |
-| `403 Forbidden` | Missing or invalid storefront key. |
+| `401 Unauthorized` | Missing or invalid storefront key. |
+| `403 Forbidden` | Missing or invalid customer Bearer token. |
 | `404 Not Found` | The order does not exist or is not the customer's. |
 
 ## Related Resources
 
-- [List Returnable Items](/api/rest-api/shop/returns/list-returnable-items)
-- [List Return Reasons](/api/rest-api/shop/returns/list-return-reasons)
-- [Cancel a Return](/api/rest-api/shop/returns/cancel-return)
-- [Returns Overview](/api/rest-api/shop/returns/)
+- [List Returnable Items](/api/rest-api/shop/returns/list-returnable-items) — which order items are still eligible, and for how many units
+- [List Return Reasons](/api/rest-api/shop/returns/list-return-reasons) — the reason ids to choose from
+- [Cancel a Return](/api/rest-api/shop/returns/cancel-return) — withdraw a return the customer raised
+- [Returns Overview](/api/rest-api/shop/returns/) — the returns menu overview, including the settings that gate it

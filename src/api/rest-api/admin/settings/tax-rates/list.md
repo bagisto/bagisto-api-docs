@@ -50,4 +50,4 @@ Each filter narrows the result; supplying more than one combines with logical **
 | `sort` | `id` (default), `identifier`, `tax_rate` |
 | `order` | `asc`, `desc` (default `desc`) |
 
-For how tax rates fit together with tax categories, see the [menu overview](./).
+For how tax rates fit together with tax categories, see [Tax Categories](/api/rest-api/admin/settings/tax-categories/list).

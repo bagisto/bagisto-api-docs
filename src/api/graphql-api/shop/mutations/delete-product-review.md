@@ -89,198 +89,102 @@ examples:
 
 ## About
 
-The `deleteProductReview` mutation allows deleting product reviews. Use this mutation to:
+The `deleteProductReview` mutation permanently removes a review. Use it to:
 
-- Remove inappropriate or spam reviews
-- Delete duplicate reviews
-- Remove reviews at customer request
-- Manage review inventory
-- Clean up test/demo reviews
-- Enforce moderation policies
-- Track deletion operations with audit trail
+- Let a shopper withdraw a review they submitted
+- Remove a review a shopper asked to have taken down
+- Clear reviews created while testing an integration
 
-This mutation requires the review ID in IRI format and is a permanent operation that cannot be undone.
+Deletion is immediate and cannot be undone — the row is removed rather than flagged, so the review disappears from every query at once.
+
+A review can only be deleted by the customer who wrote it. Send that customer's Bearer token — an unauthenticated request, a different customer's token, or a review submitted by a guest is refused.
 
 ## Arguments
 
 | Argument | Type | Required | Description |
 |----------|------|----------|-------------|
-| `id` | `ID!` | ✅ Yes | Review ID in IRI format (e.g., `/api/shop/reviews/93`). Required for identifying which review to delete. |
-| `clientMutationId` | `String` | ❌ No | Optional client mutation tracking ID for audit trail. |
-
-## Input Fields Details
-
-### id
-- **Type**: ID (IRI Format)
-- **Required**: Yes
-- **Format**: `/api/shop/reviews/{id}` or `/api/shop/reviews/{id}`
-- **Description**: Unique identifier for the review being deleted.
-- **Example**: `/api/shop/reviews/93`
-- **Note**: Only IRI format is supported; numeric IDs are not accepted.
-- **Important**: This operation is permanent and cannot be reversed.
-
-### clientMutationId
-- **Type**: String
-- **Required**: No
-- **Description**: Optional tracking ID for this deletion request. Useful for audit trails and request tracking.
-- **Example**: `"delete-review-mutation-001"`
-- **Usage**: Echoed back in response for request verification and logging.
+| `id` | `ID!` | ✅ Yes | Identifies the review. Accepts the IRI form (`/api/shop/reviews/93`) or a plain numeric ID. |
+| `clientMutationId` | `String` | ❌ No | Arbitrary string echoed back in the payload, useful for correlating a response with its request. |
 
 ## Possible Returns
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `productReview` | `ProductReview!` | The deleted product review object. |
-| `productReview.id` | `ID!` | ID of the deleted review (returned as confirmation). |
-| `clientMutationId` | `String` | Echoed client mutation ID for tracking and audit purposes. |
+| `productReview` | `ProductReview` | The review that was removed. Only `id` is populated — the record is already gone, so its other fields are not available to select meaningfully. |
+| `productReview.id` | `ID!` | IRI of the deleted review, returned as confirmation. |
+| `clientMutationId` | `String` | The `clientMutationId` sent with the request, echoed back. |
 
-## ID Format Requirements
+A successful delete looks like this:
 
-### Valid ID Format (IRI)
+```json
+{
+  "data": {
+    "deleteProductReview": {
+      "productReview": {
+        "id": "/api/shop/reviews/76"
+      },
+      "clientMutationId": "review-cleanup-76"
+    }
+  }
+}
 ```
-/api/shop/reviews/93
-/api/shop/reviews/60
-/api/shop/reviews/100
-```
-
-### Invalid Formats (Not Supported)
-```
-93                    ❌ Numeric ID only
-reviews/93            ❌ Partial path
-/reviews/93           ❌ Incorrect path
-```
-
-## Important Notes
-
-### Permanent Operation
-- Deletion is **permanent and irreversible**
-- No data recovery possible after deletion
-- Consider archiving instead of deleting for sensitive data
-- Always confirm before deletion in UI
-
-### Before Deletion
-- Verify the correct review ID
-- Consider user notification requirements
-- Check for related data dependencies
-- Log deletion reason for audit trail
-
-### After Deletion
-- Review cannot be queried by ID
-- Related product review counts update
-- Customer notification (if applicable)
-- Audit log should record deletion
 
 ## Use Cases
 
-### 1. Remove Spam Review
-Delete reviews that are spam or off-topic.
+### 1. Withdrawing a shopper's own review
 
-### 2. Delete Duplicate Reviews
-Remove duplicate reviews from same user.
+Read the review ID back from the list the shopper is looking at, then delete it and drop the row from the rendered list on success.
 
-### 3. User Requested Deletion
-Delete reviews at customer's explicit request.
+```graphql
+mutation removeReview($input: deleteProductReviewInput!) {
+  deleteProductReview(input: $input) {
+    productReview {
+      id
+    }
+    clientMutationId
+  }
+}
+```
 
-### 4. Violation of Policies
-Remove reviews that violate community guidelines.
+```json
+{
+  "input": {
+    "id": "/api/shop/reviews/76",
+    "clientMutationId": "review-cleanup-76"
+  }
+}
+```
 
-### 5. Test/Demo Data Cleanup
-Delete temporary reviews used for testing.
+### 2. Cleaning up integration test data
 
-### 6. Data Correction
-Remove incorrectly published reviews.
+A review created while testing stays in the catalog and counts toward a product's review total. Delete it with the `_id` returned by the create mutation.
+
+### 3. Confirming the review is gone
+
+Re-run [Get Product Reviews](/api/graphql-api/shop/queries/get-product-reviews) for the same `product_id`. The deleted review is absent and `totalCount` has dropped by one.
 
 ## Best Practices
 
-1. **Confirm Before Delete** - Always confirm deletion in UI before submitting
-2. **Log Deletions** - Use clientMutationId to track deletion operations
-3. **Archive First** - Consider archiving sensitive reviews instead of deleting
-4. **Audit Trail** - Maintain records of who deleted what and when
-5. **User Notification** - Notify customers if their review is deleted
-6. **Batch Operations** - For multiple deletions, execute sequentially with tracking
-7. **Verify ID** - Double-check IRI format ID before submission
-8. **Access Control** - Restrict deletion to authorized users only
-
-## Deletion Workflow
-
-```
-1. Fetch review details (verify correct review)
-2. Show confirmation dialog to user
-3. If confirmed:
-   a. Submit deleteProductReview mutation
-   b. Track with clientMutationId
-   c. Handle success response
-   d. Update UI (remove from list)
-   e. Log deletion in audit trail
-4. If cancelled:
-   a. Keep review in system
-   b. No action needed
-```
+1. **Prefer an admin status change to a deletion** — marking a review disapproved hides it from the storefront while keeping the record; deleting destroys it with no way back
+2. **Confirm with the shopper first** — there is no soft delete and no recovery path short of a database restore
+3. **Only offer the action on the shopper's own reviews** — the API refuses a review written by anyone else, and a guest review can never be removed through the storefront
+4. **Delete by the ID you were handed** — take it from the review list or the create response rather than assembling the IRI by hand
+5. **Treat a repeat delete as already-done** — a second call for the same ID fails because the review no longer exists, which is a successful outcome from the shopper's point of view
+6. **Refresh the product's review counts afterwards** — `totalCount` and any cached rating breakdown are stale the moment a review is removed
 
 ## Error Scenarios
 
-### Missing ID
-When `id` is not provided, mutation fails with validation error.
+| Scenario | Cause |
+|----------|-------|
+| Missing ID | The `id` field was omitted from `input`. GraphQL rejects the document before the mutation runs. |
+| Review not found | The ID resolves to a review that does not exist, including one already deleted. |
+| Not signed in | No customer Bearer token was sent, so ownership cannot be established. |
+| Not your review | The review belongs to another customer, or was submitted by a guest and has no owner. |
 
-### Invalid ID Format
-When ID is provided in numeric format instead of IRI format.
+## Related Resources
 
-### Review Not Found
-When provided ID doesn't correspond to existing review (already deleted or invalid).
-
-### Unauthorized Access
-When user lacks permissions to delete the review.
-
-### Database Constraint
-When review deletion fails due to database constraints or triggers.
-
-## Related Operations
-
-**Before Deleting:**
-- [Get Product Review](/api/graphql-api/shop/queries/get-product-review) - Fetch review details
-- [Get Product Reviews](/api/graphql-api/shop/queries/get-product-reviews) - View all reviews
-
-**Review Management:**
-- [Create Product Review](/api/graphql-api/shop/mutations/create-product-review) - Create new reviews
-- [Update Product Review](/api/graphql-api/shop/mutations/update-product-review) - Modify existing reviews
-
-**Related Resources:**
+- [Get Product Reviews](/api/graphql-api/shop/queries/get-product-reviews) - Query product reviews
+- [Create Product Review](/api/graphql-api/shop/mutations/create-product-review) - Submit a new review
+- [Update Product Review](/api/graphql-api/shop/mutations/update-product-review) - Edit an existing review
 - [Get Product](/api/graphql-api/shop/queries/get-product) - Query product details
-- [Mutations Guide](/api/graphql-api/shop/mutations) - Overview of shop mutations
 - [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources
-
-## Audit Trail Example
-
-```
-Event: Product Review Deleted
-Review ID: /api/shop/reviews/93
-Mutation ID: delete-review-mutation-001
-User: admin@example.com
-Timestamp: 2025-12-26T20:15:30+05:30
-Reason: Spam content
-Status: Success
-```
-
-## Recovery Options
-
-Since deletion is permanent:
-- **Database Backup**: Restore from database backup (if available)
-- **Archive Strategy**: Use status=2 (rejected) instead of deletion for soft-delete
-- **Soft Delete**: Flag review as deleted without removing data
-- **Audit Log**: Maintain detailed deletion logs for compliance
-
-## Safety Checklist
-
-Before executing delete mutation:
-- ✅ Verified correct review ID in IRI format
-- ✅ Confirmed review content requires deletion
-- ✅ User authorization verified
-- ✅ Reason for deletion documented
-- ✅ Audit trail prepared
-- ✅ User notification plan confirmed
-- ✅ Backup verified (if needed)
-- ✅ No critical data dependencies
-
----
-
-**⚠️ Warning**: This operation is irreversible. Always verify the review ID and ensure proper authorization before executing deletion.

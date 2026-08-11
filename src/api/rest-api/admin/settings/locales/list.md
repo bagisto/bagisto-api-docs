@@ -113,4 +113,3 @@ Both the compound form `?sort=name-asc` and the split form `?sort=name&order=asc
 - `logoPath` is the stored relative path; `logoUrl` is its fully-qualified public URL. Both are `null` for locales without a logo.
 - Seeded core locales (such as English) may have `null` `createdAt` / `updatedAt`.
 
-See the [Locales overview](./) for field meanings and behaviour.

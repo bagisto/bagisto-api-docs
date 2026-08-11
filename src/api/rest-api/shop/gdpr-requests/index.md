@@ -16,7 +16,10 @@ Every GDPR endpoint first checks whether GDPR data requests are switched on in t
 
 ```json
 {
-  "message": "GDPR data requests are disabled. Please enable GDPR from the admin configuration."
+  "type": "/errors/400",
+  "title": "Bad Request",
+  "status": 400,
+  "detail": "GDPR data requests are disabled. Please enable GDPR from the admin configuration."
 }
 ```
 

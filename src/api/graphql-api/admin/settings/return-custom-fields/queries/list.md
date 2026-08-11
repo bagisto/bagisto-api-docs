@@ -235,4 +235,4 @@ Each filter narrows the result; supplying more than one combines with logical **
 | `sort` | `String` | `id` (default), `position`, `code` |
 | `order` | `String` | `asc`, `desc` (default `desc`) |
 
-Select `_id` for the numeric id. For field meanings, see the [menu overview](./).
+Select `_id` for the numeric id. For field meanings, see the [menu overview](../).

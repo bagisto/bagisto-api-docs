@@ -3,104 +3,101 @@ outline: false
 examples:
   - id: get-payment-methods
     title: Get Available Payment Methods
-    description: Retrieve available payment methods for checkout.
+    description: List the payment methods the store offers for the current cart. Requires the cart token; the list is empty until a checkout address and shipping method are saved.
     request: |
-      GET /api/shop/checkout-payment-methods
-      Content-Type: application/json
-      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      curl -X GET "http://localhost/api/shop/payment-methods" \
+        -H "Accept: application/json" \
+        -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" \
+        -H "Authorization: Bearer 62f2b3f5-a455-4c78-93ba-eabca63d32ec"
     response: |
-      {
-        "data": [
-          {
-            "id": 1,
-            "code": "card",
-            "name": "Credit/Debit Card",
-            "description": "Pay with credit or debit card",
-            "isActive": true,
-            "instructions": ""
-          },
-          {
-            "id": 2,
-            "code": "paypal",
-            "name": "PayPal",
-            "description": "Pay securely with PayPal",
-            "isActive": true,
-            "instructions": "You will be redirected to PayPal"
-          },
-          {
-            "id": 3,
-            "code": "bank_transfer",
-            "name": "Bank Transfer",
-            "description": "Direct bank transfer",
-            "isActive": true,
-            "instructions": "Bank details will be provided after order"
-          }
-        ]
-      }
+      HTTP/1.1 200 OK
+
+      [
+        {
+          "id": "stripe",
+          "method": "stripe",
+          "title": "Stripe",
+          "description": "Stripe",
+          "icon": "http://localhost/themes/shop/default/build/assets/stripe-WsnmAxt1.png",
+          "additionalData": null,
+          "isAllowed": true
+        },
+        {
+          "id": "cashondelivery",
+          "method": "cashondelivery",
+          "title": "Cash On Delivery",
+          "description": "Cash On Delivery",
+          "icon": "http://localhost/themes/shop/default/build/assets/cash-on-delivery-DUCmTQ0R.png",
+          "additionalData": null,
+          "isAllowed": true
+        }
+      ]
     commonErrors:
       - error: 401 Unauthorized
-        cause: Invalid X-STOREFRONT-KEY
-        solution: Provide valid storefront API key
+        cause: Missing or invalid `X-STOREFRONT-KEY`
+        solution: Send a valid storefront API key.
+      - error: 404 Not Found
+        cause: No cart resolves from the supplied token
+        solution: Create a cart and add an item before reading payment methods.
 
 ---
 
 # Get Payment Methods
 
-Retrieve available payment methods for checkout.
+List the payment methods available for the current cart.
 
 ## Endpoint
 
 ```
-GET /api/shop/checkout-payment-methods
+GET /api/shop/payment-methods
 ```
+
+The path is `/payment-methods`. `/api/shop/checkout-payment-methods` accepts **POST only** — that is [Set Payment Method](/api/rest-api/shop/checkout/set-payment-method), not the read.
 
 ## Request Headers
 
 | Header | Required | Description |
 |--------|----------|-------------|
-| `Content-Type` | Yes | application/json |
+| `Accept` | Yes | `application/json` |
 | `X-STOREFRONT-KEY` | Yes | Your storefront API key |
+| `Authorization` | Yes | `Bearer <cartToken>` for a guest, or the customer's Bearer token when signed in |
 
-## Response Fields (200 OK)
+## Response Fields
+
+The response is a bare array of methods.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | integer | Payment method ID |
-| `code` | string | Payment method code |
-| `name` | string | Display name |
-| `description` | string | Method description |
-| `isActive` | boolean | Method active status |
-| `instructions` | string | Payment instructions or notes |
-| `icon` | string | Method icon URL |
-| `additionalData` | object | Additional configuration (if any) |
+| `id` | string | Method identifier, the same value as `method`. |
+| `method` | string | Method code — send this to [Set Payment Method](/api/rest-api/shop/checkout/set-payment-method). |
+| `title` | string | Display name configured by the merchant. |
+| `description` | string | Description shown alongside the option. |
+| `icon` | string | Absolute URL of the method's icon. |
+| `additionalData` | object | Extra configuration a gateway supplies, or `null`. |
+| `isAllowed` | boolean | Whether the method may be selected for this cart. |
+
+## Order of the checkout steps
+
+Payment methods depend on the steps before them. Calling this before they are complete returns an empty array rather than an error:
+
+1. Save the checkout address with [Set Checkout Address](/api/rest-api/shop/checkout/set-billing-address).
+2. Select a rate with [Set Shipping Method](/api/rest-api/shop/checkout/set-shipping-method).
+3. Read this list and let the shopper choose.
 
 ## Use Cases
 
-- Display payment options during checkout
-- Allow customer to select payment method
-- Show payment instructions
-- Validate payment method availability
-- Implement payment gateway integration
+- **Render the payment step** — one call gives the title, icon, and code for every option.
+- **Filter what is selectable** — hide or disable any method whose `isAllowed` is `false` rather than letting the shopper pick it and fail at order placement.
 
-## Common Payment Methods
+## Best Practices
 
-- Credit/Debit Card (Stripe, Square, etc.)
-- PayPal
-- Bank Transfer
-- Cash on Delivery
-- Wallet/Gift Card
-- Buy Now Pay Later (Klarna, Afterpay)
-
-## Notes
-
-- **Requires address + shipping method first.** Payment methods become available only after a checkout address is saved and a shipping method is selected. Before that, this returns an **empty list** (`[]`) — not an error. Complete [Set Checkout Address](/api/rest-api/shop/checkout/set-shipping-address) → [Set Shipping Method](/api/rest-api/shop/checkout/set-shipping-method) first.
-- Methods availability depends on store configuration
-- Some methods may have requirements or restrictions
-- Instructions help guide customer through payment
-- Payment processing happens after order placement
+1. **Send `method`, not `title`, when selecting** — the code is the identifier the set endpoint expects
+2. **Treat an empty array as "steps outstanding"** — it means no address or no shipping method yet, not that the store accepts no payments
+3. **Re-read after changing the address** — availability can differ by country, so a shipping-address change can add or remove methods
+4. **Check `isAllowed` before rendering** — a method can be listed but blocked for this particular cart
 
 ## Related Resources
 
-- [Set Payment Method](/api/rest-api/shop/checkout/set-payment-method)
-- [Get Shipping Methods](/api/rest-api/shop/checkout/get-shipping-methods)
-- [Place Order](/api/rest-api/shop/checkout/place-order)
+- [Set Payment Method](/api/rest-api/shop/checkout/set-payment-method) — save the chosen payment method on the cart
+- [Get Shipping Methods](/api/rest-api/shop/checkout/get-shipping-methods) — the rates available for the saved address
+- [Place Order](/api/rest-api/shop/checkout/place-order) — turn the prepared cart into an order

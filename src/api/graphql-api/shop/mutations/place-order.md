@@ -100,54 +100,44 @@ This mutation has two success shapes — branch on `redirect`:
 
 On a genuine failure (empty cart, missing address/shipping/payment, suspended account, minimum-order not met) the mutation returns `errors[]` with the exact reason and `checkoutOrder` is `null`.
 
-## Prerequisites
+## Before the order can be placed
 
-All of these must be completed before placing an order:
-1. ✅ Cart must contain items
-2. ✅ Shipping address must be set
-3. ✅ Billing address must be set
-4. ✅ Shipping method must be selected
-5. ✅ Payment method must be selected
-6. ✅ Valid coupon (if applicable)
+Every step of the checkout must be complete. The mutation fails with `errors[]` and a `null` payload when any of them is outstanding:
 
-## Validation Rules
+| Requirement | Satisfied by |
+|-------------|--------------|
+| The cart holds at least one item | [Add to Cart](/api/graphql-api/shop/mutations/add-to-cart) |
+| A billing address is set | [Set Checkout Address](/api/graphql-api/shop/mutations/set-billing-address) |
+| A shipping address is set, for a cart with shippable items | [Set Checkout Address](/api/graphql-api/shop/mutations/set-billing-address) |
+| A shipping method is selected | [Set Shipping Method](/api/graphql-api/shop/mutations/set-shipping-method) |
+| A payment method is selected | [Set Payment Method](/api/graphql-api/shop/mutations/set-payment-method) |
 
-- Cart must have at least one item
-- All checkout steps must be completed
-- Billing and shipping addresses are required
-- Shipping and payment methods must be selected
-- Stock must be available for all items
-- Inventory must not be exceeded
+Stock is re-checked at this point as well, so an item that sold out while the shopper was in checkout fails the call even though every step was completed.
 
-## Error Responses
+A coupon is not a prerequisite. An invalid or expired one blocks the order, but placing an order without any coupon is the normal case.
 
-```json
-{
-  "errors": {
-    "checkout": ["Unable to complete checkout. Please verify all required fields."],
-    "inventory": ["Insufficient stock for one or more items."],
-    "payment": ["Payment processing failed."]
-  }
-}
-```
+## Order status after placing
 
-## Order Status Values
+A newly placed order is `pending`, or `pending_payment` while a redirect gateway completes. It then moves through the store's own workflow:
 
-| Status | Description |
-|--------|-------------|
-| `pending` | Order created, awaiting payment |
-| `processing` | Payment confirmed, preparing shipment |
-| `shipped` | Order has been shipped |
-| `delivered` | Order delivered |
-| `cancelled` | Order cancelled |
-| `refunded` | Order refunded |
+| Status | Meaning |
+|--------|---------|
+| `pending` | Order created and awaiting processing. |
+| `pending_payment` | Awaiting payment confirmation from the gateway. |
+| `processing` | Payment confirmed and the order is being prepared. |
+| `completed` | Fully invoiced and shipped. |
+| `canceled` | Canceled before fulfilment. |
+| `closed` | Closed after a refund. |
+| `fraud` | Flagged by the store as fraudulent. |
 
-## After Order Placement
+## What happens on success
 
-1. Cart is cleared
-2. Order confirmation email is sent
-3. Inventory is updated
-4. Customer can track order using order ID
+- The cart is emptied and its token stops resolving.
+- The order confirmation email is sent to the shopper.
+- Stock is decremented for every ordered item.
+- The shopper can track the order through [Get Customer Orders](/api/graphql-api/shop/queries/get-customer-orders).
+
+On a redirect payment none of this happens yet — the cart survives until the gateway returns and the order is actually created.
 
 ## Related Documentation
 

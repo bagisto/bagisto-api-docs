@@ -101,7 +101,7 @@ examples:
 
 Retrieve the address associated with the current checkout session.
 
-> **Note:** This query does **not** return all saved addresses for a customer. It returns only the address applied to the active checkout — either the address entered during guest checkout or the address the authenticated customer has selected for the current order. To fetch all saved customer addresses, use the [Get Customer Addresses](/api/graphql-api/shop/queries/get-customer-addresses) query instead.
+This query returns only the address applied to the **active checkout** — the one entered during guest checkout, or the one the signed-in customer selected for this order. It is not the customer's address book; read that with [Get Customer Addresses](/api/graphql-api/shop/queries/get-customer-addresses).
 
 ## Authentication
 

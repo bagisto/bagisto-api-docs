@@ -55,7 +55,7 @@ examples:
 
   - id: update-product-review-status
     title: Update Product Review - Change Status
-    description: Update product review status (pending, approved, or rejected).
+    description: Update product review status (pending, approved, or disapproved).
     query: |
       mutation updateProductReview($input: updateProductReviewInput!) {
         updateProductReview(input: $input) {
@@ -105,7 +105,7 @@ examples:
         solution: Verify the review ID is correct
       - error: invalid-status
         cause: Status value is not valid
-        solution: Use status 0 (pending), 1 (approved), or 2 (rejected)
+        solution: Use status pending, approved, or disapproved
 
   - id: update-product-review-complete
     title: Update Product Review - Complete Details
@@ -173,7 +173,7 @@ examples:
         solution: Use rating between 1 and 5
       - error: invalid-status
         cause: Status value is not valid
-        solution: Use status 0 (pending), 1 (approved), or 2 (rejected)
+        solution: Use status pending, approved, or disapproved
 
 ---
 
@@ -181,198 +181,134 @@ examples:
 
 ## About
 
-The `updateProductReview` mutation allows updating existing product reviews. Use this mutation to:
+The `updateProductReview` mutation edits an existing review in place. Use it to:
 
-- Update review title and comment
-- Change review rating
-- Modify reviewer information
-- Update review status (pending, approved, rejected)
-- Correct review mistakes
-- Approve or reject pending reviews
-- Track review updates with client mutation ID
+- Correct the title or comment of a review a shopper has already submitted
+- Change the rating when the shopper reassesses the product
+- Fix the reviewer name shown on the review
+- Attach further images or video to an existing review
 
-This mutation requires the review ID in IRI format and returns the updated review with current timestamps.
+Every field except the review's `id` is optional, and omitted fields keep their current value. The mutation returns the review as it stands after the update.
+
+A review can only be edited by the customer who wrote it. Send that customer's Bearer token — an unauthenticated request, a different customer's token, or a review submitted by a guest is refused.
 
 ## Arguments
 
 | Argument | Type | Required | Description |
 |----------|------|----------|-------------|
-| `id` | `ID!` | ✅ Yes | Review ID in IRI format (e.g., `/api/shop/reviews/1`). Required for identifying which review to update. |
-| `productId` | `Int` | ❌ No | The ID of the product being reviewed. |
-| `title` | `String` | ❌ No | Review title/headline. |
-| `comment` | `String` | ❌ No | Review comment/text. |
-| `rating` | `Int` | ❌ No | Star rating (1-5). |
-| `name` | `String` | ❌ No | Reviewer's name. |
-| `status` | `Int` | ❌ No | Review status (0 = pending, 1 = approved, 2 = rejected). |
-| `clientMutationId` | `String` | ❌ No | Optional client mutation tracking ID. |
+| `id` | `ID!` | ✅ Yes | Identifies the review. Accepts the IRI form (`/api/shop/reviews/1`) or a plain numeric ID. |
+| `productId` | `Int` | ❌ No | Moves the review to a different product. The product must exist. Rarely useful — omit it on a normal edit. |
+| `title` | `String` | ❌ No | New review headline. |
+| `comment` | `String` | ❌ No | New review body text. |
+| `rating` | `Int` | ❌ No | New star rating. Must be 1 to 5. |
+| `name` | `String` | ❌ No | New reviewer display name. |
+| `email` | `String` | ❌ No | Accepted by the schema but not stored on the review. |
+| `status` | `Int` | ❌ No | Leave unset — see [Review Status](#review-status). |
+| `clientMutationId` | `String` | ❌ No | Arbitrary string echoed back in the payload. |
 
-## Input Fields Details
-
-### id
-- **Type**: ID (IRI Format)
-- **Required**: Yes
-- **Format**: `/api/shop/reviews/{id}` or `/api/shop/reviews/{id}`
-- **Description**: Unique identifier for the review being updated.
-- **Example**: `/api/shop/reviews/1`
-- **Note**: Only IRI format is supported for review updates; numeric IDs are not accepted.
-
-### productId
-- **Type**: Integer
-- **Required**: No
-- **Description**: The product ID associated with this review.
-- **Example**: `357`
-- **Note**: Typically not changed during review update.
-
-### title
-- **Type**: String
-- **Required**: No
-- **Description**: Review headline. Leave empty to keep current value.
-- **Example**: `"Excellent quality and very stylish"`
-
-### comment
-- **Type**: String
-- **Required**: No
-- **Description**: Full review text with detailed feedback. Leave empty to keep current value.
-- **Example**: `"Very impressed with the product..."`
-
-### rating
-- **Type**: Integer (1-5)
-- **Required**: No
-- **Description**: Star rating. Leave empty to keep current value.
-- **Valid Values**: 1, 2, 3, 4, 5
-
-### name
-- **Type**: String
-- **Required**: No
-- **Description**: Reviewer's name as displayed on review.
-- **Example**: `"John Doe"`
-
-### status
-- **Type**: Integer
-- **Required**: No
-- **Valid Values**:
-  - `0` - Pending approval
-  - `1` - Approved and visible
-  - `2` - Rejected/hidden
-- **Description**: Current review status.
-- **Example**: `1`
-
-### clientMutationId
-- **Type**: String
-- **Required**: No
-- **Description**: Optional tracking ID for this mutation request.
-- **Example**: `"demo-review-update-001"`
+Only the fields you send are written. Sending `title` alone changes the title and leaves the rating, comment, and name untouched.
 
 ## Possible Returns
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `productReview` | `ProductReview!` | The updated product review object. |
-| `productReview.id` | `ID!` | Unique review API identifier. |
-| `productReview._id` | `Int!` | Numeric review ID. |
-| `productReview.name` | `String!` | Reviewer's name. |
-| `productReview.title` | `String!` | Review title. |
-| `productReview.rating` | `Int!` | Star rating (1-5). |
-| `productReview.comment` | `String!` | Review text. |
-| `productReview.status` | `Int!` | Review status. |
-| `clientMutationId` | `String` | Echoed client mutation ID for tracking. |
+| `productReview` | `updateProductReviewPayloadData` | The review after the update. |
+| `productReview.id` | `ID!` | IRI-style review identifier. |
+| `productReview._id` | `Int` | Numeric review ID. |
+| `productReview.name` | `String` | Reviewer's name. |
+| `productReview.title` | `String` | Review title. |
+| `productReview.rating` | `Int` | Star rating, 1 to 5. |
+| `productReview.comment` | `String` | Review body text. |
+| `productReview.status` | `String` | Approval status — `"pending"`, `"approved"`, or `"disapproved"`. |
+| `productReview.attachments` | `String` | JSON string of the stored attachments, each with a `type` and a `url`. |
+| `productReview.createdAt` | `String` | ISO 8601 timestamp of when the review was submitted. |
+| `productReview.updatedAt` | `String` | ISO 8601 timestamp of this update. |
+| `clientMutationId` | `String` | The `clientMutationId` sent with the request, echoed back. |
 
 ## Review Status
 
-| Status | Description | Usage |
-|--------|-------------|-------|
-| `0` | Pending | Awaiting admin approval before display |
-| `1` | Approved | Published on product page |
-| `2` | Rejected | Hidden from public view |
+A review's status is one of three strings:
 
-## ID Format Requirements
+| Status | Description |
+|--------|-------------|
+| `"pending"` | Awaiting moderation. Not shown on the storefront. |
+| `"approved"` | Published and visible on the product page. |
+| `"disapproved"` | Declined and never published. |
 
-### Valid ID Format (IRI)
-```
-/api/shop/reviews/1
-/api/shop/reviews/92
-```
+The `status` input takes an integer and is written to the review unchanged, so it cannot produce any of those three values — a review updated with `status: 1` ends up holding `1`, which no status filter matches and no storefront page displays. Approving or declining a review is an admin action; leave this field unset.
 
-### Invalid Formats (Not Supported)
-```
-93                    ❌ Numeric ID only
-reviews/93            ❌ Partial path
-/reviews/93           ❌ Incorrect path
-```
+## Identifying the Review
 
-## Update Behavior
+The `id` argument accepts either form — the trailing number is what identifies the review:
 
-- **Partial Updates**: You can update only specific fields; omitted fields keep their current values
-- **Required ID**: The review ID must always be provided in IRI format
-- **Status Changes**: Can change review status from any state to any other state
+| Value | Result |
+|-------|--------|
+| `"/api/shop/reviews/92"` | Resolves to review 92 |
+| `"92"` | Resolves to review 92 |
+| `"reviews/92"` | Resolves to review 92 |
+| `"abc"` | Resolves to review 0, which does not exist, so the mutation fails |
+
+Prefer the IRI form: it is what the query and create responses hand back, so it round-trips without conversion.
 
 ## Use Cases
 
-### 1. Approve Pending Review
-Use the "Change Status" example to approve a pending review for display on product page.
+### 1. Letting a shopper edit their own review
 
-### 2. Correct Review Mistake
-Use the "Basic" example to fix typos or clarifications in review text.
+Send only the fields the edit form changed. Everything else on the review is left as it was.
 
-### 3. Update Review Rating
-Update the rating if customer changed their assessment after further use.
+```graphql
+mutation editReview($input: updateProductReviewInput!) {
+  updateProductReview(input: $input) {
+    productReview {
+      _id
+      title
+      comment
+      rating
+      status
+      updatedAt
+    }
+  }
+}
+```
 
-### 4. Reject Inappropriate Review
-Change status to 2 (rejected) to hide inappropriate content.
+```json
+{
+  "input": {
+    "id": "/api/shop/reviews/74",
+    "comment": "Updated after a month of use — the fabric still looks new.",
+    "rating": 4
+  }
+}
+```
 
-### 5. Complete Admin Review Update
-Use the "Complete" example for comprehensive review updates by admin staff.
+### 2. Re-checking the review after an edit
+
+The response carries the review's current `status`. An approved review that is edited keeps whatever status it held, so read the field back rather than assuming the edit sent it for re-moderation.
 
 ## Best Practices
 
-1. **Always Use IRI Format** - Always provide review ID in IRI format (`/api/shop/reviews/{id}`)
-2. **Validate Before Update** - Fetch current review data before making changes
-3. **Track Changes** - Use clientMutationId for audit trail and tracking
-4. **Partial Updates** - Update only necessary fields to preserve existing data
-5. **Status Management** - Only approve genuine, quality reviews
-6. **Audit Trail** - Log who made changes and when using timestamps
-7. **Moderation** - Review text for appropriate content before approval
-8. **Notify Users** - Consider notifying customers when review status changes
-
-## Common Update Scenarios
-
-### Approve Review from Pending
-Set `status: 1` to make pending review visible to customers.
-
-### Reject Inappropriate Review
-Set `status: 2` to hide review with offensive content.
-
-### Update Customer Feedback
-Modify `comment` field if customer requests clarification or updates.
-
-### Correct Reviewer Name
-Update `name` field if incorrect information was initially submitted.
-
-### Change Rating
-Modify `rating` if customer reassesses product after extended use.
+1. **Send only the fields being changed** — omitted fields keep their stored value, so a partial input is the normal case rather than an optimisation
+2. **Use the IRI form of `id`** — a numeric ID also resolves, but the IRI is what the query and create responses return, so it round-trips without conversion
+3. **Never send `status`** — the field takes an integer that cannot map to `pending`, `approved`, or `disapproved`, and writing it leaves the review in a state no query matches
+4. **Leave `productId` out** — it exists to move a review to a different product, which is not something an edit form should do by accident
+5. **Attach media at creation time** — this mutation takes no `attachments` field, so images and video can only be sent with [Create Product Review](/api/graphql-api/shop/mutations/create-product-review)
+6. **Read `updatedAt` back** — it confirms the write landed, since a partial update that changed nothing returns the same values it was sent
 
 ## Error Scenarios
 
-### Missing ID
-When `id` is not provided, mutation fails with validation error.
-
-### Invalid ID Format
-When ID is provided in numeric format instead of IRI format.
-
-### Review Not Found
-When provided ID doesn't correspond to existing review.
-
-### Invalid Status Value
-When status is outside the valid range (0, 1, 2).
-
-### Invalid Rating Value
-When rating is outside the valid range (1-5).
+| Scenario | Cause |
+|----------|-------|
+| Missing ID | The `id` field was omitted from `input`. GraphQL rejects the document before the mutation runs. |
+| Review not found | The ID resolves to a review that does not exist. |
+| Not signed in | No customer Bearer token was sent, so ownership cannot be established. |
+| Not your review | The review belongs to another customer, or was submitted by a guest and has no owner. |
+| Rating out of range | `rating` was sent below 1 or above 5. |
+| Product not found | `productId` was sent and no product has that ID. |
+| Invalid attachment | A data URI is malformed, its Base64 will not decode, or a decoded file exceeds 5 MB. |
 
 ## Related Resources
 
 - [Create Product Review](/api/graphql-api/shop/mutations/create-product-review) - Create new product reviews
 - [Get Product Reviews](/api/graphql-api/shop/queries/get-product-reviews) - Query product reviews
-- [Get Product Review](/api/graphql-api/shop/queries/get-product-review) - Query single review details
 - [Get Product](/api/graphql-api/shop/queries/get-product) - Query product details
-- [Mutations Guide](/api/graphql-api/shop/mutations) - Overview of shop mutations
 - [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources

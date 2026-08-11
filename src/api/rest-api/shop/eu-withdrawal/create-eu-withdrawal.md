@@ -37,10 +37,10 @@ examples:
       - error: 400 Bad Request
         cause: order_id is missing
         solution: Provide the numeric ID of one of your own orders
-      - error: 401 Unauthorized
+      - error: 403 Forbidden
         cause: Missing or invalid customer Bearer token
         solution: Log in and provide a valid customer authentication token
-      - error: 403 Forbidden
+      - error: 401 Unauthorized
         cause: Storefront key is missing or invalid
         solution: Provide a valid X-STOREFRONT-KEY header
       - error: 404 Not Found
@@ -115,12 +115,12 @@ This endpoint requires an authenticated customer — send the storefront key and
 |--------|---------|
 | `201 Created` | Declaration filed (or the existing one returned); status is `received`. |
 | `400 Bad Request` | `order_id` is missing. |
-| `401 Unauthorized` | Missing or invalid customer Bearer token. |
-| `403 Forbidden` | Missing or invalid storefront key. |
+| `401 Unauthorized` | Missing or invalid storefront key. |
+| `403 Forbidden` | Missing or invalid customer Bearer token. |
 | `404 Not Found` | The order is not the customer's, or the channel does not have EU withdrawal enabled. |
 
 ## Related Resources
 
-- [File a Guest Withdrawal](/api/rest-api/shop/eu-withdrawal/create-guest-eu-withdrawal)
-- [List EU Withdrawals](/api/rest-api/shop/eu-withdrawal/list-eu-withdrawals)
-- [EU Withdrawal Overview](/api/rest-api/shop/eu-withdrawal/)
+- [File a Guest Withdrawal](/api/rest-api/shop/eu-withdrawal/create-guest-eu-withdrawal) — file for a guest order using its number and email
+- [List EU Withdrawals](/api/rest-api/shop/eu-withdrawal/list-eu-withdrawals) — the customer's own declarations
+- [EU Withdrawal Overview](/api/rest-api/shop/eu-withdrawal/) — the withdrawal menu overview, including the setting that gates it

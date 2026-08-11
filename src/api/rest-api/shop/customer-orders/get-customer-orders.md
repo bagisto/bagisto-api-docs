@@ -2,77 +2,97 @@
 outline: false
 examples:
   - id: get-customer-orders
-    title: Get All Customer Orders
-    description: Retrieve all orders for the authenticated customer.
+    title: Get Customer Orders
+    description: Retrieve the authenticated customer's orders, newest first.
     request: |
       GET /api/shop/customer-orders
-      Content-Type: application/json
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
-      Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      Authorization: Bearer 12|Iy8NExampleCustomerAccessToken
     response: |
+      HTTP/1.1 200 OK
+
       [
         {
-          "id": 1,
-          "incrementId": "1",
+          "id": 384,
+          "incrementId": "383",
           "status": "pending",
           "channelName": "Default",
-          "isGuest": 0,
-          "customerEmail": "customer@example.com",
+          "customerEmail": "john.doe@example.com",
           "customerFirstName": "John",
           "customerLastName": "Doe",
           "shippingMethod": "flatrate_flatrate",
           "shippingTitle": "Flat Rate - Flat Rate",
           "couponCode": null,
-          "isGift": 0,
           "totalItemCount": 1,
-          "totalQtyOrdered": 2,
+          "totalQtyOrdered": 1,
+          "grandTotal": 65.99,
+          "baseGrandTotal": 65.99,
+          "subTotal": 55.99,
+          "baseSubTotal": 55.99,
+          "taxAmount": 0,
+          "shippingAmount": 10,
+          "discountAmount": 0,
           "baseCurrencyCode": "USD",
-          "channelCurrencyCode": "USD",
           "orderCurrencyCode": "USD",
-          "grandTotal": 150.00,
-          "baseGrandTotal": 150.00,
-          "grandTotalInvoiced": 150.00,
-          "grandTotalRefunded": 0.00,
-          "baseGrandTotalRefunded": 0.00,
-          "subTotal": 140.00,
-          "baseSubTotal": 140.00,
-          "taxAmount": 0.00,
-          "baseTaxAmount": 0.00,
-          "discountAmount": 0.00,
-          "baseDiscountAmount": 0.00,
-          "shippingAmount": 10.00,
-          "baseShippingAmount": 10.00,
-          "createdAt": "2025-01-15T10:30:00.000000Z",
-          "updatedAt": "2025-01-15T10:30:00.000000Z"
-        },
-        {
-          "id": 2,
-          "incrementId": "2",
-          "status": "completed",
-          "channelName": "Default",
-          "isGuest": 0,
-          "customerEmail": "customer@example.com",
-          "customerFirstName": "John",
-          "customerLastName": "Doe",
-          "grandTotal": 250.00,
-          "baseGrandTotal": 250.00,
-          "createdAt": "2025-01-16T14:00:00.000000Z",
-          "updatedAt": "2025-01-16T14:00:00.000000Z"
+          "createdAt": "2026-07-21T18:01:34+05:30",
+          "updatedAt": "2026-07-21T18:01:34+05:30"
         }
       ]
     commonErrors:
       - error: 401 Unauthorized
-        cause: Missing or invalid Bearer token
-        solution: Login and provide a valid customer authentication token
-      - error: 403 Forbidden
-        cause: Storefront key is missing or invalid
-        solution: Provide a valid X-STOREFRONT-KEY header
+        cause: The request carried no customer Bearer token, or the token has been revoked
+        solution: Log in and send the returned token as Authorization Bearer
+      - error: Empty array
+        cause: The customer has placed no orders, or the status filter matched nothing
+        solution: Drop the status filter, or check the value against the status list on this page
+
+  - id: get-customer-orders-status
+    title: Filter by Status
+    description: Return only the orders in one status. Status is the single filter this endpoint accepts.
+    request: |
+      GET /api/shop/customer-orders?status=processing
+      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
+      Authorization: Bearer 12|Iy8NExampleCustomerAccessToken
+    response: |
+      HTTP/1.1 200 OK
+
+      [
+        {
+          "id": 362,
+          "incrementId": "361",
+          "status": "processing",
+          "channelName": "Default",
+          "customerEmail": "john.doe@example.com",
+          "customerFirstName": "John",
+          "customerLastName": "Doe",
+          "shippingMethod": "free_free",
+          "shippingTitle": "Free Shipping - Free Shipping",
+          "couponCode": null,
+          "totalItemCount": 2,
+          "totalQtyOrdered": 3,
+          "grandTotal": 149.5,
+          "baseGrandTotal": 149.5,
+          "subTotal": 149.5,
+          "baseSubTotal": 149.5,
+          "taxAmount": 0,
+          "shippingAmount": 0,
+          "discountAmount": 0,
+          "baseCurrencyCode": "USD",
+          "orderCurrencyCode": "USD",
+          "createdAt": "2026-07-14T11:22:07+05:30",
+          "updatedAt": "2026-07-16T09:05:41+05:30"
+        }
+      ]
+    commonErrors:
+      - error: Empty array
+        cause: No order of the customer is in that status
+        solution: Query without the filter to see which statuses the customer's orders actually carry
 
 ---
 
 # Get Customer Orders
 
-Retrieve all orders belonging to the authenticated customer. This is a **read-only** API — customers can only view their own orders. Orders are automatically scoped to the authenticated customer and current channel.
+Return the order history of the authenticated customer.
 
 ## Endpoint
 
@@ -84,105 +104,71 @@ GET /api/shop/customer-orders
 
 | Header | Required | Description |
 |--------|----------|-------------|
-| `Content-Type` | Yes | application/json |
 | `X-STOREFRONT-KEY` | Yes | Your storefront API key |
-| `Authorization` | Yes | Bearer token (customer login required) |
-
-## Response Fields (200 OK)
-
-The response is a plain JSON array of order objects.
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | integer | Order ID |
-| `incrementId` | string | Human-readable order number |
-| `status` | string | Order status |
-| `channelName` | string | Channel the order was placed on |
-| `isGuest` | integer | Whether the order was placed as guest |
-| `customerEmail` | string | Customer email |
-| `customerFirstName` | string | Customer first name |
-| `customerLastName` | string | Customer last name |
-| `shippingMethod` | string | Shipping method code |
-| `shippingTitle` | string | Shipping method display name |
-| `couponCode` | string | Applied coupon code |
-| `isGift` | integer | Whether the order is a gift |
-| `totalItemCount` | integer | Number of distinct items |
-| `totalQtyOrdered` | integer | Total quantity ordered |
-| `baseCurrencyCode` | string | Base currency code |
-| `channelCurrencyCode` | string | Channel currency code |
-| `orderCurrencyCode` | string | Order currency code |
-| `grandTotal` | float | Grand total |
-| `baseGrandTotal` | float | Base grand total |
-| `grandTotalInvoiced` | float | Grand total invoiced |
-| `grandTotalRefunded` | float | Grand total refunded |
-| `baseGrandTotalRefunded` | float | Base grand total refunded |
-| `subTotal` | float | Sub total |
-| `baseSubTotal` | float | Base sub total |
-| `taxAmount` | float | Tax amount |
-| `baseTaxAmount` | float | Base tax amount |
-| `discountAmount` | float | Discount amount |
-| `baseDiscountAmount` | float | Base discount amount |
-| `shippingAmount` | float | Shipping amount |
-| `baseShippingAmount` | float | Base shipping amount |
-| `createdAt` | string | ISO 8601 creation timestamp |
-| `updatedAt` | string | ISO 8601 last update timestamp |
+| `Authorization` | Yes | Bearer token of the logged-in customer |
 
 ## Query Parameters
 
-| Parameter | Type | Default | Description |
-|---|---|---|---|
-| `status` | string | — | Filter by order status (values below). `GET /api/shop/customer-orders?status=completed` |
-| `page` | integer | `1` | Page number. |
-| `per_page` | integer | `10` | Items per page (max 50). |
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `status` | string | Return only orders in this status. Matched exactly against the stored value. |
 
-Over GraphQL, pass `status` as an argument: `customerOrders(status: "completed", first: 10) { … }`.
+Orders come back newest first, ten per response, and that page size is fixed — `page`, `per_page`, `limit`, and `sort` are accepted by the URL but have no effect on the result. Walk a longer history over GraphQL, where the same data is a cursor connection driven by `first` and `after`.
+
+## Response
+
+The response is a bare JSON array of orders. There is no wrapper object, no `data` key, and no pagination metadata block.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Order ID. Use it on [Get Order Details](/api/rest-api/shop/customer-orders/get-customer-order). |
+| `incrementId` | string | Human-facing order number shown to the customer. |
+| `status` | string | Current order status — see the list below. |
+| `channelName` | string | Sales channel the order was placed on. |
+| `customerEmail` | string | Email captured on the order. |
+| `customerFirstName` / `customerLastName` | string | Name captured on the order. |
+| `shippingMethod` | string | Method code, e.g. `flatrate_flatrate`. |
+| `shippingTitle` | string | Human-readable method label. |
+| `couponCode` | string | Coupon applied at checkout, `null` when none was used. |
+| `totalItemCount` | integer | Number of distinct line items. |
+| `totalQtyOrdered` | integer | Sum of the quantities across those lines. |
+| `grandTotal` / `baseGrandTotal` | decimal | Order total in the order currency and in the store's base currency. |
+| `subTotal` / `baseSubTotal` | decimal | Line-item total before tax, shipping, and discount. |
+| `taxAmount` | decimal | Tax charged. |
+| `shippingAmount` | decimal | Shipping charged. |
+| `discountAmount` | decimal | Discount applied. |
+| `orderCurrencyCode` / `baseCurrencyCode` | string | Currency the order was placed in, and the store's base currency. |
+| `createdAt` / `updatedAt` | string | ISO 8601 timestamps. |
+
+Amounts are raw numbers, not formatted strings — apply the currency symbol from `orderCurrencyCode` on the client.
 
 ## Order Status Values
 
-Use any of these as the `?status=` filter value, or read them off the `status` field:
-
-| Status | Description |
-|--------|-------------|
-| `pending` | Awaiting payment confirmation |
-| `processing` | Payment confirmed, order being processed |
-| `completed` | Order fulfilled and delivered |
-| `canceled` | Order canceled |
-| `closed` | Order closed |
-| `fraud` | Flagged as fraudulent |
-
-## Empty Collection
-
-When the customer has no orders, an empty array is returned:
-
-```json
-[]
-```
-
-## Error Responses
-
-**Unauthenticated (401):**
-```json
-{
-  "message": "Customer is not logged in."
-}
-```
+| Status | Meaning |
+|--------|---------|
+| `pending` | Placed, payment not yet confirmed. |
+| `pending_payment` | Awaiting an offline payment such as a bank transfer. |
+| `processing` | Payment confirmed, order being prepared. |
+| `completed` | Fully invoiced and shipped. |
+| `canceled` | Canceled before fulfilment. |
+| `closed` | Fully refunded. |
+| `fraud` | Flagged by the store as fraudulent. |
 
 ## Use Cases
 
-- Display order history in customer account dashboard
-- Show order list with status, totals, and dates
-- Track previous purchases
-- View recent orders
+- **Account order history** — call the endpoint with no parameters and render the array; the newest order is already first, so no client-side sort is needed.
+- **"Open orders" tab** — a status filter is one value only, so an open-orders view needs one call per status (`?status=pending`, `?status=processing`) merged on the client.
+- **Reorder shortcut** — `id` from a row addresses [Get Order Details](/api/rest-api/shop/customer-orders/get-customer-order), which carries the line items needed to rebuild a cart.
 
-## Notes
+## Best Practices
 
-- **Read-only API:** Only `GET` operations are available. Orders cannot be created, updated, or deleted through this API.
-- **Customer isolation:** Orders are automatically filtered by the authenticated customer. A customer can never see another customer's orders.
-- **Channel scoping:** Orders are filtered by the customer's channel for multi-tenant isolation.
-- **Response format:** The collection endpoint returns all matching orders as a flat JSON array.
+- **Read `incrementId`, not `id`, in the UI** — `id` is the internal row identifier and does not match the number on the customer's confirmation email.
+- **Expect exactly ten rows** — the endpoint neither paginates nor reports a total, so an account page needing the full history should use the GraphQL `customerOrders` connection.
+- **Compare `grandTotal` against `baseGrandTotal` before displaying** — they diverge whenever the order was placed in a non-base currency, and only `grandTotal` matches what the customer paid.
+- **Treat an empty array as "no orders", not an error** — a customer with no purchases and an unmatched status filter both return `200` with `[]`.
 
 ## Related Resources
 
-- [Get Single Customer Order](/api/rest-api/shop/customer-orders/get-customer-order)
-- [Place Order](/api/rest-api/shop/checkout/place-order)
-- [Get Customer Profile](/api/rest-api/shop/customers/get-customer-profile)
+- [Get Order Details](/api/rest-api/shop/customer-orders/get-customer-order) — one order with its lines, addresses, and payment
+- [Place Order](/api/rest-api/shop/checkout/place-order) — turn the prepared cart into an order
+- [Get Customer Profile](/api/rest-api/shop/customers/get-customer-profile) — read the authenticated customer's account details

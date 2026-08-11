@@ -5,43 +5,52 @@ examples:
     title: Get Available Shipping Methods
     description: Retrieve available shipping methods for checkout.
     request: |
-      GET /api/shop/checkout-shipping-methods
-      Content-Type: application/json
-      X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
-
-      {
-        "country": "US",
-        "state": "NY",
-        "postcode": "10001"
-      }
+      curl -X GET "http://localhost/api/shop/checkout-shipping-methods" \
+        -H "Accept: application/json" \
+        -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" \
+        -H "Authorization: Bearer 62f2b3f5-a455-4c78-93ba-eabca63d32ec"
     response: |
-      {
-        "data": [
-          {
-            "id": 1,
-            "code": "standard",
-            "name": "Standard Shipping",
-            "description": "Delivery in 5-7 business days",
-            "price": 10.00,
-            "estimatedDays": 7
-          },
-          {
-            "id": 2,
-            "code": "express",
-            "name": "Express Shipping",
-            "description": "Delivery in 2-3 business days",
-            "price": 25.00,
-            "estimatedDays": 3
-          }
-        ]
-      }
+      HTTP/1.1 200 OK
+
+      [
+        {
+          "id": "flatrate_flatrate_flatrate",
+          "code": "flatrate",
+          "label": "Flat Rate",
+          "price": 10,
+          "formattedPrice": "$10.00",
+          "description": "Flat Rate Shipping",
+          "method": "flatrate_flatrate",
+          "methodTitle": "Flat Rate",
+          "methodDescription": "Flat Rate Shipping",
+          "basePrice": 10,
+          "baseFormattedPrice": "$10.00",
+          "carrier": "flatrate",
+          "carrierTitle": "Flat Rate"
+        },
+        {
+          "id": "free_free_free",
+          "code": "free",
+          "label": "Free Shipping",
+          "price": 0,
+          "formattedPrice": "$0.00",
+          "description": "Free Shipping",
+          "method": "free_free",
+          "methodTitle": "Free Shipping",
+          "methodDescription": "Free Shipping",
+          "basePrice": 0,
+          "baseFormattedPrice": "$0.00",
+          "carrier": "free",
+          "carrierTitle": "Free Shipping"
+        }
+      ]
     commonErrors:
-      - error: 422 Validation Error
-        cause: Invalid location data
-        solution: Provide valid country, state, and postcode
-      - error: 400 Bad Request
-        cause: No shipping methods available for location
-        solution: Check location or contact support
+      - error: Empty array
+        cause: No checkout address is saved on the cart yet, or no carrier serves the saved address
+        solution: Save the address first with Set Checkout Address; an empty list is a 200, not an error
+      - error: 401 Unauthorized — Authentication token is required
+        cause: No cart or customer token was sent as the Bearer token
+        solution: Send the cartToken from Create Cart, or a logged-in customer's token
 
 ---
 
@@ -52,62 +61,52 @@ Retrieve available shipping methods based on address and cart contents.
 ## Endpoint
 
 ```
-POST /api/shop/checkout-shipping-methods
+GET /api/shop/checkout-shipping-methods
 ```
+
+Listing the rates is a **GET with no body**. The same path also accepts a `POST`, but that is the setter — see [Set Shipping Method](/api/rest-api/shop/checkout/set-shipping-method). A `POST` sent here without a `shippingMethod` fails.
 
 ## Request Headers
 
 | Header | Required | Description |
 |--------|----------|-------------|
-| `Content-Type` | Yes | application/json |
+| `Accept` | Yes | application/json |
 | `X-STOREFRONT-KEY` | Yes | Your storefront API key |
+| `Authorization` | Yes | The cart's own token as a Bearer token, or a logged-in customer's token. |
 
-## Request Body
-
-```json
-{
-  "country": "US",
-  "state": "NY",
-  "postcode": "10001"
-}
-```
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `country` | string | Yes | Country code (ISO) |
-| `state` | string | Yes | State/Province code |
-| `postcode` | string | Yes | Postal code |
+The destination is taken from the address already saved on the cart. There is no way to quote rates for an arbitrary country, state, or postcode — those are not request parameters.
 
 ## Response Fields (200 OK)
 
+A bare array of rates.
+
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | integer | Shipping method ID |
-| `code` | string | Shipping method code |
-| `name` | string | Display name |
-| `description` | string | Method description |
-| `price` | decimal | Shipping cost |
-| `estimatedDays` | integer | Estimated delivery days |
-| `maxDeliveryDate` | string | Expected delivery date |
+| `id` | string | Rate identifier, e.g. `flatrate_flatrate_flatrate`. |
+| `method` | string | **The value to send to [Set Shipping Method](/api/rest-api/shop/checkout/set-shipping-method)**, e.g. `flatrate_flatrate`. Note it differs from `id`. |
+| `code` | string | Short carrier code. |
+| `label` / `methodTitle` | string | Display name for the rate. |
+| `description` / `methodDescription` | string | Description shown alongside it. |
+| `price` / `basePrice` | number | Rate cost, in cart and base currency. |
+| `formattedPrice` / `baseFormattedPrice` | string | The same amounts, currency-formatted. |
+| `carrier` / `carrierTitle` | string | Carrier the rate belongs to. |
+
+There is no delivery estimate — the payload carries no `estimatedDays` or delivery date.
 
 ## Use Cases
 
-- Display shipping options during checkout
-- Calculate shipping cost
-- Allow customer to select shipping method
-- Show delivery estimates
-- Filter methods by location
+- **Shipping step of checkout** — call after the address is saved and render one radio option per rate, using `formattedPrice` for the label.
+- **Show "free shipping" when it qualifies** — free-shipping rules surface as an ordinary rate with a `price` of `0`, so nothing special is needed to detect them.
 
-## Notes
+## Best Practices
 
-- **Requires a checkout address first.** Rates are calculated from the saved checkout address. With no address set on the cart, this returns an **empty list** (`[]`) — not an error. Call [Set Checkout Address](/api/rest-api/shop/checkout/set-shipping-address) first.
-- Methods vary by location and product
-- Prices may be calculated dynamically
-- Some methods may have weight/dimension limits
-- International shipping may have restrictions
+- **Save the address first** — with none on the cart the response is `[]`, which reads as "no carriers available" rather than "step out of order".
+- **Send `method`, not `id`, to the setter** — the two look similar and the `id` value is rejected.
+- **Re-fetch after changing the address** — rates depend on the destination and are not recalculated on the client.
+- **Treat an empty array as a blocked checkout** — the order cannot be placed until a shipping method is set for a cart with shippable items.
 
 ## Related Resources
 
-- [Set Shipping Method](/api/rest-api/shop/checkout/set-shipping-method)
-- [Get Payment Methods](/api/rest-api/shop/checkout/get-payment-methods)
-- [Get Checkout Addresses](/api/rest-api/shop/checkout/get-addresses)
+- [Set Shipping Method](/api/rest-api/shop/checkout/set-shipping-method) — save the chosen rate on the cart
+- [Get Payment Methods](/api/rest-api/shop/checkout/get-payment-methods) — the payment methods the store offers
+- [Get Checkout Addresses](/api/rest-api/shop/checkout/get-addresses) — read back the addresses saved on the cart

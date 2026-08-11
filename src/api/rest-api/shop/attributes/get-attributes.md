@@ -224,9 +224,16 @@ For non-select types (`text`, `textarea`, `boolean`, `price`, `date`, …), `opt
 - Render a configurable product's variant selectors (fetch the attribute once, get every option inline).
 - Resolve attribute metadata (`type`, `validations`) before building a product-edit form.
 
+## Best Practices
+
+- **Page through with `per_page`** — there is no filter parameter on this endpoint, so narrowing to one attribute means fetching pages and matching `code` client-side.
+- **Read `options` from the attribute itself** — select, multiselect, and checkbox attributes carry their options inline, so a filter UI needs no second call.
+- **Use `isFilterable` to decide what to show as a facet** — an attribute being present does not mean the storefront filters on it.
+- **Respect `valuePerLocale` and `valuePerChannel`** — they tell a client whether a value varies by locale or channel before it caches one.
+
 ## Related Resources
 
-- [Attribute Options](/api/rest-api/shop/attributes/get-attribute-options)
-- [Attribute Translations](/api/rest-api/shop/attributes/get-attribute-translations)
+- [Attribute Options](/api/rest-api/shop/attributes/get-attribute-options) — the flat collection of every option row
+- [Attribute Translations](/api/rest-api/shop/attributes/get-attribute-translations) — localised attribute labels, keyed by locale
 - [Get Products](/api/rest-api/shop/products/get-products) — pass `?<attribute_code>=<option_id>` to filter
-- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas)
+- [Introduction → IRIs & HATEOAS](/api/rest-api/introduction#iris-hateoas) — how to dereference the path references in these payloads

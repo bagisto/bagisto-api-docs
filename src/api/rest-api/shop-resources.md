@@ -679,10 +679,10 @@ console.log(locales);
 
 ## Related Resources
 
-- [Cart & Checkout](/api/rest-api/cart-checkout)
-- [Customer Management](/api/rest-api/customers)
-- [Product Management](/api/rest-api/products)
-- [Best Practices](/api/rest-api/best-practices)
+- [Cart & Checkout](/api/rest-api/shop/cart/) — the cart menu overview
+- [Customer Management](/api/rest-api/shop/customers/) — the account menu overview
+- [Products](/api/rest-api/shop/products/) — the catalog menu overview
+- [Best Practices](/api/rest-api/best-practices) — conventions to follow across the REST API
 
 ## Products
 
@@ -1030,12 +1030,11 @@ The AttributeOption resource represents available values for attributes.
 
 ### List Attribute Options
 
-Retrieve options for all attributes or a specific attribute.
+Retrieve the selectable options across attributes. The collection is flat and cannot be narrowed to one attribute — read an attribute's own inline `options` from [Attributes](/api/rest-api/shop/attributes/get-attributes) when you need just that set.
 
 **Endpoint:**
 ```
 GET /api/shop/attribute-options
-GET /api/shop/attributes/{attribute_id}/options
 ```
 
 **Request:**
@@ -1350,7 +1349,7 @@ curl -X GET "https://your-domain.com/api/shop/locales" \
 
 ## Related Resources
 
-- [Cart & Checkout](/api/rest-api/cart-checkout)
-- [Customer Management](/api/rest-api/customers)
-- [Product Management](/api/rest-api/products)
-- [Best Practices](/api/rest-api/best-practices)
+- [Cart & Checkout](/api/rest-api/shop/cart/) — the cart menu overview
+- [Customer Management](/api/rest-api/shop/customers/) — the account menu overview
+- [Products](/api/rest-api/shop/products/) — the catalog menu overview
+- [Best Practices](/api/rest-api/best-practices) — conventions to follow across the REST API

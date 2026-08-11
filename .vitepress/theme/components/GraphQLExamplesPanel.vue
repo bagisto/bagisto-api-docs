@@ -5,24 +5,17 @@
         <h3>Examples</h3>
       </div>
 
-      <!-- Example Selector Dropdown -->
       <div class="example-selector">
-        <label for="example-select">Select Example:</label>
-        <select id="example-select" v-model="selectedExampleId" class="example-dropdown">
-          <option v-for="example in examples" :key="example.id" :value="example.id">
-            {{ example.title }}
-          </option>
-        </select>
+        <label class="example-selector-label">Select Example:</label>
+        <ExampleSelect :options="examples" v-model="selectedExampleId" />
       </div>
 
-      <!-- Example Content -->
       <div v-if="selectedExample" class="example-content">
         <h4>{{ selectedExample.title }}</h4>
         <p v-if="selectedExample.description" class="example-description">
           {{ selectedExample.description }}
         </p>
 
-        <!-- Language Tabs -->
         <div class="language-tabs">
           <div class="language-tabs-header">
             <button
@@ -35,7 +28,6 @@
             </button>
           </div>
 
-          <!-- Code Content (varies by language tab) -->
           <div class="language-tab-content">
             <div class="code-block">
               <div class="btn-group">
@@ -54,7 +46,6 @@
           </div>
         </div>
 
-        <!-- Variables Section -->
         <div v-if="selectedExample?.variables" class="section-variables">
           <h5>Variables</h5>
           <div class="code-block">
@@ -67,7 +58,6 @@
           </div>
         </div>
 
-        <!-- Response Section -->
         <div class="section-response">
           <h5>Response</h5>
           <div class="code-block">
@@ -80,7 +70,6 @@
           </div>
         </div>
 
-        <!-- Common Errors Section -->
         <div v-if="selectedExample.commonErrors && selectedExample.commonErrors.length > 0" class="section-errors">
           <h5>Common Errors</h5>
           <div class="errors-list">
@@ -103,13 +92,10 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vitepress'
+import ExampleSelect from './ExampleSelect.vue'
 import { GRAPHQL_ENDPOINT, GRAPHQL_ADMIN_ENDPOINT, GRAPHQL_PLAYGROUND, GRAPHQL_ADMIN_PLAYGROUND } from '../config/api.config'
 import { normalizeGraphQLUrl, normalizeStorageUrl } from '../utils/url-normalizer'
 
-// Detect whether the current page is an admin GraphQL page (under
-// /api/graphql-api/admin/...). Admin operations use a dedicated endpoint
-// /api/admin/graphql and authenticate with Authorization: Bearer only — no
-// storefront key is required. Shop operations keep /api/graphql + X-STOREFRONT-KEY.
 const route = useRoute()
 const isAdminPage = computed(() => /\/graphql-api\/admin(\/|$)/.test(route.path))
 const endpointUrl = computed(() => isAdminPage.value ? GRAPHQL_ADMIN_ENDPOINT : GRAPHQL_ENDPOINT)
@@ -150,7 +136,6 @@ const languageTabs = [
   { id: 'php', label: 'PHP' }
 ]
 
-// Auto-select first example when examples change
 watch(() => props.examples, (newExamples) => {
   if (newExamples.length > 0) {
     selectedExampleId.value = newExamples[0].id
@@ -163,7 +148,6 @@ const selectedExample = computed(() => {
   return props.examples.find(ex => ex.id === selectedExampleId.value)
 })
 
-// Get language-specific code
 const getLanguageCode = (): string => {
   if (!selectedExample.value) return ''
   
@@ -192,14 +176,12 @@ const getLanguageCode = (): string => {
       code = selectedExample.value.query
   }
   
-  // Normalize URLs in all code
   code = normalizeGraphQLUrl(code)
   code = normalizeStorageUrl(code)
   
   return highlightCode(code, lang)
 }
 
-// Generate curl command
 const generateCurlCode = (): string => {
   if (!selectedExample.value) return ''
   const query = selectedExample.value.query.replace(/"/g, '\\"')
@@ -215,7 +197,6 @@ const generateCurlCode = (): string => {
   }'`
 }
 
-// Generate Node.js code
 const generateNodeCode = (): string => {
   if (!selectedExample.value) return ''
   const headers = isAdminPage.value
@@ -239,7 +220,6 @@ const data = await response.json();
 console.log(data);`
 }
 
-// Generate React code
 const generateReactCode = (): string => {
   if (!selectedExample.value) return ''
   return `import { useQuery, gql } from '@apollo/client';
@@ -258,7 +238,6 @@ function MyComponent() {
 }`;
 }
 
-// Generate PHP code
 const generatePhpCode = (): string => {
   if (!selectedExample.value) return ''
   return `<?php

@@ -101,7 +101,7 @@ mutation {
 }
 ```
 
-Use the `accessToken` in the `Authorization: Bearer TOKEN` header along with the `X-STOREFRONT-KEY` .
+Use the `token` in the `Authorization: Bearer TOKEN` header along with the `X-STOREFRONT-KEY` .
 
 ### Token Verification
 
@@ -141,7 +141,9 @@ See the [Admin Authentication](/api/graphql-api/admin/authentication) reference 
 curl -X POST https://your-domain.com/api/graphql \
   -H "Content-Type: application/json" \
   -d '{
-    "query": "query { products(first: 10) { edges { node { id name } } } }"
+    "query": "query {
+       products(first: 10) { 
+        edges { node { id name } } } }"
   }'
 ```
  

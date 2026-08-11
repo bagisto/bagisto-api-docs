@@ -5,24 +5,17 @@
         <h3>Examples</h3>
       </div>
 
-      <!-- Example Selector Dropdown -->
       <div class="example-selector">
-        <label for="example-select">Select Example:</label>
-        <select id="example-select" v-model="selectedExampleId" class="example-dropdown">
-          <option v-for="example in examples" :key="example.id" :value="example.id">
-            {{ example.title }}
-          </option>
-        </select>
+        <label class="example-selector-label">Select Example:</label>
+        <ExampleSelect :options="examples" v-model="selectedExampleId" />
       </div>
 
-      <!-- Example Content -->
       <div v-if="selectedExample" class="example-content">
         <h4>{{ selectedExample.title }}</h4>
         <p v-if="selectedExample.description" class="example-description">
           {{ selectedExample.description }}
         </p>
 
-        <!-- Language Tabs -->
         <div class="language-tabs">
           <div class="language-tabs-header">
             <button
@@ -35,7 +28,6 @@
             </button>
           </div>
 
-          <!-- Code Content (varies by language tab) -->
           <div class="language-tab-content">
             <div class="code-block">
               <div class="btn-group">
@@ -48,7 +40,6 @@
           </div>
         </div>
 
-        <!-- Headers Section -->
         <div v-if="selectedExample?.headers" class="section-headers">
           <h5>Headers</h5>
           <div class="code-block">
@@ -61,7 +52,6 @@
           </div>
         </div>
 
-        <!-- Response Section -->
         <div class="section-response">
           <h5>Response</h5>
           <div class="code-block">
@@ -74,7 +64,6 @@
           </div>
         </div>
 
-        <!-- Common Errors Section -->
         <div v-if="selectedExample.commonErrors && selectedExample.commonErrors.length > 0" class="section-errors">
           <h5>Common Errors</h5>
           <div class="errors-list">
@@ -96,6 +85,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import ExampleSelect from './ExampleSelect.vue'
 import { REST_API_DOCS } from '../config/api.config'
 import { normalizeRestUrl, normalizeStorageUrl } from '../utils/url-normalizer'
 

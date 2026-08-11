@@ -186,7 +186,7 @@ These ~20 fields are returned for every product in the list. The PDP endpoint re
 | `isInWishlist`           | integer (0/1)   | `1` if this product is in the signed-in customer's wishlist (active channel), else `0`. `0` for guests. |
 | `isInCompare`            | integer (0/1)   | `1` if this product is in the signed-in customer's compare list, else `0`. `0` for guests. |
 
-> Heavy relations (`images`, `videos`, `categories`, `channels`, `variants`, `bookingProducts`, `bundleOptions`, `customizableOptions`, `relatedProducts`, etc.) are **omitted** from the list response. Fetch the [Single Product](/api/rest-api/shop/products/get-product) to get them inlined.
+Heavy relations are omitted from the list response — `images`, `videos`, `categories`, `channels`, `variants`, `bookingProducts`, `bundleOptions`, `customizableOptions`, `relatedProducts` and the rest. Read [Single Product](/api/rest-api/shop/products/get-product) to get them inlined.
 
 ## Wishlist & compare flags
 
@@ -204,6 +204,14 @@ Why they exist: the wishlist and compare lists are their own endpoints and pagin
 - Render a category page / grid view / search results with paginated cards.
 - Implement infinite scroll using `?page=N&per_page=20` and `X-Total-Pages`.
 - Pre-load the next page based on `X-Page < X-Total-Pages`.
+
+## Best Practices
+
+- **Ask for the page size you need** — the default is 30 and the cap is 50; a larger `per_page` is silently clamped rather than rejected.
+- **Read `X-Total-Count` for the result count** — the body is one page, and the endpoint returns no totals in the payload.
+- **Send the customer token when one exists** — `isInWishlist` and `isInCompare` are `0` for guests, so a signed-in shopper would otherwise see empty heart and compare icons.
+- **Do not expect images or variants here** — the card carries `baseImageUrl` only; the gallery, variants, and options come from [Single Product](/api/rest-api/shop/products/get-product).
+- **Check a sort token against the supported list** — an unrecognised value falls back to the default order with a `200`, so a typo fails silently.
 
 ## Related Resources
 

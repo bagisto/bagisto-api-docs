@@ -126,40 +126,31 @@ export default defineConfig(({ command, mode }) => {
     },
 
     sidebar: [
-      {
-        text: 'Bagisto APIs',
-        collapsed: true,
-        items: [
-          { text: 'Introduction', link: '/api/introduction' },
-          { text: 'Setup', link: '/api/setup' },
-          { text: 'Authentication', link: '/api/authentication' },
-          { text: 'Storefront Keys', link: '/api/storefront-api-key-management-guide' },
-          { text: 'Rate Limiting', link: '/api/rate-limiting' },
           {
-            text: 'REST ↔ GraphQL Mapping',
-            collapsed: true,
-            link: '/api/rest-graphql-mapping/',
+            text: 'Getting Started',
+            collapsed: false,
             items: [
-              { text: 'Overview', link: '/api/rest-graphql-mapping/' },
-              {
-                text: 'Shop',
-                collapsed: true,
-                link: '/api/rest-graphql-mapping/shop/catalog',
-                items: [
-                  { text: 'Catalog', link: '/api/rest-graphql-mapping/shop/catalog' },
-                  { text: 'Cart & Checkout', link: '/api/rest-graphql-mapping/shop/cart-checkout' },
-                  { text: 'Customer Account', link: '/api/rest-graphql-mapping/shop/customer-account' },
-                  { text: 'Auth & Context', link: '/api/rest-graphql-mapping/shop/auth-context' },
-                ],
-              },
+              { text: 'Introduction', link: '/api/introduction' },
+              { text: 'Setup', link: '/api/setup' },
+              { text: 'Authentication', link: '/api/authentication' },
+              { text: 'Storefront Keys', link: '/api/storefront-api-key-management-guide' },
+            ],
+          },
+          {
+            text: 'Core Concepts',
+            collapsed: false,
+            items: [
+              { text: 'Rate Limiting', link: '/api/rate-limiting' },
+              { text: 'Status Codes', link: '/api/errors' },
+              { text: 'Pagination', link: '/api/pagination' },
+              { text: 'Sorting', link: '/api/sorting' },
             ],
           },
           {
             text: 'Build with AI',
             collapsed: true,
-            link: '/api/build-with-ai/',
             items: [
-              { text: 'Overview', link: '/api/build-with-ai/' },
+              { text: 'Introduction', link: '/api/build-with-ai/' },
               { text: 'Agent Skills', link: '/api/build-with-ai/agent-skills' },
               { text: 'MCP Server', link: '/api/build-with-ai/mcp-server' },
             ],
@@ -167,8 +158,8 @@ export default defineConfig(({ command, mode }) => {
           {
             text: 'Workflows',
             collapsed: true,
-            link: '/api/workflows/',
             items: [
+              { text: 'Introduction', link: '/api/workflows/' },
               {
                 text: 'Shop',
                 collapsed: true,
@@ -176,8 +167,13 @@ export default defineConfig(({ command, mode }) => {
                 items: [
                   { text: 'Overview', link: '/api/workflows/shop/' },
                   { text: 'Build a Storefront', link: '/api/workflows/shop/build-a-storefront' },
+                  { text: 'Browse & Filter Catalog', link: '/api/workflows/shop/browse-and-filter-catalog' },
                   { text: 'Cart', link: '/api/workflows/shop/cart' },
                   { text: 'Checkout', link: '/api/workflows/shop/checkout' },
+                  { text: 'Customer Account', link: '/api/workflows/shop/customer-account' },
+                  { text: 'Returns / RMA', link: '/api/workflows/shop/returns-rma' },
+                  { text: 'EU Withdrawal', link: '/api/workflows/shop/eu-withdrawal' },
+                  { text: 'GDPR Requests', link: '/api/workflows/shop/gdpr' },
                 ],
               },
               {
@@ -1381,7 +1377,9 @@ export default defineConfig(({ command, mode }) => {
             collapsed: true,
             items: [
               { text: 'Introduction', link: '/api/rest-api/introduction' },
-              
+              { text: 'Authentication', link: '/api/rest-api/authentication' },
+              { text: 'Integration Guides', link: '/api/rest-api/integrations' },
+
               {
                 text: 'Shop API',
                 collapsed: true,
@@ -1490,6 +1488,7 @@ export default defineConfig(({ command, mode }) => {
                           { text: 'Download Invoice PDF', link: '/api/rest-api/shop/customer-invoices/download-customer-invoice-pdf' },
                           { text: 'Get Downloadable Products', link: '/api/rest-api/shop/customer-downloadable-products/get-customer-downloadable-products' },
                           { text: 'Get Downloadable Product', link: '/api/rest-api/shop/customer-downloadable-products/get-customer-downloadable-product' },
+                          { text: 'Download Downloadable Product', link: '/api/rest-api/shop/customer-downloadable-products/download-customer-downloadable-product' },
                           { text: 'Get Customer Reviews', link: '/api/rest-api/shop/customer-reviews/get-customer-reviews' },
                           { text: 'Get Customer Review', link: '/api/rest-api/shop/customer-reviews/get-customer-review' },
                     ]
@@ -2344,8 +2343,6 @@ export default defineConfig(({ command, mode }) => {
               { text: 'Best Practices', link: '/api/rest-api/best-practices' },
             ]
           },
-        ]
-      }
     ],
 
     outline: {

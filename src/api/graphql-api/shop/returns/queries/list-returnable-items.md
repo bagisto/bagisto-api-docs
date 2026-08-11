@@ -7,32 +7,20 @@ examples:
     query: |
       query ReturnableItems($orderId: Int!) {
         returnableItems(orderId: $orderId) {
-          edges {
-            cursor
-            node {
-              orderItemId
-              productId
-              sku
-              name
-              type
-              urlKey
-              price
-              baseImageUrl
-              qtyOrdered
-              currentQuantity
-              forReturnQuantity
-              forCancelQuantity
-              rmaQuantity
-              rmaReturnPeriod
-            }
-          }
-          pageInfo {
-            startCursor
-            endCursor
-            hasNextPage
-            hasPreviousPage
-          }
-          totalCount
+          orderItemId
+          productId
+          sku
+          name
+          type
+          urlKey
+          price
+          baseImageUrl
+          qtyOrdered
+          currentQuantity
+          forReturnQuantity
+          forCancelQuantity
+          rmaQuantity
+          rmaReturnPeriod
         }
       }
     variables: |
@@ -42,36 +30,24 @@ examples:
     response: |
       {
         "data": {
-          "returnableItems": {
-            "edges": [
-              {
-                "cursor": "MQ==",
-                "node": {
-                  "orderItemId": 78,
-                  "productId": 1,
-                  "sku": "COASTALBREEZEMENSHOODIE",
-                  "name": "Coastal Breeze Men's Blue Zipper Hoodie",
-                  "type": "simple",
-                  "urlKey": "coastal-breeze-mens-blue-zipper-hoodie",
-                  "price": 100,
-                  "baseImageUrl": "https://example.com/storage/product/1/hoodie.webp",
-                  "qtyOrdered": 2,
-                  "currentQuantity": 2,
-                  "forReturnQuantity": 2,
-                  "forCancelQuantity": 0,
-                  "rmaQuantity": 0,
-                  "rmaReturnPeriod": 30
-                }
-              }
-            ],
-            "pageInfo": {
-              "startCursor": "MQ==",
-              "endCursor": "MQ==",
-              "hasNextPage": false,
-              "hasPreviousPage": false
-            },
-            "totalCount": 1
-          }
+          "returnableItems": [
+            {
+              "orderItemId": 78,
+              "productId": 1,
+              "sku": "COASTALBREEZEMENSHOODIE",
+              "name": "Coastal Breeze Men's Blue Zipper Hoodie",
+              "type": "simple",
+              "urlKey": "coastal-breeze-mens-blue-zipper-hoodie",
+              "price": 100,
+              "baseImageUrl": "https://example.com/storage/product/1/hoodie.webp",
+              "qtyOrdered": 2,
+              "currentQuantity": 2,
+              "forReturnQuantity": 2,
+              "forCancelQuantity": 0,
+              "rmaQuantity": 0,
+              "rmaReturnPeriod": 30
+            }
+          ]
         }
       }
     commonErrors:
@@ -103,31 +79,24 @@ This query requires an authenticated customer — send the storefront key and a 
 
 ## Possible Returns
 
+The query returns a plain list of items, not a cursor connection — there is no `edges`, `pageInfo`, or `totalCount` to select, and no pagination arguments. Every eligible item on the order comes back in one response.
+
 | Field | Type | Description |
 |-------|------|-------------|
-| `edges` | `[ReturnableItemEdge!]` | Array of item edges with cursor and node. |
-| `edges.cursor` | `String!` | Cursor for this edge, used in pagination. |
-| `edges.node` | `ReturnableItem!` | The returnable item object. |
-| `edges.node.orderItemId` | `Int!` | Id of the order item — use this when raising a return. |
-| `edges.node.productId` | `Int!` | Id of the product. |
-| `edges.node.sku` | `String!` | Product SKU. |
-| `edges.node.name` | `String!` | Product name. |
-| `edges.node.type` | `String!` | Product type, e.g. `simple`. |
-| `edges.node.urlKey` | `String!` | Product URL key. |
-| `edges.node.price` | `Float!` | Item price. |
-| `edges.node.baseImageUrl` | `String` | URL of the product's base image. |
-| `edges.node.qtyOrdered` | `Int!` | Quantity originally ordered. |
-| `edges.node.currentQuantity` | `Int!` | Quantity currently eligible to act on. |
-| `edges.node.forReturnQuantity` | `Int!` | Maximum units that can be returned. |
-| `edges.node.forCancelQuantity` | `Int!` | Maximum units that can be canceled. |
-| `edges.node.rmaQuantity` | `Int!` | Units already placed into a return. |
-| `edges.node.rmaReturnPeriod` | `Int!` | Return window in days. |
-| `pageInfo` | `PageInfo!` | Pagination metadata. |
-| `pageInfo.startCursor` | `String` | Cursor for the first item in the page. |
-| `pageInfo.endCursor` | `String` | Cursor for the last item in the page. |
-| `pageInfo.hasNextPage` | `Boolean!` | Whether more pages exist forward. |
-| `pageInfo.hasPreviousPage` | `Boolean!` | Whether more pages exist backward. |
-| `totalCount` | `Int!` | Total number of returnable items in the order. |
+| `orderItemId` | `Int!` | Id of the order item — use this when raising a return. |
+| `productId` | `Int!` | Id of the product. |
+| `sku` | `String!` | Product SKU. |
+| `name` | `String!` | Product name. |
+| `type` | `String!` | Product type, e.g. `simple`. |
+| `urlKey` | `String!` | Product URL key. |
+| `price` | `Float!` | Item price. |
+| `baseImageUrl` | `String` | URL of the product's base image. |
+| `qtyOrdered` | `Int!` | Quantity originally ordered. |
+| `currentQuantity` | `Int!` | Quantity currently eligible to act on. |
+| `forReturnQuantity` | `Int!` | Maximum units that can be returned. |
+| `forCancelQuantity` | `Int!` | Maximum units that can be canceled. |
+| `rmaQuantity` | `Int!` | Units already placed into a return. |
+| `rmaReturnPeriod` | `Int!` | Return window in days. |
 
 ## Related Resources
 

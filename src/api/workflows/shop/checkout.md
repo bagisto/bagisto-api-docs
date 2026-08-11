@@ -31,7 +31,7 @@ flowchart TD
 
 | # | Step | Endpoint | Depends on | Note |
 |---|------|----------|-----------|------|
-| 1 | Read saved addresses | [GET addresses](/api/rest-api/shop/checkout/get-addresses) | logged-in customer | Customer path; prefill from saved. Past orders: [customer orders](/api/rest-api/shop/customer-orders) |
+| 1 | Read saved addresses | [GET addresses](/api/rest-api/shop/checkout/get-addresses) | logged-in customer | Customer path; prefill from saved. Past orders: [customer orders](/api/rest-api/shop/customer-orders/get-customer-orders) |
 | 2 | Set billing address | [POST set-billing-address](/api/rest-api/shop/checkout/set-billing-address) · [GraphQL](/api/graphql-api/shop/checkout) | cart with items | Guest sends a full address; customer may reuse a saved one |
 | 3 | Set shipping address | [POST set-shipping-address](/api/rest-api/shop/checkout/set-shipping-address) | billing set | |
 | 4 | List shipping methods | [GET shipping-methods](/api/rest-api/shop/checkout/get-shipping-methods) | shipping address set | |
@@ -40,7 +40,7 @@ flowchart TD
 | 7 | Set payment method | [POST set-payment-method](/api/rest-api/shop/checkout/set-payment-method) | a chosen payment method | |
 | 8 | Place order | [POST place-order](/api/rest-api/shop/checkout/place-order) · [GraphQL](/api/graphql-api/shop/checkout) | payment method set | Returns the created order |
 
-> **GraphQL equivalents:** the table links REST paths. Each step has a GraphQL operation (`createCheckoutAddress`, `collectionShippingRates`, `createCheckoutShippingMethod`, `collectionPaymentMethods`, `createCheckoutPaymentMethod`, `createCheckoutOrder`) — the full REST↔GraphQL list is on the [Cart & Checkout mapping](/api/rest-graphql-mapping/shop/cart-checkout).
+> **GraphQL equivalents:** the table links REST paths. Each step has a GraphQL operation (`createCheckoutAddress`, `collectionShippingRates`, `createCheckoutShippingMethod`, `collectionPaymentMethods`, `createCheckoutPaymentMethod`, `createCheckoutOrder`).
 
 ## Payment methods & completing the order
 

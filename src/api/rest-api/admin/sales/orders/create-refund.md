@@ -124,5 +124,4 @@ cannot exceed the order's remaining refundable balance.
 | 422  | `bagistoapi::app.admin.order.actions.refund.amount-exceeds-max` | The refund amount (`:amount`) exceeds the maximum refundable amount (`:max`). |
 | 422  | `bagistoapi::app.admin.order.actions.refund.failed` | Could not create the refund. |
 
-> Tip: use **Refund Preview** (`POST /api/admin/orders/{orderId}/refunds/preview`)
-> to validate the computed totals without saving.
+To check the computed totals before committing, call **Refund Preview** (`POST /api/admin/orders/{orderId}/refunds/preview`) — it runs the same calculation without saving anything.

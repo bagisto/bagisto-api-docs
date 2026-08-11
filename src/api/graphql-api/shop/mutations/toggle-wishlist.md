@@ -114,7 +114,12 @@ The `toggleWishlist` mutation adds or removes a product from the authenticated c
 - Remove a product if it's already in the wishlist
 - Simplify wishlist UI logic with a single mutation
 
-> **Note:** When a product is **removed** from the wishlist, the API returns an error-style response with the message `"Item Successfully Removed From Wishlist"`. When a product is **added**, a standard success response with the wishlist object is returned.
+The two outcomes come back in different shapes, which is the one thing to get right when wiring a heart icon:
+
+- **Added** — a normal success payload carrying the new `wishlist` object.
+- **Removed** — the wishlist object is `null` and the confirmation arrives in `errors[]` as `"Item Successfully Removed From Wishlist"`.
+
+A removal therefore looks like a failure to a client that treats any `errors[]` entry as one. Read the message before deciding, or call [Create Wishlist](/api/graphql-api/shop/mutations/create-wishlist) and [Delete Wishlist](/api/graphql-api/shop/mutations/delete-wishlist) separately when an unambiguous result matters more than a single round trip.
 
 ## Authentication
 

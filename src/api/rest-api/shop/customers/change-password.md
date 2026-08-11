@@ -22,6 +22,7 @@ examples:
         "firstName": "Pw",
         "lastName": "Tester",
         "email": "pw.change@example.com",
+        "phone": "12125550111",
         "status": "1",
         "subscribedToNewsLetter": false,
         "isVerified": "false",
@@ -34,10 +35,10 @@ examples:
         cause: Missing or invalid customer token
         solution: Log the customer in and send their Bearer token.
       - error: 400 Bad Request
-        cause: currentPassword is missing or does not match the account's current password
+        cause: currentPassword is missing or does not match the account's current password — the message reads "The current password you entered is incorrect"
         solution: Send the customer's correct current password.
-      - error: 422 Unprocessable Entity
-        cause: password and confirmPassword do not match
+      - error: 400 Bad Request — Password and confirm password do not match
+        cause: password and confirmPassword carry different values
         solution: Make the new password and its confirmation identical.
 
 ---
@@ -46,9 +47,7 @@ examples:
 
 A **logged-in** customer changes their own password by sending their **current** password together with a new password and its confirmation. This is part of the customer profile-update endpoint.
 
-::: tip Forgot the password instead?
-This endpoint is for a customer who knows their current password. If the password was **forgotten**, use [Forgot Password](/api/rest-api/shop/customers/forgot-password) (`POST /api/shop/forgot-passwords`) — that emails a reset link the customer completes on the web. The storefront API has no token-based reset endpoint.
-:::
+This endpoint is for a customer who knows their current password. A **forgotten** password goes through [Forgot Password](/api/rest-api/shop/customers/forgot-password) instead, which emails a reset link the shopper completes on the web — the storefront API exposes no token-based reset.
 
 ## Endpoint
 
@@ -99,6 +98,6 @@ After the change, the old password stops working and the customer logs in with t
 
 ## Related Resources
 
-- [Customer Login](/api/rest-api/shop/customers/customer-login)
-- [Update Customer Profile](/api/rest-api/shop/customers/update-customer-profile)
-- [Forgot Password](/api/rest-api/shop/customers/forgot-password)
+- [Customer Login](/api/rest-api/shop/customers/customer-login) — authenticate and receive a customer token
+- [Update Customer Profile](/api/rest-api/shop/customers/update-customer-profile) — patch name, email, phone, and other profile fields
+- [Forgot Password](/api/rest-api/shop/customers/forgot-password) — email a reset link to the shopper

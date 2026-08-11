@@ -54,4 +54,3 @@ Query parameters that narrow the result. Supplying more than one **narrows furth
 
 Both the compound form `?sort=rate-asc` and the split form `?sort=rate&order=asc` are accepted.
 
-See the [Exchange Rates overview](./) for field meanings and behaviour.

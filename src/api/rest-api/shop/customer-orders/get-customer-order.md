@@ -10,44 +10,144 @@ examples:
       X-STOREFRONT-KEY: pk_storefront_PvlE42nWGsKRVIf8bDlJngTPAdWAZbIy
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     response: |
+      HTTP/1.1 200 OK
+
       {
         "id": 1,
         "incrementId": "1",
         "status": "pending",
         "channelName": "Default",
-        "isGuest": 0,
-        "customerEmail": "customer@example.com",
+        "isGuest": false,
+        "customerEmail": "john.doe@example.com",
         "customerFirstName": "John",
         "customerLastName": "Doe",
+        "customerFullName": "John Doe",
         "shippingMethod": "flatrate_flatrate",
         "shippingTitle": "Flat Rate - Flat Rate",
+        "shippingDescription": "Flat Rate Shipping",
         "couponCode": null,
-        "isGift": 0,
+        "isGift": false,
         "totalItemCount": 1,
-        "totalQtyOrdered": 2,
+        "totalQtyOrdered": 1,
         "baseCurrencyCode": "USD",
         "channelCurrencyCode": "USD",
         "orderCurrencyCode": "USD",
-        "grandTotal": 150.00,
-        "baseGrandTotal": 150.00,
-        "grandTotalInvoiced": 150.00,
-        "baseGrandTotalInvoiced": 150.00,
-        "grandTotalRefunded": 0.00,
-        "baseGrandTotalRefunded": 0.00,
-        "subTotal": 140.00,
-        "baseSubTotal": 140.00,
-        "taxAmount": 0.00,
-        "baseTaxAmount": 0.00,
-        "discountAmount": 0.00,
-        "baseDiscountAmount": 0.00,
-        "shippingAmount": 10.00,
-        "baseShippingAmount": 10.00,
-        "createdAt": "2025-01-15T10:30:00.000000Z",
-        "updatedAt": "2025-01-15T10:30:00.000000Z"
+        "grandTotal": 65.99,
+        "baseGrandTotal": 65.99,
+        "grandTotalInvoiced": 0,
+        "baseGrandTotalInvoiced": 0,
+        "grandTotalRefunded": 0,
+        "baseGrandTotalRefunded": 0,
+        "subTotal": 55.99,
+        "baseSubTotal": 55.99,
+        "subTotalInvoiced": 0,
+        "baseSubTotalInvoiced": 0,
+        "subTotalRefunded": 0,
+        "baseSubTotalRefunded": 0,
+        "discountPercent": 0,
+        "discountAmount": 0,
+        "baseDiscountAmount": 0,
+        "discountInvoiced": 0,
+        "baseDiscountInvoiced": 0,
+        "discountRefunded": 0,
+        "baseDiscountRefunded": 0,
+        "taxAmount": 0,
+        "baseTaxAmount": 0,
+        "taxAmountInvoiced": 0,
+        "baseTaxAmountInvoiced": 0,
+        "taxAmountRefunded": 0,
+        "baseTaxAmountRefunded": 0,
+        "shippingAmount": 10,
+        "baseShippingAmount": 10,
+        "shippingInvoiced": 0,
+        "baseShippingInvoiced": 0,
+        "shippingRefunded": 0,
+        "baseShippingRefunded": 0,
+        "shippingDiscountAmount": 0,
+        "baseShippingDiscountAmount": 0,
+        "shippingTaxAmount": 0,
+        "baseShippingTaxAmount": 0,
+        "shippingTaxRefunded": 0,
+        "baseShippingTaxRefunded": 0,
+        "subTotalInclTax": 55.99,
+        "baseSubTotalInclTax": 55.99,
+        "shippingAmountInclTax": 10,
+        "baseShippingAmountInclTax": 10,
+        "customerId": 122,
+        "channelId": 1,
+        "cartId": 1,
+        "appliedCartRuleIds": "",
+        "createdAt": "2026-07-21T18:01:34+05:30",
+        "updatedAt": "2026-07-21T18:01:34+05:30",
+        "items": [
+          {
+            "id": 279,
+            "sku": "mj-coastal-hoodie",
+            "type": "configurable",
+            "name": "Coastal Breeze Men's Blue Zipper Hoodie",
+            "productId": 59,
+            "productType": "Webkul\\Product\\Models\\Product",
+            "qtyOrdered": 1,
+            "qtyShipped": 0,
+            "qtyInvoiced": 0,
+            "qtyCanceled": 0,
+            "qtyRefunded": 0,
+            "price": 55.99,
+            "basePrice": 55.99,
+            "total": 55.99,
+            "baseTotal": 55.99,
+            "discountPercent": 0,
+            "discountAmount": 0,
+            "taxPercent": 0,
+            "taxAmount": 0,
+            "priceInclTax": 55.99,
+            "totalInclTax": 55.99
+          }
+        ],
+        "addresses": [
+          {
+            "id": 220,
+            "addressType": "order_shipping",
+            "firstName": "John",
+            "lastName": "Doe",
+            "gender": null,
+            "companyName": "",
+            "address": "123 Main St",
+            "city": "Los Angeles",
+            "state": "CA",
+            "country": "US",
+            "postcode": "90001",
+            "email": "john.doe@example.com",
+            "phone": "2125551234",
+            "vatId": null
+          },
+          {
+            "id": 221,
+            "addressType": "order_billing",
+            "firstName": "John",
+            "lastName": "Doe",
+            "gender": null,
+            "companyName": "",
+            "address": "123 Main St",
+            "city": "Los Angeles",
+            "state": "CA",
+            "country": "US",
+            "postcode": "90001",
+            "email": "john.doe@example.com",
+            "phone": "2125551234",
+            "vatId": null
+          }
+        ],
+        "payment": {
+          "id": 20,
+          "method": "moneytransfer",
+          "methodTitle": "Money Transfer"
+        },
+        "shipments": []
       }
     commonErrors:
       - error: 404 Not Found
-        cause: Order with specified ID does not exist or does not belong to the customer
+        cause: No such order, or the order belongs to another customer — the two are indistinguishable
         solution: Verify the order ID and ensure it belongs to the authenticated customer
       - error: 401 Unauthorized
         cause: Missing or invalid Bearer token
@@ -84,84 +184,100 @@ GET /api/shop/customer-orders/{id}
 
 ## Response Fields (200 OK)
 
+One order, flat, with four nested blocks at the end. There is no wrapper object.
+
+### Identity and status
+
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | integer | Order ID |
-| `incrementId` | string | Human-readable order number |
-| `status` | string | Order status |
-| `channelName` | string | Channel the order was placed on |
-| `isGuest` | integer | Whether the order was placed as guest |
-| `customerEmail` | string | Customer email |
-| `customerFirstName` | string | Customer first name |
-| `customerLastName` | string | Customer last name |
-| `shippingMethod` | string | Shipping method code |
-| `shippingTitle` | string | Shipping method display name |
-| `couponCode` | string | Applied coupon code |
-| `isGift` | integer | Whether the order is a gift |
-| `totalItemCount` | integer | Number of distinct items |
-| `totalQtyOrdered` | integer | Total quantity ordered |
-| `baseCurrencyCode` | string | Base currency code |
-| `channelCurrencyCode` | string | Channel currency code |
-| `orderCurrencyCode` | string | Order currency code |
-| `grandTotal` | float | Grand total |
-| `baseGrandTotal` | float | Base grand total |
-| `grandTotalInvoiced` | float | Grand total invoiced |
-| `baseGrandTotalInvoiced` | float | Base grand total invoiced |
-| `grandTotalRefunded` | float | Grand total refunded |
-| `baseGrandTotalRefunded` | float | Base grand total refunded |
-| `subTotal` | float | Sub total |
-| `baseSubTotal` | float | Base sub total |
-| `taxAmount` | float | Tax amount |
-| `baseTaxAmount` | float | Base tax amount |
-| `discountAmount` | float | Discount amount |
-| `baseDiscountAmount` | float | Base discount amount |
-| `shippingAmount` | float | Shipping amount |
-| `baseShippingAmount` | float | Base shipping amount |
-| `createdAt` | string | ISO 8601 creation timestamp |
-| `updatedAt` | string | ISO 8601 last update timestamp |
+| `id` | integer | Internal order ID — the value used in this path. |
+| `incrementId` | string | Order number shown to the customer. |
+| `status` | string | Order status — see [Get Customer Orders](/api/rest-api/shop/customer-orders/get-customer-orders) for the list. |
+| `channelName` | string | Channel the order was placed on. |
+| `isGuest` | integer | `1` when the order was placed without an account. |
+| `isGift` | integer | `1` when the order was marked as a gift. |
+| `customerId` / `channelId` / `cartId` | integer | Related record IDs. |
+| `customerEmail` / `customerFirstName` / `customerLastName` / `customerFullName` | string | Contact details captured at checkout. |
+| `createdAt` / `updatedAt` | string | ISO 8601 timestamps. |
+
+### Shipping and discounts
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `shippingMethod` | string | Method code, e.g. `flatrate_flatrate`. |
+| `shippingTitle` / `shippingDescription` | string | Human-readable method label and description. |
+| `couponCode` | string | Coupon applied at checkout, `null` when none was used. |
+| `appliedCartRuleIds` | string | Comma-separated IDs of the cart rules that fired. |
+| `totalItemCount` / `totalQtyOrdered` | integer | Distinct lines, and the sum of their quantities. |
+
+### Money
+
+Every monetary figure comes in an order-currency form and a `base*` form in the store's base currency. Each family also carries `Invoiced` and `Refunded` variants, so a client can show what has actually been billed and returned rather than only what was ordered.
+
+| Family | Fields |
+|--------|--------|
+| Grand total | `grandTotal`, `baseGrandTotal`, `grandTotalInvoiced`, `baseGrandTotalInvoiced`, `grandTotalRefunded`, `baseGrandTotalRefunded` |
+| Subtotal | `subTotal`, `baseSubTotal`, `subTotalInvoiced`, `baseSubTotalInvoiced`, `subTotalRefunded`, `baseSubTotalRefunded`, `subTotalInclTax`, `baseSubTotalInclTax` |
+| Discount | `discountPercent`, `discountAmount`, `baseDiscountAmount`, `discountInvoiced`, `baseDiscountInvoiced`, `discountRefunded`, `baseDiscountRefunded` |
+| Tax | `taxAmount`, `baseTaxAmount`, `taxAmountInvoiced`, `baseTaxAmountInvoiced`, `taxAmountRefunded`, `baseTaxAmountRefunded` |
+| Shipping | `shippingAmount`, `baseShippingAmount`, `shippingInvoiced`, `baseShippingInvoiced`, `shippingRefunded`, `baseShippingRefunded`, `shippingDiscountAmount`, `baseShippingDiscountAmount`, `shippingTaxAmount`, `baseShippingTaxAmount`, `shippingTaxRefunded`, `baseShippingTaxRefunded`, `shippingAmountInclTax`, `baseShippingAmountInclTax` |
+| Currency | `orderCurrencyCode`, `baseCurrencyCode`, `channelCurrencyCode` |
+
+Amounts are raw numbers, not formatted strings — apply the symbol for `orderCurrencyCode` client-side.
+
+### Items
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Order-line ID. |
+| `sku` / `name` | string | Product identity as captured at checkout. |
+| `type` / `productType` | string | Product type, e.g. `simple`. |
+| `productId` | integer | The catalog product; use it to link back to the product page. |
+| `qtyOrdered` / `qtyShipped` / `qtyInvoiced` / `qtyCanceled` / `qtyRefunded` | integer | Per-line quantity breakdown. |
+| `price` / `basePrice` / `priceInclTax` | float | Unit price. |
+| `total` / `baseTotal` / `totalInclTax` | float | Line total. |
+| `discountPercent` / `discountAmount` / `taxPercent` / `taxAmount` | float | Per-line discount and tax. |
+
+### Addresses
+
+The `addresses` array holds the billing and shipping addresses, told apart by `addressType`.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Address record ID. |
+| `addressType` | string | `order_billing` or `order_shipping`. |
+| `firstName` / `lastName` / `gender` / `companyName` / `vatId` | string | Recipient details. |
+| `address` / `city` / `state` / `country` / `postcode` | string | Location, with the street under `address`. |
+| `email` / `phone` | string | Contact details captured with the address. |
+
+### Payment and Shipments
+
+The `payment` block is a single object of `id`, `method`, and `methodTitle`. `shipments` is an array, empty until the order ships.
 
 ## Error Responses
 
-**Not Found (404):**
-```json
-{
-  "message": "Customer order with ID \"999\" not found."
-}
-```
-
-**Unauthenticated (401):**
-```json
-{
-  "message": "Customer is not logged in."
-}
-```
-
-**Accessing Another Customer's Order (404):**
-
-Requesting an order that belongs to a different customer returns the same 404 response, preventing enumeration attacks:
-
-```json
-{
-  "message": "Customer order with ID \"5\" not found."
-}
-```
+| Status | Body `detail` | Cause |
+|--------|---------------|-------|
+| `404` | `Customer order with ID "999999" not found` | No such order, **or** the order belongs to another customer. The two cases are deliberately indistinguishable. |
+| `403` | `Unauthenticated. Please login to perform this action` | No customer Bearer token was sent. |
+| `401` | — | The storefront key header was missing or wrong. |
 
 ## Use Cases
 
-- Display detailed order page in customer account
-- Show order summary with all financial details
-- Track shipping method and status
-- View applied coupons and discounts
-- Display invoiced and refunded amounts
+- **Order detail page** — one call returns the lines, both addresses, and the payment method, so no follow-up fetches are needed.
+- **"Partially shipped" badge** — compare `qtyShipped` against `qtyOrdered` per line; the order-level `status` alone does not show partial fulfilment.
+- **Refund summary** — the `*Refunded` figures state what was actually returned, which the order total does not reflect.
+- **Reorder** — `items[].productId` and `qtyOrdered` are enough to rebuild a cart.
 
-## Notes
+## Best Practices
 
-- **Customer isolation:** A customer can never see another customer's orders. Requesting another customer's order returns a 404.
-- **Read-only:** Only `GET` operations are available. Orders cannot be modified through this API.
-- **Channel scoping:** Orders are filtered by the customer's channel for multi-tenant isolation.
+- **Show `incrementId`, keep `id`** — the increment ID is the number on the customer's confirmation email; the plain `id` is internal and addresses this endpoint.
+- **Read the `Invoiced` and `Refunded` variants before showing "amount paid"** — `grandTotal` is what was ordered, not what has been billed.
+- **Do not treat an empty `shipments` array as an error** — it simply means nothing has shipped yet.
+- **Split `addresses` by `addressType`** — both live in one array, and a page that renders `addresses[0]` as billing will be wrong whenever the order shipped first.
 
 ## Related Resources
 
-- [Get All Customer Orders](/api/rest-api/shop/customer-orders/get-customer-orders)
-- [Place Order](/api/rest-api/shop/checkout/place-order)
-- [Get Customer Profile](/api/rest-api/shop/customers/get-customer-profile)
+- [Get All Customer Orders](/api/rest-api/shop/customer-orders/get-customer-orders) — the customer's order history
+- [Place Order](/api/rest-api/shop/checkout/place-order) — turn the prepared cart into an order
+- [Get Customer Profile](/api/rest-api/shop/customers/get-customer-profile) — read the authenticated customer's account details

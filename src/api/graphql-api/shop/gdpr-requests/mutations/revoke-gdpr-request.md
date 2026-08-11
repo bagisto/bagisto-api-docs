@@ -86,6 +86,7 @@ If GDPR data requests are disabled in the store's admin configuration, the mutat
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `id` | `ID!` | ✅ Yes | The request IRI, e.g. `/api/shop/gdpr-requests/12`. |
+| `clientMutationId` | `String` | ❌ No | Arbitrary string echoed back in the payload. |
 
 ## Possible Returns
 
@@ -94,13 +95,13 @@ If GDPR data requests are disabled in the store's admin configuration, the mutat
 | `gdprRequest._id` | `Int!` | Numeric request ID. |
 | `gdprRequest.type` | `String!` | Request type: `delete` or `update`. |
 | `gdprRequest.status` | `String!` | Request status — `revoked` after a successful revoke. |
-| `gdprRequest.message` | `String` | The message supplied in the request. |
+| `gdprRequest.message` | `String!` | The message supplied in the request. |
 | `gdprRequest.email` | `String!` | Email address tied to the request. |
-| `gdprRequest.revokedAt` | `DateTime` | Timestamp when the request was revoked. |
-| `gdprRequest.createdAt` | `DateTime!` | Request creation timestamp. |
-| `gdprRequest.updatedAt` | `DateTime!` | Request last update timestamp. |
+| `gdprRequest.revokedAt` | `String` | Timestamp when the request was revoked. |
+| `gdprRequest.createdAt` | `String` | Request creation timestamp. |
+| `gdprRequest.updatedAt` | `String` | Request last update timestamp. |
 | `gdprRequest.successMessage` | `String` | Confirmation message — present on create / revoke / delete results. |
-| `gdprRequest.customer` | `Customer!` | The customer who owns the request. |
+| `gdprRequest.customer` | `Customer` | The customer who owns the request. |
 | `gdprRequest.customer._id` | `Int!` | Numeric customer ID of the owner. |
 
 ## Related Resources

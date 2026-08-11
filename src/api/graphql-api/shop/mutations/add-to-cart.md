@@ -2116,12 +2116,12 @@ The `booking` field accepts a JSON string whose structure varies by booking type
 | **Event** | `{"type":"event","qty":{"ticketId":qty,...}}` | `{"type":"event","qty":{"1":1,"2":1}}` |
 | **Table** | `{"type":"table","date":"YYYY-MM-DD","slot":"HH:MM AM - HH:MM PM"}` + `bookingNote` param | `{"type":"table","date":"2026-03-25","slot":"12:00 PM - 12:45 PM"}` |
 
-::: info Booking Type Notes
-- **Event bookings**: At least one ticket type must have a quantity greater than 0.
-- **Table bookings**: The `bookingNote` input parameter is required. It is passed separately from the `booking` JSON.
-- **Rental bookings**: Daily rentals use `date_from`/`date_to`; hourly rentals use `date`/`slot`.
-- **Slot format**: Time ranges like `"12:00 PM - 08:00 PM"` are automatically parsed and converted to Unix timestamps by the API.
-:::
+Four rules apply on top of the shapes above:
+
+- **Event bookings** — at least one ticket type must carry a quantity greater than 0.
+- **Table bookings** — `bookingNote` is required, and it is a separate input parameter rather than part of the `booking` JSON.
+- **Rental bookings** — a daily rental uses `date_from` / `date_to`; an hourly rental uses `date` / `slot`.
+- **Slot format** — a time range such as `"12:00 PM - 08:00 PM"` is parsed and converted to Unix timestamps server-side.
 
 ## Cart Item `options` Field
 

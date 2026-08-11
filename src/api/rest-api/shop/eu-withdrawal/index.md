@@ -14,6 +14,17 @@ The list, view and authenticated-file endpoints require an authenticated **custo
 
 The **guest** file endpoint requires only the storefront key — no customer token. Ownership of the order is proved by supplying the matching order increment id and email.
 
+## Withdrawal must be switched on first
+
+The feature ships **disabled**. It is turned on per channel in Configuration → Sales → EU Right of Withdrawal, and the setting defaults to off, so a fresh store rejects every filing attempt until an admin enables it.
+
+Two things make this easy to misdiagnose:
+
+- **The error does not mention the setting.** A filing attempt against a disabled channel fails with `404` and *"The order could not be found or is not eligible for withdrawal."* — the same message an unknown or mismatched order produces. A developer sees "order not found" and goes looking for a wrong order id or email, when the real cause is the configuration flag.
+- **The check follows the order's own channel.** Enabling withdrawal on one channel does not enable it for orders placed on another. The gate reads the channel the order belongs to, not the channel the request is made against.
+
+Only the two filing endpoints are gated. Listing and viewing declarations keep working even after the feature is switched off, so declarations filed while it was enabled remain readable.
+
 ## Filing is idempotent
 
 Filing a withdrawal is **idempotent per order**. If a declaration already exists for the given order, a second `POST` returns the existing declaration unchanged instead of creating a duplicate or raising an error. A confirmation email is sent when the declaration is first created.

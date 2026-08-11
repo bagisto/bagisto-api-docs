@@ -52,7 +52,7 @@ The response is a binary PDF file with the following headers:
 | Header | Value |
 |--------|-------|
 | `Content-Type` | `application/pdf` |
-| `Content-Disposition` | `attachment; filename="invoice-{id}.pdf"` |
+| `Content-Disposition` | `attachment; filename=invoice-{date}.pdf` — the invoice date, e.g. `invoice-21-07-2026.pdf`, not the invoice ID |
 
 ### PDF Contents
 
@@ -74,35 +74,27 @@ curl -X GET "https://api-demo.bagisto.com/api/shop/customer-invoices/1/pdf" \
 
 ## Error Responses
 
-**Not Found (404):**
-```json
-{
-  "message": "Customer invoice with ID \"999\" not found."
-}
-```
+| Status | Body `detail` | Cause |
+|--------|---------------|-------|
+| `404` | `Customer invoice with ID "999999" not found` | No such invoice, or it belongs to another customer's order. |
+| `403` | `Unauthenticated. Please login to perform this action` | No customer Bearer token was sent. |
+| `401` | — | The storefront key header was missing or wrong. |
 
-**Unauthenticated (401):**
-```json
-{
-  "message": "Customer is not logged in."
-}
-```
-
-## Notes
-
-- **Separate route:** The `/pdf` endpoint is a separate route (not an API Platform operation).
-- **Rendering engine:** Uses DomPDF for LTR locales and mPDF for RTL locales, supporting multilingual invoice rendering.
-- **Customer isolation:** Customers can only download PDFs for invoices from their own orders.
-- **Binary response:** The response body is a raw PDF binary stream, not JSON.
+An error answers with JSON even though the success path is binary, so branch on the status code before writing the body to a file.
 
 ## Use Cases
 
-- Allow customers to download invoice PDFs for their records
-- Provide printable invoice documents
-- Support accounting and tax filing workflows
+- **"Download invoice" button** — fetch with both auth headers and save the response body; the `downloadUrl` field on the invoice payload points at this same route.
+- **Attach an invoice to an email or ticket** — the PDF is the only place the invoiced line items are available over REST.
+
+## Best Practices
+
+- **Do not put this URL in an anchor tag** — a browser navigation sends no `Authorization` or storefront-key header and the download fails with `403`. Fetch it in code and hand the blob to the user.
+- **Take the filename from `Content-Disposition`** — it is built from the invoice date, so guessing `invoice-{id}.pdf` produces the wrong name.
+- **Check the response content type first** — a failure returns JSON with the same `200`-style plumbing on the client, and saving it produces an unreadable "PDF".
 
 ## Related Resources
 
-- [Get All Customer Invoices](/api/rest-api/shop/customer-invoices/get-customer-invoices)
-- [Get Single Customer Invoice](/api/rest-api/shop/customer-invoices/get-customer-invoice)
-- [Get Customer Orders](/api/rest-api/shop/customer-orders/get-customer-orders)
+- [Get All Customer Invoices](/api/rest-api/shop/customer-invoices/get-customer-invoices) — every invoice raised against the customer's orders
+- [Get Single Customer Invoice](/api/rest-api/shop/customer-invoices/get-customer-invoice) — one invoice by id
+- [Get Customer Orders](/api/rest-api/shop/customer-orders/get-customer-orders) — the customer's order history

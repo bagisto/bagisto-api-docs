@@ -27,10 +27,10 @@ examples:
       - error: 400 Bad Request
         cause: The return is not in a state that can be closed
         solution: Only a return whose canClose flag is true can be closed
-      - error: 401 Unauthorized
+      - error: 403 Forbidden
         cause: Missing or invalid customer Bearer token
         solution: Log in and provide a valid customer authentication token
-      - error: 403 Forbidden
+      - error: 401 Unauthorized
         cause: Storefront key is missing or invalid
         solution: Provide a valid X-STOREFRONT-KEY header
       - error: 404 Not Found
@@ -92,12 +92,12 @@ No body is required — send an empty body.
 |--------|---------|
 | `200 OK` | Return closed (solved). |
 | `400 Bad Request` | The return cannot be closed in its current state. |
-| `401 Unauthorized` | Missing or invalid customer Bearer token. |
-| `403 Forbidden` | Missing or invalid storefront key. |
+| `401 Unauthorized` | Missing or invalid storefront key. |
+| `403 Forbidden` | Missing or invalid customer Bearer token. |
 | `404 Not Found` | The return does not exist or is not the customer's. |
 
 ## Related Resources
 
-- [Reopen a Return](/api/rest-api/shop/returns/reopen-return)
-- [View Return](/api/rest-api/shop/returns/view-return)
-- [Returns Overview](/api/rest-api/shop/returns/)
+- [Reopen a Return](/api/rest-api/shop/returns/reopen-return) — reopen a cancelled or declined return
+- [View Return](/api/rest-api/shop/returns/view-return) — one return with its status flags
+- [Returns Overview](/api/rest-api/shop/returns/) — the returns menu overview, including the settings that gate it

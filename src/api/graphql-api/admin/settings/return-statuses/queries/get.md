@@ -51,4 +51,4 @@ Returns a single RMA status by its IRI.
 
 Pass the resource IRI (`/api/admin/rma/statuses/{id}`) as `id`. Select `_id` for the numeric id.
 
-For field meanings, see the [menu overview](./).
+For field meanings, see the [menu overview](../).

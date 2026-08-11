@@ -45,10 +45,10 @@ examples:
         "updatedAt": "2026-07-20T10:15:30.000000Z"
       }
     commonErrors:
-      - error: 401 Unauthorized
+      - error: 403 Forbidden
         cause: Missing or invalid customer Bearer token
         solution: Log in and provide a valid customer authentication token
-      - error: 403 Forbidden
+      - error: 401 Unauthorized
         cause: Storefront key is missing or invalid
         solution: Provide a valid X-STOREFRONT-KEY header
       - error: 404 Not Found
@@ -122,13 +122,13 @@ This endpoint requires an authenticated customer — send the storefront key and
 | Status | Meaning |
 |--------|---------|
 | `200 OK` | Return retrieved. |
-| `401 Unauthorized` | Missing or invalid customer Bearer token. |
-| `403 Forbidden` | Missing or invalid storefront key. |
+| `401 Unauthorized` | Missing or invalid storefront key. |
+| `403 Forbidden` | Missing or invalid customer Bearer token. |
 | `404 Not Found` | The return does not exist or is not the customer's. |
 
 ## Related Resources
 
-- [List Returns](/api/rest-api/shop/returns/list-returns)
-- [List Return Messages](/api/rest-api/shop/returns/list-return-messages)
-- [Cancel a Return](/api/rest-api/shop/returns/cancel-return)
-- [Returns Overview](/api/rest-api/shop/returns/)
+- [List Returns](/api/rest-api/shop/returns/list-returns) — the customer's own return requests
+- [List Return Messages](/api/rest-api/shop/returns/list-return-messages) — the conversation thread on a return
+- [Cancel a Return](/api/rest-api/shop/returns/cancel-return) — withdraw a return the customer raised
+- [Returns Overview](/api/rest-api/shop/returns/) — the returns menu overview, including the settings that gate it

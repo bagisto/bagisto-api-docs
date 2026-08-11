@@ -11,29 +11,25 @@ examples:
       Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
       {
-        "shippingMethodCode": "flatrate_flatrate",
-        "shippingMethod": "flat_rate"
+        "shippingMethod": "flatrate_flatrate"
       }
     response: |
+      HTTP/1.1 201 Created
+
       {
-        "data": {
-          "shippingMethod": {
-            "code": "flatrate_flatrate",
-            "method": "flat_rate",
-            "title": "Flat Rate",
-            "price": 10.00
-          },
-          "cartTotal": 1329.97
-        },
-        "message": "Shipping method set successfully"
+        "id": "504",
+        "success": true,
+        "message": "Shipping method saved successfully",
+        "cartToken": "62f2b3f5-a455-4c78-93ba-eabca63d32ec",
+        "shippingMethod": "flatrate_flatrate"
       }
     commonErrors:
-      - error: 401 Unauthorized
-        cause: Customer not authenticated
-        solution: Provide valid Bearer token
-      - error: 422 Unprocessable Entity
-        cause: Invalid shipping method
-        solution: Use method from get-shipping-methods response
+      - error: 500 Internal Server Error — Shipping method is required
+        cause: shippingMethod was missing from the body
+        solution: Send the method value of a rate from Get Shipping Methods
+      - error: 401 Unauthorized — Authentication token is required
+        cause: No cart or customer token was sent as the Bearer token
+        solution: Send the cartToken from Create Cart, or a logged-in customer's token
 
 ---
 
@@ -53,59 +49,55 @@ POST /api/shop/checkout-shipping-methods
 |--------|----------|-------------|
 | `Content-Type` | Yes | application/json |
 | `X-STOREFRONT-KEY` | Yes | Your storefront API key |
-| `Authorization` | Yes | Bearer token (customer login required) |
+| `Authorization` | Yes | The cart's own token as a Bearer token, or a logged-in customer's token. |
 
 ## Request Body
 
 ```json
 {
-  "shippingMethodCode": "flatrate_flatrate",
-  "shippingMethod": "flat_rate"
+  "shippingMethod": "flatrate_flatrate"
 }
 ```
 
-## Request Parameters
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `shippingMethod` | string | Yes | The `method` value of the chosen rate from [Get Shipping Methods](/api/rest-api/shop/checkout/get-shipping-methods), e.g. `flatrate_flatrate`. |
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `shippingMethodCode` | string | Yes | Code of the shipping method |
-| `shippingMethod` | string | Yes | Shipping method type |
+There is no `shippingMethodCode` field. Send the rate's `method`, not its `id` — `flatrate_flatrate_flatrate` is the id and is not accepted.
 
-## Response Fields (200 OK)
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `shippingMethod` | object | Selected shipping method details |
-| `cartTotal` | decimal | Updated cart total with shipping |
-| `message` | string | Success message |
-
-## Shipping Method Fields
+## Response Fields (201 Created)
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `code` | string | Shipping method code |
-| `method` | string | Shipping method type |
-| `title` | string | Display name |
-| `price` | decimal | Shipping cost |
-| `carrier` | string | Carrier name |
+| `id` | string | Cart ID. |
+| `cartToken` | string | The cart's token, unchanged. |
+| `shippingMethod` | string | The method now saved on the cart. |
+| `success` | boolean | `true` when the method was saved. |
+| `message` | string | `Shipping method saved successfully`. |
+
+The response is a small confirmation object, not the cart. Read the updated totals — shipping now affects the grand total — from [Get Cart](/api/rest-api/shop/cart/get-cart).
+
+## Validation
+
+| Rule | Result |
+|------|--------|
+| `shippingMethod` present | Missing → `500` with `Shipping method is required`. |
+| A Bearer token identifies the cart | Otherwise `401 Authentication token is required`. |
+| An address is saved on the cart | Rates cannot be listed without one, so there is nothing valid to send. |
 
 ## Use Cases
 
-- Select standard shipping
-- Choose express shipping
-- Apply overnight delivery
-- Calculate final total
-- Proceed to payment
+- **Shipping step of checkout** — post the `method` from the rate the shopper picked, then move on to [Set Payment Method](/api/rest-api/shop/checkout/set-payment-method).
+- **Change of mind** — posting a different method replaces the saved one; there is no separate clear call.
 
-## Important Notes
+## Best Practices
 
-- Must set shipping address first
-- Different methods available per location
-- Cost varies by location and weight
-- Some methods may have time restrictions
+- **Take the value from the rate list** — hardcoding a method code breaks as soon as the store enables or renames a carrier.
+- **Fetch the cart afterwards to show the new total** — this response carries no totals.
+- **Re-run the shipping step after an address change** — the saved method may no longer be offered for the new destination.
 
 ## Related Resources
 
-- [Get Shipping Methods](/api/rest-api/shop/checkout/get-shipping-methods)
-- [Set Shipping Address](/api/rest-api/shop/checkout/set-shipping-address)
-- [Set Payment Method](/api/rest-api/shop/checkout/set-payment-method)
+- [Get Shipping Methods](/api/rest-api/shop/checkout/get-shipping-methods) — the rates available for the saved address
+- [Set Shipping Address](/api/rest-api/shop/checkout/set-shipping-address) — the same call with a separate delivery address
+- [Set Payment Method](/api/rest-api/shop/checkout/set-payment-method) — save the chosen payment method on the cart

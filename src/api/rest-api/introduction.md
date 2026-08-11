@@ -60,7 +60,7 @@ The administrative API for management operations:
 ## Quick Start
 
 ### 1. Installation
-See the [Installation Guide](/api/installation).**
+See the [Setup Guide](/api/setup).**
 
 ### 2. Enable Swagger UI 
 
@@ -219,9 +219,7 @@ Every collection endpoint (`GET /api/shop/products`, `/categories`, `/attributes
 | Parameter   | Type    | Default | Description                                          |
 |-------------|---------|---------|------------------------------------------------------|
 | `page`      | integer | `1`     | Page number (1-based)                                |
-| `per_page`  | integer | `10`    | Items per page. Hard-capped at **50** server-side.   |
-
-> Use `per_page` (snake_case). The legacy API Platform name `itemsPerPage` is **not** accepted — it's remapped to `per_page` in the package config.
+| `per_page`  | integer | `10`    | Items per page. Hard-capped at **50** server-side. Use this snake_case name — the legacy `itemsPerPage` is not accepted. |
 
 ### Response headers
 
@@ -298,18 +296,18 @@ Pass the token as `cart_token` in the request body of every subsequent cart endp
 }
 ```
 
-The same token also drives checkout — pass it through the address, shipping-method, payment-method and order-place steps.
+Three things follow from that:
 
-> Logged-in customers (who send `Authorization: Bearer …`) do **not** need a cart token. Their cart is identified by the authenticated user, and any guest cart they previously held is merged into their account on login.
-
-> See the [Cart Token endpoint](/api/rest-api/shop/cart/cart-token) and [Add Product to Cart](/api/rest-api/shop/cart/add-product-in-cart) for full request/response shapes.
+- The same token drives checkout — pass it through the address, shipping-method, payment-method, and place-order steps.
+- Logged-in customers do **not** need a cart token. Their cart is identified by the customer token they already send, and a guest cart they held earlier is merged into their account on login.
+- Full request and response shapes are on [Create Cart](/api/rest-api/shop/cart/create-cart) and [Add to Cart](/api/rest-api/shop/cart/add-to-cart).
 
 ## What's Next?
 
 - 🛍️ [Shop API Resources](/api/rest-api/shop-resources) - Complete shop operations guide
-- 👨‍💼 [Cart & Checkout](/api/rest-api/cart-checkout) - Shopping cart and order management
-- 👤 [Customer Management](/api/rest-api/customers) - Customer profiles and addresses
-- 📦 [Product Management](/api/rest-api/products) - Product operations and details
+- 👨‍💼 [Cart & Checkout](/api/rest-api/shop/cart/) - Shopping cart and order management
+- 👤 [Customer Management](/api/rest-api/shop/customers/) - Customer profiles and addresses
+- 📦 [Products](/api/rest-api/shop/products/) - Catalog listing, search, and product detail
 - 🔐 [Authentication Guide](/api/rest-api/authentication) - Detailed auth methods
 - 💡 [Best Practices](/api/rest-api/best-practices) - Performance and security tips
 

@@ -592,48 +592,60 @@ examples:
 The `productReviews` query retrieves a collection of product reviews with filtering and pagination support. Use this query to:
 
 - Display product reviews on product detail pages
-- Show review statistics and ratings
 - Filter reviews by product, status, and rating
-- Build review listing pages with pagination
+- Build review listing pages with cursor pagination
 - Display customer feedback and testimonials
 - Calculate average ratings and review counts
-- Show pending reviews in admin dashboard
-- Implement review sorting and filtering
 
-This query supports full pagination with cursor-based navigation and flexible filtering options for various use cases.
+Two behaviours decide what you get back:
 
-> **Note:** When the `status` argument is **omitted**, this query returns only **approved** reviews — the right default for a storefront product page (customer-submitted reviews start as `pending` until an admin approves them). Passing `status` overrides this default, so you can request `status: "pending"` or `status: "disapproved"` explicitly (e.g. for moderation tooling).
+| Behaviour | What it means |
+|-----------|---------------|
+| **Approved only, by default** | Omitting `status` returns approved reviews and nothing else — the right default for a product page, since a customer's review stays `pending` until an admin approves it. Pass `status` to override, which is how moderation tooling asks for `"pending"` or `"disapproved"`. |
+| **Fixed order, oldest first** | Reviews come back in review-ID order and there is no sort argument. Sort in the client when a product page needs newest or highest-rated first. |
 
 ## Arguments
 
 | Argument | Type | Required | Description |
 |----------|------|----------|-------------|
-| `status` | `String` | ❌ No | Filter by review status (`"pending"`, `"approved"`, `"disapproved"`). |
+| `product_id` | `Int` | ❌ No | Restrict the result to one product's reviews. Omit to read reviews across the whole catalog. |
+| `status` | `String` | ❌ No | Filter by review status (`"pending"`, `"approved"`, `"disapproved"`). Defaults to `"approved"`. |
 | `rating` | `Int` | ❌ No | Filter by rating value (1-5 stars). |
-| `first` | `Int` | ❌ No | Number of results to return (forward pagination). Max: 100. |
+| `first` | `Int` | ❌ No | Number of results to return (forward pagination). Default: `30` |
 | `after` | `String` | ❌ No | Pagination cursor for forward navigation. Use with `first`. |
-| `last` | `Int` | ❌ No | Number of results for backward pagination. Max: 100. |
+| `last` | `Int` | ❌ No | Number of results for backward pagination. Default: `30` |
 | `before` | `String` | ❌ No | Pagination cursor for backward navigation. Use with `last`. |
+
+Supplying several filters narrows the result — they combine, they never widen the set.
 
 ## Possible Returns
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | `ID!` | Unique review API identifier. |
+| `edges` | `[ProductReviewEdge]` | Review edges for the current page. |
+| `edges.node` | `ProductReview` | A single review — fields below. |
+| `edges.cursor` | `String!` | Cursor for this review, used as `after` on the next request. |
+| `pageInfo` | `ProductReviewPageInfo!` | Pagination metadata. |
+| `pageInfo.hasNextPage` | `Boolean` | Whether more reviews follow the current page. |
+| `pageInfo.hasPreviousPage` | `Boolean` | Whether reviews precede the current page. |
+| `pageInfo.startCursor` | `String` | Cursor of the first review on the page. |
+| `pageInfo.endCursor` | `String` | Cursor of the last review on the page. |
+| `totalCount` | `Int!` | Total reviews matching the filters. |
+
+### Review Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `ID!` | IRI-style review identifier. |
 | `_id` | `Int!` | Numeric review ID. |
-| `name` | `String!` | Customer name who wrote the review. |
-| `title` | `String!` | Review title/headline. |
-| `rating` | `Int!` | Star rating (1-5). |
-| `comment` | `String!` | Review comment/text. |
-| `status` | `String!` | Review approval status (`"pending"`, `"approved"`, `"disapproved"`). |
-| `createdAt` | `DateTime!` | Review creation timestamp. |
-| `updatedAt` | `DateTime!` | Last update timestamp. |
-| `pageInfo` | `PageInfo!` | Pagination information. |
-| `pageInfo.hasNextPage` | `Boolean!` | Whether more pages exist forward. |
-| `pageInfo.hasPreviousPage` | `Boolean!` | Whether more pages exist backward. |
-| `pageInfo.startCursor` | `String` | Cursor for first item in page. |
-| `pageInfo.endCursor` | `String` | Cursor for last item in page. |
-| `totalCount` | `Int!` | Total reviews matching filters. |
+| `name` | `String!` | Name of the customer who wrote the review. |
+| `title` | `String!` | Review title or headline. |
+| `rating` | `Int!` | Star rating, 1 to 5. |
+| `comment` | `String` | Review body text. |
+| `status` | `String!` | Approval status (`"pending"`, `"approved"`, `"disapproved"`). |
+| `attachments` | `String` | Images the customer attached to the review, as a JSON value. `null` when none were uploaded. |
+| `createdAt` | `String` | ISO 8601 timestamp of when the review was submitted. |
+| `updatedAt` | `String` | ISO 8601 timestamp of the last change. |
 
 ## Review Status
 
@@ -645,34 +657,85 @@ This query supports full pagination with cursor-based navigation and flexible fi
 
 ## Use Cases
 
-### 1. Product Reviews Page
-Use the "By Product ID" example to display all approved reviews for a specific product.
+### 1. Reviews block on a product page
 
-### 2. Admin Review Management
-Use the "Filtered by Status" example with `status: "pending"` to show reviews awaiting moderation.
+Scope to the product and let the default status do the filtering — nothing pending or disapproved reaches the page.
 
-### 3. High-Rated Reviews
-Use the "Filtered by Rating" example with `rating: 5` to highlight 5-star reviews.
+```graphql
+query productPageReviews($productId: Int!) {
+  productReviews(product_id: $productId, first: 10) {
+    totalCount
+    edges {
+      node {
+        _id
+        name
+        title
+        rating
+        comment
+        createdAt
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+```
 
-### 4. Customer Testimonials
-Filter by approved status and high rating to display customer testimonials.
+Use `totalCount` for the "N reviews" heading, and feed `endCursor` into the next request's `after` when the shopper asks for more.
 
-### 5. Review Analytics
-Use pagination to fetch all reviews for a product and calculate statistics.
+### 2. Star breakdown for the ratings summary
+
+There is no aggregate field, so the rating histogram is five counts. Alias them into one request and read only `totalCount` from each:
+
+```graphql
+query ratingBreakdown($productId: Int!) {
+  five:  productReviews(product_id: $productId, rating: 5, first: 1) { totalCount }
+  four:  productReviews(product_id: $productId, rating: 4, first: 1) { totalCount }
+  three: productReviews(product_id: $productId, rating: 3, first: 1) { totalCount }
+  two:   productReviews(product_id: $productId, rating: 2, first: 1) { totalCount }
+  one:   productReviews(product_id: $productId, rating: 1, first: 1) { totalCount }
+}
+```
+
+Keep `first: 1` rather than `first: 0` — a zero page size fails the request.
+
+### 3. Confirming a review the shopper just submitted
+
+A review created through [Create Product Review](/api/graphql-api/shop/mutations/create-product-review) is `pending`, so it will not appear in the block above. Ask for the pending set to show a "your review is awaiting approval" state instead of leaving the shopper wondering where it went.
+
+```graphql
+query pendingForProduct($productId: Int!) {
+  productReviews(product_id: $productId, status: "pending", first: 5) {
+    totalCount
+    edges {
+      node {
+        _id
+        title
+        rating
+        createdAt
+      }
+    }
+  }
+}
+```
+
+### 4. Newest-first review lists
+
+The API returns reviews in review-ID order, so a "most recent" tab is built in the client: request the page, then sort the nodes by `createdAt` descending before rendering.
 
 ## Best Practices
 
-1. **Approved by default** - Omitting `status` already returns approved reviews only; pass `status` explicitly only when building moderation tooling
-2. **Show Ratings** - Display the rating prominently alongside the review
-3. **Use Pagination** - Always implement pagination for better performance
-4. **Cache Results** - Cache reviews for better performance as they change infrequently
-5. **Sort Reviews** - Display most recent or highest-rated reviews first
-6. **Prevent Spam** - Only show approved reviews to maintain quality
-7. **Display Author Info** - Show customer name to build trust and authenticity
+1. **Omit `status` for anything customer-facing** — the default already restricts the result to approved reviews, so a product page needs no filter of its own. Send `status: "pending"` only to confirm a shopper's own freshly submitted review, never to build a public list
+2. **Scope to a product** — pass `product_id` on a product detail page, otherwise the query reads reviews across the whole catalog
+3. **Paginate** — a popular product accumulates hundreds of reviews; page through them with `first` and `after` rather than raising `first`
+4. **Sort client-side** — the API returns reviews oldest first and offers no sort argument, so reorder in the client if the page needs newest or highest-rated first
+5. **Cache the result** — reviews change infrequently, so they cache well per product and status
 
 ## Related Resources
 
-- [Get Single Product Review](/api/graphql-api/shop/queries/get-product-review) - Query individual review details
 - [Create Product Review](/api/graphql-api/shop/mutations/create-product-review) - Submit new product review
 - [Get Product](/api/graphql-api/shop/queries/get-product) - Query product details
 - [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation

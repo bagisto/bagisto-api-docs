@@ -71,7 +71,7 @@ examples:
         solution: Provide the numeric ID of one of your own orders
       - error: NOT_FOUND
         cause: The order is not the customer's, or the channel does not have EU withdrawal enabled
-        solution: File only against your own orders on an EU-withdrawal-enabled channel
+        solution: File only against your own orders, and confirm the order's channel has EU withdrawal enabled — a disabled channel returns this same message
       - error: UNAUTHENTICATED
         cause: Missing or invalid customer Bearer token
         solution: Log in and provide a valid customer authentication token
@@ -88,6 +88,10 @@ Filing is **idempotent** — a second call for the same order returns the existi
 ## Authentication
 
 This mutation requires an authenticated customer — send the storefront key and a customer Bearer token. See the [Authentication](/api/graphql-api/authentication) page.
+
+## The channel must have withdrawal enabled
+
+Filing only works when EU right of withdrawal is switched on for the channel the **order** belongs to. The setting is off by default. When it is off the mutation fails with the same not-found message an unknown order produces, so check the configuration before assuming the identifiers are wrong — see the [overview](/api/graphql-api/shop/eu-withdrawal/).
 
 ## Input Fields
 

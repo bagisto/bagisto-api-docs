@@ -18,7 +18,7 @@ examples:
       - error: 404 Not Found
         cause: The request does not exist or is not owned by the authenticated customer
         solution: Only request IDs belonging to the logged-in customer can be deleted
-      - error: 401 Unauthorized
+      - error: 403 Forbidden
         cause: Missing or invalid customer Bearer token
         solution: Log in and provide a valid customer authentication token
 ---
@@ -65,12 +65,12 @@ A successful delete returns HTTP 204 with no response body.
 |--------|---------|
 | `204 No Content` | Request deleted. |
 | `400 Bad Request` | GDPR is disabled in the store's admin configuration. |
-| `401 Unauthorized` | Missing or invalid customer Bearer token. |
-| `403 Forbidden` | Missing or invalid storefront key. |
+| `401 Unauthorized` | Missing or invalid storefront key. |
+| `403 Forbidden` | Missing or invalid customer Bearer token. |
 | `404 Not Found` | The request does not exist or is not owned by the customer. |
 
 ## Related Resources
 
-- [Raise a GDPR Request](/api/rest-api/shop/gdpr-requests/create-gdpr-request)
-- [Revoke a GDPR Request](/api/rest-api/shop/gdpr-requests/revoke-gdpr-request)
-- [GDPR Requests Overview](/api/rest-api/shop/gdpr-requests/)
+- [Raise a GDPR Request](/api/rest-api/shop/gdpr-requests/create-gdpr-request) — raise a delete or update request
+- [Revoke a GDPR Request](/api/rest-api/shop/gdpr-requests/revoke-gdpr-request) — withdraw a request still being processed
+- [GDPR Requests Overview](/api/rest-api/shop/gdpr-requests/) — the GDPR menu overview, including the setting that gates it

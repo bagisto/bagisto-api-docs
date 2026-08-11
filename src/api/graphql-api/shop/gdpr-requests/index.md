@@ -38,7 +38,9 @@ A GDPR request moves through these statuses:
 | `approved` | The store reviewed and approved (fulfilled) the request. |
 | `revoked` | The customer withdrew the request before it was finished. |
 
-A customer raises a request (`pending`), can **revoke** it while it is still `pending` or `processing`, and can **delete** the request record entirely.
+A customer raises a request (`pending`), can **revoke** it while it is still `pending` or `processing`, and can **delete** the request record entirely. Revoking a request that has already been declined, approved, or revoked is rejected — only the first two states can be withdrawn.
+
+Only the store moves a request into `processing`, `declined`, or `approved`; those transitions are not available through the storefront API.
 
 ## Request type
 

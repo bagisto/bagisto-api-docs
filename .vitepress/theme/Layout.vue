@@ -1,11 +1,9 @@
 <template>
   <Layout>
-    <!-- Client-only navbar content -->
     <template #nav-bar-content-after>
       <GoogleTranslate v-if="isClient" />
     </template>
 
-    <!-- Client-only examples panel -->
     <template #aside-bottom>
       <GraphQLExamplesPanel
         v-if="isClient && pageExamples.length && isGraphQL"
@@ -18,10 +16,41 @@
       />
     </template>
   </Layout>
+
+  <template v-if="isClient && hasExamples">
+    <button
+      class="examples-fab"
+      type="button"
+      aria-label="Show examples"
+      @click="examplesOpen = true"
+    >
+      &lt;/&gt; Examples
+    </button>
+
+    <Teleport to="body">
+      <div
+        v-if="examplesOpen"
+        class="examples-drawer-backdrop"
+        @click="examplesOpen = false"
+      />
+      <aside class="examples-drawer" :class="{ open: examplesOpen }">
+        <button
+          class="examples-drawer-close"
+          type="button"
+          aria-label="Close examples"
+          @click="examplesOpen = false"
+        >
+          &times;
+        </button>
+        <GraphQLExamplesPanel v-if="isGraphQL" :examples="pageExamples" />
+        <RestExamplesPanel v-else :examples="pageExamples" />
+      </aside>
+    </Teleport>
+  </template>
 </template>
 
 <script setup>
-import { ref, watch, onMounted, nextTick, computed } from 'vue'
+import { ref, watch, onMounted, onUnmounted, nextTick, computed } from 'vue'
 import { useRoute } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 
@@ -34,67 +63,25 @@ const route = useRoute()
 
 const pageExamples = ref([])
 const isClient = ref(false)
+const examplesOpen = ref(false)
 
-/*
-|--------------------------------------------------------------------------
-| Detect GraphQL vs REST (UNCHANGED LOGIC)
-|--------------------------------------------------------------------------
-*/
+const hasExamples = computed(() => pageExamples.value.length > 0)
+
 const isGraphQL = computed(() => {
   if (pageExamples.value.length === 0) return false
-  // Allow pages to explicitly set apiType: rest in frontmatter
-  // to use the REST panel (cURL-first tabs, no GraphQL tab)
   if (route.data?.frontmatter?.apiType === 'rest') return false
   const firstExample = pageExamples.value[0]
   return 'query' in firstExample
 })
 
-/*
-|--------------------------------------------------------------------------
-| SSR SAFE DOM STYLING
-|--------------------------------------------------------------------------
-*/
-const updateAsideStyles = () => {
-  // ⭐⭐ CRITICAL FIX — prevents SSR crash
+
+const applyPageAttrs = () => {
   if (import.meta.env.SSR) return
-
-  const asideContainer = document.querySelector('.aside-container')
-  const examplesSidebar = document.querySelector('.examples-sidebar')
-
-  if (asideContainer && examplesSidebar) {
-    asideContainer.style.setProperty('width', '350px', 'important')
-    asideContainer.style.setProperty('max-width', '350px', 'important')
-
-    const content = document.querySelector('.content')
-    if (content) {
-      content.style.setProperty('min-width', '540px', 'important')
-    }
-
-    const aside = document.querySelector('.aside')
-    if (aside) {
-      aside.style.setProperty('max-width', '400px', 'important')
-    }
-  } else if (asideContainer) {
-    asideContainer.style.width = ''
-    asideContainer.style.maxWidth = ''
-
-    const content = document.querySelector('.content')
-    if (content) content.style.minWidth = ''
-
-    const aside = document.querySelector('.aside')
-    if (aside) aside.style.maxWidth = ''
-  }
+  const html = document.documentElement
+  html.classList.toggle('api-page', route.path.startsWith('/api/'))
+  html.setAttribute('data-path', route.path)
 }
 
-/*
-|--------------------------------------------------------------------------
-| Scroll the sidebar so the active menu item is visible
-|--------------------------------------------------------------------------
-| VitePress auto-expands the group containing the current page but does not
-| scroll the sidebar to it. On a hard reload a deep link can sit far below
-| the fold. This scrolls the sidebar container (not the window) so the active
-| item lands ~1/3 from the top — only when it isn't already in view.
-*/
 function scrollSidebarToActive() {
   if (import.meta.env.SSR) return
 
@@ -121,11 +108,6 @@ function scrollSidebarToActive() {
   nextTick(() => tryScroll(8))
 }
 
-/*
-|--------------------------------------------------------------------------
-| Load Examples (UNCHANGED)
-|--------------------------------------------------------------------------
-*/
 function loadExamples() {
   nextTick(() => {
     if (route.data?.frontmatter?.examples) {
@@ -136,30 +118,31 @@ function loadExamples() {
   })
 }
 
-/*
-|--------------------------------------------------------------------------
-| Lifecycle (UNCHANGED LOGIC)
-|--------------------------------------------------------------------------
-*/
+const onKeydown = (e) => {
+  if (e.key === 'Escape') examplesOpen.value = false
+}
+
 onMounted(() => {
   isClient.value = true
+  applyPageAttrs()
   loadExamples()
   scrollSidebarToActive()
+  window.addEventListener('keydown', onKeydown)
+})
+
+onUnmounted(() => {
+  if (!import.meta.env.SSR) window.removeEventListener('keydown', onKeydown)
 })
 
 watch(() => route.path, () => {
+  examplesOpen.value = false
+  applyPageAttrs()
   loadExamples()
   scrollSidebarToActive()
 })
 
-watch(
-  pageExamples,
-  async () => {
-    if (!isClient.value) return   // ⭐ extra client guard
-
-    await nextTick()
-    updateAsideStyles()
-  },
-  { immediate: true }
-)
+watch(examplesOpen, (open) => {
+  if (import.meta.env.SSR) return
+  document.body.style.overflow = open ? 'hidden' : ''
+})
 </script>

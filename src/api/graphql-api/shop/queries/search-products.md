@@ -529,7 +529,7 @@ examples:
 
   - id: new-products
     title: Search Products - New Products
-    description: Retrieve products that are flagged as "new" in the catalog, sorted by creation date descending (newest first). Equivalent to the REST endpoint /api/products?new=1&sort=created_at-desc.
+    description: Retrieve products that are flagged as "new" in the catalog, sorted by creation date descending (newest first). Equivalent to the REST endpoint /api/shop/products?new=1&sort=created_at-desc.
     query: |
       query getProducts {
         products(filter: "{\"new\": \"1\"}", sortKey: "CREATED_AT", reverse: true, first: 10) {
@@ -571,7 +571,7 @@ examples:
 
   - id: featured-products
     title: Search Products - Featured Products
-    description: Retrieve featured products sorted by newest first — equivalent to the REST endpoint /api/products?featured=1&sort=created_at-desc.
+    description: Retrieve featured products sorted by newest first — equivalent to the REST endpoint /api/shop/products?featured=1&sort=created_at-desc.
     query: |
       query getProducts {
         products(filter: "{\"featured\": \"1\"}", sortKey: "CREATED_AT", reverse: true, first: 12) {
@@ -612,7 +612,7 @@ examples:
 
   - id: popular-products-by-brand
     title: Popular Products by Brand
-    description: Retrieve popular products for a specific brand sorted by newest first — equivalent to the REST endpoint /api/products?sort=created_at-desc&brand=25.
+    description: Retrieve popular products for a specific brand sorted by newest first — equivalent to the REST endpoint /api/shop/products?sort=created_at-desc&brand=25.
     query: |
       query getProducts {
         products(filter: "{\"brand\": \"25\"}", sortKey: "CREATED_AT", reverse: true, first: 12) {
@@ -677,108 +677,92 @@ examples:
 
 ## About
 
-The `searchProducts` query enables advanced product search with support for text queries, filtering, and sorting. Use this query to:
+Search the catalog by keyword. Pass a `query` argument to the `products` field:
 
-- Implement full-text product search functionality
+```graphql
+products(query: "shirt", first: 10)
+```
+
+A product matches when the keyword appears anywhere in its **name** or its **SKU**. Partial words count — searching `cott` returns every product whose name contains *Cotton*.
+
+This is the same field that powers [List Products](/api/graphql-api/shop/queries/get-products). Results come back in the same shape as a listing, so both screens render with the same code, and filtering, sorting, and pagination work identically. Use it to:
+
+- Implement product search over the catalog
 - Build auto-complete and suggestion interfaces
-- Filter products by multiple criteria (price range, categories, attributes)
-- Sort search results by relevance, price, date, or custom fields
-- Implement faceted search interfaces
-- Create advanced query-based product discovery
+- Narrow a search further by category, type, price range, or attribute
+- Order search results by title, price, or date
 
-The search supports Bagisto's advanced search syntax for building complex, multi-criteria queries. It efficiently ranks results by relevance while maintaining performance across large product catalogs.
-
-::: tip Coming from REST?
-The REST `?parent_id`, `?price=`, `?new=1`, `?sort=` query params map onto the GraphQL `filter:` string, `sortKey`/`reverse`, and cursor args. See [REST ↔ GraphQL parameter mapping](/api/rest-graphql-mapping/shop/catalog) for the side-by-side table.
-:::
+The sections below cover what matters on a search screen. [List Products](/api/graphql-api/shop/queries/get-products) carries the full argument reference.
 
 ## Arguments
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `query` | `String` | Search term or advanced query string. Searches product name, description, SKU, and other fields. |
-| `first` | `Int` | Maximum number of results per page (default: 20, max: 250). |
+| `query` | `String` | Search term. Matched as a partial string against the product name and SKU. Descriptions and attribute values are not searched. |
+| `first` | `Int` | Number of results per page. Default: `30` |
 | `after` | `String` | Cursor for pagination. Returns results after this cursor. |
-| `last` | `Int` | Maximum results for backward pagination (max: 250). |
+| `last` | `Int` | Number of results for backward pagination. Default: `30` |
 | `before` | `String` | Cursor for backward pagination. |
-| `sortKey` | `ProductSortKeys` | Sort results by: `RELEVANCE`, `TITLE`, `PRICE`, `CREATED_AT`, `POPULARITY`. Default: `RELEVANCE` |
+| `sortKey` | `String` | Sort results by: `ID`, `TITLE` (alias `NAME`), `PRICE`, `CREATED_AT`, `UPDATED_AT`. Case-insensitive. Default: `ID` |
 | `reverse` | `Boolean` | Reverse sort order. Default: `false` |
-| `filters` | `ProductFilterInput` | Advanced filters for price range, categories, tags, and custom attributes. |
-| `filter` | `String` | JSON-encoded filter string. Supports keys like `category_id` to filter products by category (e.g. `"{\"category_id\": \"22\"}"`) |
+| `filter` | `String` | JSON-encoded filter string. Accepts `type`, `sku`, `category_id`, `price_from`, `price_to`, `new`, `featured`, and any filterable attribute code (e.g. `"{\"category_id\": \"22\"}"`). |
 
 ## Possible Returns
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `edges` | `[ProductEdge!]!` | Search result edges containing product nodes and pagination cursors. |
-| `edges.node` | `Product!` | Product object with all searchable fields (name, description, SKU, tags). |
-| `edges.node.score` | `Float` | Relevance score of the product match (0-1). Higher scores indicate better matches. |
-| `edges.cursor` | `String!` | Pagination cursor for this result. |
-| `nodes` | `[Product!]!` | Simplified array of products without edge wrapping. |
-| `pageInfo` | `PageInfo!` | Pagination metadata. |
-| `pageInfo.hasNextPage` | `Boolean!` | True if more results available after current page. |
-| `pageInfo.endCursor` | `String` | Cursor of last result on page. |
-| `facets` | `[SearchFacet!]` | Available facets for filtering (categories, price ranges, attributes). |
-| `facets.name` | `String!` | Facet name (e.g., "category", "price_range"). |
-| `facets.values` | `[FacetValue!]!` | Available values and counts for this facet. |
+| `edges` | `[ProductEdge]` | Search result edges containing product nodes and pagination cursors. |
+| `edges.node` | `Product` | The matched product, carrying the same fields as any catalog listing row. |
+| `edges.cursor` | `String` | Pagination cursor for this result. |
+| `pageInfo` | `ProductPageInfo!` | Pagination metadata. |
+| `pageInfo.hasNextPage` | `Boolean` | Whether more results follow the current page. |
+| `pageInfo.hasPreviousPage` | `Boolean` | Whether results precede the current page. |
+| `pageInfo.startCursor` | `String` | Cursor of the first result on the page. |
+| `pageInfo.endCursor` | `String` | Cursor of the last result on the page. |
 | `totalCount` | `Int!` | Total matching products across all pages. |
 
-## Filter Reference
+## Narrowing a Search
 
-The `filter` argument accepts a JSON-encoded string. You can combine multiple filters in a single object.
-
-### Available Filter Keys
-
-| Filter Key | Type | Description | Example |
-|------------|------|-------------|---------|
-| `category_id` | String | Filter by category ID | `"{\"category_id\": \"22\"}"` |
-| `price` | String | Price range as `"{min},{max}"` — the comma splits min from max, **not** a thousands separator | `"{\"price\": \"10,200\"}"` |
-| `type` | String | Filter by product type (`simple`, `configurable`, `virtual`, `downloadable`, `grouped`, `bundle`) | `"{\"type\": \"configurable\"}"` |
-| `color` | String | Filter by color attribute option ID | `"{\"color\": \"3\"}"` |
-| `size` | String | Filter by size attribute option ID | `"{\"size\": \"1\"}"` |
-| `brand` | String | Filter by brand attribute option ID | `"{\"brand\": \"5\"}"` |
-| `new` | String | Filter for new products only | `"{\"new\": \"1\"}"` |
-| `featured` | String | Filter for featured products only | `"{\"featured\": \"1\"}"` |
-
-### Combining Filters
-
-Pass multiple keys in a single JSON object:
+A search accepts the same `filter` argument as the listing, so a keyword and a category or attribute selection combine into one request:
 
 ```graphql
-products(filter: "{\"color\": \"5\", \"size\": \"1\", \"brand\": \"5\"}")
+query searchInCategory($query: String, $filter: String) {
+  products(query: $query, filter: $filter, first: 10) {
+    totalCount
+    edges {
+      node {
+        _id
+        sku
+        name
+        formattedPrice
+      }
+    }
+  }
+}
 ```
 
-## Sorting Reference
+```json
+{
+  "query": "shirt",
+  "filter": "{\"type\": \"configurable\", \"color\": \"3\"}"
+}
+```
 
-Use `sortKey` and `reverse` to control result ordering:
+The keyword and every filter key intersect — each one narrows the result further. The complete key list, the escaping rules, and the price-range caveats are on [List Products](/api/graphql-api/shop/queries/get-products#filter-keys).
 
-| Sort | `sortKey` | `reverse` | Description |
-|------|-----------|-----------|-------------|
-| A → Z | `"TITLE"` | `false` | Alphabetical ascending |
-| Z → A | `"TITLE"` | `true` | Alphabetical descending |
-| Newest First | `"CREATED_AT"` | `true` | Most recently created |
-| Oldest First | `"CREATED_AT"` | `false` | Earliest created |
-| Cheapest First | `"PRICE"` | `false` | Lowest price first |
-| Most Expensive First | `"PRICE"` | `true` | Highest price first |
+## Ordering Search Results
 
-### How Price Sorting Works
+Search results are **not ranked by relevance**. Every match is returned in the order given by `sortKey`, and omitting it falls back to product ID — effectively arbitrary for a shopper. A search screen should therefore always set an explicit order, most often `TITLE` ascending or `PRICE` ascending.
 
-When sorting by `PRICE`, the sort is not based on the `price` field alone. Instead, it is based on the `minimumPrice` column — the effective price shown to the customer on the storefront.
-
-`minimumPrice` reflects the lowest applicable price for a product after accounting for:
-
-- **Special price** — if a discounted price is set, `minimumPrice` will reflect that instead of the regular `price`
-- **Configurable variants** — for products with multiple variants, `minimumPrice` is the lowest price across all variants
-- **Regular price** — if no special price or variant pricing applies, `minimumPrice` equals `price`
-
-This means when you sort by price, you are sorting by what the customer actually sees — not the base catalog price. Always use `minimumPrice` in your UI when displaying the effective price alongside price-sorted results.
+The available sort keys, their `reverse` combinations, and the reason `PRICE` orders on `minimumPrice` rather than `price` are documented on [List Products](/api/graphql-api/shop/queries/get-products#sorting).
 
 ## REST API Equivalents
 
 | Use Case | REST Endpoint | GraphQL Equivalent |
 |----------|---------------|--------------------|
-| New Products | `/api/products?new=1&sort=created_at-desc&limit=10` | `products(filter: "{\"new\": \"1\"}", sortKey: "CREATED_AT", reverse: true, first: 10)` |
-| Featured Products | `/api/products?sort=created_at-desc&limit=12` | `products(filter: "{\"featured\": \"1\"}", sortKey: "CREATED_AT", reverse: true, first: 12)` |
-| Popular by Brand | `/api/products?sort=created_at-desc&brand=25&limit=12` | `products(filter: "{\"brand\": \"25\"}", sortKey: "CREATED_AT", reverse: true, first: 12)` |
-| All (Price Desc) | `/api/products?sort=price-desc&limit=12` | `products(sortKey: "PRICE", reverse: true, first: 12)` |
+| Keyword search | `/api/shop/products?query=shirt&per_page=10` | `products(query: "shirt", first: 10)` |
+| New Products | `/api/shop/products?new=1&sort=created_at-desc&per_page=10` | `products(filter: "{\"new\": \"1\"}", sortKey: "CREATED_AT", reverse: true, first: 10)` |
+| Featured Products | `/api/shop/products?featured=1&sort=created_at-desc&per_page=12` | `products(filter: "{\"featured\": \"1\"}", sortKey: "CREATED_AT", reverse: true, first: 12)` |
+| Popular by Brand | `/api/shop/products?brand=25&sort=created_at-desc&per_page=12` | `products(filter: "{\"brand\": \"25\"}", sortKey: "CREATED_AT", reverse: true, first: 12)` |
+| All (Price Desc) | `/api/shop/products?sort=price-desc&per_page=12` | `products(sortKey: "PRICE", reverse: true, first: 12)` |
 

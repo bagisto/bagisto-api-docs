@@ -27,10 +27,10 @@ examples:
       - error: 400 Bad Request
         cause: The store's settings do not allow reopening returns
         solution: Reopening must be enabled in the store's admin configuration
-      - error: 401 Unauthorized
+      - error: 403 Forbidden
         cause: Missing or invalid customer Bearer token
         solution: Log in and provide a valid customer authentication token
-      - error: 403 Forbidden
+      - error: 401 Unauthorized
         cause: Storefront key is missing or invalid
         solution: Provide a valid X-STOREFRONT-KEY header
       - error: 404 Not Found
@@ -92,12 +92,12 @@ No body is required — send an empty body.
 |--------|---------|
 | `200 OK` | Return reopened. |
 | `400 Bad Request` | Reopening is disabled in the store's settings. |
-| `401 Unauthorized` | Missing or invalid customer Bearer token. |
-| `403 Forbidden` | Missing or invalid storefront key. |
+| `401 Unauthorized` | Missing or invalid storefront key. |
+| `403 Forbidden` | Missing or invalid customer Bearer token. |
 | `404 Not Found` | The return does not exist or is not the customer's. |
 
 ## Related Resources
 
-- [Cancel a Return](/api/rest-api/shop/returns/cancel-return)
-- [Close a Return](/api/rest-api/shop/returns/close-return)
-- [Returns Overview](/api/rest-api/shop/returns/)
+- [Cancel a Return](/api/rest-api/shop/returns/cancel-return) — withdraw a return the customer raised
+- [Close a Return](/api/rest-api/shop/returns/close-return) — mark a return solved
+- [Returns Overview](/api/rest-api/shop/returns/) — the returns menu overview, including the settings that gate it

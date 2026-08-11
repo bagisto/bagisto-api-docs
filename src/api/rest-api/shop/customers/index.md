@@ -23,7 +23,7 @@ A typical flow is: **register** (or **login**) to obtain a token, **verify the t
 |-----------|---------------|-------------|
 | [Registration](/api/rest-api/shop/customers/customer-registration) | `POST /api/shop/customers` | Create a new customer account. |
 | [Login](/api/rest-api/shop/customers/customer-login) | `POST /api/shop/customer/login` | Authenticate and receive a Bearer token. |
-| [Verify Token](/api/rest-api/shop/customers/customer-verify-token) | `GET /api/shop/verify-tokens` | Check that a customer token is still valid. |
+| [Verify Token](/api/rest-api/shop/customers/customer-verify-token) | `POST /api/shop/verify-tokens` | Check that a customer token is still valid. |
 | [Customer Logout](/api/rest-api/shop/customers/customer-logout) | `POST /api/shop/customer/logout` | Invalidate the current token. |
 | [Forgot Password](/api/rest-api/shop/customers/forgot-password) | `POST /api/shop/forgot-passwords` | Send a password-reset email. |
 | [Change Password](/api/rest-api/shop/customers/change-password) | `PUT /api/shop/customer-profile-updates/{id}` | Change the customer's password. |
@@ -34,7 +34,7 @@ A typical flow is: **register** (or **login**) to obtain a token, **verify the t
 |-----------|---------------|-------------|
 | [Get Profile](/api/rest-api/shop/customers/get-customer-profile) | `GET /api/shop/customer-profile` | Read the authenticated customer's profile. |
 | [Update Profile](/api/rest-api/shop/customers/update-customer-profile) | `PUT /api/shop/customer-profile-updates/{id}` | Update profile details. |
-| [Delete Profile](/api/rest-api/shop/customers/delete-customer-profile) | `DELETE /api/shop/customer-profile-deletes/{id}` | Delete the customer account. |
+| [Delete Profile](/api/rest-api/shop/customers/delete-customer-profile) | `POST /api/shop/customer-profile-deletes/{id}` | Delete the customer account. |
 
 ### Addresses
 

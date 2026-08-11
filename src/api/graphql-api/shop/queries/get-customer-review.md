@@ -149,7 +149,7 @@ X-STOREFRONT-KEY: <storefrontKey>
 | `title` | `String!` | Review title. |
 | `comment` | `String!` | Review body text. |
 | `rating` | `Int!` | Star rating (1–5). |
-| `status` | `String!` | Review status: `pending`, `approved`, or `rejected`. |
+| `status` | `String!` | Review status: `pending`, `approved`, or `disapproved`. |
 | `name` | `String!` | Reviewer display name. |
 | `product` | `Product!` | Associated product with id, _id, sku. |
 | `customer` | `Customer!` | Customer who wrote the review with id, _id. |
