@@ -53,9 +53,7 @@ examples:
 Lists every sitemap definition in the store — the data behind the admin
 **Marketing → Search & SEO → Sitemaps** datagrid.
 
-::: tip
 New here? Read the [Sitemaps overview](/api/rest-api/admin/marketing/search-seo/sitemaps/) for what a sitemap does and how its fields behave.
-:::
 
 ## Endpoint
 

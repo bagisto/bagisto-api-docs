@@ -61,10 +61,6 @@ Returns the active reasons available when creating a return, ordered by `positio
 
 Select `_id` for the numeric reason id.
 
-::: tip
 See the [Returns overview](/api/graphql-api/admin/sales/returns/) for how a return is created.
-:::
 
 Permission: `sales.rma.requests`.
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

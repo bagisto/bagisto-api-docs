@@ -30,8 +30,8 @@ For example, `/sample/products/csv` returns a CSV product template. The response
 
 Returns `422` or `404` for an unknown type or format.
 
-::: tip REST only
+### REST only
+
 Binary file downloads are not available over GraphQL.
-:::
 
 Permission: `settings.data_transfer.imports.view`.

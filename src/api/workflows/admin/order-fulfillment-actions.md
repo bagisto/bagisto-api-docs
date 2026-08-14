@@ -52,4 +52,6 @@ Fields: `createAdminInvoice`, `createAdminShipment`, `createAdminRefund`, `previ
 
 ## Status codes to handle
 
+Every call below links to its **REST** endpoint page for concreteness. The sequence is transport-agnostic — the same flow works over GraphQL with the equivalent query or mutation, and each REST page cross-links to its GraphQL twin. Pick whichever transport your client uses; only the request shape changes, never the order of steps.
+
 `200/201` success · `401` unauthenticated · `403` permission · `404` order not found · `422` ineligible action / validation (per-SKU qty, refund amount, PayPal invoice).

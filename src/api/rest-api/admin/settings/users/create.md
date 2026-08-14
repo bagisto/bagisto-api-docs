@@ -14,8 +14,8 @@ examples:
 
 Required: `name`, `email` (unique), `password` (+ `password_confirmation`), `role_id`. Optional: `status` (`0`/`1`).
 
-::: warning Image upload deferred
+### Image upload deferred
+
 Admin user profile-image upload is not yet supported via the API.
-:::
 
 Permission: `settings.users.create`.

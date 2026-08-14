@@ -461,8 +461,6 @@ Returns the aggregate statistics that power the Bagisto admin **Reporting → Pr
 | **Endpoint** | `POST /api/admin/graphql` |
 | **Returns** | A single object: `{ entity, type, dateRange, statistics }` (`entity` is always `"products"`) |
 
-All admin endpoints require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
-
 ## Understanding `type` — the Products report is **eight** separate calls
 
 This is the most important thing to understand about this API.

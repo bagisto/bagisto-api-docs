@@ -218,6 +218,4 @@ Returns a single channel by id. The assigned locales, currencies, inventory sour
 - `allowedIps` is a JSON array of IP / CIDR strings (or empty when unrestricted).
 - `logo` / `favicon` are the stored relative paths; `logoUrl` / `faviconUrl` are the ready-to-use absolute URLs. All four are `null` when no image is set.
 
-::: tip Prerequisites
 The example uses an illustrative `id`. Replace it with a channel id that exists in your store — use the [`adminSettingsChannels`](./list) query to discover valid ids.
-:::

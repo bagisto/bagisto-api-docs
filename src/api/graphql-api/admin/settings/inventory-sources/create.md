@@ -85,9 +85,7 @@ examples:
 
 Registers a new inventory source and returns the full created source.
 
-::: tip How this menu works
 For field meanings and the delete guards, see the [Inventory Sources overview](/api/graphql-api/admin/settings/inventory-sources/).
-:::
 
 ## Operation
 
@@ -97,4 +95,4 @@ For field meanings and the delete guards, see the [Inventory Sources overview](/
 
 `code`, `name`, the contact fields (`contactName`, `contactEmail`, `contactNumber`) and the address fields (`country`, `state`, `city`, `street`, `postcode`) are required. `description`, `contactFax`, `priority`, `latitude`, `longitude` and `status` are optional. `code` must be unique; a duplicate is rejected (equivalent to HTTP 422 on REST).
 
-Permission: `settings.inventory_sources.create`. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+Permission: `settings.inventory_sources.create`.

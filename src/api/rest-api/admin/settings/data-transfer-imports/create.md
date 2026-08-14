@@ -41,8 +41,8 @@ Send the request as `multipart/form-data`.
 
 Returns the created import detail with HTTP `201`.
 
-::: warning File upload is REST only
+### File upload is REST only
+
 Creating an import requires uploading a file, which cannot be done over GraphQL. Use this REST endpoint to create imports.
-:::
 
 Permission: `settings.data_transfer.imports.create`.

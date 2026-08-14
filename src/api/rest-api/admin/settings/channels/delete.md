@@ -12,9 +12,9 @@ examples:
 
 # Delete Channel
 
-::: warning Two guards (HTTP 400)
+### Two guards (HTTP 400)
+
 - **Last channel** — refuses if this is the only channel left.
 - **Default channel** — refuses if its `code` matches the application-wide default (`config('app.channel')`).
-:::
 
 Permission: `settings.channels.delete`.

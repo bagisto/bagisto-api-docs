@@ -35,9 +35,7 @@ examples:
 Deletes an email template — the **Delete** row action on the admin
 **Marketing → Communications → Email Templates** screen.
 
-::: tip
 New here? Read the [Email Templates overview](/api/graphql-api/admin/marketing/communications/templates/) for what an email template does and how its fields behave.
-:::
 
 ## Operation
 
@@ -53,14 +51,14 @@ New here? Read the [Email Templates overview](/api/graphql-api/admin/marketing/c
   [list](/api/graphql-api/admin/marketing/communications/templates-list) query to
   discover valid ids.
 
-::: warning Confirm success via the absence of `errors`
+### Confirm success via the absence of `errors`
+
 The delete mutation returns a success acknowledgement, not the deleted template's
 data — `adminMarketingTemplate` resolves to `null` on the payload. **Treat a
 response with no `errors[]` as a successful delete.** If you need a confirmation
 message in the body, use the REST endpoint
 (`DELETE /api/admin/marketing/templates/{id}`), which returns
 `{ "message": "Email template deleted." }`.
-:::
 
 ## Input fields
 

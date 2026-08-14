@@ -19,9 +19,9 @@ Each report query exposes several metrics, and you pick one with the `type` argu
 | [Customers](/api/graphql-api/admin/reporting/customers) | `statsAdminReportingCustomers` | `total-customers` (default) + 5 more |
 | [Products](/api/graphql-api/admin/reporting/products) | `statsAdminReportingProducts` | `total-sold-quantities` (default) + 7 more |
 
-::: tip Overview has no matching admin screen
+### Overview has no matching admin screen
+
 The admin Reporting menu goes straight to Sales / Customers / Products — there is **no** "Overview" screen in the panel. Overview is an API convenience that fetches one top-line number without calling the per-section queries.
-:::
 
 ## Two query forms per report — Stats and View Details
 

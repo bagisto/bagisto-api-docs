@@ -66,12 +66,10 @@ Updates a tax category's details and re-syncs the tax rates attached to it.
 | `description` | yes | Free-text description. |
 | `taxrates` | yes | A non-empty list of tax-rate ids. **Replaces** the current set — rates not in the list are detached, and new ones are attached. |
 
-::: warning taxrates re-syncs the whole set
-The `taxrates` you send becomes the category's complete rate list — it is a full replacement, not an append. It is also required and must be non-empty; an empty array fails with *"The taxrates field is required."*
-:::
+### Taxrates re-syncs the whole set
 
-::: tip Finding ids
+The `taxrates` you send becomes the category's complete rate list — it is a full replacement, not an append. It is also required and must be non-empty; an empty array fails with *"The taxrates field is required."*
+
 Use the [`adminSettingsTaxCategories`](./list.md) query to find the category id, and [`adminSettingsTaxRates`](../tax-rates/list.md) to find tax-rate ids.
-:::
 
 The mutation response returns the updated category's scalar fields. The re-synced `taxRates` connection is **not** resolved in the mutation payload — re-query [`adminSettingsTaxCategory`](./detail.md) and select `taxRates { edges { node { _id identifier taxRate } } }` to read them back.

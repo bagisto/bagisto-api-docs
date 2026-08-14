@@ -42,14 +42,10 @@ Deletes an attribute family. The `id` argument is the family IRI (`/api/admin/ca
 
 Two rules block the delete: the store must always keep at least one family, and a family that any product still belongs to cannot be removed. Reassign or remove those products first.
 
-::: tip
-See the [Attribute Families overview](/api/graphql-api/admin/catalog/families/) for how families relate to attributes and products.
-:::
+See the [Attribute Families overview](/api/graphql-api/admin/catalog/families/) for how this menu works.
 
 | Condition | Message |
 |-----------|---------|
 | Family is the last one in the store | `At least one attribute family is required.` |
 | One or more products still use the family | `Cannot delete — attribute family is in use by N product(s).` |
 | Unknown id | `Attribute family not found.` |
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

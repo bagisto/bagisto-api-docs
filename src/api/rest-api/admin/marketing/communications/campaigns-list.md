@@ -61,9 +61,7 @@ examples:
 Lists every campaign in the store — the data behind the admin **Marketing →
 Communications → Campaigns** datagrid.
 
-::: tip
 New here? Read the [Campaigns overview](/api/rest-api/admin/marketing/communications/campaigns/) for what a campaign does and how its fields behave.
-:::
 
 ## Endpoint
 

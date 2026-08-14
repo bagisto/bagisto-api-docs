@@ -43,5 +43,3 @@ more products.
 | [Update](/api/graphql-api/admin/marketing/search-seo/search-terms-update) | `updateAdminMarketingSearchTerm` mutation |
 | [Delete](/api/graphql-api/admin/marketing/search-seo/search-terms-delete) | `deleteAdminMarketingSearchTerm` mutation |
 | [Mass Delete](/api/graphql-api/admin/marketing/search-seo/search-terms-mass-delete) | `createAdminMarketingSearchTermMassDelete` mutation |
-
-All Search Terms operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

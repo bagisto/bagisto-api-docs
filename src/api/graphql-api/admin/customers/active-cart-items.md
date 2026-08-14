@@ -78,8 +78,4 @@ Lists the items in the customer's **own** active storefront cart (`carts.is_acti
 |----------|------|----------|-------------|
 | `customerId` | Int! | yes | The customer whose active cart to read. Returns an empty connection if the customer has no active cart. |
 
-::: tip Menu overview
 See the [Customers overview](/api/graphql-api/admin/customers/) for how the Create-Order sidebar panels work.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

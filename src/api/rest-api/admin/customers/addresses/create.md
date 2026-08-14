@@ -52,12 +52,10 @@ Adds a new address to a customer's address book. The response is the created add
 
 Required: `first_name`, `last_name`, `address`, `city`, `country`, `postcode`, `phone`. Optional: `company_name`, `vat_id`, `state`, `address2` (legacy lines joined into `address` with `PHP_EOL`), `default_address` (boolean).
 
-::: tip `address` column convention
+### `address` column convention
+
 Bagisto's `addresses` table renamed `address1 → address` in 2024 and dropped `address2`. Pass `address` as a single string. Legacy multi-line arrays are joined with `PHP_EOL`.
-:::
 
 Permission: `customers.addresses.create`.
 
-::: tip
 For default-address semantics and the address-book overview, see the [Addresses overview](./index.md).
-:::

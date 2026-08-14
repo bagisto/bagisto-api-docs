@@ -83,9 +83,7 @@ examples:
 Returns a single cart rule with its full field set — the data behind the admin
 **Marketing → Promotions → Cart Rules** view screen.
 
-::: tip
 New here? Read the [Cart Rules overview](/api/graphql-api/admin/marketing/promotions/cart-rules/) for what a cart rule does and how its fields behave.
-:::
 
 ## Operation
 

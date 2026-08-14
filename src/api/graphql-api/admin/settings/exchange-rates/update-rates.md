@@ -85,6 +85,3 @@ A successful sync returns, for example:
 
 Permission: `settings.exchange_rates.edit`.
 
-::: tip
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
-:::

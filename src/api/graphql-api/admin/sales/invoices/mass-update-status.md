@@ -35,11 +35,11 @@ examples:
 
 # Mass Update Invoice Status
 
-GraphQL counterpart of `POST /api/admin/invoices/mass-update-status`. Bulk-sets the status of a batch of invoices — the operation behind the admin Invoices datagrid's "Update Status" bulk action. Requires the `sales.invoices.view` permission. All admin endpoints require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+GraphQL counterpart of `POST /api/admin/invoices/mass-update-status`. Bulk-sets the status of a batch of invoices — the operation behind the admin Invoices datagrid's "Update Status" bulk action. Requires the `sales.invoices.view` permission.
 
-::: warning This is a manual status override
+### This is a manual status override
+
 Setting an invoice to `paid` here **does not capture a payment**, and setting it to `pending` / `overdue` does **not** reverse one. It only changes the stored status flag.
-:::
 
 ## Operation
 

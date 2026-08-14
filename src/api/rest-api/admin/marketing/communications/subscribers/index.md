@@ -27,5 +27,3 @@ Subscriber rows are created by the **storefront** — a shopper opts in through 
 | [Delete](/api/rest-api/admin/marketing/communications/subscribers-delete) | `DELETE /api/admin/marketing/subscribers/{id}` |
 
 There is no create endpoint (subscriptions originate from the storefront) and no mass-delete.
-
-All Newsletter Subscribers endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

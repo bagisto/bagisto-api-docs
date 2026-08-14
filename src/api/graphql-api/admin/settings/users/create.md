@@ -57,9 +57,7 @@ examples:
 
 Creates a new admin user. `name`, `email`, `password`, and `roleId` are required; `status` defaults to active (`1`). The `password` is required at create time and is stored hashed — it is never returned.
 
-::: tip Prerequisites
 `roleId` must reference an existing role. Use the [`adminSettingsRoles`](/api/graphql-api/admin/settings/roles/list) query to discover valid role ids.
-:::
 
 ## Operation
 
@@ -67,8 +65,6 @@ Creates a new admin user. `name`, `email`, `password`, and `roleId` are required
 |-----------|------|---------|
 | `createAdminSettingsUser(input:)` | Mutation | Create an admin user |
 
-::: tip Overview
 For field meanings and the delete guards, see the [Users overview](./).
-:::
 
 Requires the `settings.users.users.create` permission and an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

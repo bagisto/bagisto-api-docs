@@ -39,5 +39,3 @@ For `by_percent`, `discountAmount` is capped at `100`.
 | [Mass Delete](/api/graphql-api/admin/marketing/promotions/catalog-rules-mass-delete) | `createAdminMarketingCatalogRuleMassDelete` mutation |
 
 `conditions`, `channels`, and `customerGroups` resolve only on the **detail** query — they are `null` on list rows. `channels` and `customerGroups` are connections of `{ id, _id, code, name }` (sub-select `edges { node { ... } }`); they do not resolve on a create / update mutation payload, so re-query the detail to read them back.
-
-All Catalog Rules operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

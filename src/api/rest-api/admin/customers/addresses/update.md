@@ -37,12 +37,10 @@ Edits an existing customer address. The update is partial — send only the fiel
 |----------|--------|
 | `/api/admin/customers/{customerId}/addresses/{id}` | PUT |
 
-::: warning Ownership guard
+### Ownership guard
+
 If the path `customerId` doesn't match the address's `customer_id`, the request returns 403. This prevents cross-customer edits via fabricated URLs.
-:::
 
 Permission: `customers.addresses.edit`.
 
-::: tip
 For default-address behaviour and the address-book overview, see the [Addresses overview](./index.md).
-:::

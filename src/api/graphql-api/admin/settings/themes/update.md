@@ -80,9 +80,7 @@ examples:
 
 Set the per-locale content of a theme customization block, and/or edit its scalar fields. Pass the target `locale` and an `options` object whose shape matches the block's `type`; repeat the call per locale to localize the block. The scalar fields (`name`, `sortOrder`, `themeCode`, `channelId`, `status`) can be updated in the same call.
 
-::: tip Prerequisites
 The example uses an illustrative `id`. Replace it with the id of a block that exists in your store — use the [`adminSettingsThemes`](./list) query to discover valid ids.
-:::
 
 ## Operation
 
@@ -104,4 +102,4 @@ The example uses an illustrative `id`. Replace it with the id of a block that ex
 - **`<script>` is stripped from `static_content`.** Any `<script>...</script>` blocks in `options.html` or `options.css` are removed before saving — note how the example's `<script>track()</script>` is gone from the response.
 - **Image / file fields are path strings only.** For `image_carousel` slides and `services_content` icons, `options` accept already-uploaded storage paths; binary upload is not available — use the admin panel.
 
-Permission: `settings.themes.edit`. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+Permission: `settings.themes.edit`.

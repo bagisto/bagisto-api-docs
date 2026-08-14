@@ -31,13 +31,6 @@ examples:
 
 Lists every tier-price row attached to a product.
 
-::: tip Fresh sub-resource under `src/Admin/`
-This is the **fresh** sub-resource that replaces the legacy admin operations
-on the storefront `ProductCustomerGroupPrice` resource. The legacy operations
-are scheduled for removal in Phase 6 — see the package CLAUDE.md "Legacy
-admin endpoints" section.
-:::
-
 ## Endpoint
 
 | Endpoint | Method |

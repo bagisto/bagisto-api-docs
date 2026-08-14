@@ -20,6 +20,7 @@ examples:
       }
     response: |
       {
+        "id": 1,
         "updated": [12, 18],
         "message": "Products status updated successfully."
       }
@@ -58,13 +59,23 @@ etc. still trigger.
 
 | Field | Type | Notes |
 |-------|------|-------|
-| `updated` | int[] | IDs the call attempted to update (best-effort). |
+| `id` | integer | Always `1`. This is an action result, not a record — ignore it. |
+| `updated` | int[] | The ids the call attempted to update. |
 | `message` | string | Translated confirmation. |
+
+## Behaviour
+
+Each id fires the same events as a single-product update, so search reindexing and cache flushing still run per product. That makes a large batch meaningfully slower than the row count suggests.
+
+The status flip is the only change — nothing else on the product is touched, and there is no partial-failure report beyond the returned `updated` list.
 
 ## Errors
 
-| HTTP | Cause |
-|------|-------|
-| `400 Bad Request` | Empty / malformed indices or `value` not in `[0,1]`. |
-| `401 Unauthorized` | Missing or invalid admin Bearer token. |
-| `403 Forbidden` | Admin role lacks `catalog.products.edit`. |
+| HTTP | Detail |
+|------|--------|
+| `400` | `The indices field is required and must be a non-empty array.` |
+| `400` | `The value field is required and must be 0 or 1.` |
+| `401` | `Unauthenticated.` |
+| `403` | `You do not have permission to manage products.` — token lacks `catalog.products.edit` |
+
+Note the validation failures here are `400`, not the `422` used by the single-product create and update endpoints.

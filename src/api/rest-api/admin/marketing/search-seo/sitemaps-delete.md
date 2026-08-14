@@ -22,9 +22,7 @@ Deletes a sitemap — the **Delete** row action on the admin **Marketing →
 Search & SEO → Sitemaps** screen. Removing a sitemap also deletes its generated
 XML files.
 
-::: tip
 New here? Read the [Sitemaps overview](/api/rest-api/admin/marketing/search-seo/sitemaps/) for what a sitemap does and how its fields behave.
-:::
 
 ## Endpoint
 

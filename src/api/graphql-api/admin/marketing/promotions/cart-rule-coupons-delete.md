@@ -35,9 +35,7 @@ examples:
 Deletes a coupon code — the **Delete** row action on the admin
 **Marketing → Promotions → Cart Rules → Coupons** screen.
 
-::: tip
 New here? Read the [Cart Rule Coupons overview](/api/graphql-api/admin/marketing/promotions/cart-rule-coupons/) for what a coupon does and how its fields behave.
-:::
 
 ## Operation
 
@@ -54,14 +52,14 @@ New here? Read the [Cart Rule Coupons overview](/api/graphql-api/admin/marketing
   discover valid ids.
 - A coupon that belongs to a different cart rule returns a `404` error.
 
-::: warning Confirm success via the absence of `errors`
+### Confirm success via the absence of `errors`
+
 The delete mutation returns a success acknowledgement, not the deleted coupon's
 data — `adminMarketingCartRuleCoupon` resolves to `null` on the payload. **Treat a
 response with no `errors[]` as a successful delete.** If you need a confirmation
 message in the body, use the REST endpoint
 (`DELETE /api/admin/marketing/cart-rules/{cartRuleId}/coupons/{id}`), which returns
 `{ "message": "Cart rule coupon deleted." }`.
-:::
 
 ## Input fields
 

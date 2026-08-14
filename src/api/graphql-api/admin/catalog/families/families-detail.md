@@ -74,28 +74,13 @@ attribute family — e.g. when pre-populating the edit form in
 |-----------|------|
 | `adminAttributeFamily` | Query (item) |
 
-## Authentication
-
-Every request must include an admin Bearer token:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain a token via the [`createAdminLogin`](/api/graphql-api/admin/authentication)
-mutation.
-
 ## Arguments
 
 | Argument | Type | Required | Description |
 |----------|------|----------|-------------|
 | `id` | `ID!` | Yes | API Platform IRI of the attribute family (e.g. `"/api/admin/catalog/families/1"`) |
 
-::: tip Finding the IRI
-The IRI can be taken directly from `id` in any `adminAttributeFamilies` edge
-node, or constructed as `/api/admin/catalog/families/{numericId}`. Both forms
-are accepted by the resolver.
-:::
+Take the IRI straight from the `id` of an [`adminAttributeFamilies`](/api/graphql-api/admin/catalog/families/families-listing) edge node, or build it as `/api/admin/catalog/families/<numericId>`.
 
 ## Fields
 
@@ -134,71 +119,11 @@ Each element corresponds to one attribute mapped via `attribute_group_mappings`:
 | `column` | integer | Layout column position of this attribute within the group |
 | `position` | integer | Display order position of this attribute within the group |
 
-::: warning attributeGroups is returned whole
-`attributeGroups` (each group with its nested `attributes`) is returned as **whole JSON** — query it as a bare field (`attributeGroups`, not `attributeGroups { … }`). The entire structure comes back, and it resolves over GraphQL.
-:::
+### attributeGroups Is a JSON Scalar
 
-## Example Query
+Select `attributeGroups` as a **bare field** — a sub-selection is a schema error. The whole structure comes back in one piece, each group carrying its own nested `attributes` list.
 
-```graphql
-query AdminAttributeFamily($id: ID!) {
-  adminAttributeFamily(id: $id) {
-    id
-    _id
-    code
-    name
-    attributeGroups
-  }
-}
-```
-
-```json
-{
-  "id": "/api/admin/catalog/families/1"
-}
-```
-
-## Example Response
-
-```json
-{
-  "data": {
-    "adminAttributeFamily": {
-      "id": "/api/admin/catalog/families/1",
-      "_id": 1,
-      "code": "default",
-      "name": "Default",
-      "attributeGroups": [
-        {
-          "id": 1,
-          "code": "general",
-          "name": "General",
-          "column": 1,
-          "position": 1,
-          "attributes": [
-            {
-              "id": 1,
-              "code": "sku",
-              "type": "text",
-              "isRequired": 1,
-              "column": 1,
-              "position": 1
-            },
-            {
-              "id": 2,
-              "code": "name",
-              "type": "text",
-              "isRequired": 1,
-              "column": 1,
-              "position": 2
-            }
-          ]
-        }
-      ]
-    }
-  }
-}
-```
+Every id inside is numeric, not an IRI: a group's `id`, and each attribute's `id`. Use those directly when referencing an attribute elsewhere.
 
 ## Errors
 

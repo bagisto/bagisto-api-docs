@@ -34,5 +34,3 @@ A few behaviours are common to every Customers menu over GraphQL:
 - **Listings are cursor connections.** Every list query returns `edges { cursor node { … } } pageInfo { hasNextPage hasPreviousPage startCursor endCursor } totalCount`. Page with `first` + `after`.
 - **Detail-only fields.** Aggregates and nested data (a customer's `totalOrders` / `totalAddresses` / `totalAmountSpent`, a review's images) are populated only on the single-record query, not on the listing rows.
 - **Permission gates.** Write operations are gated by the matching `customers.*` permission; an admin whose role lacks it gets an authorization error.
-
-All Customers operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

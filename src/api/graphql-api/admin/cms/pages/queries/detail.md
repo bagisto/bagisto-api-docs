@@ -109,9 +109,7 @@ examples:
 
 Equivalent to [`GET /api/admin/cms/pages/{id}`](/api/rest-api/admin/cms/pages-detail).
 
-::: tip
-For what CMS Pages are and how multi-locale / multi-channel works, see the [CMS Pages overview](/api/graphql-api/admin/cms/pages/).
-:::
+For what CMS Pages are and how multi-locale and multi-channel work, see the [CMS Pages overview](/api/graphql-api/admin/cms/pages/).
 
 ## Operation
 
@@ -161,9 +159,11 @@ A field-selectable Relay connection — one entry per authored locale. Each `nod
 
 `translations` returns one entry per authored locale; the `htmlContent` inside a translation is the full body for that locale.
 
-::: tip Field-selectable connections
-`channels` and `translations` are **Relay connections**, not opaque JSON. Select them with the `edges { node { … } }` syntax and pick exactly the sub-fields you need. (Over REST these come back as plain JSON arrays.)
-:::
+### Connections, Not Opaque JSON
+
+`channels` and `translations` are Relay connections — select them with `edges { node { … } }` and take only the sub-fields you need. Over REST the same data arrives as plain JSON arrays, so the two transports are not shape-compatible.
+
+Both nested node types carry a **routeless `id`** — `/api/admin_cms_page_translations/<id>` and `/api/admin_cms_page_channels/<id>`. Neither is a queryable path; read `_id` instead.
 
 ## Errors
 

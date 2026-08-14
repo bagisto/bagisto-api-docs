@@ -41,4 +41,4 @@ The two write endpoints take **different shapes** (this mirrors the admin form):
 | [Mass delete pages](/api/rest-api/admin/cms/pages-mass-delete) | `POST /api/admin/cms/pages/mass-delete` |
 | [Export pages (CSV)](/api/rest-api/admin/cms/pages/export) | `GET /api/admin/cms/pages/export` |
 
-All CMS Pages endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication). Writes require the matching `cms.create` / `cms.edit` / `cms.delete` permission.
+Writes require the matching `cms.create` / `cms.edit` / `cms.delete` permission.

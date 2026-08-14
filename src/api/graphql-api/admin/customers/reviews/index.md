@@ -47,5 +47,3 @@ The single-review query embeds the related records so you don't need follow-up c
 | [Mass Update Status](./mass-update-status.md) | `createAdminCustomerReviewMassUpdateStatus` mutation |
 
 Permissions: `customers.reviews.edit` / `.delete`.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

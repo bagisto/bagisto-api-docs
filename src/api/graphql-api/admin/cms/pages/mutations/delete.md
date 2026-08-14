@@ -44,9 +44,7 @@ examples:
 
 Deletes a CMS page. Equivalent to [`DELETE /api/admin/cms/pages/{id}`](/api/rest-api/admin/cms/pages-delete).
 
-::: tip Prerequisites
-Replace the example `id` with a CMS page id that exists in your store — use the [`adminCmsPages`](/api/graphql-api/admin/cms/pages/queries/list) query to find one.
-:::
+Replace the example `id` with a CMS page that exists in your store — [`adminCmsPages`](/api/graphql-api/admin/cms/pages/queries/list) lists valid ids.
 
 ## Operation
 
@@ -73,11 +71,13 @@ Select the **`message`** field to get the human-readable success confirmation (`
 
 (`message` is `null` on read / list / detail queries — it is an action result, meaningful only on the delete mutation.)
 
-::: warning `translations` and `channels` come back empty
-The `translations` and `channels` connections are re-read from the database when resolved, but the row (and its translation / channel rows) are already gone at that point — so those connections return **empty edges** on a delete result. To capture per-locale content before deleting, query the [detail](/api/graphql-api/admin/cms/pages/queries/detail) first. Scalar fields like `urlKey` / `pageTitle` are taken from the in-memory snapshot and do resolve.
-:::
+### What Resolves on the Delete Payload
 
-Deleting a page also removes any storefront **redirects** (url rewrites) that pointed at its slugs.
+Scalars come from an in-memory snapshot taken before the row was removed, so `urlKey`, `pageTitle`, and the rest still resolve — and `message` carries the confirmation text, which it does not on a read.
+
+The `translations` and `channels` connections are re-read from the database instead, and the rows are already gone by then, so both return **empty edges**. Capture per-locale content with the [detail query](/api/graphql-api/admin/cms/pages/queries/detail) before deleting if you need it.
+
+Any **301 redirects** created earlier by renaming the page's `url_key` are left in place — deleting the page does not remove them, so an old slug keeps redirecting to a URL that no longer resolves. Remove them through [URL Rewrites](/api/graphql-api/admin/marketing/search-seo/url-rewrites-list) if that matters.
 
 ## Errors
 

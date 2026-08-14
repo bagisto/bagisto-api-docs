@@ -38,4 +38,6 @@ The storefront key alone gives read-only access. A **guest can still place an or
 
 ## How to read a flow page
 
+Every call below links to its **REST** endpoint page for concreteness. The sequence is transport-agnostic — the same flow works over GraphQL with the equivalent query or mutation, and each REST page cross-links to its GraphQL twin. Pick whichever transport your client uses; only the request shape changes, never the order of steps.
+
 Intent → Prerequisites → **Mermaid dependency diagram** → ordered call table (links to the exact endpoint pages) → flow notes → customize hook. Flow pages own the sequence; endpoint detail lives on the linked API pages. The prerequisite inputs above are assumed on every flow page and not repeated.

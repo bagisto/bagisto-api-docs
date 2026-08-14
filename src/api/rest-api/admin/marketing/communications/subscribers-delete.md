@@ -23,9 +23,7 @@ Deletes a newsletter subscriber — the **Delete** row action on the admin
 is linked to a registered customer, that customer's newsletter preference is set to
 unsubscribed before the row is removed.
 
-::: tip
 New here? Read the [Newsletter Subscribers overview](/api/rest-api/admin/marketing/communications/subscribers/) for what a subscriber is and how its fields behave.
-:::
 
 ## Endpoint
 

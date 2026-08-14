@@ -48,4 +48,4 @@ On the single-attribute query, `translations` and `options` (with their nested `
 
 The single-attribute query embeds the full `translations` and `options` (with their translations) inline; the listing leaves those two heavy blocks out (fetch them by id).
 
-All Attributes operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication). Reads require `catalog.attributes.view`; writes require the matching `catalog.attributes.create` / `.edit` / `.delete` permission.
+Reads require `catalog.attributes.view`; writes require the matching `catalog.attributes.create` / `.edit` / `.delete` permission.

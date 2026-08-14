@@ -54,9 +54,7 @@ Updates an existing catalog rule — the **Edit Rule** action on the admin
 **Marketing → Promotions → Catalog Rules** screen. Saving recomputes affected
 product prices in the background.
 
-::: tip
 New here? Read the [Catalog Rules overview](/api/rest-api/admin/marketing/promotions/catalog-rules/) for what a catalog rule does and how its fields behave.
-:::
 
 ## Endpoint
 

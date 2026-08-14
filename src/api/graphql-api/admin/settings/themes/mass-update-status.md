@@ -52,4 +52,4 @@ The `updated` field returns a plain array of the ids that were updated.
 | `indices` | Iterable | yes | Array of numeric block ids to update. An empty array is rejected. |
 | `value` | Int | yes | The status to set — `1` (active) or `0` (inactive). |
 
-Permission: `settings.themes.edit`. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+Permission: `settings.themes.edit`.

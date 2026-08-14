@@ -79,5 +79,3 @@ Updates an existing currency's name and formatting. Send only the fields you wan
 - **`code` is immutable.** It is not part of the update input type at all — attempting to send a `code` field is rejected by the schema (*"Field code is not defined by type updateAdminSettingsCurrencyInput"*). The `code` in the response is unchanged.
 - Use the [`adminSettingsCurrencies`](./list.md) query to discover a valid `id`.
 - Permission: `settings.currencies.edit`.
-
-All currency operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

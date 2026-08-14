@@ -66,9 +66,7 @@ examples:
 
 Fetches a single inventory source by its IRI `id`. Returns every field for the source.
 
-::: tip How this menu works
 For field meanings and the delete guards, see the [Inventory Sources overview](/api/graphql-api/admin/settings/inventory-sources/).
-:::
 
 ## Operation
 
@@ -78,8 +76,6 @@ For field meanings and the delete guards, see the [Inventory Sources overview](/
 
 The `id` is the resource IRI (`/api/admin/settings/inventory-sources/{id}`); `_id` is the numeric id. Use the [`adminSettingsInventorySources`](./list.md) query to discover valid ids. An unknown id returns an error (equivalent to HTTP 404 on REST).
 
-::: tip Empty timestamps
-The seeded `default` source may report `createdAt` / `updatedAt` as `null` — that's a real stored-empty value, not the API withholding data. Sources created through the API carry timestamps.
-:::
+### Empty timestamps
 
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+The seeded `default` source may report `createdAt` / `updatedAt` as `null` — that's a real stored-empty value, not the API withholding data. Sources created through the API carry timestamps.

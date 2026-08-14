@@ -115,13 +115,13 @@ reported by the [Menu](./menu) query. See the
 booleans, numbers, and JSON all come back as strings (`"1"`, `"0"`, `"49.99"`).
 `image` / `file` fields return the storage path written by Update.
 
-::: warning slug is required
+### Slug is required
+
 Unlike Menu, `slug` is mandatory here — it prevents accidentally dumping the
 entire configuration store in one call.
-:::
 
-::: tip Scope is per-field
+### Scope is per-field
+
 Whether `channel` / `locale` change the result depends on each field's
 `channelBased` / `localeBased` flags (see [Menu](./menu)). A global field returns
 the same value regardless of the channel / locale you pass.
-:::

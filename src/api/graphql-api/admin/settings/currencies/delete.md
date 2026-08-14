@@ -55,8 +55,6 @@ Deletes a single currency by its IRI id.
 - Use the [`adminSettingsCurrencies`](./list.md) query to discover a valid `id`.
 - Permission: `settings.currencies.delete`.
 
-::: warning Delete guards
-The store **cannot delete the last currency**, and it **cannot delete a currency that is set as a channel's base currency**. Either condition is rejected before the delete runs.
-:::
+### Delete guards
 
-All currency operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+The store **cannot delete the last currency**, and it **cannot delete a currency that is set as a channel's base currency**. Either condition is rejected before the delete runs.

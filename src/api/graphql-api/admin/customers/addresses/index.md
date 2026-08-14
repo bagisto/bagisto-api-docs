@@ -37,5 +37,3 @@ Every address belongs to exactly one customer. Address operations are addressed 
 | [Set as Default](./set-default.md) | `setDefaultAdminCustomerAddress` mutation |
 
 Permissions: `customers.addresses.create` / `.edit` / `.delete`.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

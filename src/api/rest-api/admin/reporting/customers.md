@@ -278,8 +278,6 @@ Returns the aggregate statistics that power the Bagisto admin **Reporting → Cu
 | **Endpoint** | `GET /api/admin/reporting/customers` |
 | **Returns** | A JSON **array** with a single element: `[ { entity, type, dateRange, statistics } ]` |
 
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
-
 ## Understanding `type` — the report is **six** separate calls
 
 The Customers report screen is **not one response**. It is assembled from **six independent requests**, one per panel, and each is selected with the `?type=` query parameter. These six groups are exactly the panels of the admin Reporting → Customers screen — no more, no less.

@@ -297,15 +297,15 @@ GraphQL counterpart of `GET /api/admin/invoices/{id}`. Returns a single invoice 
 |-----------|------|
 | `adminInvoice(id: ID!)` | Query |
 
-Pass the invoice IRI (`/api/admin/invoices/{id}`) as `id`. Requires the `sales.invoices.view` permission. All admin endpoints require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+Pass the invoice IRI (`/api/admin/invoices/{id}`) as `id`. Requires the `sales.invoices.view` permission.
 
-::: tip Identifier vs IRI
+### Identifier vs IRI
+
 `id` is the resource IRI (`/api/admin/invoices/1`); `_id` is the plain numeric id (`1`). Use the IRI for the `id` argument.
-:::
 
-::: tip Field-selectable connections & objects
+### Field-selectable connections & objects
+
 `items` is a **Relay connection** — query it as `items { edges { node { … } } }` and pick the fields you need. The invoice's billing & shipping addresses live on the **order**, so query them as `order { addresses { edges { node { addressType city … } } } }` (read `addressType` = `order_billing` / `order_shipping` to tell them apart). The numeric order id is `order { _id }` — there is no top-level `orderId` field.
-:::
 
 ## Invoice fields
 

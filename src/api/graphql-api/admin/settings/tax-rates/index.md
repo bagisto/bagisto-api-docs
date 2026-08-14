@@ -55,5 +55,3 @@ Tax rates are the building blocks of **Tax Categories**. A tax category bundles 
 | [Delete a tax rate](./delete) | `deleteAdminSettingsTaxRate` mutation |
 
 Permissions: `settings.taxes.tax_rates.create` / `.edit` / `.delete`.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

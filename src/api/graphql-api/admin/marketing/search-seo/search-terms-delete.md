@@ -35,9 +35,7 @@ examples:
 Deletes a search term — the **Delete** row action on the admin
 **Marketing → Search & SEO → Search Terms** screen.
 
-::: tip
 New here? Read the [Search Terms overview](/api/graphql-api/admin/marketing/search-seo/search-terms/) for what a search term records and how its fields behave.
-:::
 
 ## Operation
 
@@ -53,14 +51,14 @@ New here? Read the [Search Terms overview](/api/graphql-api/admin/marketing/sear
   [list](/api/graphql-api/admin/marketing/search-seo/search-terms-list) query to
   discover valid ids.
 
-::: warning Confirm success via the absence of `errors`
+### Confirm success via the absence of `errors`
+
 The delete mutation returns a success acknowledgement, not the deleted term's
 data — `adminMarketingSearchTerm` resolves to `null` on the payload. **Treat a
 response with no `errors[]` as a successful delete.** If you need a confirmation
 message in the body, use the REST endpoint
 (`DELETE /api/admin/marketing/search-terms/{id}`), which returns
 `{ "message": "Search term deleted." }`.
-:::
 
 ## Input fields
 

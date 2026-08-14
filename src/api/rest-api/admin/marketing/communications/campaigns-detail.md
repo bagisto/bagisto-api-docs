@@ -46,9 +46,7 @@ examples:
 Returns a single campaign with its full field set — the data behind the admin
 **Marketing → Communications → Campaigns** view screen.
 
-::: tip
 New here? Read the [Campaigns overview](/api/rest-api/admin/marketing/communications/campaigns/) for what a campaign does and how its fields behave.
-:::
 
 ## Endpoint
 

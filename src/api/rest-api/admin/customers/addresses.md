@@ -54,6 +54,4 @@ Returns the standard `{ data, meta }` envelope. Each row in `data`:
 
 The `meta` object carries `currentPage`, `perPage`, `lastPage`, `total`, `from`, and `to`. Not paginated by the UI but wrapped for consistency. 404 if the customer doesn't exist; 401 without an admin Bearer token.
 
-::: tip
 For default-address semantics and the address-book overview, see the [Addresses overview](./addresses/index.md).
-:::

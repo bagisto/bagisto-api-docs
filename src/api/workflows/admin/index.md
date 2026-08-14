@@ -33,6 +33,8 @@ Almost every admin screen is the same shape:
 | [Customers (Impersonate & GDPR)](/api/workflows/admin/customers) | Impersonate issues a short-lived customer token; GDPR process cascades a delete; download-data dumps every related table. |
 | [Marketing](/api/workflows/admin/marketing) | Catalog-rule reindex timeout on a `sync` queue, campaign send (recipient resolution + status guard), coupon generate, sitemap sync-generate. |
 | [Configuration](/api/workflows/admin/configuration) | Generic slug-scoped schema/values/update, anti-scope-escape, server-side validation, file-upload REST-only. |
+| [Returns / RMA](/api/workflows/admin/returns-rma) | Status moves are constrained — read `availableStatuses` off the request, never the full status catalogue; rules gate eligibility, so reference data must exist before the storefront form works. |
+| [EU Withdrawal](/api/workflows/admin/eu-withdrawal) | A compliance record: decline and mark-refunded overwrite each other, marking refunded moves no money, and a failed acknowledgement email is a work item. |
 
 ## GraphQL — the must-know rules
 
@@ -43,5 +45,7 @@ Almost every admin screen is the same shape:
 - **Nested lists** (order items, invoice items, addresses) are often **plain JSON**, not connections — query them as bare fields (`items { sku qtyOrdered }`), following the endpoint's docs example.
 
 ## How to read a flow page
+
+Every call below links to its **REST** endpoint page for concreteness. The sequence is transport-agnostic — the same flow works over GraphQL with the equivalent query or mutation, and each REST page cross-links to its GraphQL twin. Pick whichever transport your client uses; only the request shape changes, never the order of steps.
 
 Intent → Agent-ask inputs → the flow/diagram → ordered calls (links to the exact endpoint pages) → theory/gotchas. Flow pages own the sequence and the non-obvious behavior; endpoint detail lives on the linked API pages.

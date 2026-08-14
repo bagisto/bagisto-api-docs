@@ -35,4 +35,4 @@ The two outcomes are mutually exclusive: **declining clears any prior refund met
 | [Mark refunded](/api/rest-api/admin/sales/eu-withdrawal/mark-refunded) | `POST /api/admin/eu-withdrawals/{id}/mark-refunded` |
 | [Resend confirmation](/api/rest-api/admin/sales/eu-withdrawal/resend-confirmation) | `POST /api/admin/eu-withdrawals/{id}/resend-confirmation` |
 
-All EU Withdrawal endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication). The listing and detail endpoints require the `sales.eu_withdrawals` permission; each action requires its own permission (noted on its page).
+The listing and detail endpoints require the `sales.eu_withdrawals` permission; each action requires its own permission (noted on its page).

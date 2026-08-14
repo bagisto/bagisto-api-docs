@@ -64,8 +64,8 @@ Creates a new tax category and attaches the supplied tax rates to it.
 | `description` | yes | Free-text description. |
 | `taxrates` | yes | A non-empty list of existing tax-rate ids to attach. Each id must already exist. |
 
-::: warning taxrates is required and must be non-empty
+### Taxrates is required and must be non-empty
+
 A tax category cannot be created without at least one tax rate. Passing an empty `taxrates` array (or omitting it) fails with *"The taxrates field is required."* Discover valid tax-rate ids with the [`adminSettingsTaxRates`](../tax-rates/list.md) query.
-:::
 
 The mutation response returns the created category's scalar fields. The attached `taxRates` connection is **not** resolved in the mutation payload — re-query [`adminSettingsTaxCategory`](./detail.md) and select `taxRates { edges { node { _id identifier taxRate } } }` to read them back.

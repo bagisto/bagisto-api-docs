@@ -40,9 +40,7 @@ Search & SEO → Search Terms** screen. Only the term text and redirect URL are
 editable; the result count and use count are recorded by the storefront and
 cannot be changed here.
 
-::: tip
 New here? Read the [Search Terms overview](/api/rest-api/admin/marketing/search-seo/search-terms/) for what a search term is and how its fields behave.
-:::
 
 ## Endpoint
 

@@ -40,12 +40,6 @@ Deletes a review. The mutation returns a snapshot of the record that was removed
 
 Permission: `customers.reviews.delete`.
 
-::: tip Prerequisites
 The example uses an illustrative `id`. Replace it with a review that exists in your store — use [`adminCustomerReviews`](./list.md) to discover valid ids.
-:::
 
-::: tip
 See the [Reviews overview](/api/graphql-api/admin/customers/reviews/) for how moderation works.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

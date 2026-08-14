@@ -39,5 +39,3 @@ For `by_percent`, `discount_amount` is capped at `100`.
 | [Mass Delete](/api/rest-api/admin/marketing/promotions/catalog-rules-mass-delete) | `POST /api/admin/marketing/catalog-rules/mass-delete` |
 
 `conditions`, `channels`, and `customerGroups` are returned only on the **detail**, **create**, and **update** responses — they are `null` on list rows. `channels` and `customerGroups` are arrays of `{ id, code, name }` objects.
-
-All Catalog Rules endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

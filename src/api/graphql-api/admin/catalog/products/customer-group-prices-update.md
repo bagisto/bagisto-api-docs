@@ -51,11 +51,7 @@ examples:
 
 Updates an existing customer-group (tier) price row. This is a parent-scoped mutation — pass the product as the `productId` argument and the row IRI as `input.id`. Send only the fields you want to change. The new `qty` / `customerGroupId` combination must remain unique for the product. A `null` `customerGroupId` makes the price apply to every customer group.
 
-::: tip
 See the [Products overview](/api/graphql-api/admin/catalog/products/) for how the catalog product menu fits together.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
 
 ## Input
 

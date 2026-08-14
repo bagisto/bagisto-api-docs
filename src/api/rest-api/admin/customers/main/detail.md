@@ -40,11 +40,7 @@ examples:
 
 Returns one customer with the group as a nested `group` object and the detail-only counters (`totalAddresses`, `totalOrders`, `totalAmountSpent`).
 
-::: tip Overview
 See the [Customers menu overview](/api/rest-api/admin/customers/main/) for the full feature flow.
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
 
 ## Endpoint
 

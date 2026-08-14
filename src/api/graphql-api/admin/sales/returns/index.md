@@ -50,5 +50,3 @@ Each request has a conversation thread. **List Messages** returns the thread new
 | [Send Message](./mutations/send-return-message.md) | `createAdminReturnMessage` mutation |
 
 Permissions: `sales.rma.requests` for reads / status changes / reopen / messages, and `sales.rma.requests.create` to create a return.
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

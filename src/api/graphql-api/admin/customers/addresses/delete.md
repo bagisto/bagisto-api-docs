@@ -34,10 +34,6 @@ Removes an address from a customer's address book. `customerId` is **required** 
 
 Permission: `customers.addresses.delete`.
 
-::: tip Menu overview
 See the [Customer Addresses overview](/api/graphql-api/admin/customers/) for the full address-book flow.
-:::
 
-::: tip Prerequisites
 The example uses an illustrative `id` value. Replace it with the id of a customer address that exists in your store — use the `adminCustomerAddresses` query to discover valid ids.
-:::

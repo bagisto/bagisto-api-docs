@@ -72,8 +72,4 @@ Returns the full detail of a single RMA request: the returned `item`, proof `ima
 
 `sales.rma.requests`
 
-::: tip
 See the [Returns overview](/api/rest-api/admin/sales/returns/) for the status workflow and action semantics.
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

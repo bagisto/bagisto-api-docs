@@ -23,8 +23,8 @@ Downloads the error report generated for an import. The report lists the rows th
 
 Returns `404` when no error report exists for the import.
 
-::: tip REST only
+### REST only
+
 Binary file downloads are not available over GraphQL.
-:::
 
 Permission: `settings.data_transfer.imports.view`.

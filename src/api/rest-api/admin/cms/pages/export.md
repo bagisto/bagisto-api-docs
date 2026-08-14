@@ -78,9 +78,7 @@ Downloads the CMS pages datagrid as a **csv, xls or xlsx file** — the same dat
 
 Unlike the [listing](/api/rest-api/admin/cms/pages-list), the export is **not paginated** — it streams **every page that matches the current filters**.
 
-::: tip REST only
-There is no GraphQL counterpart — binary file streams aren't expressible over GraphQL. Use this REST endpoint for the export.
-:::
+Export is REST-only. The response is a file stream, which GraphQL cannot express, so there is no matching operation on the GraphQL endpoint.
 
 ## Endpoint
 

@@ -42,11 +42,7 @@ examples:
 
 Mirrors the admin **Customers → Customers** datagrid. Each row carries the customer's group as a nested `group` object (`id` / `code` / `name`).
 
-::: tip Overview
 See the [Customers menu overview](/api/rest-api/admin/customers/main/) for the full feature flow.
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
 
 ## Endpoint
 

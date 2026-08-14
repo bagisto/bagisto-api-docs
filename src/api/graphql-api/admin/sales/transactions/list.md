@@ -97,9 +97,9 @@ GraphQL counterpart of `GET /api/admin/transactions`. Returns a cursor-paginated
 
 `sales.transactions.view`
 
-::: warning data and order are returned whole
+### Data and order are returned whole
+
 `data` (the gateway payload) and `order` (the order summary) are returned as JSON — **query them bare, without a sub-selection** (`data` / `order`, not `order { … }`). The whole object comes back. See the field reference below for the keys inside each.
-:::
 
 ## Fields
 

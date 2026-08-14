@@ -12,9 +12,9 @@ examples:
 
 # Delete Role
 
-::: warning Two guards (HTTP 400)
+### Two guards (HTTP 400)
+
 - **In use** — refuses if any admin (`admins.role_id`) references this role.
 - **Last role** — refuses if this is the only role remaining.
-:::
 
 Permission: `settings.roles.delete`.

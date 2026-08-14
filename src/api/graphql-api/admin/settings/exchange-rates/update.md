@@ -62,12 +62,7 @@ Updates an existing exchange rate's `rate`. The target currency is fixed at crea
 | `id` | yes | IRI of the exchange rate to update. |
 | `rate` | yes | New positive numeric multiplier. |
 
-::: tip Prerequisites
 The example uses an illustrative `id`. Replace it with a rate that exists in your store — use the [`adminSettingsExchangeRates`](./list.md) query to discover valid ids.
-:::
 
 Permission: `settings.exchange_rates.edit`.
 
-::: tip
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
-:::

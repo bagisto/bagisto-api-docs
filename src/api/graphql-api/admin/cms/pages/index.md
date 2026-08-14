@@ -61,4 +61,4 @@ It honours the same filters as the listing (`id`, `page_title`, `url_key`, `chan
 | [Mass delete pages](/api/graphql-api/admin/cms/pages/mutations/mass-delete) | `createAdminCmsPageMassDelete` mutation |
 | Export pages (CSV) | **REST only** — see [Export CMS Pages](/api/rest-api/admin/cms/pages/export). |
 
-All CMS Pages operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication). Writes require the matching `cms.create` / `cms.edit` / `cms.delete` permission.
+Writes require the matching `cms.create` / `cms.edit` / `cms.delete` permission.

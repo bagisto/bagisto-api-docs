@@ -93,8 +93,4 @@ Returns a single import job with the full set of fields — including the heavy 
 - `errors` and `summary` are returned as raw JSON values — query them bare (no sub-selection).
 - `errorFilePath` and `summary` stay null until a run has actually produced output.
 
-::: tip Prerequisites
 The example uses an illustrative `id`. Replace it with the id of an import that exists in your store — use the [`adminSettingsDataTransferImports`](./list.md) query to discover valid ids.
-:::
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

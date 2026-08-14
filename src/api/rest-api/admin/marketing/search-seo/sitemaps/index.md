@@ -54,5 +54,3 @@ redirect to and that drive organic discovery.
 
 `indexFile` and `generatedSitemaps` are returned only on the **detail** endpoint —
 they are not present on list rows.
-
-All Sitemaps endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

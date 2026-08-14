@@ -23,8 +23,8 @@ Downloads the source file that was uploaded for this import. The response is the
 
 Returns `404` when the import has no associated file.
 
-::: tip REST only
+### REST only
+
 Binary file downloads are not available over GraphQL.
-:::
 
 Permission: `settings.data_transfer.imports.view`.

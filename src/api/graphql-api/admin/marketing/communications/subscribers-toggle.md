@@ -64,9 +64,7 @@ examples:
 Sets a subscriber's subscription state — the **Subscribe / Unsubscribe** toggle on
 the admin **Marketing → Communications → Newsletter Subscribers** screen.
 
-::: tip
 New here? Read the [Newsletter Subscribers overview](/api/graphql-api/admin/marketing/communications/subscribers/) for what a subscriber is and how its fields behave.
-:::
 
 ## Operation
 

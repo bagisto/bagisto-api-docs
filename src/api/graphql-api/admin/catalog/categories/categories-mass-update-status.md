@@ -39,15 +39,11 @@ examples:
 
 Sets the same status on several categories in one call. `indices` is the list of category ids; `value` is `1` to enable or `0` to disable them. `updated` is the list of ids whose status was changed.
 
-::: tip
-See the [Categories overview](/api/graphql-api/admin/catalog/categories/) for how the menu works.
-:::
+See the [Categories overview](/api/graphql-api/admin/catalog/categories/) for how this menu works.
 
 ## Input
 
 | Field | Type | Notes |
 |-------|------|-------|
-| `indices` | `[Int!]!` | Category ids to update |
+| `indices` | Iterable | Category ids to update |
 | `value` | `Int!` | `0` to disable, `1` to enable |
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

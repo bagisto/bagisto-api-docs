@@ -51,5 +51,3 @@ A rule has four parts: **who it applies to**, **when it applies**, **how it is t
 `conditions`, `channels`, and `customerGroups` are returned only on the **detail** endpoint — they are `null` on list rows. List rows do carry `couponCode`.
 
 Coupon-gated rules (`couponType` = `1`) draw their codes from **Cart Rule Coupons**, a sub-resource of each cart rule.
-
-All Cart Rules endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

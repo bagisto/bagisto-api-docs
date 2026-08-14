@@ -42,9 +42,7 @@ examples:
 Deletes several coupons of one cart rule in a single call — the **Mass Delete**
 action on the admin **Marketing → Promotions → Cart Rules → Coupons** datagrid.
 
-::: tip
 New here? Read the [Cart Rule Coupons overview](/api/graphql-api/admin/marketing/promotions/cart-rule-coupons/) for what a coupon does and how its fields behave.
-:::
 
 ## Operation
 

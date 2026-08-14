@@ -26,5 +26,3 @@ A cart rule can be set to apply automatically or only when a shopper enters a co
 | [Mass Delete](/api/graphql-api/admin/marketing/promotions/cart-rule-coupons-mass-delete) | `createAdminMarketingCartRuleCouponMassDelete` mutation |
 
 This is a sub-resource of [Cart Rules](/api/graphql-api/admin/marketing/promotions/cart-rules/) — every coupon belongs to one cart rule, and the list requires its `cartRuleId`.
-
-All Cart Rule Coupons operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

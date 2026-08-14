@@ -127,9 +127,9 @@ GraphQL counterpart of `GET /api/admin/shipments`. Returns a cursor-paginated li
 
 `sales.shipments.view`
 
-::: warning billingAddress, shippingAddress and items are returned whole
+### Nested Objects Are Returned Whole
+
 `billingAddress`, `shippingAddress` and `items` are returned as JSON — **query them bare, without a sub-selection** (`shippingAddress`, not `shippingAddress { … }`). The whole object/array comes back. See [Shipment Detail](/api/graphql-api/admin/sales/orders/get-shipment) for the keys inside each.
-:::
 
 ## Fields
 

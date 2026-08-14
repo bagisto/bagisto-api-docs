@@ -27,11 +27,7 @@ examples:
 
 Approves a pending request and runs it.
 
-::: tip Overview
 See the [GDPR Requests overview](/api/rest-api/admin/customers/gdpr/) for the full feature flow.
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
 
 | Endpoint | Method |
 |----------|--------|
@@ -49,12 +45,12 @@ All admin endpoints require an admin Bearer token — see [Authentication](/api/
 | `processedAt` | string | Timestamp the request was processed. |
 | `message` | string \| null | Optional note recorded on the request. |
 
-::: warning Destructive action
-For `type=delete` requests this cascades the customer deletion. For `type=update` requests it only marks the request approved — apply the requested edits through the regular Customer update endpoint.
-:::
+### Destructive action
 
-::: tip Idempotency by rejection
+For `type=delete` requests this cascades the customer deletion. For `type=update` requests it only marks the request approved — apply the requested edits through the regular Customer update endpoint.
+
+### Idempotency by rejection
+
 Already-approved or revoked requests are refused with 422.
-:::
 
 Permission: `customers.gdpr_requests.edit`.

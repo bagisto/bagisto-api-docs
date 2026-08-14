@@ -60,10 +60,8 @@ can discover the valid slugs to pass to the
 [Values](./values) and [Update](./update) operations — without trial and error.
 See the [Configuration overview](./) for how the operations fit together.
 
-::: tip Selection set
 The query exposes one field, `slugs` — a JSON array. Select it bare; it is not
 a typed sub-object.
-:::
 
 ## Slug shape
 

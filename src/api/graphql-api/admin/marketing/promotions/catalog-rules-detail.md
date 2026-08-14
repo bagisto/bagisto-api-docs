@@ -101,9 +101,7 @@ examples:
 Returns a single catalog rule with its full field set — the data behind the admin
 **Marketing → Promotions → Catalog Rules** view screen.
 
-::: tip
 New here? Read the [Catalog Rules overview](/api/graphql-api/admin/marketing/promotions/catalog-rules/) for what a catalog rule does and how its fields behave.
-:::
 
 ## Operation
 

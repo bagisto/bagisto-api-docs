@@ -44,12 +44,12 @@ handle you pass to every cart-keyed write mutation
 (`addItemAdminCart`, `saveAddressAdminCart`, `setShippingMethodAdminCart`,
 `setPaymentMethodAdminCart`, `createAdminPlaceOrder`) as their `cartId` input.
 
-::: warning Select `cartId`, not `id`
+### Select `cartId`, not `id`
+
 This is an action mutation — its result is not an addressable record, so the
 auto-generated `id` (IRI) field has no value and selecting it returns
 `Internal server error`. Select the result fields instead: **`cartId`**,
 `customerId`, `success`, `message`.
-:::
 
 ## Operation
 
@@ -66,9 +66,7 @@ auto-generated `id` (IRI) field has no value and selecting it returns
 Distinct from `createAdminReorder` (which seeds the cart from an existing
 order's items).
 
-::: tip Menu overview
 See the [Customers overview](/api/graphql-api/admin/customers/) for how the Create-Order flow fits together.
-:::
 
 ## Errors
 

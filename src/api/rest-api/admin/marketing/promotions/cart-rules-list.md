@@ -89,9 +89,7 @@ examples:
 Lists every cart rule in the store — the data behind the admin **Marketing →
 Promotions → Cart Rules** datagrid.
 
-::: tip
 New here? Read the [Cart Rules overview](/api/rest-api/admin/marketing/promotions/cart-rules/) for what a cart rule does and how its fields behave.
-:::
 
 ## Endpoint
 

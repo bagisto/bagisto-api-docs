@@ -87,9 +87,7 @@ Cursor-paginated GraphQL query that mirrors the Bagisto admin **Catalog →
 Attribute Families** datagrid. Returns the flat family list with filtering,
 sorting, and cursor pagination.
 
-::: tip How this menu works
-For how a family's attribute groups + attributes are structured and the delete guards, see the [Attribute Families overview](/api/graphql-api/admin/catalog/families/).
-:::
+For how a family's attribute groups and attributes are structured, and the delete guards, see the [Attribute Families overview](/api/graphql-api/admin/catalog/families/).
 
 ## Operation
 
@@ -97,42 +95,21 @@ For how a family's attribute groups + attributes are structured and the delete g
 |-----------|------|------------|
 | `adminAttributeFamilies` | Query | Cursor (`first` / `after`) |
 
-::: tip Operation name
-API Platform derives the GraphQL operation name from the resource `shortName`.
-`AdminAttributeFamily` has `shortName: 'AdminAttributeFamily'`, so the collection
-query is `adminAttributeFamilies` and the item query is
-`adminAttributeFamily(id: ID!)`.
-:::
-
-## Authentication
-
-Every request must include an admin Bearer token:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain a token via the [`createAdminLogin`](/api/graphql-api/admin/authentication)
-mutation.
-
 ## Arguments
 
 | Argument | Type | Description | Example |
 |----------|------|-------------|---------|
 | `first` | `Int` | Number of items per page (default `10`, max `50`) | `10` |
 | `after` | `String` | Cursor from a previous `pageInfo.endCursor` for keyset pagination | `"MA=="` |
+| `last` | `Int` | Page size when paging backwards | `10` |
+| `before` | `String` | Cursor from a previous `pageInfo.startCursor` | `"MA=="` |
 | `id` | `String` | Filter by family ID — single integer or comma-separated list (e.g. `"1"` or `"1,2"`) | `"1"` |
 | `code` | `String` | Partial family code match (SQL `LIKE %value%`) | `"default"` |
 | `name` | `String` | Partial family name match (SQL `LIKE %value%`) | `"Apparel"` |
 | `sort` | `String` | Column to sort by (see Sorting section below) | `"id"` |
 | `order` | `String` | Sort direction: `"asc"` or `"desc"` (default `"desc"`) | `"desc"` |
 
-::: tip extraArgs convention
-API Platform does not automatically expose filter arguments in the GraphQL schema
-for `QueryCollection` operations. This query uses `extraArgs` declared on the
-`QueryCollection` operation to surface all filter/sort arguments as first-class
-GraphQL arguments. Pass them directly alongside `first` and `after`.
-:::
+Every filter is a first-class GraphQL argument — pass them alongside `first` and `after`, not inside a nested filter object. Filters combine with AND, so each one narrows the result.
 
 ## Node Fields
 
@@ -145,97 +122,11 @@ Each `edges[].node` object contains:
 | `code` | `String` | Family code (e.g. `default`, `apparel`) |
 | `name` | `String` | Family display name (e.g. `Default`, `Apparel`) |
 
-::: warning No timestamps or attribute groups in the listing
-The listing returns only 3 data fields. The `attribute_families` table has no
-timestamps (`$timestamps = false`), so `createdAt` / `updatedAt` do not exist.
-Attribute groups and nested attributes are only available via the item query
-`adminAttributeFamily(id: ID!)`.
-:::
+## Fields That Are Not Here
 
-## Example Query
+The listing is deliberately three fields. Families carry **no timestamps at all** — there is no `createdAt` or `updatedAt` on this resource, unlike every other admin listing — so you cannot sort or filter by date here.
 
-```graphql
-query AdminAttributeFamilies(
-  $first: Int
-  $after: String
-  $code: String
-  $name: String
-  $sort: String
-  $order: String
-) {
-  adminAttributeFamilies(
-    first: $first
-    after: $after
-    code: $code
-    name: $name
-    sort: $sort
-    order: $order
-  ) {
-    edges {
-      cursor
-      node {
-        id
-        _id
-        code
-        name
-      }
-    }
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      endCursor
-      startCursor
-    }
-    totalCount
-  }
-}
-```
-
-```json
-{
-  "first": 10,
-  "sort": "id",
-  "order": "desc"
-}
-```
-
-## Example Response
-
-```json
-{
-  "data": {
-    "adminAttributeFamilies": {
-      "edges": [
-        {
-          "cursor": "MA==",
-          "node": {
-            "id": "/api/admin/catalog/families/3",
-            "_id": 3,
-            "code": "apparel",
-            "name": "Apparel"
-          }
-        },
-        {
-          "cursor": "MQ==",
-          "node": {
-            "id": "/api/admin/catalog/families/1",
-            "_id": 1,
-            "code": "default",
-            "name": "Default"
-          }
-        }
-      ],
-      "pageInfo": {
-        "hasNextPage": false,
-        "hasPreviousPage": false,
-        "endCursor": "MQ==",
-        "startCursor": "MA=="
-      },
-      "totalCount": 2
-    }
-  }
-}
-```
+`attributeGroups` resolves only on [`adminAttributeFamily(id:)`](/api/graphql-api/admin/catalog/families/families-detail); selecting it on the listing returns `null`.
 
 ## Sorting
 

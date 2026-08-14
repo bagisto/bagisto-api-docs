@@ -48,14 +48,10 @@ examples:
 
 Updates a customer group. Send only the fields you want to change.
 
-::: warning System groups
+### System groups
+
 System groups (`isUserDefined: 0`) only allow `name` updates; changing `code` or the system flag returns `errors[]`. Permission: `customers.groups.edit`.
-:::
 
-::: tip Menu overview
 See the [Customer Groups overview](/api/graphql-api/admin/customers/groups/) for what customer groups do and how they relate to the rest of the store.
-:::
 
-::: tip Prerequisites
 The example uses an illustrative `id` value. Replace it with the id of a customer group that exists in your store — use the [`adminCustomerGroups`](./list.md) query to discover valid ids.
-:::

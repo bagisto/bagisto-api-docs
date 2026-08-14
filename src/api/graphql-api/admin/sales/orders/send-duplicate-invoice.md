@@ -39,7 +39,7 @@ examples:
 
 # Send Duplicate Invoice
 
-GraphQL counterpart of `POST /api/admin/invoices/{id}/send-duplicate`. Emails a copy of the invoice. Requires the `sales.invoices.view` permission. All admin endpoints require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+GraphQL counterpart of `POST /api/admin/invoices/{id}/send-duplicate`. Emails a copy of the invoice. Requires the `sales.invoices.view` permission.
 
 ## Operation
 
@@ -63,6 +63,4 @@ GraphQL counterpart of `POST /api/admin/invoices/{id}/send-duplicate`. Emails a 
 | `success` | `Boolean` | Whether the email was queued. |
 | `message` | `String` | Human-readable result message. |
 
-::: tip Recipient
-Whatever address you pass in `email` is the actual recipient. Leave it out to send to the order's customer.
-:::
+**Recipient** — Whatever address you pass in `email` is the actual recipient. Leave it out to send to the order's customer.

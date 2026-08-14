@@ -322,8 +322,6 @@ Returns the aggregate statistics that power the Bagisto admin **Dashboard** scre
 | **Endpoint** | `POST /api/admin/graphql` |
 | **Returns** | A single object: `{ type, dateRange, statistics }` |
 
-All admin endpoints require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
-
 ## Understanding `type` — the dashboard is **seven** separate calls
 
 This is the most important thing to understand about this API.
@@ -373,9 +371,9 @@ query AdminDashboard($type: String, $start: String, $end: String, $channel: Stri
 - `dateRange` — a human-readable label for the window (e.g. `"03 May - 02 Jun"`).
 - `statistics` — a JSON scalar whose shape depends on `type` (documented below).
 
-::: warning `dateRange` is `null` over GraphQL
+### `dateRange` is `null` over GraphQL
+
 Due to a known GraphQL serialization limitation in this build, the camelCase `dateRange` field returns **`null`** over GraphQL. `type` and `statistics` are fully populated. If you need the formatted date-range label, read it from the [REST endpoint](/api/rest-api/admin/dashboard/stats), which returns it correctly — or reconstruct it from the `start` / `end` you sent.
-:::
 
 ## Response shapes by `type`
 
@@ -400,9 +398,9 @@ Figures with a `previous` / `current` / `progress` shape are period comparisons:
 | `total_customers` | `{ previous, current, progress }` | Today's new customers. |
 | `orders` | `array` | Orders placed today. Each row: `id`, `increment_id`, `status`, `status_label`, `payment_method`, `base_grand_total`, `formatted_base_grand_total`, `channel_name`, `customer_email`, `customer_name`, `items`, `billing_address`, `created_at`. |
 
-::: tip `orders[].items` is admin HTML
+### `orders[].items` is admin HTML
+
 The `items` field is a **pre-rendered admin-panel Blade snippet** (an HTML string of product thumbnails), carried over verbatim from core. It is not structured data — a headless client should ignore it and fetch line items from the Orders API (`/api/admin/orders/{id}`) when product detail is needed.
-:::
 
 ### `stock-threshold-products`
 

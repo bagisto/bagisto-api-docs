@@ -36,9 +36,7 @@ Deletes a sitemap — the **Delete** row action on the admin
 **Marketing → Search & SEO → Sitemaps** screen. Removing a sitemap also deletes
 its generated index and per-batch XML files from storage.
 
-::: tip
 New here? Read the [Sitemaps overview](/api/graphql-api/admin/marketing/search-seo/sitemaps/) for what a sitemap does and how its fields behave.
-:::
 
 ## Operation
 
@@ -54,14 +52,14 @@ New here? Read the [Sitemaps overview](/api/graphql-api/admin/marketing/search-s
   [list](/api/graphql-api/admin/marketing/search-seo/sitemaps-list) query to
   discover valid ids.
 
-::: warning Confirm success via the absence of `errors`
+### Confirm success via the absence of `errors`
+
 The delete mutation returns a success acknowledgement, not the deleted sitemap's
 data — `adminMarketingSitemap` resolves to `null` on the payload. **Treat a
 response with no `errors[]` as a successful delete.** If you need a confirmation
 message in the body, use the REST endpoint
 (`DELETE /api/admin/marketing/sitemaps/{id}`), which returns
 `{ "message": "Sitemap deleted." }`.
-:::
 
 ## Input fields
 

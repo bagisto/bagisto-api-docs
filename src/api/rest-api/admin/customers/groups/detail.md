@@ -40,6 +40,4 @@ Returns a single customer group, including the `customersCount` that the listing
 
 Unknown id → `404`.
 
-::: tip
 For what customer groups are and the system-group rules, see the [Customer Groups overview](./index.md).
-:::

@@ -61,25 +61,13 @@ Paginated, filterable, and sortable attribute list that mirrors the Bagisto admi
 listing for the admin API — same columns, same filters, and the same sort options
 used by the datagrid.
 
-::: tip How this menu works
-For attribute types, options, and the configurable/filterable flags, see the [Attributes overview](/api/rest-api/admin/catalog/attributes/).
-:::
+For attribute types, options, and the configurable and filterable flags, see the [Attributes overview](/api/rest-api/admin/catalog/attributes/).
 
 ## Endpoint
 
 | Endpoint | Method | Authentication |
 |----------|--------|----------------|
 | `/api/admin/catalog/attributes` | GET | Admin Bearer token |
-
-## Authentication
-
-Every request requires:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain the Bearer token via [Authentication](/api/rest-api/admin/authentication).
 
 ## Query Parameters
 
@@ -146,54 +134,6 @@ Responses use the standard admin `{ data, meta }` envelope.
 | `validation` | null | Always `null` in list responses — available via the detail endpoint |
 | `defaultValue` | null | Always `null` in list responses — available via the detail endpoint |
 
-## Example Request
-
-```bash
-curl -X GET "https://your-domain.com/api/admin/catalog/attributes?per_page=10&page=1&type=select&sort=id&order=desc" \
-  -H "Authorization: Bearer <token>" \
-  -H "Accept: application/json"
-```
-
-## Example Response
-
-```json
-{
-  "data": [
-    {
-      "id": 1,
-      "code": "sku",
-      "type": "text",
-      "adminName": "SKU",
-      "isRequired": 1,
-      "isUnique": 1,
-      "valuePerLocale": 0,
-      "valuePerChannel": 0,
-      "isFilterable": 0,
-      "isConfigurable": 0,
-      "isVisibleOnFront": 0,
-      "isUserDefined": 0,
-      "swatchType": null,
-      "position": 1,
-      "locale": "en",
-      "createdAt": "2024-01-01T00:00:00+00:00",
-      "updatedAt": "2024-01-01T00:00:00+00:00",
-      "translations": null,
-      "options": null,
-      "validation": null,
-      "defaultValue": null
-    }
-  ],
-  "meta": {
-    "currentPage": 1,
-    "perPage": 10,
-    "lastPage": 5,
-    "total": 47,
-    "from": 1,
-    "to": 10
-  }
-}
-```
-
 ## Sorting
 
 | Parameter form | Example |
@@ -225,11 +165,14 @@ curl -X GET "https://your-domain.com/api/admin/catalog/attributes?per_page=10&pa
 
 **Unknown filter parameters** are silently ignored — no error is returned.
 
-## Notes
+## Fields That Stay Null on the Listing
 
-- **`translations`, `options`, `validation`, and `defaultValue` are always `null` in list rows.** These detail-only fields are only populated by `GET /api/admin/catalog/attributes/{id}`, which loads all locale translations and — for `select`, `multiselect`, and `checkbox` types — all options with their own translations.
-- **`adminName`** is the value from the `attributes.admin_name` column. It is not locale-aware — it is the internal admin label set when the attribute was created.
-- **`locale` query parameter** controls which `attribute_translations` row is used to resolve any locale-specific display name in the provider. If no translation exists for the requested locale, the `adminName` column value is used as a fallback.
-- **No automatic filter applied.** This endpoint returns all attributes (system and user-defined). Pass `?is_user_defined=1` to restrict to admin-created attributes, or `?is_user_defined=0` for system attributes only.
-- Envelope-wrapped: `{ data: [...], meta: { currentPage, perPage, lastPage, total, from, to } }`.
-- `per_page` caps at **50**; values ≤ 0 fall back to the default of **10**.
+`translations`, `options`, `validation`, `defaultValue`, `isComparable`, `enableWysiwyg`, and `regex` are present on every row but always `null`. All resolve only on [`GET /api/admin/catalog/attributes/{id}`](/api/rest-api/admin/catalog/attributes/attributes-detail), which loads every locale translation and, for option types, all options with their own translations.
+
+## Behaviour Worth Knowing
+
+- **The boolean flags are integers**, `0` or `1`, not booleans.
+- **System attributes are included.** The listing returns both Bagisto's built-in attributes and admin-created ones. Pass `?is_user_defined=1` for admin-created only, or `?is_user_defined=0` for system only — worth knowing because system attributes cannot be deleted.
+- **`adminName` is not locale-aware.** It is the internal label set when the attribute was created. `?locale` selects which translation row resolves the display name, falling back to `adminName` when the requested locale has no row.
+- **`swatchType` stays `null` on a non-swatch attribute** rather than carrying a default.
+- `per_page` caps at **50**; a value of `0` or less falls back to **10**.

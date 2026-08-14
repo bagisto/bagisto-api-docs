@@ -67,7 +67,8 @@ This is the same action as the admin Reorder button:
    are swallowed.
 3. Returns `success`, `message`, and the new `cartId`.
 
-::: tip Use `cartId` to continue the order flow
+### Use `cartId` to continue the order flow
+
 The new draft cart's id is the **`cartId`** field (e.g. `314`) — use it for the
 follow-up Create-Order calls (`/api/admin/carts/{cartId}/items`, addresses,
 shipping/payment, place-order). `_id` returns the source order's id.
@@ -76,7 +77,6 @@ Do **not** select the `id` field on this payload: like other admin action
 results, `adminReorder` is a synthetic result with no resource route, so the
 `id` IRI cannot be generated and selecting it errors. Query
 `cartId` / `_id` / `success` / `message` instead.
-:::
 
 ## Errors
 

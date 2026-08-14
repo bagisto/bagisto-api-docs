@@ -48,9 +48,7 @@ examples:
 Creates a search synonym group — the **Create Synonym** action on the admin
 **Marketing → Search & SEO → Search Synonyms** screen.
 
-::: tip
 New here? Read the [Search Synonyms overview](/api/graphql-api/admin/marketing/search-seo/search-synonyms/) for what a search synonym does and how its fields behave.
-:::
 
 ## Operation
 

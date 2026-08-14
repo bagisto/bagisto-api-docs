@@ -54,5 +54,3 @@ Deletion is refused when:
 | [Delete a role](/api/graphql-api/admin/settings/roles/delete) | `deleteAdminSettingsRole` mutation |
 
 Permissions: `settings.roles.create` / `.edit` / `.delete`.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

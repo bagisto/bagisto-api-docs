@@ -215,6 +215,3 @@ Each filter narrows the result; supplying more than one combines with logical **
 - Use `first` with `after: <endCursor>` to page forward through results.
 - `targetCurrencyCode` and `targetCurrencyName` are resolved from the linked currency for convenience — you don't need a separate currency lookup.
 
-::: tip
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
-:::

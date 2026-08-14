@@ -68,8 +68,4 @@ Returns a single customer by IRI. The linked group is a nested `group` object (`
 
 The `id` argument is the customer IRI (`/api/admin/customers/{id}`).
 
-::: tip
 See the [Customers overview](/api/graphql-api/admin/customers/main/) for how the menu works.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

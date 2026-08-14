@@ -76,8 +76,4 @@ Creates a new customer. When `sendPassword` is `true` (the default) a random pas
 
 Permission: `customers.customers.create`. The response carries the new customer's scalars and the nested `group` object.
 
-::: tip
 See the [Customers overview](/api/graphql-api/admin/customers/main/) for how the menu works.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

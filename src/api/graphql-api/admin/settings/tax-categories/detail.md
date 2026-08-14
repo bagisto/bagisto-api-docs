@@ -78,10 +78,8 @@ Returns a single tax category by id, with its attached tax rates inlined. This i
 | `taxRates` | The attached tax rates, returned as a **connection** — select `taxRates { edges { node { _id identifier taxRate } } }`. Each node carries the rate's `_id`, `identifier`, and `taxRate` (the percentage). Empty `edges` means no rates are currently attached. |
 | `createdAt` / `updatedAt` | ISO 8601 timestamps. |
 
-::: tip taxRates is a field-selectable connection
-`taxRates` is a Relay connection, not an opaque value — sub-select the fields you need via `taxRates { edges { node { _id identifier taxRate } } }`.
-:::
+### TaxRates is a field-selectable connection
 
-::: tip Finding ids
+`taxRates` is a Relay connection, not an opaque value — sub-select the fields you need via `taxRates { edges { node { _id identifier taxRate } } }`.
+
 Use the [`adminSettingsTaxCategories`](./list.md) query to discover valid ids. Pass the category's resource path (`/api/admin/settings/tax-categories/{id}`) as `$id`.
-:::

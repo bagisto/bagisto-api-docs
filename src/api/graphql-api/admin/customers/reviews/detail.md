@@ -86,8 +86,4 @@ Returns a single review by IRI. The reviewed product and the author are nested o
 
 The `id` argument is the review IRI (`/api/admin/customers/reviews/{id}`).
 
-::: tip
 See the [Reviews overview](/api/graphql-api/admin/customers/reviews/) for how moderation works.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

@@ -223,9 +223,7 @@ examples:
 
 Returns a cursor-paginated list of inventory sources. Every column is populated on each row, so you can select whichever fields you need without a follow-up call.
 
-::: tip How this menu works
 For what an inventory source is, field meanings, and the delete guards, see the [Inventory Sources overview](/api/graphql-api/admin/settings/inventory-sources/).
-:::
 
 ## Operation
 
@@ -269,4 +267,4 @@ Each filter narrows the result; supplying more than one combines with logical **
 - `latitude` / `longitude` are `null` when the source has no geo-coordinates configured.
 - Seeded core sources (such as the `default` source) may have `null` `createdAt` / `updatedAt`.
 
-Requires `settings.inventory_sources` view access. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+Requires `settings.inventory_sources` view access.

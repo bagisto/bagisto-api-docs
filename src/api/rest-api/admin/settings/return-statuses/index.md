@@ -41,5 +41,3 @@ Reasons, statuses and custom fields shape the **returns form** the customer fill
 | Create | `sales.rma.statuses.create` |
 | Update / mass update status | `sales.rma.statuses.edit` |
 | Delete / mass delete | `sales.rma.statuses.delete` |
-
-All endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

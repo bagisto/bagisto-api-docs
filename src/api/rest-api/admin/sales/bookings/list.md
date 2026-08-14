@@ -53,9 +53,7 @@ examples:
 
 Mirrors the admin **Sales → Bookings** datagrid. Every booking **column** plus the linked `order` and `orderItem` summaries are populated on each row — the field set is identical to [Booking Detail](/api/rest-api/admin/sales/bookings/detail).
 
-::: tip How this menu works
 For what a booking row is, the booking sub-types, and the time-window fields, see the [Bookings overview](/api/rest-api/admin/sales/bookings/).
-:::
 
 ## Endpoint
 

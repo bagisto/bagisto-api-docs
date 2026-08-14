@@ -68,29 +68,13 @@ Returns the full nested category hierarchy for the admin **Catalog → Categorie
 tree view. Each node carries the same scalar fields as the flat listing plus a
 `children` array containing its full subtree. Leaf nodes have `children: []`.
 
-::: tip Distinct from the flat listing
-`GET /api/admin/catalog/categories/tree` (this endpoint) returns the **nested
-hierarchy** — ideal for tree-picker UIs and category navigation menus.
-
-`GET /api/admin/catalog/categories` returns a **flat, paginated list** — ideal
-for datagrid/table views with filtering and sorting.
-:::
+This endpoint returns the **nested hierarchy**, which is what a tree picker or navigation menu needs. For a flat, filterable, sortable list use [`GET /api/admin/catalog/categories`](/api/rest-api/admin/catalog/categories/categories-listing) instead.
 
 ## Endpoint
 
 | Endpoint | Method | Authentication |
 |----------|--------|----------------|
 | `/api/admin/catalog/categories/tree` | GET | Admin Bearer token |
-
-## Authentication
-
-Every request requires:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain the Bearer token via [Authentication](/api/rest-api/admin/authentication).
 
 ## Query Parameters
 
@@ -125,62 +109,6 @@ The `meta` object counts **root nodes**, not individual categories. It uses
 `perPage: 50` by default and `total: N` where N is the number of top-level nodes
 after filtering.
 
-## Example Request
-
-```bash
-curl -X GET "https://your-domain.com/api/admin/catalog/categories/tree?locale=en&status=1" \
-  -H "Authorization: Bearer <token>" \
-  -H "Accept: application/json"
-```
-
-## Example Response
-
-```json
-{
-  "data": [
-    {
-      "id": 1,
-      "name": "Root Category",
-      "slug": "root",
-      "status": 1,
-      "position": 0,
-      "parentId": null,
-      "displayMode": null,
-      "children": [
-        {
-          "id": 2,
-          "name": "Apparel",
-          "slug": "apparel",
-          "status": 1,
-          "position": 1,
-          "parentId": 1,
-          "displayMode": null,
-          "children": []
-        },
-        {
-          "id": 5,
-          "name": "Electronics",
-          "slug": "electronics",
-          "status": 1,
-          "position": 2,
-          "parentId": 1,
-          "displayMode": null,
-          "children": []
-        }
-      ]
-    }
-  ],
-  "meta": {
-    "currentPage": 1,
-    "perPage": 50,
-    "lastPage": 1,
-    "total": 1,
-    "from": 1,
-    "to": 1
-  }
-}
-```
-
 ## Filtering with `rootId`
 
 Pass `?rootId=<id>` to return only the subtree rooted at that category ID
@@ -195,15 +123,16 @@ If the `rootId` does not exist in the database, the response is `{ "data": [], "
 
 ## Errors
 
-| HTTP Status | Cause |
-|-------------|-------|
-| `401 Unauthorized` | Missing, expired, or revoked admin Bearer token |
-| `401 Unauthorized` | Missing or invalid admin Bearer token |
+| HTTP | Detail |
+|------|--------|
+| `401` | `Unauthenticated.` |
 
-## Notes
+An unknown `?rootId` is not an error — it returns `data: []` with `total: 0`.
 
-- **`children` is a plain JSON array**, not an IRI reference. You can traverse it directly without follow-up requests.
-- **`status` filtering preserves ancestor nodes.** When `?status=1` is applied, a disabled parent node still appears if it has at least one enabled descendant, so the tree remains navigable. Leaf nodes that do not match the status are pruned.
-- **No pagination across the tree levels.** The tree endpoint is not paginated per level — the full subtree of every matched root node is returned in one response. For very large catalogs use `?rootId=<id>` to scope the response.
-- **URL conflict prevention.** The route `/api/admin/catalog/categories/tree` is registered with `requirements: ['id' => '\d+']` on the detail route so that the string `tree` does not match the `{id}` path segment of `GET /api/admin/catalog/categories/{id}`.
-- **Slim node shape.** Tree nodes carry 7 scalar fields (id, name, slug, status, position, parentId, displayMode) plus `children`. Full translations and filterable attribute IDs are not included — fetch the detail endpoint for a single category when those are needed.
+## Behaviour Worth Knowing
+
+- **Everything arrives inline.** `children` is a plain nested array, not an IRI reference, so one call returns the whole tree with no follow-up requests.
+- **Pagination counts root nodes, not categories.** Each matched root always arrives with its complete subtree, so a store with a single root reports `total: 1` however many categories sit beneath it. Scope a large catalog with `?rootId=<id>` rather than by paging.
+- **`status` filtering keeps ancestors.** With `?status=1`, a disabled parent still appears when any descendant is enabled, so the branch stays reachable; non-matching leaves are pruned.
+- **Nodes are slim by design** — `id`, `name`, `slug`, `status`, `position`, `parentId`, `displayMode`, and `children`. There is no `locale`, and no translations or filterable attribute ids; names and slugs are already resolved for the requested locale. Use [the detail endpoint](/api/rest-api/admin/catalog/categories/categories-detail) when you need per-locale metadata.
+- **`id` is the numeric category id at every level**, unlike the GraphQL tree, whose top-level nodes expose an IRI in `id` and the number in `_id`.

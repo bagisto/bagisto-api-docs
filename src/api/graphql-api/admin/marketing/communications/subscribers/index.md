@@ -42,5 +42,3 @@ subscriber list determines who actually receives a send.
 
 `customerId` and `customerName` resolve only when the subscriber's email matches a
 registered customer — they are `null` for guest subscribers.
-
-All Newsletter Subscribers operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

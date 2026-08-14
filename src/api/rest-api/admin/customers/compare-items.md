@@ -48,6 +48,4 @@ Returns the standard `{ data, meta }` envelope. Each row in `data`:
 
 Requires an admin Bearer token.
 
-::: tip
 For how the Create-Order helper panels fit together, see the [Customers overview](/api/rest-api/admin/customers/).
-:::

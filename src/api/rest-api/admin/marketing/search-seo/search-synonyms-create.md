@@ -30,9 +30,7 @@ examples:
 Creates a search-synonym group — the **Create Synonym** action on the admin
 **Marketing → Search & SEO → Search Synonyms** screen.
 
-::: tip
 New here? Read the [Search Synonyms overview](/api/rest-api/admin/marketing/search-seo/search-synonyms/) for what a search synonym is and how its fields behave.
-:::
 
 ## Endpoint
 

@@ -17,9 +17,9 @@ examples:
 |----------|--------|
 | `/api/admin/settings/currencies/{id}` | DELETE |
 
-::: warning Two delete guards (HTTP 400)
+### Two delete guards (HTTP 400)
+
 - **Last currency** — refuses if this is the only currency left.
 - **Channel base** — refuses if any channel uses this as its `base_currency_id`.
-:::
 
 Permission: `settings.currencies.delete`.

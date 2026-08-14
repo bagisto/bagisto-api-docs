@@ -236,11 +236,7 @@ everything else (name, description, price, inventories, images, variants,
 booking slots, etc.) is added through the
 [Update endpoint](/api/rest-api/admin/catalog/products/update).
 
-::: tip Single-step configurable create
-This endpoint accepts `super_attributes` in the same request as the create.
-The store then generates the full cartesian product of variants from the
-option ids you pass.
-:::
+Configurable products are created in a single call here, unlike the admin panel's two-screen flow: pass `super_attributes` with the create and the store generates the full cartesian product of variants from the option ids you supply.
 
 ## Endpoint
 
@@ -270,20 +266,23 @@ tickets are configured during the
 
 ## Response
 
-`201 Created` returning the full product detail payload — most fields will be
-`null` because only `sku`, `type`, and `attribute_family_id` are populated at
-this point. For `configurable`, the generated `variants` are included so you
-can reference each variant id when you fill in per-variant pricing via Update.
+`201 Created`, returning the **same 55-key payload as [Product Detail](/api/rest-api/admin/catalog/products/products-detail)** — not a slim confirmation object. The examples on this page are trimmed to the fields that carry a value; everything else comes back `null` because only `sku`, `type`, and `attribute_family_id` exist yet.
+
+For `configurable`, the generated `variants` are already populated, so you can read each variant id straight out of the create response when filling in per-variant pricing.
 
 ## Errors
 
-| HTTP | Cause |
-|------|-------|
-| `401 Unauthorized` | Missing or invalid admin Bearer token. |
-| `403 Forbidden` | Admin role lacks `catalog.products.create`. |
-| `422 Unprocessable Entity` | Validation failed — missing sku/family, unsupported type, duplicate SKU, invalid slug, unknown family, missing/invalid `super_attributes` for configurable. |
+| HTTP | Detail |
+|------|--------|
+| `401` | `Unauthenticated.` |
+| `403` | `You do not have permission to manage products.` — the token lacks `catalog.products.create` |
+| `422` | `The sku field is required.` |
+| `422` | `The sku has already been taken.` |
+| `422` | `Product type "nope" is not supported by this API. Allowed types: simple, virtual, downloadable, grouped, bundle, configurable, booking.` |
+| `422` | `The super_attributes field is required when type=configurable. …` |
 
-## Notes
+Validation stops at the first failure, so a body with two problems reports only one.
 
-- The next call is typically `PUT /api/admin/catalog/products/{id}` to populate the rest of the fields.
-- See [Update](/api/rest-api/admin/catalog/products/update) for the per-type structure payloads (variants, bundle options, links, booking slots/tickets).
+## After Creating
+
+The product exists but is unusable — it has no name, no price, and `status: null`, so it will not appear on the storefront. Follow with `PUT /api/admin/catalog/products/{id}` to populate the rest; see [Update](/api/rest-api/admin/catalog/products/update) for the per-type structure payloads (variants, bundle options, links, booking slots and tickets).

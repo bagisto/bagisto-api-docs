@@ -44,14 +44,10 @@ examples:
 
 Issues a customer token an admin can use to act as the customer against the storefront API. This is the headless equivalent of the datagrid's "Login as Customer" action.
 
-::: warning One-hour expiry, plaintext shown once
+### One-hour expiry, plaintext shown once
+
 The plaintext `token` is returned only in this response — store it immediately. The token expires one hour after issue and is audited as having been issued by the calling admin (`impersonatedByAdminId`).
-:::
 
 Permission: `customers.customers.edit`.
 
-::: tip
 See the [Impersonate overview](/api/graphql-api/admin/customers/impersonate/) for how this flow works.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

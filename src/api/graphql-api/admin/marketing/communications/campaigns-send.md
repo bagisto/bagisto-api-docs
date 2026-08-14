@@ -42,9 +42,7 @@ Sends a campaign now — the **Send** action on the admin
 **Marketing → Communications → Campaigns** screen. It queues the campaign's email
 template to every subscribed member of its customer group.
 
-::: tip
 New here? Read the [Campaigns overview](/api/graphql-api/admin/marketing/communications/campaigns/) for what a campaign does and how its fields behave.
-:::
 
 ## Operation
 
@@ -63,11 +61,11 @@ New here? Read the [Campaigns overview](/api/graphql-api/admin/marketing/communi
 - The response reports `campaignId`, `queued` (the number of recipients queued),
   and a `message`.
 
-::: warning Active campaigns only
+### Active campaigns only
+
 An inactive campaign (`status` = `0`) cannot be sent — the mutation returns a
 `422` error. Activate the campaign first via
 [update](/api/graphql-api/admin/marketing/communications/campaigns-update).
-:::
 
 ## Input fields
 

@@ -16,11 +16,7 @@ examples:
 
 # Mass Update Customer Status
 
-::: tip Overview
 See the [Customers menu overview](/api/rest-api/admin/customers/main/) for the full feature flow.
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
 
 | Endpoint | Method |
 |----------|--------|

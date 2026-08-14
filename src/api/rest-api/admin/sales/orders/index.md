@@ -25,9 +25,9 @@ An admin can place an order **on behalf of a customer** — the same "Create Ord
 
 (There's also [apply](/api/rest-api/admin/sales/carts/apply-coupon) / [remove coupon](/api/rest-api/admin/sales/carts/remove-coupon) on the draft cart.) [Reorder](/api/rest-api/admin/sales/orders/reorder) is a shortcut that seeds a fresh draft cart from an existing order's items.
 
-::: tip Only saleable products can be added
+### Only saleable products can be added
+
 [Add Item](/api/rest-api/admin/sales/carts/add-item) accepts only products that are in stock and enabled. Adding an out-of-stock or disabled product returns a clear error and **leaves the draft cart intact** so you can add a different product — the cart is never lost. Booking products can't be added to an admin order (no admin Create-Order surface for them).
-:::
 
 ## The order lifecycle — which action, in what order
 
@@ -45,12 +45,12 @@ Once an order exists (placed through Create Order above, [Reorder](/api/rest-api
 
 Every action refuses with a clear error when its prerequisite isn't met — nothing left to invoice/ship/refund, the order is already closed or flagged, insufficient stock, or a payment method that can't be invoiced. A typical fulfilled order runs **Create → Invoice → Ship** (then an optional **Refund**); an abandoned one runs **Create → Cancel**.
 
-::: tip Recording payments as transactions
+### Recording payments as transactions
+
 A payment can be recorded as a transaction (which then shows in the [Transactions listing](/api/rest-api/admin/sales/transactions/list)) in two ways:
 
 - **At invoice time** — send `can_create_transaction: true` on [Create Invoice](/api/rest-api/admin/sales/orders/create-invoice) (the **Create Transaction** checkbox). Records the **full** invoice amount in one step.
 - **Any time** — [Create Transaction](/api/rest-api/admin/sales/transactions/create) (`POST /api/admin/transactions`) records an **arbitrary or partial** payment against an existing invoice.
-:::
 
 ## Endpoints in this menu
 
@@ -67,5 +67,3 @@ A payment can be recorded as a transaction (which then shows in the [Transaction
 | [Create Shipment](/api/rest-api/admin/sales/orders/create-shipment) | `POST /api/admin/orders/{id}/shipments` |
 | [Create Refund](/api/rest-api/admin/sales/orders/create-refund) | `POST /api/admin/orders/{id}/refunds` |
 | [Refund Preview](/api/rest-api/admin/sales/orders/refund-preview) | `POST /api/admin/orders/{id}/refunds/preview` |
-
-All Orders endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

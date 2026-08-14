@@ -55,9 +55,7 @@ examples:
 Returns a single newsletter subscriber with its full field set — the data behind
 the admin **Marketing → Communications → Newsletter Subscribers** view screen.
 
-::: tip
 New here? Read the [Newsletter Subscribers overview](/api/graphql-api/admin/marketing/communications/subscribers/) for what a subscriber is and how its fields behave.
-:::
 
 ## Operation
 

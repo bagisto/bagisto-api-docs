@@ -28,9 +28,7 @@ Builds the XML files for a sitemap — the **Generate** row action on the admin
 **Marketing → Search & SEO → Sitemaps** screen. Saving a sitemap does not build
 its files, so this is the explicit step that produces them.
 
-::: tip
 New here? Read the [Sitemaps overview](/api/rest-api/admin/marketing/search-seo/sitemaps/) for what a sitemap does and how its fields behave.
-:::
 
 ## Endpoint
 

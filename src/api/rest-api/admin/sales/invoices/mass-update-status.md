@@ -35,9 +35,9 @@ examples:
 
 Bulk-sets the status of a batch of invoices in one call — the API behind the admin Invoices datagrid's "Update Status" bulk action. Requires the `sales.invoices.view` permission.
 
-::: warning This is a manual status override
+### This is a manual status override
+
 Setting an invoice to `paid` here **does not capture a payment**, and setting it to `pending` / `overdue` does **not** reverse one. It only changes the stored status flag. Use it to correct or annotate invoice states — not as a payment operation.
-:::
 
 ## Endpoint
 

@@ -37,4 +37,4 @@ On the single-category query, `translations` and `filterableAttributeIds` are re
 | [Mass delete](/api/graphql-api/admin/catalog/categories/categories-mass-delete) | `createAdminCategoryMassDelete` mutation |
 | [Mass update status](/api/graphql-api/admin/catalog/categories/categories-mass-update-status) | `createAdminCategoryMassUpdateStatus` mutation |
 
-All Categories operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication). Reads require `catalog.categories.view`; writes require the matching `catalog.categories.create` / `.edit` / `.delete` permission.
+Reads require `catalog.categories.view`; writes require the matching `catalog.categories.create` / `.edit` / `.delete` permission.

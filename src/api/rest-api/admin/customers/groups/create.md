@@ -36,12 +36,10 @@ Creates a new customer group. The response is the created group.
 | `code` | string | yes | Unique. Validated by `Webkul\Core\Rules\Code` (regex `^[a-zA-Z]+[a-zA-Z0-9_]+$`). |
 | `name` | string | yes | |
 
-::: tip System groups
+### System groups
+
 New groups are always created with `is_user_defined=1`. The API cannot create system groups.
-:::
 
 Permission: `customers.groups.create`.
 
-::: tip
 For what customer groups are and the system-group rules, see the [Customer Groups overview](./index.md).
-:::

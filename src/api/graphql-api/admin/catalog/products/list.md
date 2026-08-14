@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: admin-products-list
     title: Add-Product Search (Create-Order)
-    description: The slim product search behind the admin Create-Order "Add Product" modal. NOT the product listing — for the full product list with all columns and filters use the List Products datagrid. Returns ALL statuses by default (admin sees disabled / draft products too). Booking products ARE listed but blocked when added to an admin draft cart.
+    description: The slim product search behind the admin Create-Order "Add Product" modal. Not the product listing — for the full datagrid with every column and filter use List Products. Returns all statuses by default, so disabled and draft products appear.
     query: |
       query AdminProducts($first: Int, $after: String, $type: String, $sku: String) {
         adminProducts(first: $first, after: $after, type: $type, sku: $sku) {
@@ -22,7 +22,12 @@ examples:
               isSaleable
             }
           }
-          pageInfo { hasNextPage endCursor }
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
           totalCount
         }
       }
@@ -53,7 +58,54 @@ examples:
                 }
               }
             ],
-            "pageInfo": { "hasNextPage": false, "hasPreviousPage": false, "endCursor": "MA==", "startCursor": "MA==" },
+            "pageInfo": {
+              "hasNextPage": false,
+              "hasPreviousPage": false,
+              "startCursor": "MA==",
+              "endCursor": "MA=="
+            },
+            "totalCount": 1
+          }
+        }
+      }
+  - id: admin-products-search
+    title: Free-Text Search
+    description: The `query` argument matches SKU or product name partially, which is what the modal's search box sends as the admin types.
+    query: |
+      query AdminProducts($first: Int, $query: String) {
+        adminProducts(first: $first, query: $query) {
+          edges {
+            node {
+              _id
+              sku
+              name
+              type
+              isSaleable
+            }
+          }
+          totalCount
+        }
+      }
+    variables: |
+      {
+        "first": 10,
+        "query": "beanie"
+      }
+    response: |
+      {
+        "data": {
+          "adminProducts": {
+            "edges": [
+              {
+                "node": {
+                  "_id": 2512,
+                  "sku": "SP-001",
+                  "name": "Arctic Cozy Knit Unisex Beanie",
+                  "type": "simple",
+                  "isSaleable": true
+                }
+              }
+            ],
             "totalCount": 1
           }
         }
@@ -62,49 +114,62 @@ examples:
 
 # Add-Product Search (Create-Order)
 
-The slim product **search** that powers the admin **Create Order** screen's
-"Add Product" modal — the GraphQL counterpart of `GET /api/admin/products`.
-Cursor pagination via `first` / `after`.
+The slim product **search** behind the admin **Create Order** screen's "Add Product" modal. It answers one question — which product is the admin picking? — and returns just enough to render a picker row.
 
-::: warning This is not the product listing
-For the full admin product listing — every column plus all the
-Channel / Name / SKU / Attribute Family / Price / ID / Status / Type filters —
-use [List Products](/api/graphql-api/admin/catalog/products) (the
-`adminCatalogProducts` query). This page documents only the Create-Order search
-tool.
-:::
+This is not the product listing. For the full admin datagrid, with every column and the Channel / Name / SKU / Attribute Family / Price / ID / Status / Type filters, use [List Products](/api/graphql-api/admin/catalog/products) (`adminCatalogProducts`). This page covers only the Create-Order picker.
 
 ## Operation
 
 | Operation | Type |
 |-----------|------|
-| `adminProducts(first: Int, after: String, query: String, sku: String, type: String, status: Int, categoryId: Int, channel: String, locale: String)` | Query (cursor) |
+| `adminProducts` | Query (cursor connection) |
 
 ## Arguments
 
 | Arg | Type | Description |
 |-----|------|-------------|
-| `first` | `Int` | Page size (default `30`, max `50`) |
-| `after` | `String` | Cursor from a previous `pageInfo.endCursor` |
-| `query` | `String` | Free-text — matches SKU OR product name (partial) |
-| `sku` | `String` | Exact SKU |
-| `type` | `String` | `simple`, `configurable`, `bundle`, `downloadable`, `grouped`, `virtual`, `booking` |
-| `status` | `Int` | `0` (disabled) or `1` (enabled) — omit to get both |
-| `categoryId` | `Int` | Filter by category ID |
-| `channel` | `String` | Channel code for value resolution |
-| `locale` | `String` | Locale code for value resolution |
+| `first` | Int | Page size, default `30`, capped at `50`. |
+| `after` | String | Cursor from a previous `pageInfo.endCursor`. |
+| `last` | Int | Page size when paging backwards. |
+| `before` | String | Cursor from a previous `pageInfo.startCursor`. |
+| `query` | String | Free text — partial match against SKU **or** product name. |
+| `sku` | String | Exact SKU. |
+| `type` | String | `simple`, `configurable`, `bundle`, `downloadable`, `grouped`, `virtual`, or `booking`. |
+| `status` | Int | `0` disabled, `1` enabled. Omit to get both. |
+| `categoryId` | Int | Restrict to products in one category. |
+| `channel` | String | Channel code used to resolve `name` and `price`. |
+| `locale` | String | Locale code used to resolve `name`. |
 
-## How it differs from the storefront `products` query
+Arguments combine with AND — more arguments narrow the result. `query` and `sku` are separate: `query` is the partial "as you type" match, `sku` is exact.
 
-- No automatic `status = 1` filter — admin sees all statuses.
-- Booking products are listed (but cannot be added to an admin draft cart — see
-  the [Add Item to Cart](/api/graphql-api/admin/sales/carts/add-item) errors
-  list).
-- Returns a slim row (9 fields) rather than the full storefront product schema.
+## Node Fields
 
-## Booking Products
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | ID! | Resource identifier in IRI form, `/api/admin/admin_products/<id>`. |
+| `_id` | Int | Numeric product id — the value to send when adding the item to a cart. |
+| `sku` | String | Product SKU. |
+| `type` | String | Product type. |
+| `name` | String | Resolved for the requested channel and locale. |
+| `status` | Int | `1` enabled, `0` disabled. |
+| `price` | Float | Minimal price for the product. |
+| `formattedPrice` | String | The same price rendered in the channel currency. |
+| `baseImageUrl` | String | Medium-size image URL, falling back to the theme placeholder when the product has no image. |
+| `isSaleable` | Boolean | Whether the product can currently be sold. |
 
-Booking products are returned by this query for admin visibility. Attempting to
-add one to an admin draft cart via `addItemAdminCart` returns an error message
-"Booking products cannot be added to an admin draft order." — this matches the
-Bagisto monolith Create-Order UI which has no booking partial.
+The row is deliberately nine fields — no variants, bundle options, images array, or attribute values. Use [Product Detail](/api/graphql-api/admin/catalog/products/products-detail) once a product is picked.
+
+Two fields behave unlike their storefront counterparts:
+
+- **`status` and `price` are typed numbers here**, not strings. Elsewhere in the admin catalog schema the same concepts arrive as strings — do not share a parsing helper between this query and `adminCatalogProducts`.
+- **`baseImageUrl` is never null.** A product without an image gets the theme's placeholder URL, so an "is there an image?" check on this field always says yes.
+
+## How It Differs From the Storefront Query
+
+- **No implicit `status = 1` filter.** The storefront `products` query hides disabled products; this one returns every status so an admin can find a draft or disabled product. Pass `status: 1` explicitly if you want only enabled ones.
+- **Booking products are returned.** They are listed so the admin can find them, but adding one to a draft cart fails — see [Add Item to Cart](/api/graphql-api/admin/sales/carts/add-item). This mirrors the admin panel, whose Create-Order screen ships no booking form.
+- **Nine fields, not the full product schema.**
+
+## Errors
+
+Requires an admin Bearer token. There is no separate permission gate on the search itself.

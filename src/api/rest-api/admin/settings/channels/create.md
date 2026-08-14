@@ -37,8 +37,8 @@ Send the assignments as integer-array inputs named `locales` / `currencies` / `i
 - `default_locale_id` must appear in `locales`; `base_currency_id` must appear in `currencies`.
 - `root_category_id` must exist.
 
-::: warning Logo / favicon upload deferred
+### Logo / favicon upload deferred
+
 Channel `logo` and `favicon` multipart uploads are **not yet supported via the API** — use the admin panel. Other scalar/translation fields work fine.
-:::
 
 Permission: `settings.channels.create`.

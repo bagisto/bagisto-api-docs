@@ -50,8 +50,4 @@ Returns the updated address detail (same shape as the address detail endpoint), 
 
 Permission: `customers.addresses.edit`.
 
-::: tip
 For default-address semantics and the address-book overview, see the [Addresses overview](./index.md).
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

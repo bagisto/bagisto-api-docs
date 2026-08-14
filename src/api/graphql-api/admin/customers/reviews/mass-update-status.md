@@ -40,8 +40,4 @@ Sets the moderation status on the supplied reviews in one call. `value` is a str
 
 Permission: `customers.reviews.edit`.
 
-::: tip
 See the [Reviews overview](/api/graphql-api/admin/customers/reviews/) for how moderation works.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

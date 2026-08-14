@@ -60,8 +60,6 @@ Run the [index](./index.md) stage to finish the import.
 - The input takes the import's `importId` **and** an `id` (the link IRI) — API Platform requires the `id` field on every non-create mutation.
 - Select `_id` for the numeric import id; the payload `id` IRI does not resolve on mutation results.
 
-::: tip Prerequisites
 The example uses an illustrative import. Replace it with an import in your store that has finished processing.
-:::
 
-Permission: `settings.data_transfer.imports.edit`. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+Permission: `settings.data_transfer.imports.edit`.

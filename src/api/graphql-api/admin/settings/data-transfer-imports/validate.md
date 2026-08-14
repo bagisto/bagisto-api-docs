@@ -55,8 +55,6 @@ Runs validation over the uploaded file **without importing any data**. This is t
 - The response carries an `isValid` flag. When `isValid` is `false`, read `errorsCount` / `invalidRowsCount`, or download the error report over REST to see which rows failed.
 - Select `_id` for the numeric import id; the payload `id` IRI does not resolve on mutation results.
 
-::: tip Prerequisites
 The example uses an illustrative import. Replace it with an import that exists in your store — use the [`adminSettingsDataTransferImports`](./list.md) query to discover valid ids.
-:::
 
-Permission: `settings.data_transfer.imports.edit`. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+Permission: `settings.data_transfer.imports.edit`.

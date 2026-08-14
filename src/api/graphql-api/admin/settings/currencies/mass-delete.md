@@ -47,5 +47,3 @@ Deletes several currencies in one call by their numeric ids.
 - `deleted` returns a plain array of the ids that were removed. Read `message` to confirm the outcome.
 - The [delete guards](./delete.md) still apply per id: the last currency and any channel's base currency cannot be removed.
 - Permission: `settings.currencies.delete`.
-
-All currency operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

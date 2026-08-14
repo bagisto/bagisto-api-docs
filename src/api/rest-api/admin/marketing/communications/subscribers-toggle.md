@@ -36,9 +36,7 @@ examples:
 Sets the subscription state for a subscriber — the **subscribe / unsubscribe**
 toggle on the admin **Marketing → Communications → Newsletter Subscribers** screen.
 
-::: tip
 New here? Read the [Newsletter Subscribers overview](/api/rest-api/admin/marketing/communications/subscribers/) for what a subscriber is and how its fields behave.
-:::
 
 ## Endpoint
 

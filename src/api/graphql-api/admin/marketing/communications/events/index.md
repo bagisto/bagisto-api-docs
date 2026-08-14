@@ -29,5 +29,3 @@ An event is intentionally lightweight: a name, a description, and a single date.
 | [Delete](/api/graphql-api/admin/marketing/communications/events-delete) | `deleteAdminMarketingEvent` mutation |
 
 **Relation.** Events pair with [Campaigns](/api/graphql-api/admin/marketing/communications/campaigns/) — a campaign may reference an event so its send lines up with the event date.
-
-All Events operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

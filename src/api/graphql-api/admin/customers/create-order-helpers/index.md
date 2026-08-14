@@ -25,5 +25,3 @@ The full order-building flow lives under [Sales → Orders](/api/graphql-api/adm
 | [Wishlist Items](../wishlist-items.md) | `adminCustomerWishlistItems(customerId:)` query |
 | [Recent Order Items](../recent-order-items.md) | `adminCustomerRecentOrderItems(customerId:)` query |
 | [Create Draft Cart](../create-draft-cart.md) | `createAdminDraftCart` mutation |
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

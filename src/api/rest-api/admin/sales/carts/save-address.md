@@ -42,7 +42,11 @@ examples:
           "address": "12 Main St", "city": "Berlin",
           "country": "DE", "state": "BE", "postcode": "10115"
         },
-        "shippingAddress": { /* same as billing when useForShipping = true */ },
+        "shippingAddress": {
+          "firstName": "Jane", "lastName": "Doe",
+          "address": "12 Main St", "city": "Berlin",
+          "country": "DE", "state": "BE", "postcode": "10115"
+        },
         "success": true,
         "message": "Address saved."
       }

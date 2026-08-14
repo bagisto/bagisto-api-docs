@@ -50,4 +50,4 @@ The `deleted` field returns a plain array of the ids that were removed.
 |-------|------|----------|---------|
 | `indices` | Iterable | yes | Array of numeric block ids to delete. An empty array is rejected. |
 
-Permission: `settings.themes.delete`. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+Permission: `settings.themes.delete`.

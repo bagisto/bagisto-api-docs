@@ -65,9 +65,7 @@ Creates a cart rule — the **Create Rule** action on the admin **Marketing →
 Promotions → Cart Rules** screen. A cart rule discounts the shopper's cart at
 checkout and can optionally be gated by a coupon code.
 
-::: tip
 New here? Read the [Cart Rules overview](/api/rest-api/admin/marketing/promotions/cart-rules/) for what a cart rule does and how its fields behave.
-:::
 
 ## Endpoint
 

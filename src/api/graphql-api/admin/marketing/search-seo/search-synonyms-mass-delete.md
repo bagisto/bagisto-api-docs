@@ -41,9 +41,7 @@ examples:
 Deletes several search synonym groups in one call — the **Mass Delete** action on
 the admin **Marketing → Search & SEO → Search Synonyms** datagrid.
 
-::: tip
 New here? Read the [Search Synonyms overview](/api/graphql-api/admin/marketing/search-seo/search-synonyms/) for what a search synonym does and how its fields behave.
-:::
 
 ## Operation
 

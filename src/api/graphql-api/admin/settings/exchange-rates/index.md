@@ -51,5 +51,3 @@ Deleting a rate does not delete the currency — only the conversion entry. A ta
 | [Update rates (auto-sync)](/api/graphql-api/admin/settings/exchange-rates/update-rates) | `createAdminSettingsExchangeRateUpdateRates` mutation |
 
 Permissions: `settings.exchange_rates.create` / `.edit` / `.delete` (`update-rates` uses `.edit`).
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

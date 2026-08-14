@@ -44,13 +44,7 @@ examples:
 Updates an existing category. Mirrors **Catalog → Categories → Edit** in the
 Bagisto admin panel.
 
-::: warning No separate move endpoint
-**Move semantics are part of the standard update payload.** To re-parent a
-category or change its sort position, `PUT` the category with the new
-`parent_id` and `position`. This mirrors the Bagisto admin panel which has
-no dedicated "move" action either — `parent_id` + `position` are ordinary
-editable fields on the category form.
-:::
+There is no separate move endpoint. Re-parenting and reordering are part of the ordinary update payload — `PUT` the category with a new `parent_id` and `position`. The admin panel works the same way: both are ordinary editable fields on the category form, not a distinct "move" action.
 
 ## Endpoint
 

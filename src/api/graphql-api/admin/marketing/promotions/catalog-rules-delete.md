@@ -68,9 +68,7 @@ Deletes a catalog rule — the **Delete** row action on the admin
 **Marketing → Promotions → Catalog Rules** screen. Removing a rule recomputes
 affected product prices in the background.
 
-::: tip
 New here? Read the [Catalog Rules overview](/api/graphql-api/admin/marketing/promotions/catalog-rules/) for what a catalog rule does and how its fields behave.
-:::
 
 ## Operation
 
@@ -86,7 +84,8 @@ New here? Read the [Catalog Rules overview](/api/graphql-api/admin/marketing/pro
   [list](/api/graphql-api/admin/marketing/promotions/catalog-rules-list) query to
   discover valid ids.
 
-::: tip Returns the deleted rule + a `message`
+### Returns the deleted rule + a `message`
+
 The delete mutation returns a **snapshot of the just-deleted rule** — select
 `id`, `_id`, `name`, and the other scalar fields to confirm exactly what was
 removed. The `message` field carries the success confirmation
@@ -97,7 +96,6 @@ on a delete result (the rule's rows are already gone) — read those from the
 before deleting if you need them. The REST endpoint
 (`DELETE /api/admin/marketing/catalog-rules/{id}`) returns
 `{ "message": "Catalog rule deleted successfully." }`.
-:::
 
 ## Input fields
 

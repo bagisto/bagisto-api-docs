@@ -30,8 +30,8 @@ examples:
         cause: Missing, malformed, expired, or revoked Bearer token
         solution: Send a valid Bearer token from an active Integration token on the Authorization header
       - error: Forbidden
-        cause: The token is valid but the owning admin lacks permission for the action
-        solution: Use a token whose admin has the required role permission
+        cause: The token is valid but its permission scope does not cover the action
+        solution: Use a token whose permission mode grants the required ACL key, and whose owning admin's role also grants it
 ---
 
 # Admin Authentication
@@ -69,7 +69,16 @@ A token is tied to one admin and **inherits that admin's role permissions** — 
 - **Custom** — a specific subset of permissions you select, frozen onto the token.
 - **Same as web** — always mirrors the owner's current role, so the token automatically follows any later changes to that role.
 
-A request for an action the token isn't permitted to perform returns **403 Forbidden**.
+A request for an action the token isn't permitted to perform returns HTTP `403` with a problem-details body:
+
+```json
+{
+  "type": "/errors/403",
+  "title": "Forbidden",
+  "status": 403,
+  "detail": "You do not have permission to view this sales resource."
+}
+```
 
 ### IP allowlist
 
@@ -81,16 +90,29 @@ A token can have an **expiry date** (default: one year after generation) or be s
 
 ### Rate limits
 
-Each token is throttled by two independent buckets:
+Each token carries two independent caps, both set when the token is generated:
 
 | Bucket | Default |
 |---|---|
 | Per minute | 60 requests |
 | Per day | 10,000 requests |
 
-Exceeding either limit returns **429 Too Many Requests**.
+Exceeding either returns HTTP `429` with `{"message": "Too Many Attempts.", "error": "rate_limit_exceeded"}` and these headers:
 
-**Unlimited rate limit** — when generating or editing the token, choose the **Unlimited** option for the per-minute and/or per-day limit. That removes the cap for that bucket; set **both** to Unlimited for a fully unthrottled token.
+| Header | Meaning |
+|---|---|
+| `Retry-After` | Seconds until the bucket refills |
+| `X-RateLimit-Limit` | The cap that was hit |
+| `X-RateLimit-Remaining` | Requests left, `0` on a 429 |
+| `X-RateLimit-Reset` | Unix timestamp when the window resets |
+
+Three details worth knowing:
+
+- **The two caps are separate buckets.** Hitting the per-minute cap does not consume the daily allowance, and the `Retry-After` you get back tells you which one you hit — roughly a minute versus the remainder of the day.
+- **The cap is per token, not per admin or per IP.** Two tokens owned by the same admin have independent allowances.
+- **REST and GraphQL share one bucket.** `/api/admin/graphql` draws on the same per-token allowance as the REST routes, so a client using both must budget across the two.
+
+Choose **Unlimited** for either bucket when generating or editing the token to remove that cap; set both to Unlimited for an unthrottled token.
 
 ## Token lifecycle
 
@@ -104,9 +126,10 @@ Exceeding either limit returns **429 Too Many Requests**.
 
 | Condition | HTTP | Body |
 |---|---|---|
-| Missing / malformed / expired / revoked token, or client IP not on the token's allowlist | `401` | `{ "message": "Unauthenticated.", "error": "unauthenticated" }` |
-| Token valid but lacks permission for the action | `403` | Forbidden |
-| Per-minute or per-day rate limit exceeded | `429` | Too Many Requests |
+| Missing / malformed / expired / revoked token, or client IP not on the token's allowlist | `401` | `{"message": "Unauthenticated.", "error": "unauthenticated"}` |
+| Token valid but lacks permission for the action | `403` | `{"type": "/errors/403", "title": "Forbidden", "status": 403, "detail": "..."}` |
+| Resource does not exist | `404` | `{"type": "/errors/404", "title": "Not Found", "status": 404, "detail": "..."}` |
+| Per-minute or per-day rate limit exceeded | `429` | `{"message": "Too Many Attempts.", "error": "rate_limit_exceeded"}` |
 
 ## Examples
 

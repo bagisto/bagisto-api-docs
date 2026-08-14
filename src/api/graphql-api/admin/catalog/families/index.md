@@ -35,4 +35,4 @@ A family **cannot be deleted** if it is the last remaining family, or if any pro
 | [Update family](/api/graphql-api/admin/catalog/families/families-update) | `updateAdminAttributeFamily` mutation |
 | [Delete family](/api/graphql-api/admin/catalog/families/families-delete) | `deleteAdminAttributeFamily` mutation |
 
-All Attribute Families operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication). Reads require `catalog.families.view`; writes require the matching `catalog.families.create` / `.edit` / `.delete` permission.
+Reads require `catalog.families.view`; writes require the matching `catalog.families.create` / `.edit` / `.delete` permission.

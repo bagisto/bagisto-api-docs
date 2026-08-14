@@ -41,9 +41,7 @@ examples:
 Deletes several cart rules in one call — the **Mass Delete** action on the
 admin **Marketing → Promotions → Cart Rules** datagrid.
 
-::: tip
 New here? Read the [Cart Rules overview](/api/graphql-api/admin/marketing/promotions/cart-rules/) for what a cart rule does and how its fields behave.
-:::
 
 ## Operation
 

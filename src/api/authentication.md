@@ -2,7 +2,7 @@
 
 Authentication depends on the surface you are calling. There are two, each with a fixed scheme:
 
-- **Shop API** (`/api/shop/*`, `/api/graphql`) — always send the `X-STOREFRONT-KEY`. That alone gives read-only public access. For customer actions add a customer Bearer token (from [login](/api/rest-api/shop/customers/customer-login)); a guest can act without login by using a [cart token](/api/rest-api/shop/cart/create-cart) as the Bearer.
+- **Shop API** (`/api/shop/*`, `/api/graphql`) — always send the `X-STOREFRONT-KEY`. That alone gives public access, which covers browsing plus the handful of writes any visitor is allowed to make. For anything tied to a customer account add a customer Bearer token (from [login](/api/rest-api/shop/customers/customer-login)); a guest can shop and check out without an account by using a [cart token](/api/rest-api/shop/cart/create-cart) as the Bearer.
 - **Admin API** (`/api/admin/*`, `/api/admin/graphql`) — send a pre-issued **Integration** Bearer token. No `X-STOREFRONT-KEY`, no login.
 
 Pick the row that matches your surface below.
@@ -11,52 +11,66 @@ Pick the row that matches your surface below.
 
 | Your Use Case | Authentication Method | API Type | Read More |
 |---|---|---|---|
-| **Public data** (products, categories) | `X-STOREFRONT-KEY` header | Shop API | [Public APIs](#_1-public-apis-storefront) |
-| **Customer operations** (cart, orders, profile) | `X-STOREFRONT-KEY` + Bearer token | Shop API | [Customer APIs](#_2-customer-apis) |
+| **Public data and open forms** (products, categories, contact, newsletter, registration) | `X-STOREFRONT-KEY` header | Shop API | [Public APIs](#_1-public-apis-storefront) |
+| **Customer operations** (profile, addresses, order history) | `X-STOREFRONT-KEY` + Bearer token | Shop API | [Customer APIs](#_2-customer-apis) |
 | **Admin operations** (manage products, inventory) | Bearer token (admin) | Admin API | [Admin APIs](#_3-admin-apis) |
 
 ## Authentication Architecture
 
-All Bagisto APIs are built on a secure, Laravel-native foundation:
+The three credentials are separate systems, not one scheme with three modes:
 
-- **Laravel Sanctum** — Token-based authentication framework
-- **Secure Token Generation** — Cryptographically secure token creation
-- **Token Expiration** — Configurable token lifetime
-- **Rate Limiting** — Per-key rate limit protection
-- **HTTPS Required** — Enforced in production environments
+- **Storefront key** — a store-wide key checked at the edge of every `/api/shop/*` request. It identifies the client application, never a person.
+- **Customer token** — issued by customer login and built on **Laravel Sanctum**. Format `<id>|<secret>`.
+- **Admin Integration token** — its own credential store and guard, independent of Sanctum and of the storefront key. Same `<id>|<secret>` shape, different lookup.
 
+Because they are independent, a credential never substitutes for another: an admin token sent to a shop route still fails on the missing storefront key, and a storefront key sent to an admin route is ignored.
+
+Common ground across all three: secrets are generated cryptographically and stored hashed, expiry is configurable, and rate limits apply per credential. In production the API also sends an HSTS header advertising HTTPS-only — that instructs browsers, it does not by itself reject a plaintext request, so terminate TLS in front of the application.
 
 ## 1. Public APIs (Storefront)
 
-**Best for:** Reading public data (products, categories, prices) without user login.
+**Best for:** Anything a visitor can do before they have an account — browsing the catalog, and the small set of open forms.
 
 ### The Basics
 
 - **What you need:** `X-STOREFRONT-KEY` header
-- **What you get:** Read-only access to storefront data
+- **What you get:** All public storefront data, plus the writes listed below
 - **Who can use it:** Anyone (no login required)
 - **Perfect for:** Mobile apps, websites, third-party integrations
 
 ### What You Can Do
 
-Here are common things you can do with Public APIs:
+Reads available with the key alone:
 
-- 📦 Browse products and get detailed product information
-- 🏷️ View categories and subcategories
-- 🎨 Get product attributes and variations
-- 📄 Read CMS pages and content
-- 🌍 Get available countries and locales
-- 📮 Retrieve shipping and payment methods (available options)
+- Browse products and get detailed product information
+- View categories and subcategories
+- Get product attributes and variations
+- Read CMS pages and content
+- Get available countries and locales
+- Retrieve shipping and payment methods (available options)
+
+### The Key Is Not Read-Only
+
+This is the part that surprises people. Several endpoints accept a write on the storefront key alone, with no Bearer token at all, because they are open to any visitor by design:
+
+| Write | Endpoint |
+|---|---|
+| Submit a contact-form enquiry | [`POST /api/shop/contact-us`](/api/rest-api/shop/contact-us/submit-contact-us) |
+| Subscribe to the newsletter | [`POST /api/shop/newsletters`](/api/rest-api/shop/newsletter/subscribe) |
+| Register a customer account | [`POST /api/shop/customers`](/api/rest-api/shop/customers/customer-registration) |
+| Create a cart | [`POST /api/shop/cart-tokens`](/api/rest-api/shop/cart/create-cart) |
+
+Treat the storefront key as a **public** credential — it ships inside browser bundles and mobile apps, so anyone can read it and replay these calls. Put your own abuse controls in front of the open forms; the key identifies your app, it does not vouch for the person using it.
 
 ### Guest checkout — order without an account
 
-The Storefront Key is read-only on its own, but a guest can build a cart and place a full order without a customer account by using a **cart token** as the Bearer:
+A guest can build a cart and place a full order without a customer account by using a **cart token** as the Bearer:
 
 1. Create a cart to obtain a cart token — [Create Cart](/api/rest-api/shop/cart/create-cart).
 2. Send it as `Authorization: Bearer <cartToken>` **alongside** the `X-STOREFRONT-KEY` on every cart and checkout call.
 3. Drive the [Cart](/api/workflows/shop/cart) and [Checkout](/api/workflows/shop/checkout) flows to place the order — no customer login required.
 
-This is the storefront's guest-checkout path: the cart token stands in for a customer Bearer for the duration of that one cart.
+The cart token is a UUID, not the `<id>|<secret>` shape the customer and admin tokens use. It stands in for a customer Bearer for the duration of that one cart.
 
 ### Using the Storefront Key
 
@@ -85,30 +99,30 @@ curl -X POST "https://your-domain.com/api/graphql" \
   -H "Content-Type: application/json" \
   -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
   -d '{
-    "query": "query { products { id name price } }"
+    "query": "query { products(first: 2) { edges { node { _id sku name formattedPrice } } } }"
   }'
 ```
 
+Collections are Relay connections, so a list query always selects through `edges { node { … } }` — see [Identifiers](/api/graphql-api/identifiers) for why nodes carry both `id` and `_id`.
 
 ### Key Facts
 
-- 🔓 **Read-only** — You can't modify data, only view it
-- 📊 **Cacheable** — Responses can be cached for better performance
-- ⚡ **Fast** — No database lookups for user data
-- 🚀 **Scalable** — Can handle high request volumes
-- 🔄 **Rate limited** — Default: 100 requests/minute per key (see [Rate Limiting Guide](./rate-limiting))
-
+- **Public by nature** — the key travels in client code; treat it as identification, not a secret
+- **Mostly read, with open writes** — see the table above for the four writes it permits
+- **Cacheable** — catalog responses can be cached; the open-form responses cannot
+- **Rate limited** — a generated key defaults to 100 requests/minute (see [Rate Limiting Guide](./rate-limiting))
+- **Rejected two different ways** — a missing key is `401`, a wrong or deactivated key is `403`
 
 ## 2. Customer APIs
 
-**Best for:** Building customer-facing features (shopping cart, orders, profiles) after user login.
+**Best for:** Anything tied to a customer account — profile, addresses, order history, wishlists.
 
 ### The Basics
 
 - **What you need:** `X-STOREFRONT-KEY` header + Bearer token (from customer login)
-- **What you get:** Access to customer's personal data and ability to perform actions
+- **What you get:** Access to that customer's personal data
 - **Who can use it:** Authenticated customers only
-- **Perfect for:** Mobile apps, customer portals, checkout flows
+- **Perfect for:** Mobile apps, customer portals, account pages
 
 ### How It Works (3 Steps)
 
@@ -128,18 +142,15 @@ curl -X POST "https://your-domain.com/api/shop/customer/login" \
 ```json
 {
   "id": 1,
-  "name": "John Doe",
-  "email": "john@example.com",
-  "apiToken": "aRfn7cVRSN7qUR6W7vGnlgb40XXa1mko4QNoLbiui1dAAKFcFh3yHY1PtG68OfJdksl0aHgbRKO",
-  "token": "3627|DfkAK11F8qdqtaFVJPvBxlJyNbCSMNl8TFWhWm4G5c9660e4",
-  "success": true,
-  "message": "Login successful"
+  "_id": 1,
+  "apiToken": "QNlbojGwmfrmYdKOot5Oc59shiPTwkR2xLbz8fWq3Ea",
+  "token": "3627|DfkAK11F8qdqtaFVJPvBxlJyNbCSMNl8TFWhWm4G",
+  "message": "You have logged in successfully",
+  "success": true
 }
 ```
 
-::: warning Two fields come back — use `token`, not `apiToken`
-`token` (format `<id>|<secret>`) is the Bearer for **both** REST and GraphQL. `apiToken` is a **legacy** field kept for backward compatibility — it is **not** an auth Bearer; sending it in the `Authorization` header returns `Unauthenticated`. Full field reference on the [Customer Login](/api/rest-api/shop/customers/customer-login) page.
-:::
+Two token-looking fields come back, and only one of them authenticates. **`token`** — format `<id>|<secret>` — is the Bearer for both REST and GraphQL. **`apiToken`** is a legacy field kept for backward compatibility; sending it in the `Authorization` header returns `401 Invalid or expired token`. Full field reference on the [Customer Login](/api/rest-api/shop/customers/customer-login) page.
 
 **Step 2: Save the token**
 
@@ -148,38 +159,36 @@ Store the token securely — never in source code, logs, or URL query strings. S
 **Step 3: Use token in future requests**
 
 ```bash
-curl -X GET "https://your-domain.com/api/shop/customers/addresses" \
+curl -X GET "https://your-domain.com/api/shop/customer-addresses" \
   -H "Content-Type: application/json" \
   -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
-  -H "Authorization: Bearer IsInRbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  -H "Authorization: Bearer 3627|DfkAK11F8qdqtaFVJPvBxlJyNbCSMNl8TFWhWm4G"
 ```
-
 
 ### What You Can Do
 
 Logging in unlocks the customer's personal account. An authenticated customer can:
 
-- 👤 View and edit their profile
-- 📍 Manage delivery addresses
-- ❤️ Create and manage wishlists
-- ⚖️ Compare products
-- 🛍️ Place orders and view order history, invoices, and downloadable products
-- ⭐ Write product reviews
-- ↩️ Request returns (RMA) and EU withdrawals
-- 🔒 Raise GDPR data requests
-- 📧 Subscribe to or unsubscribe from the newsletter
+- View and edit their profile
+- Manage delivery addresses
+- Create and manage wishlists
+- Compare products
+- Place orders and view order history, invoices, and downloadable products
+- Write product reviews
+- Request returns (RMA) and EU withdrawals
+- Raise GDPR data requests
+- Subscribe to or unsubscribe from the newsletter
 
 Building a cart and checking out are **not** login-only — a guest can do both with a cart token (see [Guest checkout](#guest-checkout-order-without-an-account)). Login adds the personal account features above.
 
 ### Key Facts
 
-- 👤 **User-specific** — Each customer sees only their own data
-- 🔐 **Requires login** — Must authenticate first (Bearer token)
-- 📝 **Read & Write** — Can view and modify data
-- ⏱️ **No default expiry** — the customer token does not expire unless the server sets one; there is **no refresh token** — recovery is re-login (see [Credential lifetimes](#credential-lifetimes))
-- 🚫 **Not cacheable** — Personal data shouldn't be cached
-- 🔄 **Requires both headers** — Need `X-STOREFRONT-KEY` AND `Authorization: Bearer`
-
+- **User-specific** — Each customer sees only their own data
+- **Requires login** — Must authenticate first (Bearer token)
+- **Read & Write** — Can view and modify data
+- **No default expiry** — the customer token does not expire unless the server sets one; there is **no refresh token** — recovery is re-login (see [Credential lifetimes](#credential-lifetimes))
+- **Not cacheable** — Personal data shouldn't be cached
+- **Requires both headers** — Need `X-STOREFRONT-KEY` AND `Authorization: Bearer`
 
 ## 3. Admin APIs
 
@@ -187,7 +196,7 @@ Building a cart and checking out are **not** login-only — a guest can do both 
 
 Admin clients authenticate with an **Integration token** generated from the **Integration** menu in the admin panel — there is no admin login. Send it as `Authorization: Bearer <id>|<token>` (no `X-STOREFRONT-KEY`). Admin **GraphQL** clients POST to `/api/admin/graphql`.
 
-The token is highly configurable for security — scope its **permissions** (all access, a custom subset, or mirror the owner's role), restrict it to an **IP allowlist**, set an **expiry**, and cap its **rate limits**. See the [Admin Authentication](/api/graphql-api/admin/authentication#token-security) reference for the full breakdown.
+The token is highly configurable for security — scope its **permissions** (all access, a custom subset, or mirror the owner's role), restrict it to an **IP allowlist**, set an **expiry**, and cap its **rate limits**. See the [Admin Authentication](/api/rest-api/admin/authentication#token-security) reference for the full breakdown.
 
 ### The Basics
 
@@ -209,7 +218,7 @@ Store the token securely — never in source code, logs, or URL query strings. S
 **Step 3: Use the token in API requests**
 
 ```bash
-curl -X GET "https://your-domain.com/api/admin/products" \
+curl -X GET "https://your-domain.com/api/admin/catalog/products" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <id>|<token>"
 ```
@@ -219,7 +228,7 @@ curl -X GET "https://your-domain.com/api/admin/products" \
 ```javascript
 const token = '<your-integration-token>';
 
-fetch('https://your-domain.com/api/admin/products', {
+fetch('https://your-domain.com/api/admin/catalog/products', {
   headers: {
     'Authorization': `Bearer ${token}`,
     'Content-Type': 'application/json'
@@ -233,26 +242,24 @@ fetch('https://your-domain.com/api/admin/products', {
 
 Admins have full control over:
 
-- 📦 Create, read, update, and delete products
-- 🏷️ Manage categories and product attributes
-- 📊 Manage inventory and stock levels
-- 👥 View and manage all customers
-- 🛍️ Process and manage orders
-- 📈 Generate reports and analytics
-- ⚙️ Configure system settings
-- 📮 Set up shipping and payment methods
-- 🔐 Manage admin users and permissions
+- Create, read, update, and delete products
+- Manage categories and product attributes
+- Manage inventory and stock levels
+- View and manage all customers
+- Process and manage orders
+- Generate reports and analytics
+- Configure system settings
+- Set up shipping and payment methods
+- Manage admin users and permissions
 
 ### Key Facts
 
-- 🔑 **Admin-only** — Requires an admin Integration token (no Storefront Key needed)
-- 🔐 **Token-based** — Authenticate with a pre-issued Integration token (no login)
-- 📝 **Full CRUD** — Create, read, update, and delete everything
-- ⚙️ **System-wide** — Can affect all store data
-- 🚫 **Not cacheable** — Data changes frequently
-- 🔒 **Role-based** — What you can do depends on your admin role
-
-
+- **Admin-only** — Requires an admin Integration token (no Storefront Key needed)
+- **Token-based** — Authenticate with a pre-issued Integration token (no login)
+- **Full CRUD** — Create, read, update, and delete everything
+- **System-wide** — Can affect all store data
+- **Not cacheable** — Data changes frequently
+- **Role-based** — What you can do depends on the owning admin's role and the token's own permission scope
 
 ## Authentication Summary Table
 
@@ -260,8 +267,9 @@ Admins have full control over:
 
 | API Type | Use Case | Headers Required | Login Needed |
 |----------|----------|------------------|---|
-| **Public** | Browse products, categories | `X-STOREFRONT-KEY` only | ❌ No |
-| **Customer** | Cart, orders, profile | `X-STOREFRONT-KEY` + `Authorization: Bearer` | ✅ Customer login |
+| **Public** | Browse the catalog, contact form, newsletter, registration | `X-STOREFRONT-KEY` only | No |
+| **Customer** | Profile, addresses, order history | `X-STOREFRONT-KEY` + `Authorization: Bearer` | Customer login |
+| **Guest checkout** | Cart and checkout without an account | `X-STOREFRONT-KEY` + `Authorization: Bearer <cartToken>` | No |
 | **Admin** | Manage products, inventory | `Authorization: Bearer` only | Integration token |
 
 ### Credential lifetimes
@@ -287,11 +295,10 @@ In addition to authentication headers, you can pass these optional headers to co
 | `X-CURRENCY` | Return pricing in a specific currency | `EUR` | Channel's base currency |
 | `X-CHANNEL` | Use a specific sales channel | `default` | Default channel |
 
-If these headers are omitted or contain a value that doesn't exist in the system, the API silently falls back to the default value. For more details, see the [GraphQL Introduction](/api/graphql-api/introduction#context-headers-x-locale-x-currency-x-channel).
-
-
+A header naming something the store does not have — a locale that is not installed, a currency the channel does not carry — is not an error. The API silently falls back to the default, so a response in the wrong language means the value was never applied rather than rejected. Verify against the store's configured locales and currencies before assuming a translation is missing. For more details, see the [GraphQL Introduction](/api/graphql-api/introduction#context-headers-x-locale-x-currency-x-channel).
 
 ## Common Patterns
+
 ### Public API Request
 
 ```bash
@@ -304,20 +311,20 @@ curl -X GET "https://your-domain.com/api/shop/products" \
 
 ```bash
 # Need BOTH Storefront Key AND Bearer token
-curl -X POST "https://your-domain.com/api/shop/customers/addresses" \
+curl -X POST "https://your-domain.com/api/shop/customer-addresses" \
+  -H "Content-Type: application/json" \
   -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
-  -d '{"address": "123 Main St"}'
+  -H "Authorization: Bearer 3627|DfkAK11F8qdqtaFVJPvBxlJyNbCSMNl8TFWhWm4G" \
+  -d '{"firstName": "John", "lastName": "Doe", "address": "123 Main St"}'
 ```
 
 ### Admin API Request
 
 ```bash
 # Only need the Bearer token (no Storefront Key)
-curl -X GET "https://your-domain.com/api/admin/products" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+curl -X GET "https://your-domain.com/api/admin/catalog/products" \
+  -H "Authorization: Bearer 5|1dYWpciAn2Ro8dfsabA89ohhduVWWXqicyPyQeIH"
 ```
-
 
 ## Using Tokens in Requests
 
@@ -334,53 +341,46 @@ Use the token from environment variables or secure vaults.
 
 For the full do / don't list and per-platform storage guidance, see [Security Essentials](#security-essentials) below.
 
-
 ## Security Essentials
 
-✅ **Do This:**
+**Do This:**
 - Use HTTPS in production (local development over `http://localhost` is fine)
 - Include the token in the `Authorization: Bearer` header
-- Validate token before making requests
-- Handle 401 errors by re-authenticating
+- Handle `401` by obtaining a new credential — there is no refresh flow
+- Keep the admin Integration token server-side; it is the one credential that must never reach a browser bundle
+- Scope an admin token to the permissions and IP range it actually needs, rather than granting all access
 - Use strong passwords (12+ characters, mixed case, numbers, special chars)
 
-❌ **Don't Do This:**
+**Don't Do This:**
 - Don't hardcode tokens in source code
 - Don't log tokens or API keys
 - Don't send tokens in URL query parameters
 - Don't commit `.env` files to Git
 - Don't reuse the same token across environments
-- Don't ignore token expiration
-
+- Don't treat the storefront key as a secret — it is public by design, so protect open forms with your own abuse controls instead
 
 ## Troubleshooting Authentication Issues
 
-### "Invalid API Key" Error
+### Storefront Key Rejected
 
-**Problem:** Your Storefront Key is rejected.
+The two failures are distinct, and the status tells you which:
 
-**Solution:**
+| Status | Body | Meaning |
+|---|---|---|
+| `401` | `{"error": "missing_key"}` | The `X-STOREFRONT-KEY` header was not sent |
+| `403` | `{"error": "invalid_key"}` | A key was sent but is wrong, deactivated, expired, or blocked by its IP allowlist |
+
+A `403` here is about the key, not about permissions. Check the header name is exactly `X-STOREFRONT-KEY` (hyphens, not underscores), then confirm the key is active:
+
 ```bash
-# 1. Double-check your key
-echo $BAGISTO_STOREFRONT_KEY
-
-# 2. Verify it's active
 php artisan bagisto-api:key:manage status --key="Your Key"
-
-# 3. Make sure header name is exactly correct
-# Should be: X-STOREFRONT-KEY (with hyphen, not underscore)
 ```
 
 ### "Unauthorized" (401) Error
 
 **Problem:** The token is missing, invalid, or no longer accepted.
 
-A 401 comes back with one of **two** messages — treat both the same way:
-
-- `Unauthenticated. Please login to perform this action`
-- `Invalid or expired authentication token`
-
-Branch on the **`401` status**, not on the message text — either one means "get a new credential". There is no refresh token; recovery is:
+The message varies by endpoint and transport — `Authentication token is required…`, `Invalid or expired token`, `Unauthenticated. Please login to perform this action`. Branch on the **`401` status**, never on the message text; all of them mean the same thing. There is no refresh token, so recovery is a new credential:
 
 ```bash
 # Login again to get a fresh token (no refresh flow exists)
@@ -392,21 +392,17 @@ curl -X POST "https://your-domain.com/api/shop/customer/login" \
 # Then send the new token as: Authorization: Bearer <token>
 ```
 
-Send `token` from the response as the Bearer — never `apiToken` (see [Credential lifetimes](#credential-lifetimes)).
+Send `token` from the response as the Bearer — never `apiToken`, which returns this same `401`.
 
 ### "Forbidden" (403) Error
 
-**Problem:** You're authenticated but don't have permission.
+**Problem:** The credential is valid but not allowed to do this.
 
-**Solution:**
-- If Customer API: Make sure you logged in as the customer
-- If Admin API: Make sure you logged in as an admin, not a customer
-- Check your admin role has permission for this endpoint
-
-
+- **Shop API** — you are calling a customer-scoped endpoint with only the storefront key, or with a token belonging to a different customer. A customer can only ever act on their own records.
+- **Admin API** — the token authenticated, but the action needs a permission it does not carry. Two things cap it: the token's own permission scope, and the role of the admin who owns it. Widening the token's scope does nothing if the owning admin's role lacks the permission.
 
 ## Related Documentation
 
 - [API Key Management Guide](./storefront-api-key-management-guide.md) — How to generate and manage API keys
 - [REST API Guide](/api/rest-api/introduction) — REST API endpoints
-- [GraphQL API Guide](/api/graphql-api/introduction) — GraphQL queries and mutations 
+- [GraphQL API Guide](/api/graphql-api/introduction) — GraphQL queries and mutations

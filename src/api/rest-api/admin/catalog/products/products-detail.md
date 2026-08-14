@@ -124,16 +124,6 @@ constraint — non-numeric path segments are rejected with `404` before reaching
 provider. This prevents the `{id}` segment from accidentally matching sibling
 routes under `/catalog/products/`.
 
-## Authentication
-
-Every request requires:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain the Bearer token via [Authentication](/api/rest-api/admin/authentication).
-
 ## Path Parameter
 
 | Parameter | Type | Required | Description |
@@ -232,18 +222,21 @@ Each element is one inventory source row:
 Each element is a customer-group price override. Empty array (`[]`) when none are
 configured.
 
-### Type-specific blocks
+### Type-Specific Blocks
 
-These four fields are **`null` unless the product type matches**:
+These seven fields are always present in the response but are `null` unless the product's `type` matches:
 
 | Field | Present for type | Description |
 |-------|-----------------|-------------|
-| `superAttributes` | `configurable` | Array of configurable attributes (id, code, label, options) |
-| `variants` | `configurable` | Array of variant child products with their attribute values |
-| `bundleOptions` | `bundle` | Array of bundle option groups with their selectable products |
-| `linkedProducts` | `grouped` | Array of linked associated products |
-| `downloadableLinks` | `downloadable` | Array of download link rows (title, type, url/file, price, downloads) |
-| `downloadableSamples` | `downloadable` | Array of sample download rows |
+| `superAttributes` | `configurable` | The configurable attributes, each with its full `options` list |
+| `variants` | `configurable` | Variant child products with their chosen attribute values |
+| `bundleOptions` | `bundle` | Bundle option groups with their selectable products |
+| `linkedProducts` | `grouped` | The associated products |
+| `downloadableLinks` | `downloadable` | Download link rows — title, type, url or file, price, download limit |
+| `downloadableSamples` | `downloadable` | Sample download rows |
+| `bookingProduct` | `booking` | Booking sub-type, location, availability window, and slots or tickets |
+
+Switch on `type` to know which to read. A `simple` or `virtual` product has all seven as `null`.
 
 ### `channels[]` array
 
@@ -280,189 +273,32 @@ top-level columns. Fields with no value are still present, with `value: null`.
 | `value` | mixed\|null | The product's resolved value for the requested channel/locale (`null` when unset). For `select` it's the chosen option ID; for `multiselect`/`checkbox` a comma-separated list of option IDs |
 | `options` | array\|null | For `select`/`multiselect`/`checkbox`: the selectable options (`id`, `adminName`, `swatchValue`, `sortOrder`). `null` for other types |
 
-::: tip Plain arrays — no follow-up calls needed
-All nested fields (`translations`, `images`, `categories`, `inventories`,
-`customerGroupPrices`, `channels`, `attributes`, and all type-specific blocks) are
-serialized as **plain inline JSON arrays** — there are no IRI strings or sub-resource
-links. The full product structure is returned in a single response.
-:::
+### Everything Arrives Inline
 
-::: info Reconstructing the edit screen
-`attributes` + `channels` together give you everything the admin edit form shows:
-`channels` renders the channel checkboxes (with the assigned ones ticked) and
-`attributes` renders every General / Description / Meta / Settings / Price field for
-the product's family. The top-level convenience fields (`sku`, `status`, `urlKey`, …)
-are also present inside `attributes` — they're the same values surfaced twice.
-:::
+Every nested field — `translations`, `images`, `videos`, `categories`, `inventories`, `customerGroupPrices`, `channels`, `attributes`, and all the type-specific blocks — is a plain inline JSON array. There are no IRI strings and no sub-resource links, so one call returns the whole product.
 
-::: info Listing vs detail
-The `GET /api/admin/catalog/products` listing endpoint returns a slim `{ data, meta }`
-envelope with ~18 fields per row (suitable for datagrid rendering). This detail
-endpoint returns all fields, including the heavy blocks that are intentionally
-omitted from the listing for performance.
-:::
+`attributes` plus `channels` together reconstruct the admin edit form: `channels` renders the channel checkboxes with the assigned ones ticked, and `attributes` renders every General / Description / Meta / Settings / Price field for the product's family. The top-level convenience fields (`sku`, `status`, `urlKey`, …) also appear inside `attributes` — the same values surfaced twice, which is deliberate.
 
-## Example Request
+### Where This Differs From GraphQL
 
-```bash
-curl -X GET "https://your-domain.com/api/admin/catalog/products/42" \
-  -H "Authorization: Bearer <token>" \
-  -H "Accept: application/json"
-```
+`adminCatalogProduct` returns the same product with nested blocks as Relay connections rather than arrays, and the two are not shape-compatible:
 
-## Example Response (simple product)
-
-```json
-{
-  "id": 42,
-  "sku": "SP-001",
-  "name": "Classic Watch",
-  "type": "simple",
-  "status": 1,
-  "price": "99.9900",
-  "formattedPrice": "$99.99",
-  "quantity": 42,
-  "baseImageUrl": "http://localhost:8000/storage/product/42/image.webp",
-  "imagesCount": 3,
-  "categoryId": 5,
-  "categoryName": "Accessories",
-  "channel": "default",
-  "locale": "en",
-  "attributeFamilyId": 1,
-  "attributeFamilyName": "Default",
-  "urlKey": "classic-watch",
-  "visibleIndividually": true,
-  "shortDescription": "A premium timepiece.",
-  "description": "Full HTML description.",
-  "metaTitle": null,
-  "metaDescription": null,
-  "metaKeywords": null,
-  "weight": 0.5,
-  "taxCategoryId": null,
-  "manageStock": true,
-  "inStock": true,
-  "featured": false,
-  "new": true,
-  "createdAt": "2026-01-12T08:15:00+00:00",
-  "updatedAt": "2026-04-30T14:20:09+00:00",
-  "translations": [
-    {
-      "locale": "en",
-      "name": "Classic Watch",
-      "description": "Full HTML description.",
-      "shortDescription": "A premium timepiece.",
-      "urlKey": "classic-watch",
-      "metaTitle": null,
-      "metaDescription": null,
-      "metaKeywords": null
-    }
-  ],
-  "images": [
-    {
-      "id": 1,
-      "path": "product/42/img1.webp",
-      "url": "http://localhost/storage/product/42/img1.webp",
-      "sortOrder": 0
-    }
-  ],
-  "categories": [
-    {
-      "id": 5,
-      "name": "Accessories",
-      "slug": "accessories"
-    }
-  ],
-  "inventories": [
-    {
-      "sourceId": 1,
-      "sourceCode": "default",
-      "qty": 42
-    }
-  ],
-  "customerGroupPrices": [],
-  "superAttributes": null,
-  "variants": null,
-  "bundleOptions": null,
-  "linkedProducts": null,
-  "downloadableLinks": null,
-  "downloadableSamples": null,
-  "channels": [
-    { "id": 1, "code": "default", "name": "Default Channel", "assigned": true },
-    { "id": 2, "code": "mobile", "name": "Mobile Channel", "assigned": false }
-  ],
-  "attributes": [
-    {
-      "id": 1,
-      "code": "sku",
-      "adminName": "SKU",
-      "type": "text",
-      "isRequired": true,
-      "valuePerChannel": false,
-      "valuePerLocale": false,
-      "groupCode": "general",
-      "groupName": "General",
-      "value": "SP-001",
-      "options": null
-    },
-    {
-      "id": 23,
-      "code": "color",
-      "adminName": "Color",
-      "type": "select",
-      "isRequired": false,
-      "valuePerChannel": false,
-      "valuePerLocale": false,
-      "groupCode": "general",
-      "groupName": "General",
-      "value": null,
-      "options": [
-        { "id": 1, "adminName": "Red", "swatchValue": "#ff0000", "sortOrder": 1 }
-      ]
-    },
-    {
-      "id": 25,
-      "code": "meta_title",
-      "adminName": "Meta Title",
-      "type": "textarea",
-      "isRequired": false,
-      "valuePerChannel": true,
-      "valuePerLocale": true,
-      "groupCode": "meta_description",
-      "groupName": "Meta Description",
-      "value": null,
-      "options": null
-    }
-  ]
-}
-```
+- **`variants[].attributeValues` is a map here** — `{"select_age_group": "5-7 Y"}` — but a connection of `{ code, adminName, value }` nodes over GraphQL.
+- **`channels` lists every channel with an `assigned` flag here**, while GraphQL returns only the assigned ones.
+- **`attributes`, `bookingProduct`, and `warnings` exist only on this endpoint.** They are declared in the GraphQL schema but always resolve `null` there.
+- **Scalar types differ.** `status`, `quantity`, `weight`, `featured`, and `new` are real JSON numbers and booleans here; over GraphQL they are strings, with `""` standing in for false.
 
 ## Errors
 
-| HTTP Status | Cause |
-|-------------|-------|
-| `401 Unauthorized` | Missing, expired, or revoked admin Bearer token |
-| `401 Unauthorized` | Missing or invalid admin Bearer token |
-| `404 Not Found` | The specified `{id}` does not exist in the database |
+| HTTP Status | Body |
+|-------------|------|
+| `401` | `{"message": "Unauthenticated.", "error": "unauthenticated"}` |
+| `404` | `{"type": "/errors/404", "title": "Not Found", "status": 404, "detail": "Product not found."}` |
 
-## Notes
+A non-numeric `{id}` also returns `404`. The route constrains the segment to digits, so `/catalog/products/abc` is rejected before the product is looked up — which is what keeps the segment from swallowing sibling routes such as `/catalog/products/mass-delete`.
 
-- **Type-aware payload.** The six type-specific blocks (`superAttributes`, `variants`,
-  `bundleOptions`, `linkedProducts`, `downloadableLinks`, `downloadableSamples`) are
-  always present in the response, but are `null` for non-matching types. A simple,
-  virtual, or booking product always has all six as `null`. Switch on `type` to know
-  which block to read.
-- **All nested objects are plain inline JSON.** There are no IRI strings or
-  sub-resource links in the detail response — the full structure (including type-specific
-  blocks) is embedded in a single HTTP call.
-- **`null` fields are always included.** Null-valued fields appear explicitly in the
-  JSON rather than being silently dropped.
-- **Route disambiguation via `\d+` requirement.** The `{id}` path segment is
-  constrained to digits only. Non-numeric segments are rejected with `404` before
-  reaching the provider — this prevents the segment from accidentally matching sibling
-  routes such as `/catalog/products/list`.
-- **Listing vs detail are the same resource.** The `GET /api/admin/catalog/products`
-  listing returns slim datagrid rows; this detail endpoint returns the full payload
-  including all type-specific blocks.
-- **Booking products are accessible via this endpoint.** Even though booking products
-  cannot be added to an admin draft cart (blocked at cart add-item time with HTTP 400),
-  their detail record is fully readable here.
+## Working With This Endpoint
+
+- **Null fields are returned, not omitted.** Every one of the 55 keys is present on every response, so a key-existence check tells you nothing — test the value.
+- **The response is a bare object**, unlike the listing, which wraps rows in `{ data, meta }`.
+- **Booking products are fully readable here** even though they cannot be added to an admin draft cart. The cart blocks them at add-item time with HTTP `400`; reading them is unrestricted.

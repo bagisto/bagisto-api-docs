@@ -39,8 +39,4 @@ Deletes the supplied review ids in one call. Non-existent ids are silently skipp
 
 Permission: `customers.reviews.delete`.
 
-::: tip
 See the [Reviews overview](/api/graphql-api/admin/customers/reviews/) for how moderation works.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

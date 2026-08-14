@@ -26,12 +26,6 @@ examples:
 Deletes a catalog product. Fires `catalog.product.delete.before` /
 `catalog.product.delete.after`.
 
-::: warning No "in-order" delete guard (parity with monolith)
-Bagisto admin does **not** refuse to delete a product that appears in
-non-completed orders. This endpoint matches that behaviour — order items
-preserve their snapshot data after the product row is gone. If you need
-referential integrity, add the guard at the application layer.
-:::
 
 ## Endpoint
 
@@ -47,16 +41,18 @@ referential integrity, add the guard at the application layer.
 
 ## Response
 
-`204 No Content` on success.
+`204 No Content`, with an empty body — there is nothing to read back. Capture anything you need from [Product Detail](/api/rest-api/admin/catalog/products/products-detail) before deleting.
+
+## What Deletion Does
+
+- **Configurable variants cascade.** Deleting the parent removes its variants; there is no separate call.
+- **Orders are unaffected.** Order items keep their snapshot of the product, so historic orders still render after the product is gone.
+- **No in-order guard.** A product that appears in open orders deletes without complaint, matching the admin panel. If you need referential integrity, enforce it before calling.
 
 ## Errors
 
-| HTTP | Cause |
-|------|-------|
-| `401 Unauthorized` | Missing or invalid admin Bearer token. |
-| `403 Forbidden` | Admin role lacks `catalog.products.delete`. |
-| `404 Not Found` | Product not found. |
-
-## Notes
-
-- For configurable products, all variants cascade automatically.
+| HTTP | Detail |
+|------|--------|
+| `401` | `Unauthenticated.` |
+| `403` | `You do not have permission to manage products.` — token lacks `catalog.products.delete` |
+| `404` | `Product not found.` |

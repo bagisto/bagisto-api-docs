@@ -702,12 +702,8 @@ Every field the admin **Edit Product** screen exposes is editable here. Pick a
 product type in the **Examples** dropdown (top-right) to see the complete
 edit-form body for that type.
 
-::: tip Prerequisites
 The examples use illustrative IRIs and ids. Replace them with ids that exist in
-your store — use the [`adminCatalogProducts`](./list.md) query to find products,
-and the [detail query](./products-detail.md) `variants` connection to discover a
-configurable product's variant ids.
-:::
+your store — use the [`adminCatalogProducts`](/api/graphql-api/admin/catalog/products) query to find products, and the [detail query](/api/graphql-api/admin/catalog/products/products-detail) `variants` connection to discover a configurable product's variant ids.
 
 ## Operation
 
@@ -786,21 +782,33 @@ noted in the response `warnings` array:
 - Inventories → [update inventories](/api/graphql-api/admin/catalog/products/inventories-update)
 - Customer-group prices → [customer-group prices](/api/graphql-api/admin/catalog/products/customer-group-prices-create)
 
-## Response
+## Reading the Payload
 
-Returns the updated product. The mutation result resolves the product's scalar
-fields — select `{ adminCatalogProduct { _id sku type status urlKey price weight warnings } }`.
+Select whatever you need — the payload is the product itself:
 
-::: tip Select `_id`, not `id`
-On a create/update **mutation result** the auto-injected `id` IRI points at an
-internal route — query `_id` for the numeric product id. To read the full
-type-specific detail back (variants, bundle options, links, …) re-query the
-[detail query](/api/graphql-api/admin/catalog/products/products-detail), which
-resolves every nested connection.
-:::
+```graphql
+adminCatalogProduct {
+  _id
+  sku
+  type
+  status
+  urlKey
+  price
+  weight
+  warnings
+}
+```
 
-::: tip `specialPrice` resolves to `null` until its window opens
-If you set `specialPriceFrom` to a future date, the stored special price is
-saved but `specialPrice` reads `null` until that date — it only resolves while
-the from/to window is active.
-:::
+Connections resolve on the payload too, so you can read nested data back in the same round trip — `images { edges { node { _id url } } }` returns this product's images.
+
+One value is easy to misread: **`specialPrice` reads `null` until its window opens.** Setting `specialPriceFrom` to a future date stores the price but leaves the field `null` until that date arrives. The value is saved; it is simply not the active price yet.
+
+## Errors
+
+| Message | Cause |
+|---------|-------|
+| `Product not found.` | Unknown id |
+| `The sku has already been taken.` | Duplicate SKU |
+| `You do not have permission to manage products.` | Token lacks `catalog.products.edit` |
+
+Other validation failures — a duplicate URL key, a non-boolean value in a boolean field, a special price at or above the price, or an inverted date range — surface the same way, in `errors[]` with `null` data.

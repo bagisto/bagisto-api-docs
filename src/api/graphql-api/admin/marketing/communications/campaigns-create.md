@@ -56,9 +56,7 @@ Creates a campaign — the **Create Campaign** action on the admin
 **Marketing → Communications → Campaigns** screen. A campaign pairs an email
 template with a recipient customer group for a channel.
 
-::: tip
 New here? Read the [Campaigns overview](/api/graphql-api/admin/marketing/communications/campaigns/) for what a campaign does and how its fields behave.
-:::
 
 ## Operation
 

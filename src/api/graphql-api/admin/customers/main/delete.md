@@ -42,14 +42,10 @@ examples:
 
 Deletes a customer. The mutation returns a snapshot of the record that was removed.
 
-::: warning Active orders guard
+### Active orders guard
+
 The delete is refused (surfaced in `errors[]`) when the customer has any pending or processing orders.
-:::
 
 Permission: `customers.customers.delete`.
 
-::: tip
 See the [Customers overview](/api/graphql-api/admin/customers/main/) for how the menu works.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

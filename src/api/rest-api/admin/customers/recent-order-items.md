@@ -53,6 +53,4 @@ Returns the standard `{ data, meta }` envelope. Each row in `data`:
 The list is the most-recently ordered products, distinct by product, newest
 first, limited to 5. Requires an admin Bearer token.
 
-::: tip
 For how the Create-Order helper panels fit together, see the [Create-Order Helpers overview](./create-order-helpers/index.md).
-:::

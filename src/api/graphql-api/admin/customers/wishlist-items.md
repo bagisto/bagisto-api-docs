@@ -72,8 +72,4 @@ Lists the customer's full wishlist. The admin Create-Order screen shows this in 
 |----------|------|----------|-------------|
 | `customerId` | Int! | yes | The customer whose wishlist to read. |
 
-::: tip Menu overview
 See the [Customers overview](/api/graphql-api/admin/customers/) for how the Create-Order sidebar panels work.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

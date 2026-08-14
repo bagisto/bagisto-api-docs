@@ -48,5 +48,3 @@ The single-review `GET` embeds the related records so you don't need follow-up c
 | [Mass Update Status](./mass-update-status.md) | `POST /api/admin/customers/reviews/mass-update-status` |
 
 Permissions: `customers.reviews.edit` / `.delete`.
-
-All endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

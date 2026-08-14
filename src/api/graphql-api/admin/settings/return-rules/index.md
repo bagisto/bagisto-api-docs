@@ -44,5 +44,3 @@ Reasons, statuses and custom fields shape the **returns form** the customer fill
 | Create | `sales.rma.rules.create` |
 | Update / mass update status | `sales.rma.rules.edit` |
 | Delete / mass delete | `sales.rma.rules.delete` |
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

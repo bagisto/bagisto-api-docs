@@ -21,9 +21,7 @@ examples:
 Deletes a search term — the **Delete** row action on the admin **Marketing →
 Search & SEO → Search Terms** screen.
 
-::: tip
 New here? Read the [Search Terms overview](/api/rest-api/admin/marketing/search-seo/search-terms/) for what a search term is and how its fields behave.
-:::
 
 ## Endpoint
 

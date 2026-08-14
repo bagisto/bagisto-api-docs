@@ -27,9 +27,7 @@ examples:
 Deletes several search terms in one call — the **Mass Delete** action on the admin
 **Marketing → Search & SEO → Search Terms** datagrid.
 
-::: tip
 New here? Read the [Search Terms overview](/api/rest-api/admin/marketing/search-seo/search-terms/) for what a search term is and how its fields behave.
-:::
 
 ## Endpoint
 

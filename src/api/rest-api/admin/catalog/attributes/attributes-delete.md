@@ -61,4 +61,4 @@ Deletes a user-defined attribute.
 ## Notes
 
 - For bulk deletion, use the [Mass Delete](/api/rest-api/admin/catalog/attributes/attributes-mass-delete) endpoint.
-- The 409 conflict response includes a message naming the dependency: `Attribute is part of one or more attribute families. Remove it from those families first.`
+- The `409` body names the blocking groups so you can act on it directly: `Attribute is part of one or more attribute families (group IDs: 12, 20, 28). Remove it from those families first.`

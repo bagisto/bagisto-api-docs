@@ -7,7 +7,11 @@ examples:
     query: |
       mutation MassUpdateStatus($input: createAdminCatalogProductMassUpdateStatusInput!) {
         createAdminCatalogProductMassUpdateStatus(input: $input) {
-          adminCatalogProductMassUpdateStatus { id updated message }
+          adminCatalogProductMassUpdateStatus {
+            _id
+            updated
+            message
+          }
         }
       }
     variables: |
@@ -19,7 +23,7 @@ examples:
         "data": {
           "createAdminCatalogProductMassUpdateStatus": {
             "adminCatalogProductMassUpdateStatus": {
-              "id": "/api/admin/catalog_product_mass_update_statuses/1",
+              "_id": 1,
               "updated": [12, 18],
               "message": "Products status updated successfully."
             }
@@ -42,5 +46,29 @@ Equivalent to [`POST /api/admin/catalog/products/mass-update-status`](/api/rest-
 
 | Field | Type | Required | Notes |
 |-------|------|----------|-------|
-| `indices` | `[Int!]!` | yes | Product IDs. |
-| `value` | `Int!` | yes | `0` (disabled) or `1` (enabled). |
+| `indices` | Iterable | Yes | Non-empty list of product ids. |
+| `value` | Int | Yes | `0` disabled, `1` enabled. No other value is accepted. |
+
+## Payload Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `_id` | Int | Always `1`. This is an action result, not a record — ignore it. |
+| `updated` | Iterable | The ids the call attempted to update. |
+| `message` | String | Translated confirmation. |
+
+Select `_id`, not `id`. This is a routeless action result, so its `id` is not a queryable path.
+
+## Behaviour
+
+Each id fires the same events as a single-product update, so search reindexing and cache flushing still run per product. That makes a large batch meaningfully slower than the row count suggests.
+
+The status flip is the only change — nothing else on the product is touched, and there is no partial-failure report beyond the returned `updated` list.
+
+## Errors
+
+| Message | Cause |
+|---------|-------|
+| `The indices field is required and must be a non-empty array.` | Missing or empty `indices` |
+| `The value field is required and must be 0 or 1.` | `value` missing or outside `0`/`1` |
+| `You do not have permission to manage products.` | Token lacks `catalog.products.edit` |

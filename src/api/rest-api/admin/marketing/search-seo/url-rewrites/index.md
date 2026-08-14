@@ -28,5 +28,3 @@ A rewrite maps a **source path** to a **target path** for a given storefront ent
 | [Update](/api/rest-api/admin/marketing/search-seo/url-rewrites-update) | `PUT /api/admin/marketing/url-rewrites/{id}` |
 | [Delete](/api/rest-api/admin/marketing/search-seo/url-rewrites-delete) | `DELETE /api/admin/marketing/url-rewrites/{id}` |
 | [Mass Delete](/api/rest-api/admin/marketing/search-seo/url-rewrites-mass-delete) | `POST /api/admin/marketing/url-rewrites/mass-delete` |
-
-All URL Rewrites endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

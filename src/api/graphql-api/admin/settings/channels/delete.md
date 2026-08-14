@@ -58,6 +58,4 @@ The store refuses the delete (returns an `errors[]` entry, no record removed) wh
 - The returned node is an in-memory snapshot of the just-deleted record — its scalar fields (`_id`, `code`, `name`) still resolve so you can confirm what was removed. The detail-only connections (`locales`, `currencies`, `inventorySources`, `translations`) come back empty on a delete result.
 - Select **`message`** for the success confirmation — it resolves to `"Channel deleted successfully."` on a successful delete. `message` is `null` on read / list / create / update; a failed delete returns a top-level `errors[]` entry instead.
 
-::: tip Prerequisites
 The example uses an illustrative `id`. Replace it with a channel id that exists in your store — use the [`adminSettingsChannels`](./list) query to discover valid ids.
-:::

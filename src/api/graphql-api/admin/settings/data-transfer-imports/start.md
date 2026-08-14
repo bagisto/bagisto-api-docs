@@ -64,8 +64,6 @@ The mutation reports an error when there is nothing left to import, when the imp
 - The input takes the import's `importId` **and** an `id` (the start IRI) — API Platform requires the `id` field on every non-create mutation.
 - Select `_id` for the numeric import id; the payload `id` IRI does not resolve on mutation results.
 
-::: tip Prerequisites
 The example uses an illustrative import. Replace it with a validated import in your store.
-:::
 
-Permission: `settings.data_transfer.imports.edit`. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+Permission: `settings.data_transfer.imports.edit`.

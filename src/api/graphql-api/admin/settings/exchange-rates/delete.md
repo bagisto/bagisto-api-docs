@@ -63,12 +63,7 @@ Removes a single exchange rate. The currency itself is not affected — only the
 - Do **not** select the node's IRI `id` field on this mutation — the IRI cannot be generated for a deleted record and the field resolves with an `errors[]` entry. Select `_id` instead, as shown.
 - An unknown id returns `Exchange rate not found.` (equivalent to HTTP 404).
 
-::: tip Prerequisites
 The example uses an illustrative `id`. Replace it with a rate that exists in your store — use the [`adminSettingsExchangeRates`](./list.md) query to discover valid ids.
-:::
 
 Permission: `settings.exchange_rates.delete`.
 
-::: tip
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
-:::

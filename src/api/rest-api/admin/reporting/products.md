@@ -364,8 +364,6 @@ Returns the aggregate statistics that power the Bagisto admin **Reporting → Pr
 | **Export endpoint** | `GET /api/admin/reporting/products/export` |
 | **Returns** | A JSON **array** with a single element: `[ { entity, type, dateRange, statistics } ]` (`entity` is always `"products"`) |
 
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
-
 ## Understanding `type` — the Products report is **eight** separate calls
 
 This is the most important thing to understand about this API.

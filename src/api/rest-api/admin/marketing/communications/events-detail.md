@@ -26,9 +26,7 @@ examples:
 Returns a single marketing event with its full field set — the data behind the
 admin **Marketing → Communications → Events** view screen.
 
-::: tip
 New here? Read the [Events overview](/api/rest-api/admin/marketing/communications/events/) for what an event does and how its fields behave.
-:::
 
 ## Endpoint
 

@@ -44,6 +44,4 @@ Deletes several customer groups in one request. The response reports which ids w
 
 System-group + in-use guards skip per-id with a reason rather than failing the whole batch. Permission: `customers.groups.delete`.
 
-::: tip
 For the system-group and in-use delete rules, see the [Customer Groups overview](./index.md).
-:::

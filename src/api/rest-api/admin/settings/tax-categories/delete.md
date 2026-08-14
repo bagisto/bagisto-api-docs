@@ -12,6 +12,6 @@ examples:
 
 # Delete Tax Category
 
-::: warning Guard
+### Guard
+
 Mirrors monolith `TaxCategoryController::destroy` — refuses with HTTP 400 if any tax_rates are still attached to the category.
-:::

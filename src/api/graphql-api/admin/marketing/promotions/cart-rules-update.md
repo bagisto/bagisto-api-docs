@@ -93,9 +93,7 @@ examples:
 Updates an existing cart rule — the **Edit** action on the admin
 **Marketing → Promotions → Cart Rules** screen.
 
-::: tip
 New here? Read the [Cart Rules overview](/api/graphql-api/admin/marketing/promotions/cart-rules/) for what a cart rule does and how its fields behave.
-:::
 
 ## Operation
 

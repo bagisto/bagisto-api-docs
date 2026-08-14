@@ -73,10 +73,6 @@ Returns the conversation thread of an RMA request, newest first. The `returnId` 
 
 Select `_id` for the numeric message id.
 
-::: tip
 See the [Returns overview](/api/graphql-api/admin/sales/returns/) for the conversation flow.
-:::
 
 Permission: `sales.rma.requests`.
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

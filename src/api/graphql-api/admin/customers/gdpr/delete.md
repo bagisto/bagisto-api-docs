@@ -42,12 +42,6 @@ Deletes a GDPR request. The mutation returns a snapshot of the record that was r
 
 Permission: `customers.gdpr_requests.delete`.
 
-::: tip Prerequisites
 The example uses an illustrative `id`. Replace it with a request that exists in your store — use [`adminCustomerGdprRequests`](./list.md) to discover valid ids.
-:::
 
-::: tip
 See the [GDPR overview](/api/graphql-api/admin/customers/gdpr/) for how requests are processed.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

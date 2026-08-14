@@ -75,9 +75,7 @@ examples:
 
 Partial update — send the `id` plus only the fields you want to change. Omitted fields keep their existing value. Returns the full updated source.
 
-::: tip How this menu works
 For field meanings and the delete guards, see the [Inventory Sources overview](/api/graphql-api/admin/settings/inventory-sources/).
-:::
 
 ## Operation
 
@@ -87,4 +85,4 @@ For field meanings and the delete guards, see the [Inventory Sources overview](/
 
 The `input.id` is the resource IRI. If you change `code`, the new value must remain unique. Use the [`adminSettingsInventorySources`](./list.md) query to discover valid ids.
 
-Permission: `settings.inventory_sources.edit`. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+Permission: `settings.inventory_sources.edit`.

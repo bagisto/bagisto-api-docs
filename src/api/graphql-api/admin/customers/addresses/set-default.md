@@ -75,8 +75,4 @@ Returns the updated address with `defaultAddress: true`.
 
 Permission: `customers.addresses.edit`.
 
-::: tip Menu overview
 See the [Customer Addresses overview](/api/graphql-api/admin/customers/) for the full address-book flow.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

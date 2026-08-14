@@ -78,6 +78,4 @@ Mirrors the admin **Sales → Refunds** datagrid. Every refund **column** plus t
 
 `sales.refunds.view`
 
-::: info
 Refund **detail**, **create**, and **preview** live under [Orders](/api/rest-api/admin/sales/orders/get-refund).
-:::

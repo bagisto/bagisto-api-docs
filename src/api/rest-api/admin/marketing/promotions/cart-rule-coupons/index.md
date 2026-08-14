@@ -44,5 +44,3 @@ deleted across rules.
 | [Mass Delete](/api/rest-api/admin/marketing/promotions/cart-rule-coupons-mass-delete) | `POST /api/admin/marketing/cart-rules/{cartRuleId}/coupons/mass-delete` |
 
 These coupons belong to [Cart Rules](/api/rest-api/admin/marketing/promotions/cart-rules/) — the parent rule decides whether a code is required and what discount it applies.
-
-All Cart Rule Coupons endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

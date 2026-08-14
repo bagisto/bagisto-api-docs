@@ -34,6 +34,8 @@ The order lifecycle and its documents:
 - **[Invoices](/api/rest-api/admin/sales/invoices/)** · **[Shipments](/api/rest-api/admin/sales/shipments/)** · **[Refunds](/api/rest-api/admin/sales/refunds/)** — the document datagrids (list, detail, export; invoice print PDF + mass-update-status).
 - **[Transactions](/api/rest-api/admin/sales/transactions/list)** — payment records; includes Record-Payment create.
 - **[Bookings](/api/rest-api/admin/sales/bookings/)** — bookable-product reservations (read-only).
+- **[Returns / RMA](/api/rest-api/admin/sales/returns/)** — the return queue: list, detail, status moves, customer messages, reopen, and admin-raised returns. Status transitions are constrained per request — see the [Returns / RMA flow →](/api/workflows/admin/returns-rma).
+- **[EU Withdrawal](/api/rest-api/admin/sales/eu-withdrawal/)** — right-of-withdrawal declarations with their evidence timeline: decline, mark refunded, resend the acknowledgement. See the [EU Withdrawal flow →](/api/workflows/admin/eu-withdrawal).
 - **[Create-Order flow →](/api/workflows/admin/create-order-flow)** — place an order for a customer through a draft cart.
 
 ## 3. Catalog
@@ -62,6 +64,7 @@ Reference data and access control — mostly straight CRUD (+ mass-delete where 
 - **[Currencies](/api/rest-api/admin/settings/currencies/list)** · **[Locales](/api/rest-api/admin/settings/locales/list)** · **[Exchange Rates](/api/rest-api/admin/settings/exchange-rates/list)** · **[Channels](/api/rest-api/admin/settings/channels/list)**
 - **[Inventory Sources](/api/rest-api/admin/settings/inventory-sources/list)** · **[Tax Rates](/api/rest-api/admin/settings/tax-rates/list)** · **[Tax Categories](/api/rest-api/admin/settings/tax-categories/list)**
 - **[Users](/api/rest-api/admin/settings/users/list)** · **[Roles](/api/rest-api/admin/settings/roles/list)** · **[Themes](/api/rest-api/admin/settings/themes/list)** · **[Data Transfer Imports](/api/rest-api/admin/settings/data-transfer-imports/)**
+- **[Return Reasons](/api/rest-api/admin/settings/return-reasons/list)** · **[Return Statuses](/api/rest-api/admin/settings/return-statuses/list)** · **[Return Rules](/api/rest-api/admin/settings/return-rules/list)** · **[Return Custom Fields](/api/rest-api/admin/settings/return-custom-fields/list)** — the RMA reference data. Rules gate eligibility, so configure one before the storefront return form can offer anything.
 
 ## 8. Configuration
 
@@ -72,5 +75,7 @@ Reference data and access control — mostly straight CRUD (+ mass-delete where 
 Every menu is available at `POST /api/admin/graphql` (admin token, no storefront key). Remember the **result-field / `id` rule** on action + mass-action mutations (select `success` / `message` / `orderId` / … — not a generic `id`). Details in the [Admin Workflows overview](/api/workflows/admin/#graphql-the-must-know-rules).
 
 ## Status codes to handle
+
+Every call below links to its **REST** endpoint page for concreteness. The sequence is transport-agnostic — the same flow works over GraphQL with the equivalent query or mutation, and each REST page cross-links to its GraphQL twin. Pick whichever transport your client uses; only the request shape changes, never the order of steps.
 
 `200/201` success · `401` unauthenticated · `403` forbidden (permission) · `400` bad input / guard · `404` not found · `409` wrong step order (Create-Order) · `422` validation / ineligible action.

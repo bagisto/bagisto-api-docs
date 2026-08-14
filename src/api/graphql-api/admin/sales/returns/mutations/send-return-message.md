@@ -58,10 +58,6 @@ Adds an admin reply to an RMA request's conversation thread and notifies the cus
 
 Attaching a file is REST-only (multipart) — not available over GraphQL.
 
-::: tip
 See the [Returns overview](/api/graphql-api/admin/sales/returns/) for the conversation flow.
-:::
 
 Permission: `sales.rma.requests`.
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

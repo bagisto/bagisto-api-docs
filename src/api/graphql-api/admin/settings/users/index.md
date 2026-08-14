@@ -53,5 +53,3 @@ A separate [Delete My Account](./delete-self) mutation lets an admin remove **th
 | [Delete my account](./delete-self) | `createAdminSettingsUserDeleteSelf` mutation |
 
 Permissions: `settings.users.users.create` / `.edit` / `.delete`.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

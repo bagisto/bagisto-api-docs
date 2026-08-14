@@ -56,6 +56,3 @@ Deletes multiple exchange rates in one call, identified by their numeric ids.
 
 Permission: `settings.exchange_rates.delete`.
 
-::: tip
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
-:::

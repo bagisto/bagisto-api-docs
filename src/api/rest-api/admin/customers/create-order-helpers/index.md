@@ -26,5 +26,3 @@ The full order-building flow lives under [Sales → Orders](/api/rest-api/admin/
 | [Wishlist Items](../wishlist-items.md) | `GET /api/admin/customers/{customerId}/wishlist-items` |
 | [Recent Order Items](../recent-order-items.md) | `GET /api/admin/customers/{customerId}/recent-order-items` |
 | [Create Draft Cart](../create-draft-cart.md) | `POST /api/admin/customers/{customerId}/draft-carts` |
-
-All endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

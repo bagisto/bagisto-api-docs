@@ -53,5 +53,3 @@ The activity aggregates (`totalOrders`, `totalAddresses`, `totalAmountSpent`) ar
 | [Mass Update Status](./mass-update-status.md) | `createAdminCustomerMassUpdateStatus` mutation |
 
 Permissions: `customers.customers.create` / `.edit` / `.delete`.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

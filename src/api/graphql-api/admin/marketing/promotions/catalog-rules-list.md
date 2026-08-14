@@ -152,9 +152,7 @@ examples:
 Lists every catalog rule in the store — the data behind the admin **Marketing →
 Promotions → Catalog Rules** datagrid.
 
-::: tip
 New here? Read the [Catalog Rules overview](/api/graphql-api/admin/marketing/promotions/catalog-rules/) for what a catalog rule does and how its fields behave.
-:::
 
 ## Operation
 

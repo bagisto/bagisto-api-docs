@@ -48,10 +48,5 @@ Fetches a single exchange rate by its IRI, returning every field including the r
 |-----------|------|---------|
 | `adminSettingsExchangeRate(id: ID!)` | Query | Fetch one exchange rate by IRI |
 
-::: tip Prerequisites
 The example uses an illustrative `id`. Replace it with a rate that exists in your store — use the [`adminSettingsExchangeRates`](./list.md) query to discover valid ids. An unknown id returns an `errors` entry equivalent to HTTP 404.
-:::
 
-::: tip
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
-:::

@@ -35,9 +35,7 @@ examples:
 Deletes a search synonym group — the **Delete** row action on the admin
 **Marketing → Search & SEO → Search Synonyms** screen.
 
-::: tip
 New here? Read the [Search Synonyms overview](/api/graphql-api/admin/marketing/search-seo/search-synonyms/) for what a search synonym does and how its fields behave.
-:::
 
 ## Operation
 
@@ -53,14 +51,14 @@ New here? Read the [Search Synonyms overview](/api/graphql-api/admin/marketing/s
   [list](/api/graphql-api/admin/marketing/search-seo/search-synonyms-list) query to
   discover valid ids.
 
-::: warning Confirm success via the absence of `errors`
+### Confirm success via the absence of `errors`
+
 The delete mutation returns a success acknowledgement, not the deleted group's
 data — `adminMarketingSearchSynonym` resolves to `null` on the payload. **Treat a
 response with no `errors[]` as a successful delete.** If you need a confirmation
 message in the body, use the REST endpoint
 (`DELETE /api/admin/marketing/search-synonyms/{id}`), which returns
 `{ "message": "Search synonym deleted." }`.
-:::
 
 ## Input fields
 

@@ -93,10 +93,6 @@ The `id` argument is the request IRI (`/api/admin/rma/requests/{id}`).
 - `images` is a list of `{ id, path, url }`.
 - `availableStatuses` is a list of `{ id, title }` — the status ids you may pass to [Update Status](../mutations/update-status.md).
 
-::: tip
 See the [Returns overview](/api/graphql-api/admin/sales/returns/) for the status workflow and action semantics.
-:::
 
 Permission: `sales.rma.requests`.
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

@@ -56,9 +56,7 @@ examples:
 
 Single CMS page with the full `htmlContent` body, every locale's `translations`, and the assigned `channels` inlined.
 
-::: tip
-For what CMS Pages are and how multi-locale / multi-channel works, see the [CMS Pages overview](/api/rest-api/admin/cms/pages/).
-:::
+For what CMS Pages are and how multi-locale and multi-channel work, see the [CMS Pages overview](/api/rest-api/admin/cms/pages/).
 
 ## Endpoint
 
