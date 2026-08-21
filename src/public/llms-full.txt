@@ -42243,7 +42243,7 @@ type Product {
 - 🔐 [Authentication](/api/graphql-api/authentication)
 - 🛍️ [Shop API](/api/graphql-api/shop-api)
 - 👨‍💼 [Admin API](/api/graphql-api/admin-api)
-- 💻 [Integration Guides](/api/graphql-api/integrations)
+- 💻 [Integration Guides (GraphQL)](/api/graphql-api/integrations)
 
 
 
@@ -42409,7 +42409,13 @@ Language and framework examples for the Bagisto **GraphQL** API. Every example t
 - **Required on every request:** `Content-Type: application/json` and `X-STOREFRONT-KEY: <your key>`.
 - **Customer operations** additionally send `Authorization: Bearer <token>` — the `token` from login (not `apiToken`). See [Authentication](/api/graphql-api/authentication).
 
-Field notes used below: the product list is `products(first: N)` (channel comes from the `X-CHANNEL` header, not a query argument — see [Pagination](/api/pagination)); the profile query is `readCustomerProfile { customer { … } }`; login is `createCustomerLogin`. On action mutations select **result fields**, not `id` — see [Identifiers](/api/graphql-api/identifiers).
+Three shapes are worth knowing before you copy an example:
+
+- **The product list is a connection.** `products(first: N)` selects through `edges { node { … } }`, and pages with `after: <endCursor>` — see [Pagination](/api/pagination). It accepts `channel` and `locale` arguments, or you can set them once per request with the `X-CHANNEL` / `X-LOCALE` headers.
+- **`readCustomerProfile` returns the customer's fields directly** — there is no `customer { … }` wrapper to select through.
+- **`product(id:)` takes an `ID`, not an `Int`.** Declare the variable `$id: ID!`; an `Int!` variable is rejected before the query runs.
+
+Login is `createCustomerLogin`. On action mutations select **result fields**, not `id` — see [Identifiers](/api/graphql-api/identifiers).
 
 ## JavaScript / Node.js
 
@@ -42468,12 +42474,16 @@ async function getCustomerProfile(token) {
   const query = `
     query {
       readCustomerProfile {
-        customer { id firstName lastName email }
+        _id
+        firstName
+        lastName
+        email
+        phone
       }
     }
   `;
   const data = await gql(query, {}, token);
-  return data.readCustomerProfile.customer;
+  return data.readCustomerProfile;
 }
 ```
 
@@ -42527,12 +42537,12 @@ const client = new GraphQLClient('https://your-domain.com/api/graphql', {
 });
 
 const query = gql`
-  query GetProduct($id: Int!) {
-    product(id: $id) { id name sku }
+  query GetProduct($id: ID!) {
+    product(id: $id) { id _id name sku }
   }
 `;
 
-const data = await client.request(query, { id: 1 });
+const data = await client.request(query, { id: '1' });
 ```
 
 ### Next.js
@@ -42606,10 +42616,10 @@ def login(email, password):
 def get_customer_profile(token):
     query = """
     query {
-      readCustomerProfile { customer { id firstName lastName email } }
+      readCustomerProfile { _id firstName lastName email phone }
     }
     """
-    return gql(query, token=token)["readCustomerProfile"]["customer"]
+    return gql(query, token=token)["readCustomerProfile"]
 ```
 
 ### Using gql
@@ -42931,7 +42941,7 @@ curl -X POST https://your-domain.com/api/graphql \
   -H "Content-Type: application/json" \
   -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
   -H "Authorization: Bearer YOUR_TOKEN" \
-  -d '{"query":"query { readCustomerProfile { customer { id firstName email } } }"}'
+  -d '{"query":"query { readCustomerProfile { _id firstName lastName email } }"}'
 ```
 
 ## Best practices
@@ -42945,6 +42955,7 @@ curl -X POST https://your-domain.com/api/graphql \
 
 ## Related Documentation
 
+- [Integration Guides (REST)](/api/rest-api/integrations) — the same languages against `/api/shop/*`
 - [Authentication](/api/graphql-api/authentication)
 - [Status Codes](/api/errors)
 - [Pagination](/api/pagination)
@@ -43239,7 +43250,7 @@ Parameters:
 - 📚 [Shop API Reference](/api/graphql-api/shop-api) - Complete shop operations guide
 - 🔑 [Admin API Reference](/api/graphql-api/admin-api) - Admin operations guide
 - 🔐 [Authentication Guide](/api/graphql-api/authentication) - Detailed auth methods
-- 🧪 [Integration Guides](/api/graphql-api/integrations) - Code examples for your stack
+- 🧪 [Integration Guides (GraphQL)](/api/graphql-api/integrations) - Code examples for your stack
 - 💡 [Best Practices](/api/graphql-api/best-practices) - Performance and security tips
 
 ## Support & Resources
@@ -43856,56 +43867,71 @@ URL: /api/graphql-api/playground
 
 # Interactive Playground Guide
 
-Test and explore the Bagisto GraphQL API using our interactive playgrounds. No authentication required to explore the schema!
+Bagisto ships a **GraphiQL** playground — an in-browser editor with schema autocomplete, inline docs, and a run button. It is the fastest way to shape a query before you write any client code.
 
-## GraphiQL Playground
+## Two playgrounds, one per surface
 
-The primary interactive query editor for testing GraphQL queries and mutations.
+The shop and admin schemas are served from different endpoints, so each has its own playground. A query written in one will not run in the other.
 
-### Access the Playground
+| Playground | URL | Schema |
+|---|---|---|
+| Shop | `https://your-domain.com/api/graphiql` | Catalog, cart, checkout, customer account |
+| Admin | `https://your-domain.com/api/admin/graphiql` | Orders, catalog management, customers, settings |
 
-Visit one of these URLs:
+On the public demo the shop playground is at `https://api-demo.bagisto.com/api/graphiql`.
 
-🌐 **Live Demo:**
-```
-https://api-demo.bagisto.com/api/graphiql
-```
+## Exploring costs nothing, running needs a key
 
-**Local Development:**
-```
-https://your-local-domain.com/api/graphiql
-```
+Schema introspection is deliberately exempt from the storefront-key check, so the **Docs** panel, autocomplete, and type search all work the moment the page loads, with no credentials.
 
-### Features
+Running an actual query is different. Without `X-STOREFRONT-KEY` the response is:
 
-✅ **Auto-complete** - Full schema introspection with code completion
-✅ **Documentation** - Built-in schema documentation explorer
-✅ **Query History** - Access your previous queries
-✅ **Variables** - Test with different variable values
-✅ **Query Prettifier** - Auto-format your queries
-✅ **Error Highlighting** - Real-time validation
-
-### Interface Overview
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│ GraphiQL Playground                                             │
-├──────────────────┬──────────────────────┬──────────────────────┤
-│                  │                      │                      │
-│  QUERY EDITOR    │   VARIABLES PANEL    │  RESULT / DOCS       │
-│                  │                      │                      │
-│  • Write queries │  • Set variables     │  • View responses    │
-│  • Auto-complete │  • Format JSON       │  • See errors        │
-│  • Shortcuts     │  • Validation        │  • Browse schema     │
-│                  │                      │                      │
-└──────────────────┴──────────────────────┴──────────────────────┘
+```json
+{
+  "message": "X-STOREFRONT-KEY header is required for this operation",
+  "error": "missing_key",
+  "header_name": "X-STOREFRONT-KEY",
+  "key_type": "shop"
+}
 ```
 
-## Quick Start Queries
+So you can browse the whole schema before you have a key, but the first query you run needs one.
 
-Copy-paste these queries directly into GraphiQL:
+## Authenticating inside the playground
 
-### 1. Get Products
+The bar above the editor manages credentials for you, and the state it shows tells you which identity the next request will use.
+
+- **Customer** — paste the `token` returned by `createCustomerLogin`. Everything customer-scoped (profile, orders, wishlist) then resolves.
+- **Guest cart** — paste the `cartToken` returned by `createCartToken` to act as a guest shopper through cart and checkout.
+- **Manual entry** — for any other Bearer value, including an admin Integration token on the admin playground.
+
+When both a customer token and a guest cart token are stored, **the customer token wins** — clear it if you want to test the guest path. Tokens are encrypted before being stored in the browser, and **Clear** removes them.
+
+The storefront key is only injected automatically when the store sets `API_PLAYGROUND_AUTO_INJECT_STOREFRONT_KEY=true`; it is off by default. When it is off, add the key yourself in the **Headers** panel at the bottom of the editor:
+
+```json
+{
+  "X-STOREFRONT-KEY": "pk_storefront_xxxxxxxxxxxxx"
+}
+```
+
+### Headers you can set
+
+| Header | Purpose |
+|---|---|
+| `X-STOREFRONT-KEY` | Required on every shop operation |
+| `Authorization` | `Bearer <token>` — customer token or guest cart token |
+| `X-LOCALE` | Return content in a specific locale, e.g. `fr` |
+| `X-CHANNEL` | Use a specific sales channel, e.g. `default` |
+| `X-CURRENCY` | Return pricing in a specific currency, e.g. `EUR` |
+
+A locale, channel, or currency the store does not have is not an error — the API falls back to the default silently, so content in the wrong language means the value was never applied.
+
+## Starter queries
+
+Paste any of these into the editor and run them.
+
+### List products
 
 ```graphql
 query GetProducts {
@@ -43917,6 +43943,7 @@ query GetProducts {
     edges {
       node {
         id
+        _id
         name
         sku
         price
@@ -43927,25 +43954,21 @@ query GetProducts {
 }
 ```
 
-**Test it:**
-1. Open https://api-demo.bagisto.com/api/graphiql
-2. Paste the query above
-3. Click **Play** button (▶)
-4. See results on the right
+Collections are Relay connections, so results always come back through `edges { node { … } }`. Page forward by passing the previous `endCursor` as `after`.
 
-### 2. Search Products
+### Search products
+
+Text search is the `query` argument — there is no `search` argument on `products`.
 
 ```graphql
-query SearchProducts($search: String!) {
-  products(channel: "default", search: $search, first: 20) {
+query SearchProducts($q: String!) {
+  products(query: $q, first: 20) {
     edges {
       node {
-        id
+        _id
         name
+        sku
         price
-        productFlat {
-          url
-        }
       }
     }
   }
@@ -43955,52 +43978,25 @@ query SearchProducts($search: String!) {
 **Variables:**
 ```json
 {
-  "search": "laptop"
+  "q": "skirt"
 }
 ```
 
-### 3. Get Product Details
+### Fetch one product
+
+`product(id:)` takes an `ID`, so declare the variable `ID!` — an `Int!` variable is rejected before the query runs. The same query also accepts `sku:` or `urlKey:` instead of `id:`.
 
 ```graphql
-query GetProduct($id: String!) {
+query GetProduct($id: ID!) {
   product(id: $id) {
     id
+    _id
     name
     sku
-    type
-    description
     price
-    weight
     status
-    images {
-      edges {
-        node {
-          id
-          url
-          alt
-        }
-      }
-    }
-    attributes {
-      edges {
-        node {
-          code
-          label
-          value
-        }
-      }
-    }
-    reviews(first: 5) {
-      edges {
-        node {
-          id
-          rating
-          title
-          comment
-          customerName
-        }
-      }
-    }
+    urlKey
+    description
   }
 }
 ```
@@ -44012,7 +44008,7 @@ query GetProduct($id: String!) {
 }
 ```
 
-### 4. Get Categories
+### Category tree
 
 ```graphql
 query GetCategories {
@@ -44030,17 +44026,6 @@ query GetCategories {
             name
             slug
           }
-          children {
-            edges {
-              node {
-                id
-                translation {
-                  name
-                  slug
-                }
-              }
-            }
-          }
         }
       }
     }
@@ -44048,73 +44033,32 @@ query GetCategories {
 }
 ```
 
-### 5. Create Guest Cart
+### Create a guest cart
 
 ```graphql
 mutation CreateGuestCart {
   createCartToken(input: {}) {
-    cartToken
-  }
-}
-```
-
-**After running:**
-1. Copy the `cartToken` value
-2. Store for later use in cart operations
-
-### 6. Add to Cart (Guest)
-
-```graphql
-mutation AddToCart($cartId: String!, $productId: String!) {
-  addProductsToCart(input: {
-    cartId: $cartId
-    items: [
-      { productId: $productId, quantity: 1 }
-    ]
-  }) {
-    cart {
-      id
+    cartToken {
+      cartToken
+      _id
       itemsCount
       grandTotal
-      items {
-        edges {
-          node {
-            id
-            product {
-              name
-              price
-            }
-            quantity
-          }
-        }
-      }
     }
   }
 }
 ```
 
-**Variables:**
-```json
-{
-  "cartId": "replace-with-your-cart-id",
-  "productId": "1"
-}
-```
+The outer `cartToken` is the payload wrapper and the inner one is the token string — paste that string into the playground's guest-cart slot to continue as that shopper.
 
-### 7. Customer Login
+### Customer login
 
 ```graphql
 mutation LoginCustomer($email: String!, $password: String!) {
-  createLogin(input: {
-    email: $email
-    password: $password
-  }) {
-    accessToken
-    customer {
-      id
-      firstName
-      lastName
-      email
+  createCustomerLogin(input: { email: $email, password: $password }) {
+    customerLogin {
+      token
+      success
+      message
     }
   }
 }
@@ -44124,462 +44068,73 @@ mutation LoginCustomer($email: String!, $password: String!) {
 ```json
 {
   "email": "customer@example.com",
-  "password": "password123"
+  "password": "your-password"
 }
 ```
 
-**After running:**
-1. Copy the `token` value
-2. Add to request headers (see below)
+The Bearer is `token`. The response also carries `apiToken`, which is a legacy field and is **not** accepted for authentication.
 
-### 8. Get Customer Profile (Requires Auth)
+### Customer profile (needs the customer token)
+
+The profile fields come back directly — there is no `customer { … }` wrapper to select through.
 
 ```graphql
 query GetProfile {
-  customer {
-    id
+  readCustomerProfile {
+    _id
     firstName
     lastName
     email
-    createdAt
-    addresses {
-      edges {
-        node {
-          id
-          firstName
-          lastName
-          address
-          city
-          state
-          country
-          zipCode
-          defaultBilling
-          defaultShipping
-        }
-      }
-    }
+    phone
+    gender
+    dateOfBirth
   }
 }
 ```
 
-**Headers:**
-```json
-{
-  "Authorization": "Bearer YOUR_ACCESS_TOKEN"
-}
-```
+## Finding everything else
 
-### 9. Get Customer Orders
+The starter set above is a fraction of the schema. Two ways to find the rest:
 
-```graphql
-query GetOrders {
-  customerOrders(first: 20) {
-    edges {
-      node {
-        id
-        incrementId
-        status
-        grandTotal
-        createdAt
-        items {
-          edges {
-            node {
-              productName
-              quantity
-              price
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
+- **The Docs panel** in the playground — search a type or field name and follow the arguments and return types. It is always accurate, because it is generated from the running server.
+- **[The Shop API reference](/api/graphql-api/shop-api)** — the same operations with request bodies, response payloads, and error cases documented per endpoint. For an ordered call sequence (cart → checkout → order), follow the [Workflows](/api/workflows/shop/).
 
-### 10. Create Product Review
+## Reading errors
 
-```graphql
-mutation CreateReview($productId: String!, $title: String!, $rating: Int!, $comment: String!, $name: String!, $email: String!) {
-  createReview(input: {
-    productId: $productId
-    title: $title
-    rating: $rating
-    comment: $comment
-    name: $name
-    email: $email
-  }) {
-    review {
-      id
-      title
-      rating
-      comment
-      status
-      createdAt
-    }
-  }
-}
-```
+GraphQL answers with HTTP `200` even when the operation fails, so always inspect the top-level `errors` array rather than the status code.
 
-**Variables:**
-```json
-{
-  "productId": "1",
-  "title": "Excellent Product",
-  "rating": 5,
-  "comment": "Great quality and fast shipping!",
-  "name": "John Doe",
-  "email": "john@example.com"
-}
-```
+| Message | What it means |
+|---|---|
+| `Cannot query field "x" on type "Y"` | The field does not exist — check the Docs panel for the real name |
+| `Unknown argument "x" on field "y"` | The argument does not exist on that field |
+| `Variable "$x" of type "Int!" used in position expecting type "ID"` | The variable's declared type does not match the argument |
+| `Field "x" of type "Y" must have a sub selection` | The field returns an object; select fields inside it |
+| `X-STOREFRONT-KEY header is required for this operation` | Add the key in the Headers panel |
+| `Unauthenticated. Please login to perform this action` | The operation needs a customer or cart token in the auth bar |
 
-## Using Variables in Queries
+The first four are caught before the server executes anything, which is why a bad field name never partially runs.
 
-Variables make queries reusable and flexible.
-
-### Example: Filter Products with Variables
-
-**Query:**
-```graphql
-query GetFilteredProducts(
-  $channel: String!
-  $first: Int!
-  $search: String
-  $category: Int
-) {
-  products(
-    channel: $channel
-    first: $first
-    search: $search
-    categoryId: $category
-  ) {
-    edges {
-      node {
-        id
-        name
-        price
-      }
-    }
-  }
-}
-```
-
-**Variables:**
-```json
-{
-  "channel": "default",
-  "first": 20,
-  "search": "laptop",
-  "category": 2
-}
-```
-
-## Headers for Authentication
-
-### Setting Headers in GraphiQL
-
-1. Click **HTTP Headers** at the bottom
-2. Add headers as JSON:
-
-```json
-{
-  "Authorization": "Bearer YOUR_ACCESS_TOKEN",
-  "Content-Type": "application/json",
-  "Accept-Language": "en_US"
-}
-```
-
-### Common Headers
-
-| Header | Purpose | Example |
-|--------|---------|---------|
-| `Authorization` | Customer/Admin token | `Bearer eyJhbGc...` |
-| `X-Cart-Token` | Guest cart token | `550e8400-e29b...` |
-| `Content-Type` | Request format | `application/json` |
-| `Accept-Language` | Locale | `en_US` or `fr_FR` |
-
-## Schema Explorer
-
-GraphiQL includes a powerful schema browser on the right sidebar.
-
-### How to Use
-
-1. Click **Docs** tab (top right)
-2. Search for a type, query, or mutation
-3. Click to view details
-4. See field documentation and arguments
-
-### Common Query Types to Explore
-
-- **Query** - Read operations
-  - `products` - Get products
-  - `customer` - Get customer profile
-  - `cart` - Get cart details
-
-- **Mutation** - Write operations
-  - `createLogin` - Customer login
-  - `addProductsToCart` - Add to cart
-  - `createOrder` - Create order
-
-## Troubleshooting Common Issues
-
-### Query Returns `null`
-
-**Problem:**
-```graphql
-query {
-  product(id: "999") {
-    name
-  }
-}
-
-# Returns: { "data": { "product": null } }
-```
-
-**Solution:**
-- Check the ID exists
-- Verify correct ID format
-- Check status/channel filters
-
-### Authentication Error
-
-**Problem:**
-```json
-{
-  "errors": [
-    {
-      "message": "Unauthenticated"
-    }
-  ]
-}
-```
-
-**Solution:**
-1. Get valid token via `createLogin` mutation
-2. Add token to headers
-3. Verify token hasn't expired
-
-### Validation Error
-
-**Problem:**
-```json
-{
-  "errors": [
-    {
-      "extensions": {
-        "validation": {
-          "email": ["The email field is invalid"]
-        }
-      }
-    }
-  ]
-}
-```
-
-**Solution:**
-- Check input format
-- Verify all required fields provided
-- See error details in extensions
-
-### Rate Limit Error
-
-**Problem:**
-```json
-{
-  "errors": [
-    {
-      "message": "Too many requests"
-    }
-  ]
-}
-```
-
-**Solution:**
-- Wait before making new requests
-- Reduce request frequency
-- Implement exponential backoff
-
-## Exporting Queries
-
-### Copy cURL Command
-
-1. Right-click query result
-2. Select "Copy as cURL"
-3. Use in terminal:
-
-```bash
-curl 'https://your-domain.com/api/graphql' \
-  -H 'content-type: application/json' \
-  --data-raw '{"query":"query { ... }"}'
-```
-
-### Export to Postman
-
-1. Get query text
-2. Create Postman request with:
-   - **Method:** POST
-   - **URL:** `https://your-domain.com/api/graphql`
-   - **Body:** GraphQL query
-
-## Performance Tips
-
-### Write Efficient Queries
-
-**❌ Slow - Too many fields:**
-```graphql
-query {
-  products(first: 1000) {
-    edges {
-      node {
-        id
-        name
-        description
-        attributes {
-          edges {
-            node { id code value }
-          }
-        }
-        # ... 20+ more fields
-      }
-    }
-  }
-}
-```
-
-**✅ Fast - Only needed fields:**
-```graphql
-query {
-  products(first: 20) {
-    edges {
-      node {
-        id
-        name
-        price
-      }
-    }
-  }
-}
-```
-
-### Use Pagination
-
-Always use pagination with `first` or `last`:
-
-```graphql
-query {
-  products(first: 20, after: "cursor") {
-    pageInfo {
-      hasNextPage
-      endCursor
-    }
-    edges {
-      node { id name }
-    }
-  }
-}
-```
-
-## Keyboard Shortcuts
+## Keyboard shortcuts
 
 | Shortcut | Action |
 |----------|--------|
-| `Ctrl+Enter` / `Cmd+Enter` | Execute query |
-| `Ctrl+Shift+P` | Prettify query |
-| `Ctrl+Space` | Auto-complete |
-| `Ctrl+F` | Find in query |
+| `Ctrl+Enter` / `Cmd+Enter` | Run the current operation |
+| `Ctrl+Space` | Trigger autocomplete |
+| `Shift+Ctrl+P` | Prettify the query |
 
-## External Resources
+## Writing queries that stay fast
 
-### Postman Collection
+- **Select only what you render.** The point of GraphQL is that a screen fetches its own field set — asking for every field on every node gives away the advantage.
+- **Always paginate.** Collections take `first` (or `last`); page with `after: <endCursor>` until `pageInfo.hasNextPage` is false. See [Pagination](/api/pagination).
+- **Use variables, not string interpolation.** They are validated against the schema and keep the query text stable for client-side caching.
+- **Store `_id`, pass `id` back.** Nodes carry both — the numeric `_id` is what belongs in your database and in REST URLs. See [Identifiers](/api/graphql-api/identifiers).
 
-Download the full Postman collection with pre-built requests:
+## Related Documentation
 
-📥 [Download Bagisto GraphQL Postman Collection](../../Bagisto%20Graphql%20API%20Platform.postman_collection.json)
-
-**Steps:**
-1. Download collection file
-2. Import into Postman
-3. Set environment variables
-4. Execute pre-built requests
-
-## Real-World Examples
-
-### Complete Checkout Flow
-
-1. **Create Cart**
-```graphql
-mutation {
-  createCartToken(input: {}) {
-    cartToken
-  }
-}
-```
-
-2. **Add Product**
-```graphql
-mutation {
-  addProductsToCart(input: {
-    cartId: "CART_ID_FROM_STEP_1"
-    items: [{ productId: "1", quantity: 2 }]
-  }) {
-    cart { id }
-  }
-}
-```
-
-3. **Estimate Shipping**
-```graphql
-mutation {
-  estimateShipping(input: {
-    cartId: "CART_ID"
-    country: "US"
-    state: "CA"
-    zipCode: "90210"
-  }) {
-    shippingMethods {
-      edges {
-        node { code title price }
-      }
-    }
-  }
-}
-```
-
-4. **Create Order**
-```graphql
-mutation {
-  createGuestOrder(input: {
-    cartId: "CART_ID"
-    billingAddress: {
-      firstName: "John"
-      lastName: "Doe"
-      email: "john@example.com"
-      address: "123 Main St"
-      city: "New York"
-      country: "US"
-      state: "NY"
-      zipCode: "10001"
-    }
-    shippingMethod: "flatrate_flatrate"
-    paymentMethod: "paypal"
-  }) {
-    order { id incrementId }
-  }
-}
-```
-
----
-
-**Get Started:**
-1. 🌐 Open [GraphiQL Playground](https://api-demo.bagisto.com/api/graphiql)
-2. 📋 Try one of the queries above
-3. 💡 Explore the schema using Docs
-4. 🚀 Build your application!
-
-**Need Help?**
-- 📚 [Authentication Guide](/api/graphql-api/authentication)
-- 🛍️ [Shop API Reference](/api/graphql-api/shop-api)
-- 💻 [Integration Guides](/api/graphql-api/integrations)
-- 💬 [Community Forum](https://forums.bagisto.com)
+- [Authentication](/api/graphql-api/authentication) — the credential model
+- [Shop API Reference](/api/graphql-api/shop-api) — every shop operation
+- [Integration Guides](/api/integrations) — client code once the query works
+- [Identifiers (`id` vs `_id`)](/api/graphql-api/identifiers)
 
 
 
@@ -45959,7 +45514,7 @@ query {
 
 **📚 Related Documentation:**
 - 🔐 [Authentication](/api/graphql-api/authentication)
-- 💻 [Integration Guides](/api/graphql-api/integrations)
+- 💻 [Integration Guides (GraphQL)](/api/graphql-api/integrations)
 - 🎯 [Best Practices](/api/graphql-api/best-practices)
 
 
@@ -81592,6 +81147,139 @@ All Wishlist operations require a customer Bearer token — see [Authentication]
 
 ---
 
+# Integration Guides
+URL: /api/integrations
+
+# Integration Guides
+
+Working client code for the Bagisto API in the language you are building in. Both transports are covered — pick one, wire up the client below, then follow the per-language guide for the rest.
+
+## Which transport
+
+Both surfaces expose the same data and the same capabilities. The choice is about how you fetch it, not what you can reach.
+
+| | REST | GraphQL |
+|---|---|---|
+| Endpoint | `/api/shop/*` — one path per resource | `POST /api/graphql` — one endpoint |
+| Fetching a screen | One call per resource; a product page may take several | One call selects exactly the fields the screen needs |
+| Filtering & sorting | Query string — `?category_id=&price=&sort=` | A JSON `filter:` string plus `sortKey`/`reverse` |
+| Paging | `page` + `per_page`, totals in response headers | Cursor — `first` + `after`, with `pageInfo` |
+| Failure signal | The HTTP status code | HTTP `200` with a top-level `errors` array |
+| Good fit for | Simple screens, server scripts, quick integrations | Rich screens that would otherwise need several round trips |
+
+Nothing stops you mixing them in one app — the credentials are identical.
+
+## What every request needs
+
+| Surface | Required headers |
+|---|---|
+| Shop (public) | `X-STOREFRONT-KEY: <key>` |
+| Shop (customer or guest cart) | `X-STOREFRONT-KEY` **plus** `Authorization: Bearer <token>` |
+| Admin | `Authorization: Bearer <id>\|<token>` only — **no** storefront key |
+
+Two things to get right on the shop side: the Bearer is the `token` from login, **not** the `apiToken` that comes back alongside it, and a guest can act without an account by sending a [cart token](/api/rest-api/shop/cart/create-cart) as the Bearer. Full model on the [Authentication](/api/authentication) page.
+
+## The shape of a client
+
+Every example on the two per-language pages is built the same way: one function that attaches the headers and unwraps the response, then thin calls on top of it. In JavaScript, that is:
+
+::: code-group
+
+```javascript [REST]
+const BASE_URL = 'https://your-domain.com/api/shop';
+const STOREFRONT_KEY = 'pk_storefront_xxxxxxxxxxxxx';
+
+async function api(path, { method = 'GET', body, token } = {}) {
+  const headers = { 'X-STOREFRONT-KEY': STOREFRONT_KEY };
+  if (body) headers['Content-Type'] = 'application/json';
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const res = await fetch(`${BASE_URL}${path}`, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  // REST signals failure with the status code.
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+const products = await api('/products?per_page=20&sort=name-asc');
+```
+
+```javascript [GraphQL]
+const API_URL = 'https://your-domain.com/api/graphql';
+const STOREFRONT_KEY = 'pk_storefront_xxxxxxxxxxxxx';
+
+async function gql(query, variables = {}, token = null) {
+  const headers = {
+    'Content-Type': 'application/json',
+    'X-STOREFRONT-KEY': STOREFRONT_KEY,
+  };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ query, variables }),
+  });
+
+  // GraphQL returns 200 even on failure — the reason is in errors[].
+  const json = await res.json();
+  if (json.errors) throw new Error(json.errors[0].message);
+  return json.data;
+}
+
+const { products } = await gql(`
+  query GetProducts($first: Int!) {
+    products(first: $first) {
+      edges { node { id _id name sku } }
+      pageInfo { hasNextPage endCursor }
+    }
+  }
+`, { first: 20 });
+```
+
+:::
+
+The difference that catches people out is the error check. A failed GraphQL request still returns HTTP `200`, so a client that only inspects the status code will treat an error as success and hand `null` fields to the UI.
+
+## Your language
+
+Each guide carries a client, a login call, and an authenticated call, ready to paste.
+
+| Language | REST | GraphQL |
+|---|---|---|
+| JavaScript / Node.js | [Fetch, Axios, Next.js](/api/rest-api/integrations#javascript-node-js) | [Fetch, Apollo, graphql-request, Next.js](/api/graphql-api/integrations#javascript-node-js) |
+| Python | [requests, Django](/api/rest-api/integrations#python) | [requests, gql](/api/graphql-api/integrations#python) |
+| PHP | [cURL, Laravel HTTP client](/api/rest-api/integrations#php) | [cURL, Laravel HTTP client](/api/graphql-api/integrations#php) |
+| Ruby | [Net::HTTP](/api/rest-api/integrations#ruby) | [Net::HTTP](/api/graphql-api/integrations#ruby) |
+| Go | [net/http](/api/rest-api/integrations#go) | [net/http](/api/graphql-api/integrations#go) |
+| Java | [OkHttp](/api/rest-api/integrations#java) | [OkHttp](/api/graphql-api/integrations#java) |
+| cURL | [Shell examples](/api/rest-api/integrations#curl) | [Shell examples](/api/graphql-api/integrations#curl) |
+
+All examples target the **Shop** API. For a back-office integration the calls are the same shape with a different credential — see [Admin Authentication](/api/rest-api/admin/authentication).
+
+## Before you ship
+
+- **Handle `401` by getting a new credential.** There is no refresh token anywhere in the API: re-login for a customer token, regenerate an admin token, rotate a storefront key.
+- **Treat the storefront key as public.** It ships in browser and mobile bundles, and it permits the storefront's open writes (contact form, newsletter, registration, cart creation), so protect those forms on your side.
+- **Page properly.** REST caps `per_page` at 50 and reports totals in headers; GraphQL pages with cursors until `pageInfo.hasNextPage` is false. See [Pagination](/api/pagination).
+- **Back off on `429`.** The storefront key's limit is applied per hour, so a retry loop can wait a long time — see [Rate Limiting](/api/rate-limiting).
+- **Store `_id`, pass `id` back.** GraphQL nodes carry both; only the numeric one is stable for your database and for REST URLs. See [Identifiers](/api/graphql-api/identifiers).
+
+## Related Documentation
+
+- [Authentication](/api/authentication) — which credential for which surface
+- [Status Codes](/api/errors) — HTTP statuses and the error body shape
+- [Pagination](/api/pagination) — both paging models
+- [Workflows](/api/workflows/) — ordered, end-to-end call sequences
+
+
+
+---
+
 # Introduction
 URL: /api/introduction
 
@@ -111373,6 +111061,7 @@ curl -X GET "https://your-domain.com/api/shop/customer-profile" \
 
 ## Related Documentation
 
+- [Integration Guides (GraphQL)](/api/graphql-api/integrations) — the same languages against `POST /api/graphql`
 - [Authentication](/api/rest-api/authentication) — storefront key, customer tokens, and cart tokens
 - [Status Codes](/api/errors) — HTTP status codes and the error body shape
 - [Pagination](/api/pagination) — page, per_page, and the pagination response headers
@@ -111706,6 +111395,105 @@ Three things follow from that:
 - 📧 [Contact Support](https://bagisto.com/en/contacts/)
 
 ---
+
+
+---
+
+# Interactive Playground Guide
+URL: /api/rest-api/playground
+
+# Interactive Playground Guide
+
+Bagisto ships **Swagger UI** for the REST API — every endpoint listed with its parameters, request body, and response schema, and a **Try it out** button that fires the real call. It is the fastest way to check a payload before writing client code.
+
+## Two playgrounds, one per surface
+
+The shop and admin APIs are documented separately, because they authenticate differently and share no endpoints.
+
+| Playground | URL | Endpoints |
+|---|---|---|
+| Shop | `https://your-domain.com/api/shop` | 162 operations — catalog, cart, checkout, customer account |
+| Admin | `https://your-domain.com/api/admin` | 329 operations — orders, catalog management, customers, settings |
+
+`https://your-domain.com/api` lists both and links to each.
+
+## Authenticating
+
+The two surfaces need different credentials, and Swagger UI surfaces them in different places — this is the part that trips people up.
+
+### Shop — the storefront key is a per-operation field
+
+Every shop operation declares `X-STOREFRONT-KEY` as a **header parameter**, so it appears as an editable field in that operation's **Try it out** form. It is not in the **Authorize** dialog, which offers only the Bearer token.
+
+If the store sets `API_PLAYGROUND_AUTO_INJECT_STOREFRONT_KEY=true`, the page injects its configured key into every request and you can ignore the field — the banner at the top of the page tells you which mode you are in. With auto-inject off, paste your key into the `X-STOREFRONT-KEY` field on each operation you try, or requests come back `401 missing_key`.
+
+For customer-scoped endpoints, add the Bearer through **Authorize**: the `token` from login, or a cart token to act as a guest.
+
+Note that the shop page only persists what you entered across reloads when auto-inject is on. Otherwise a refresh clears it.
+
+### Admin — Bearer only
+
+Admin operations take no storefront key at all. Click **Authorize**, paste the Integration token in `<id>|<token>` form, and it applies to every request. The admin page **persists** authorization, so the token survives a reload.
+
+## Trying a request
+
+1. Open the surface you need and use the **filter** box at the top to find an endpoint by path or tag.
+2. Expand the operation — parameters, request body schema, and every documented response are listed.
+3. Click **Try it out**, fill the fields, and **Execute**.
+4. Swagger shows the response body, status, headers, and the equivalent **curl** command, which is the quickest way to move a working call into a terminal or a script.
+
+The server selector at the top is preset to the surface you opened (`/api/shop` or `/api/admin`); leave it alone unless you are pointing at a different host.
+
+## The raw OpenAPI spec
+
+Each surface publishes its own machine-readable spec:
+
+| Surface | Spec URL |
+|---|---|
+| Shop | `https://your-domain.com/api/shop/docs` |
+| Admin | `https://your-domain.com/api/admin/docs` |
+
+Import either into Postman, Insomnia, or a client generator to get a full request collection without hand-writing anything. Both are plain OpenAPI 3 JSON.
+
+To generate the same files offline — no running server needed — use the export command, which also writes the GraphQL SDL:
+
+```bash
+php artisan bagisto-api-platform:export-schema
+```
+
+## Reading errors
+
+REST signals failure with the status code, and Swagger UI shows it alongside the body.
+
+| Status | Body | What it means |
+|---|---|---|
+| `401` | `{"error": "missing_key"}` | No `X-STOREFRONT-KEY` — fill the field or enable auto-inject |
+| `401` | `Invalid or expired token` | The Bearer in **Authorize** is wrong, expired, or is the legacy `apiToken` |
+| `403` | `{"error": "invalid_key"}` | The storefront key is unknown, deactivated, or expired |
+| `403` | Problem-details body | Authenticated, but not allowed — an admin token missing the permission, or a customer's record that is not theirs |
+| `422` | Validation details | The request reached the endpoint and was rejected — read the field errors |
+| `429` | `{"error": "rate_limit_exceeded"}` | Rate limit hit; `retry_after` is in seconds. See [Rate Limiting](/api/rate-limiting) |
+
+A `401` that says `missing_key` is about the storefront key; one that mentions a token is about the Bearer. They are separate credentials, and shop endpoints often need both.
+
+## Getting more from the page
+
+- **Filter by tag, not just path.** Endpoints are grouped the way the admin panel is (`Admin Sales: Orders`, `Admin Catalog: Products`), so filtering by menu name finds a whole feature at once.
+- **Read the response schema before the example.** Examples show one shape; the schema lists every field the endpoint can return, including the ones that are null in the sample.
+- **Copy the curl, not the URL.** The generated curl carries the headers you configured, which is what makes it reproducible outside the browser.
+- **Watch the paging headers.** Collection responses carry `X-Total-Count`, `X-Page`, `X-Per-Page`, and `X-Total-Pages`; Swagger shows them under the response body. See [Pagination](/api/pagination).
+
+## Prefer GraphQL?
+
+The same store serves a GraphQL schema with its own in-browser editor — see the [GraphQL Playground Guide](/api/graphql-api/playground).
+
+## Related Documentation
+
+- [Authentication](/api/rest-api/authentication) — the credential model
+- [Integration Guides](/api/integrations) — client code once the request works
+- [Status Codes](/api/errors) — the full status and error-body reference
+- [Pagination](/api/pagination) — page, per_page, and the response headers
+
 
 
 ---
@@ -128620,590 +128408,6 @@ Both directions answer `201` with the same shape — the wishlist row, plus a `m
 
 ---
 
-# Testing & Debugging REST APIs
-URL: /api/rest-api/testing-debugging
-
-# Testing & Debugging REST APIs
-
-This guide covers how to test and debug Bagisto REST API endpoints using various tools and methods.
-
-## API Configuration
-
-The documentation uses centralized API configuration. Update these URLs in `.vitepress/theme/config/api.config.ts`:
-
-```typescript
-// REST API Base URL
-export const REST_API_URL = 'https://api-demo.bagisto.com'
-
-// GraphQL API Base URL
-export const GRAPHQL_API_URL = 'https://api-demo.bagisto.com'
-```
-
-Replace with your actual Bagisto instance URLs, and all documentation examples will automatically use the updated URLs.
-
-## Run with `APP_DEBUG=false`
-
-Keep `APP_DEBUG=false` in your server `.env` (the default). With `APP_DEBUG=true`, the framework stores API metadata in a **per-request in-memory cache** instead of a persistent one, so the two whole-spec pages — the OpenAPI docs pages (`GET /api/admin`, `GET /api/shop`) and the full GraphQL schema / introspection — rebuild metadata for **every** resource on every request and can exceed the 30-second request limit and fail. The cost grows with the number of API resources.
-
-This affects **only** those whole-spec pages. Normal API calls (a single REST endpoint or GraphQL operation) build metadata for just the resource they touch and stay fast in either mode. It is a development-mode trade-off in the underlying framework (debug mode intentionally skips the persistent cache so schema edits appear immediately) — not a bug. If a docs page or the schema hangs, set `APP_DEBUG=false` and reload.
-
-## Interactive Testing Tools
-
-### 1. Swagger UI (Built-in)
-
-The fastest way to test REST APIs! Bagisto includes Swagger UI for interactive API documentation.
-
-**Access Swagger UI:**
-```
-http://your-domain.com/api/docs
-```
-
-**Features:**
-- ✅ Try API requests directly from the browser
-- ✅ Automatic token/authentication handling
-- ✅ Request and response inspection
-- ✅ Full endpoint documentation
-- ✅ Real-time error messages
-
-**Steps to Test:**
-1. Navigate to `/api/docs`
-2. Click "Authorize" button (top right)
-3. Enter your Bearer token or credentials
-4. Click any endpoint to expand it
-5. Click "Try it out" button
-6. Modify parameters as needed
-7. Click "Execute" to send the request
-8. View response in the UI
-
-### 2. ReDoc Alternative
-
-Alternative API documentation viewer:
-
-```
-http://your-domain.com/api/docs.html
-```
-
-**Best for:**
-- Reading comprehensive endpoint documentation
-- Understanding request/response schemas
-- Offline documentation reference
-
-### 3. GraphQL Playground (Same Instance)
-
-If GraphQL is enabled on the same instance:
-
-```
-http://your-domain.com/api/graphql
-```
-
-**Note:** GraphQL and REST APIs are complementary - use GraphQL for complex queries and mutations, REST APIs for simple CRUD operations.
-
-## Testing with cURL
-
-The most reliable method for API testing and CI/CD pipelines.
-
-### Basic GET Request
-
-```bash
-curl -X GET 'https://api-demo.bagisto.com/api/shop/locales/1' \
-  -H 'Accept: application/json'
-```
-
-### GET with Authentication
-
-```bash
-curl -X GET 'https://api-demo.bagisto.com/api/customer_profiles' \
-  -H 'Accept: application/json' \
-  -H 'Authorization: Bearer YOUR_ACCESS_TOKEN'
-```
-
-### POST Request with Body
-
-```bash
-curl -X POST 'https://api-demo.bagisto.com/api/shop/customers/login' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "email": "customer@example.com",
-    "password": "password123"
-  }'
-```
-
-### With Custom Headers
-
-```bash
-curl -X POST 'https://api-demo.bagisto.com/api/shop/add-product-in-cart' \
-  -H 'Content-Type: application/json' \
-  -H 'X-Cart-Token: YOUR_CART_TOKEN' \
-  -H 'Accept-Language: en_US' \
-  -d '{
-    "productId": 1,
-    "quantity": 2
-  }'
-```
-
-### Extracting Token from Response
-
-```bash
-# Login and extract token
-TOKEN=$(curl -s -X POST 'https://api-demo.bagisto.com/api/shop/customers/login' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "email": "customer@example.com",
-    "password": "password123"
-  }' | grep -o '"access_token":"[^"]*' | cut -d'"' -f4)
-
-echo "Token: $TOKEN"
-
-# Use token in subsequent request
-curl -X GET 'https://api-demo.bagisto.com/api/customer_profiles' \
-  -H 'Authorization: Bearer '$TOKEN \
-  -H 'Accept: application/json'
-```
-
-### Viewing Response Headers
-
-```bash
-# Show response headers along with body
-curl -i -X GET 'https://api-demo.bagisto.com/api/shop/products' \
-  -H 'Accept: application/json'
-```
-
-### Pretty-Print JSON Response
-
-```bash
-# Install jq: apt-get install jq (Linux) or brew install jq (Mac)
-curl -s -X GET 'https://api-demo.bagisto.com/api/shop/products' \
-  -H 'Accept: application/json' | jq
-```
-
-## Postman Collection
-
-[Download Postman Collection](https://postman.bagisto.com/bagisto-api.json)
-
-### Setting Up Postman
-
-1. **Import Collection:**
-   - Open Postman
-   - Click "Import" button
-   - Paste collection URL or upload JSON file
-   - Click "Import"
-
-2. **Configure Environment Variables:**
-   - Click "Environments" (left sidebar)
-   - Click "Create"
-   - Add variables:
-     ```
-     base_url: https://api-demo.bagisto.com
-     access_token: YOUR_TOKEN_HERE
-     cart_token: YOUR_CART_TOKEN_HERE
-     ```
-
-3. **Run Tests:**
-   - Select environment from dropdown
-   - Click any request
-   - Click "Send"
-   - View response in "Body" tab
-
-4. **Using Variables in Requests:**
-   ```
-   {{base_url}}/api/shop/products
-   Authorization: Bearer {{access_token}}
-   X-Cart-Token: {{cart_token}}
-   ```
-
-## Insomnia Client
-
-Similar to Postman with a cleaner interface:
-
-1. **Create New Request:**
-   - Click "+" button
-   - Select HTTP method (GET, POST, etc.)
-   - Enter URL: `https://api-demo.bagisto.com/api/shop/locales/1`
-
-2. **Add Headers:**
-   - Click "Header" tab
-   - Add: `Accept: application/json`
-   - Add: `Authorization: Bearer TOKEN`
-
-3. **Add Body (for POST/PATCH):**
-   - Click "Body" tab
-   - Select "JSON" format
-   - Paste JSON payload
-
-4. **Send Request:**
-   - Click "Send" button
-   - View response below
-
-## JavaScript/Fetch Testing
-
-Use browser console or Node.js to test:
-
-### Basic Fetch
-
-```javascript
-// Simple GET request
-fetch('https://api-demo.bagisto.com/api/shop/locales/1', {
-  method: 'GET',
-  headers: {
-    'Accept': 'application/json'
-  }
-})
-.then(response => response.json())
-.then(data => console.log(data))
-.catch(error => console.error('Error:', error));
-```
-
-### With Authentication
-
-```javascript
-const token = 'YOUR_ACCESS_TOKEN';
-
-fetch('https://api-demo.bagisto.com/api/customer_profiles', {
-  method: 'GET',
-  headers: {
-    'Accept': 'application/json',
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  }
-})
-.then(response => {
-  console.log('Status:', response.status);
-  console.log('Headers:', response.headers);
-  return response.json();
-})
-.then(data => console.log('Data:', data))
-.catch(error => console.error('Error:', error));
-```
-
-### POST Request
-
-```javascript
-const payload = {
-  email: 'customer@example.com',
-  password: 'password123'
-};
-
-fetch('https://api-demo.bagisto.com/api/shop/customers/login', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  },
-  body: JSON.stringify(payload)
-})
-.then(response => response.json())
-.then(data => {
-  console.log('Login Response:', data);
-  // Extract and store token
-  const token = data.access_token;
-  localStorage.setItem('token', token);
-})
-.catch(error => console.error('Error:', error));
-```
-
-### Error Handling
-
-```javascript
-async function testAPI(url, options = {}) {
-  try {
-    const response = await fetch(url, {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        ...options.headers
-      },
-      ...options
-    });
-
-    // Check if response is ok
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`HTTP ${response.status}: ${error.hydra:description || 'Unknown error'}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('API Error:', error.message);
-    return null;
-  }
-}
-
-// Usage
-testAPI('https://api-demo.bagisto.com/api/shop/products')
-  .then(data => console.log(data));
-```
-
-## Browser Network Inspector
-
-Built-in browser tools for API debugging:
-
-### Chrome/Firefox/Edge DevTools
-
-1. **Open DevTools:**
-   - Press `F12` or `Ctrl+Shift+I` (Windows/Linux)
-   - Press `Cmd+Option+I` (Mac)
-
-2. **Go to Network Tab:**
-   - Click "Network" tab
-   - Perform API action in your app
-   - Find the API request in the list
-
-3. **Inspect Request:**
-   - Click on the request
-   - View:
-     - **Headers**: Request headers and cookies
-     - **Request Body**: POST/PATCH data sent
-     - **Response**: JSON response from API
-     - **Cookies**: Authentication tokens
-     - **Timing**: Performance metrics
-
-4. **Copy as cURL:**
-   - Right-click on request
-   - Select "Copy" > "Copy as cURL"
-   - Paste in terminal to reproduce issue
-
-## Debugging Checklist
-
-When an API request fails, check these items:
-
-### ✅ Authentication Issues
-```bash
-# Verify token is valid
-curl -X GET 'https://api-demo.bagisto.com/api/customer_profiles' \
-  -H 'Authorization: Bearer YOUR_TOKEN'
-
-# Check token expiration
-curl -X POST 'https://api-demo.bagisto.com/api/shop/refresh-token' \
-  -H 'Authorization: Bearer YOUR_TOKEN'
-```
-
-### ✅ CORS Issues
-```bash
-# Check if CORS headers are present
-curl -i -X OPTIONS 'https://api-demo.bagisto.com/api/shop/products' \
-  -H 'Origin: https://api-demo.bagisto.com'
-
-# Response should include:
-# Access-Control-Allow-Origin: *
-# Access-Control-Allow-Methods: GET, POST, PATCH, DELETE
-```
-
-### ✅ Content-Type Issues
-```bash
-# Always include Content-Type for POST/PATCH
-curl -X POST 'https://api-demo.bagisto.com/api/shop/customers/login' \
-  -H 'Content-Type: application/json' \
-  -d '{"email":"user@example.com","password":"pass"}'
-```
-
-### ✅ Invalid Payload
-```bash
-# Validate JSON before sending
-echo '{"email":"user@example.com","password":"pass"}' | jq .
-
-# Check for missing required fields
-curl -X POST 'https://api-demo.bagisto.com/api/shop/customers' \
-  -H 'Content-Type: application/json' \
-  -d '{"email":"user@example.com"}' # Missing password
-```
-
-### ✅ Rate Limiting
-```bash
-# Check rate limit headers
-curl -i -X GET 'https://api-demo.bagisto.com/api/shop/products' \
-  -H 'Accept: application/json'
-
-# Response headers:
-# X-RateLimit-Limit: 1000
-# X-RateLimit-Remaining: 999
-# X-RateLimit-Reset: 1702000000
-
-# If limit exceeded: wait until Reset time
-```
-
-### ✅ Timeout Issues
-```bash
-# Increase timeout for slow requests
-curl --max-time 30 -X GET 'https://api-demo.bagisto.com/api/shop/products?itemsPerPage=1000'
-
-# Node.js timeout
-fetch(url, { signal: AbortSignal.timeout(5000) })
-```
-
-## Common Error Responses
-
-### 401 Unauthorized
-```json
-{
-  "@context": "/api/contexts/Error",
-  "@type": "Error",
-  "hydra:title": "Unauthorized",
-  "hydra:description": "Invalid token or missing Authorization header"
-}
-```
-**Solution:** Check token validity, refresh if expired, re-authenticate
-
-### 403 Forbidden
-```json
-{
-  "@context": "/api/contexts/Error",
-  "@type": "Error",
-  "hydra:title": "Forbidden",
-  "hydra:description": "Access denied to this resource"
-}
-```
-**Solution:** User doesn't have permission, check roles and ACL
-
-### 404 Not Found
-```json
-{
-  "@context": "/api/contexts/Error",
-  "@type": "Error",
-  "hydra:title": "Not Found",
-  "hydra:description": "Resource not found"
-}
-```
-**Solution:** Verify endpoint path and resource ID exist
-
-### 422 Unprocessable Entity
-```json
-{
-  "@context": "/api/contexts/ConstraintViolationList",
-  "@type": "ConstraintViolationList",
-  "hydra:title": "Validation Failed",
-  "violations": [
-    {
-      "propertyPath": "email",
-      "message": "This value is not a valid email address."
-    }
-  ]
-}
-```
-**Solution:** Check request payload validation, ensure required fields are present and valid
-
-### 429 Too Many Requests
-```json
-{
-  "@context": "/api/contexts/Error",
-  "@type": "Error",
-  "hydra:title": "Rate Limit Exceeded",
-  "hydra:description": "Too many requests. Try again later."
-}
-```
-**Solution:** Wait for rate limit reset, implement exponential backoff
-
-## REST vs GraphQL Testing
-
-### When to Use REST APIs
-- ✅ Simple CRUD operations (Create, Read, Update, Delete)
-- ✅ Fetching single resources by ID
-- ✅ Standard HTTP operations
-- ✅ File uploads/downloads
-- ✅ Mobile apps with limited bandwidth
-
-### When to Use GraphQL
-- ✅ Complex nested data queries
-- ✅ Multiple resources in single request
-- ✅ Client-defined response structure
-- ✅ Real-time subscriptions
-- ✅ Reducing over-fetching
-
-**Testing both:**
-```bash
-# REST - Get single locale
-curl -X GET 'https://api-demo.bagisto.com/api/shop/locales/1'
-
-# GraphQL - Query with flexibility
-curl -X POST 'https://api-demo.bagisto.com/graphql' \
-  -H 'Content-Type: application/json' \
-  -d '{"query":"{ locale(id:1) { id code name direction } }"}'
-```
-
-## Monitoring API Performance
-
-### Response Time Tracking
-
-```bash
-# Measure endpoint response time
-time curl -s -X GET 'https://api-demo.bagisto.com/api/shop/products?page=1' \
-  -H 'Accept: application/json' | jq . > /dev/null
-
-# Output: real 0m0.234s (234ms)
-```
-
-### Load Testing with Apache Bench
-
-```bash
-# Install: apt-get install apache2-utils
-
-# Test endpoint with 100 requests, 10 concurrent
-ab -n 100 -c 10 'https://api-demo.bagisto.com/api/shop/products'
-```
-
-### Load Testing with wrk
-
-```bash
-# Install: apt-get install wrk or brew install wrk
-
-# Test with 4 threads, 100 connections, 30 second duration
-wrk -t4 -c100 -d30s 'https://api-demo.bagisto.com/api/shop/products'
-```
-
-## Automated Testing with Jest
-
-```javascript
-describe('REST API - Locales', () => {
-  const baseURL = 'https://api-demo.bagisto.com';
-
-  test('GET single locale', async () => {
-    const response = await fetch(`${baseURL}/api/shop/locales/1`);
-    expect(response.status).toBe(200);
-    
-    const data = await response.json();
-    expect(data.id).toBe(1);
-    expect(data).toHaveProperty('code');
-    expect(data).toHaveProperty('name');
-  });
-
-  test('Invalid locale ID returns 404', async () => {
-    const response = await fetch(`${baseURL}/api/shop/locales/9999`);
-    expect(response.status).toBe(404);
-  });
-});
-```
-
-## API Documentation Schema
-
-Access the OpenAPI schema for automated tools:
-
-```
-http://your-domain.com/api/docs.json
-```
-
-This JSON schema can be used with:
-- Swagger/OpenAPI tools
-- API code generators
-- Documentation generators
-- API testing frameworks
-
-## Next Steps
-
-- 🧪 [Run tests](https://github.com/bagisto/bagisto#testing)
-- 📊 [Monitor performance](/api/rest-api/best-practices#performance)
-- 🔒 [Secure your API](/api/rest-api/best-practices#security)
-- 📚 [Explore endpoints](/api/rest-api/shop-resources)
-
-## Resources
-
-- 🌐 [Swagger UI](http://api-demo.bagisto.com/api)
-- 💬 [Community Forum](https://forums.bagisto.com)
-- 🐛 [Report Issues](https://github.com/bagisto/bagisto/issues)
-
-
-
----
-
 # Setup & Configuration
 URL: /api/setup
 
@@ -130117,7 +129321,182 @@ Since the window is hourly, a naive retry loop can burn a long wait. Cache catal
 - [Authentication Guide](./authentication) — Learn about API authentication methods
 - [REST API Guide](./rest-api/introduction.html) — Explore REST API endpoints
 - [GraphQL API Guide](./graphql-api/introduction.html) — Discover GraphQL capabilities
-- [Integration Guides](/api/rest-api/integrations) — Real-world integration examples
+- [Integration Guides](/api/integrations) — Client code for every supported language
+
+
+
+---
+
+# Testing & Debugging
+URL: /api/testing-debugging
+
+# Testing & Debugging
+
+How to exercise the Bagisto API by hand and work out why a call failed. Almost everything here applies to **both transports** — the tools are the same, and only the way each one reports failure differs.
+
+## The one difference that matters
+
+REST puts the verdict in the **HTTP status**. GraphQL answers `200` almost always and puts the verdict in a top-level **`errors` array**.
+
+```json
+{
+  "errors": [
+    { "message": "Cannot query field \"nam\" on type \"Product\"." }
+  ],
+  "data": null
+}
+```
+
+A client — or a test — that checks only `response.ok` will record that as a success. Whatever tool you use below, assert on `errors` for GraphQL and on the status for REST.
+
+## In-browser playgrounds
+
+Both surfaces ship an interactive editor, and they are the fastest way to confirm a payload before writing code.
+
+| Transport | Shop | Admin |
+|---|---|---|
+| REST (Swagger UI) | `/api/shop` | `/api/admin` |
+| GraphQL (GraphiQL) | `/api/graphiql` | `/api/admin/graphiql` |
+
+Full walkthroughs: [REST Playground Guide](/api/rest-api/playground) and [GraphQL Playground Guide](/api/graphql-api/playground).
+
+The machine-readable schemas live alongside them — `/api/shop/docs` and `/api/admin/docs` return OpenAPI JSON, and GraphQL introspection works without any credential. `php artisan bagisto-api-platform:export-schema` writes all four to files for Postman or a code generator without a running server.
+
+## Testing with cURL
+
+The most reliable method for scripts and CI.
+
+```bash
+# REST — public read
+curl -X GET "https://your-domain.com/api/shop/products?per_page=5" \
+  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx"
+
+# REST — authenticated
+curl -X GET "https://your-domain.com/api/shop/customer-addresses" \
+  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
+  -H "Authorization: Bearer 3627|DfkAK11F8qdqtaFVJPvBxlJyNbCSMNl8TFWhWm4G"
+
+# GraphQL — same credentials, one endpoint
+curl -X POST "https://your-domain.com/api/graphql" \
+  -H "Content-Type: application/json" \
+  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
+  -d '{"query":"{ products(first: 2) { edges { node { _id sku name } } } }"}'
+```
+
+Three flags worth knowing: `-i` prints the response headers (where REST reports paging), `-w "\n%{http_code} %{time_total}s\n"` prints the status and duration, and piping to `python3 -m json.tool` pretty-prints the body.
+
+**Capture a token in one step** and reuse it:
+
+```bash
+TOKEN=$(curl -s -X POST "https://your-domain.com/api/shop/customer/login" \
+  -H "Content-Type: application/json" \
+  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
+  -d '{"email":"customer@example.com","password":"your-password"}' \
+  | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
+```
+
+Use `token` from that response, never `apiToken` — the second is a legacy field and is rejected as a Bearer.
+
+## Postman and Insomnia
+
+Rather than building requests by hand, import the OpenAPI spec — you get every endpoint, its parameters, and its body schema in one step:
+
+1. Fetch `https://your-domain.com/api/shop/docs` (or `/api/admin/docs`), or generate the file with `bagisto-api-platform:export-schema`.
+2. Import it — Postman: **Import → File/Link**; Insomnia: **Import From → URL**.
+3. Create an environment with the values you will reuse:
+
+```
+base_url      https://your-domain.com
+storefront_key pk_storefront_xxxxxxxxxxxxx
+token          <the token from login>
+```
+
+4. Set the collection-level headers to `X-STOREFRONT-KEY: {{storefront_key}}` and `Authorization: Bearer {{token}}` so every request inherits them.
+
+For GraphQL, point a POST request at `{{base_url}}/api/graphql` and use the client's GraphQL body mode — both Postman and Insomnia will pull the schema for autocomplete once the storefront key header is set.
+
+## Browser DevTools
+
+For a storefront or admin app you are building, the Network tab answers most questions faster than any client:
+
+- **Filter by Fetch/XHR** and select the failing call.
+- **Headers** — confirm `X-STOREFRONT-KEY` and `Authorization` actually left the browser. A missing header is the single most common cause of a `401`.
+- **Response** — for GraphQL, look for `errors` even on a green `200` row.
+- **Timing** — separates a slow server from a slow render.
+- **Copy → Copy as cURL** reproduces the exact request in a terminal, which is the quickest way to hand a bug to someone else.
+
+## Debugging checklist
+
+**`401` on every request**
+
+- REST body says `missing_key` — the `X-STOREFRONT-KEY` header never arrived. Check the spelling: hyphens, and `KEY` not `API`.
+- Body mentions a token — the Bearer is wrong, expired, or is `apiToken` instead of `token`.
+- Admin routes take the Integration token **only**; sending a storefront key there changes nothing.
+
+**`403`**
+
+- `invalid_key` — the storefront key exists but is deactivated, expired, or blocked by its IP allowlist.
+- Otherwise it is permissions: an admin token missing an ACL key, or a customer touching another customer's record.
+
+**`422`**
+
+The request reached the endpoint and was rejected. Read the field errors; they name the exact input.
+
+**`429`**
+
+Rate limited. `retry_after` is in seconds, and for a storefront key the window is an **hour** — see [Rate Limiting](/api/rate-limiting).
+
+**GraphQL `Cannot query field …`**
+
+The field does not exist on that type. Check the Docs panel in GraphiQL rather than guessing; validation happens before execution, so nothing ran.
+
+**Empty or `null` fields with no error**
+
+Usually the wrong identifier form. GraphQL nodes expose both `id` (an IRI string) and `_id` (numeric) — see [Identifiers](/api/graphql-api/identifiers).
+
+**Slow whole-spec pages**
+
+If `/api/shop`, `/api/admin`, or GraphQL introspection hangs, check `APP_DEBUG`. With it on, metadata is held in a per-request cache and the whole-spec pages rebuild every resource on each load, which can exceed the request limit. Individual endpoints are unaffected in either mode. Set `APP_DEBUG=false` and reload.
+
+## Measuring performance
+
+```bash
+# Single request timing
+curl -o /dev/null -s -w "status %{http_code}  total %{time_total}s  ttfb %{time_starttransfer}s\n" \
+  "https://your-domain.com/api/shop/products" \
+  -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx"
+
+# Sustained load — mind the rate limit before you run this
+ab -n 100 -c 10 -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
+  "https://your-domain.com/api/shop/products"
+```
+
+Two things to control for. Load-testing a rate-limited key measures the limiter, not the API — use an unlimited key or stay under the cap. And run `php artisan bagisto-api-platform:optimize` first: on a store whose route and metadata caches were just cleared, the first requests pay a rebuild that is not representative.
+
+## Writing automated tests
+
+Whatever the framework, the assertions differ by transport:
+
+```javascript
+// REST — assert the status, then the body
+const res = await fetch(`${BASE}/api/shop/products`, { headers });
+expect(res.status).toBe(200);
+
+// GraphQL — a 200 is not a pass
+const res = await fetch(`${BASE}/api/graphql`, { method: 'POST', headers, body });
+const json = await res.json();
+expect(json.errors).toBeUndefined();
+expect(json.data.products.edges.length).toBeGreaterThan(0);
+```
+
+Point tests at a store you can reset. Several endpoints write real records — registration, contact-us, newsletter, and cart creation all succeed with nothing but a storefront key — so a suite run against production leaves data behind.
+
+## Related Documentation
+
+- [Status Codes](/api/errors) — every status and error-body shape
+- [Authentication](/api/authentication) — which credential each surface needs
+- [Rate Limiting](/api/rate-limiting) — limits, headers, and back-off
+- [Integration Guides](/api/integrations) — client code for your language
 
 
 

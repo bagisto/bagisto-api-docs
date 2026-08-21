@@ -6,7 +6,13 @@ Language and framework examples for the Bagisto **GraphQL** API. Every example t
 - **Required on every request:** `Content-Type: application/json` and `X-STOREFRONT-KEY: <your key>`.
 - **Customer operations** additionally send `Authorization: Bearer <token>` — the `token` from login (not `apiToken`). See [Authentication](/api/graphql-api/authentication).
 
-Field notes used below: the product list is `products(first: N)` (channel comes from the `X-CHANNEL` header, not a query argument — see [Pagination](/api/pagination)); the profile query is `readCustomerProfile { customer { … } }`; login is `createCustomerLogin`. On action mutations select **result fields**, not `id` — see [Identifiers](/api/graphql-api/identifiers).
+Three shapes are worth knowing before you copy an example:
+
+- **The product list is a connection.** `products(first: N)` selects through `edges { node { … } }`, and pages with `after: <endCursor>` — see [Pagination](/api/pagination). It accepts `channel` and `locale` arguments, or you can set them once per request with the `X-CHANNEL` / `X-LOCALE` headers.
+- **`readCustomerProfile` returns the customer's fields directly** — there is no `customer { … }` wrapper to select through.
+- **`product(id:)` takes an `ID`, not an `Int`.** Declare the variable `$id: ID!`; an `Int!` variable is rejected before the query runs.
+
+Login is `createCustomerLogin`. On action mutations select **result fields**, not `id` — see [Identifiers](/api/graphql-api/identifiers).
 
 ## JavaScript / Node.js
 
@@ -65,12 +71,16 @@ async function getCustomerProfile(token) {
   const query = `
     query {
       readCustomerProfile {
-        customer { id firstName lastName email }
+        _id
+        firstName
+        lastName
+        email
+        phone
       }
     }
   `;
   const data = await gql(query, {}, token);
-  return data.readCustomerProfile.customer;
+  return data.readCustomerProfile;
 }
 ```
 
@@ -124,12 +134,12 @@ const client = new GraphQLClient('https://your-domain.com/api/graphql', {
 });
 
 const query = gql`
-  query GetProduct($id: Int!) {
-    product(id: $id) { id name sku }
+  query GetProduct($id: ID!) {
+    product(id: $id) { id _id name sku }
   }
 `;
 
-const data = await client.request(query, { id: 1 });
+const data = await client.request(query, { id: '1' });
 ```
 
 ### Next.js
@@ -203,10 +213,10 @@ def login(email, password):
 def get_customer_profile(token):
     query = """
     query {
-      readCustomerProfile { customer { id firstName lastName email } }
+      readCustomerProfile { _id firstName lastName email phone }
     }
     """
-    return gql(query, token=token)["readCustomerProfile"]["customer"]
+    return gql(query, token=token)["readCustomerProfile"]
 ```
 
 ### Using gql
@@ -528,7 +538,7 @@ curl -X POST https://your-domain.com/api/graphql \
   -H "Content-Type: application/json" \
   -H "X-STOREFRONT-KEY: pk_storefront_xxxxxxxxxxxxx" \
   -H "Authorization: Bearer YOUR_TOKEN" \
-  -d '{"query":"query { readCustomerProfile { customer { id firstName email } } }"}'
+  -d '{"query":"query { readCustomerProfile { _id firstName lastName email } }"}'
 ```
 
 ## Best practices
@@ -542,6 +552,7 @@ curl -X POST https://your-domain.com/api/graphql \
 
 ## Related Documentation
 
+- [Integration Guides (REST)](/api/rest-api/integrations) — the same languages against `/api/shop/*`
 - [Authentication](/api/graphql-api/authentication)
 - [Status Codes](/api/errors)
 - [Pagination](/api/pagination)

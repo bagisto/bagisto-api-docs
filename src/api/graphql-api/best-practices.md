@@ -708,4 +708,4 @@ type Product {
 - 🔐 [Authentication](/api/graphql-api/authentication)
 - 🛍️ [Shop API](/api/graphql-api/shop-api)
 - 👨‍💼 [Admin API](/api/graphql-api/admin-api)
-- 💻 [Integration Guides](/api/graphql-api/integrations)
+- 💻 [Integration Guides (GraphQL)](/api/graphql-api/integrations)

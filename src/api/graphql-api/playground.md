@@ -1,55 +1,70 @@
 # Interactive Playground Guide
 
-Test and explore the Bagisto GraphQL API using our interactive playgrounds. No authentication required to explore the schema!
+Bagisto ships a **GraphiQL** playground — an in-browser editor with schema autocomplete, inline docs, and a run button. It is the fastest way to shape a query before you write any client code.
 
-## GraphiQL Playground
+## Two playgrounds, one per surface
 
-The primary interactive query editor for testing GraphQL queries and mutations.
+The shop and admin schemas are served from different endpoints, so each has its own playground. A query written in one will not run in the other.
 
-### Access the Playground
+| Playground | URL | Schema |
+|---|---|---|
+| Shop | `https://your-domain.com/api/graphiql` | Catalog, cart, checkout, customer account |
+| Admin | `https://your-domain.com/api/admin/graphiql` | Orders, catalog management, customers, settings |
 
-Visit one of these URLs:
+On the public demo the shop playground is at `https://api-demo.bagisto.com/api/graphiql`.
 
-🌐 **Live Demo:**
-```
-https://api-demo.bagisto.com/api/graphiql
-```
+## Exploring costs nothing, running needs a key
 
-**Local Development:**
-```
-https://your-local-domain.com/api/graphiql
-```
+Schema introspection is deliberately exempt from the storefront-key check, so the **Docs** panel, autocomplete, and type search all work the moment the page loads, with no credentials.
 
-### Features
+Running an actual query is different. Without `X-STOREFRONT-KEY` the response is:
 
-✅ **Auto-complete** - Full schema introspection with code completion
-✅ **Documentation** - Built-in schema documentation explorer
-✅ **Query History** - Access your previous queries
-✅ **Variables** - Test with different variable values
-✅ **Query Prettifier** - Auto-format your queries
-✅ **Error Highlighting** - Real-time validation
-
-### Interface Overview
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│ GraphiQL Playground                                             │
-├──────────────────┬──────────────────────┬──────────────────────┤
-│                  │                      │                      │
-│  QUERY EDITOR    │   VARIABLES PANEL    │  RESULT / DOCS       │
-│                  │                      │                      │
-│  • Write queries │  • Set variables     │  • View responses    │
-│  • Auto-complete │  • Format JSON       │  • See errors        │
-│  • Shortcuts     │  • Validation        │  • Browse schema     │
-│                  │                      │                      │
-└──────────────────┴──────────────────────┴──────────────────────┘
+```json
+{
+  "message": "X-STOREFRONT-KEY header is required for this operation",
+  "error": "missing_key",
+  "header_name": "X-STOREFRONT-KEY",
+  "key_type": "shop"
+}
 ```
 
-## Quick Start Queries
+So you can browse the whole schema before you have a key, but the first query you run needs one.
 
-Copy-paste these queries directly into GraphiQL:
+## Authenticating inside the playground
 
-### 1. Get Products
+The bar above the editor manages credentials for you, and the state it shows tells you which identity the next request will use.
+
+- **Customer** — paste the `token` returned by `createCustomerLogin`. Everything customer-scoped (profile, orders, wishlist) then resolves.
+- **Guest cart** — paste the `cartToken` returned by `createCartToken` to act as a guest shopper through cart and checkout.
+- **Manual entry** — for any other Bearer value, including an admin Integration token on the admin playground.
+
+When both a customer token and a guest cart token are stored, **the customer token wins** — clear it if you want to test the guest path. Tokens are encrypted before being stored in the browser, and **Clear** removes them.
+
+The storefront key is only injected automatically when the store sets `API_PLAYGROUND_AUTO_INJECT_STOREFRONT_KEY=true`; it is off by default. When it is off, add the key yourself in the **Headers** panel at the bottom of the editor:
+
+```json
+{
+  "X-STOREFRONT-KEY": "pk_storefront_xxxxxxxxxxxxx"
+}
+```
+
+### Headers you can set
+
+| Header | Purpose |
+|---|---|
+| `X-STOREFRONT-KEY` | Required on every shop operation |
+| `Authorization` | `Bearer <token>` — customer token or guest cart token |
+| `X-LOCALE` | Return content in a specific locale, e.g. `fr` |
+| `X-CHANNEL` | Use a specific sales channel, e.g. `default` |
+| `X-CURRENCY` | Return pricing in a specific currency, e.g. `EUR` |
+
+A locale, channel, or currency the store does not have is not an error — the API falls back to the default silently, so content in the wrong language means the value was never applied.
+
+## Starter queries
+
+Paste any of these into the editor and run them.
+
+### List products
 
 ```graphql
 query GetProducts {
@@ -61,6 +76,7 @@ query GetProducts {
     edges {
       node {
         id
+        _id
         name
         sku
         price
@@ -71,25 +87,21 @@ query GetProducts {
 }
 ```
 
-**Test it:**
-1. Open https://api-demo.bagisto.com/api/graphiql
-2. Paste the query above
-3. Click **Play** button (▶)
-4. See results on the right
+Collections are Relay connections, so results always come back through `edges { node { … } }`. Page forward by passing the previous `endCursor` as `after`.
 
-### 2. Search Products
+### Search products
+
+Text search is the `query` argument — there is no `search` argument on `products`.
 
 ```graphql
-query SearchProducts($search: String!) {
-  products(channel: "default", search: $search, first: 20) {
+query SearchProducts($q: String!) {
+  products(query: $q, first: 20) {
     edges {
       node {
-        id
+        _id
         name
+        sku
         price
-        productFlat {
-          url
-        }
       }
     }
   }
@@ -99,52 +111,25 @@ query SearchProducts($search: String!) {
 **Variables:**
 ```json
 {
-  "search": "laptop"
+  "q": "skirt"
 }
 ```
 
-### 3. Get Product Details
+### Fetch one product
+
+`product(id:)` takes an `ID`, so declare the variable `ID!` — an `Int!` variable is rejected before the query runs. The same query also accepts `sku:` or `urlKey:` instead of `id:`.
 
 ```graphql
-query GetProduct($id: String!) {
+query GetProduct($id: ID!) {
   product(id: $id) {
     id
+    _id
     name
     sku
-    type
-    description
     price
-    weight
     status
-    images {
-      edges {
-        node {
-          id
-          url
-          alt
-        }
-      }
-    }
-    attributes {
-      edges {
-        node {
-          code
-          label
-          value
-        }
-      }
-    }
-    reviews(first: 5) {
-      edges {
-        node {
-          id
-          rating
-          title
-          comment
-          customerName
-        }
-      }
-    }
+    urlKey
+    description
   }
 }
 ```
@@ -156,7 +141,7 @@ query GetProduct($id: String!) {
 }
 ```
 
-### 4. Get Categories
+### Category tree
 
 ```graphql
 query GetCategories {
@@ -174,17 +159,6 @@ query GetCategories {
             name
             slug
           }
-          children {
-            edges {
-              node {
-                id
-                translation {
-                  name
-                  slug
-                }
-              }
-            }
-          }
         }
       }
     }
@@ -192,73 +166,32 @@ query GetCategories {
 }
 ```
 
-### 5. Create Guest Cart
+### Create a guest cart
 
 ```graphql
 mutation CreateGuestCart {
   createCartToken(input: {}) {
-    cartToken
-  }
-}
-```
-
-**After running:**
-1. Copy the `cartToken` value
-2. Store for later use in cart operations
-
-### 6. Add to Cart (Guest)
-
-```graphql
-mutation AddToCart($cartId: String!, $productId: String!) {
-  addProductsToCart(input: {
-    cartId: $cartId
-    items: [
-      { productId: $productId, quantity: 1 }
-    ]
-  }) {
-    cart {
-      id
+    cartToken {
+      cartToken
+      _id
       itemsCount
       grandTotal
-      items {
-        edges {
-          node {
-            id
-            product {
-              name
-              price
-            }
-            quantity
-          }
-        }
-      }
     }
   }
 }
 ```
 
-**Variables:**
-```json
-{
-  "cartId": "replace-with-your-cart-id",
-  "productId": "1"
-}
-```
+The outer `cartToken` is the payload wrapper and the inner one is the token string — paste that string into the playground's guest-cart slot to continue as that shopper.
 
-### 7. Customer Login
+### Customer login
 
 ```graphql
 mutation LoginCustomer($email: String!, $password: String!) {
-  createLogin(input: {
-    email: $email
-    password: $password
-  }) {
-    accessToken
-    customer {
-      id
-      firstName
-      lastName
-      email
+  createCustomerLogin(input: { email: $email, password: $password }) {
+    customerLogin {
+      token
+      success
+      message
     }
   }
 }
@@ -268,459 +201,70 @@ mutation LoginCustomer($email: String!, $password: String!) {
 ```json
 {
   "email": "customer@example.com",
-  "password": "password123"
+  "password": "your-password"
 }
 ```
 
-**After running:**
-1. Copy the `token` value
-2. Add to request headers (see below)
+The Bearer is `token`. The response also carries `apiToken`, which is a legacy field and is **not** accepted for authentication.
 
-### 8. Get Customer Profile (Requires Auth)
+### Customer profile (needs the customer token)
+
+The profile fields come back directly — there is no `customer { … }` wrapper to select through.
 
 ```graphql
 query GetProfile {
-  customer {
-    id
+  readCustomerProfile {
+    _id
     firstName
     lastName
     email
-    createdAt
-    addresses {
-      edges {
-        node {
-          id
-          firstName
-          lastName
-          address
-          city
-          state
-          country
-          zipCode
-          defaultBilling
-          defaultShipping
-        }
-      }
-    }
+    phone
+    gender
+    dateOfBirth
   }
 }
 ```
 
-**Headers:**
-```json
-{
-  "Authorization": "Bearer YOUR_ACCESS_TOKEN"
-}
-```
+## Finding everything else
 
-### 9. Get Customer Orders
+The starter set above is a fraction of the schema. Two ways to find the rest:
 
-```graphql
-query GetOrders {
-  customerOrders(first: 20) {
-    edges {
-      node {
-        id
-        incrementId
-        status
-        grandTotal
-        createdAt
-        items {
-          edges {
-            node {
-              productName
-              quantity
-              price
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
+- **The Docs panel** in the playground — search a type or field name and follow the arguments and return types. It is always accurate, because it is generated from the running server.
+- **[The Shop API reference](/api/graphql-api/shop-api)** — the same operations with request bodies, response payloads, and error cases documented per endpoint. For an ordered call sequence (cart → checkout → order), follow the [Workflows](/api/workflows/shop/).
 
-### 10. Create Product Review
+## Reading errors
 
-```graphql
-mutation CreateReview($productId: String!, $title: String!, $rating: Int!, $comment: String!, $name: String!, $email: String!) {
-  createReview(input: {
-    productId: $productId
-    title: $title
-    rating: $rating
-    comment: $comment
-    name: $name
-    email: $email
-  }) {
-    review {
-      id
-      title
-      rating
-      comment
-      status
-      createdAt
-    }
-  }
-}
-```
+GraphQL answers with HTTP `200` even when the operation fails, so always inspect the top-level `errors` array rather than the status code.
 
-**Variables:**
-```json
-{
-  "productId": "1",
-  "title": "Excellent Product",
-  "rating": 5,
-  "comment": "Great quality and fast shipping!",
-  "name": "John Doe",
-  "email": "john@example.com"
-}
-```
+| Message | What it means |
+|---|---|
+| `Cannot query field "x" on type "Y"` | The field does not exist — check the Docs panel for the real name |
+| `Unknown argument "x" on field "y"` | The argument does not exist on that field |
+| `Variable "$x" of type "Int!" used in position expecting type "ID"` | The variable's declared type does not match the argument |
+| `Field "x" of type "Y" must have a sub selection` | The field returns an object; select fields inside it |
+| `X-STOREFRONT-KEY header is required for this operation` | Add the key in the Headers panel |
+| `Unauthenticated. Please login to perform this action` | The operation needs a customer or cart token in the auth bar |
 
-## Using Variables in Queries
+The first four are caught before the server executes anything, which is why a bad field name never partially runs.
 
-Variables make queries reusable and flexible.
-
-### Example: Filter Products with Variables
-
-**Query:**
-```graphql
-query GetFilteredProducts(
-  $channel: String!
-  $first: Int!
-  $search: String
-  $category: Int
-) {
-  products(
-    channel: $channel
-    first: $first
-    search: $search
-    categoryId: $category
-  ) {
-    edges {
-      node {
-        id
-        name
-        price
-      }
-    }
-  }
-}
-```
-
-**Variables:**
-```json
-{
-  "channel": "default",
-  "first": 20,
-  "search": "laptop",
-  "category": 2
-}
-```
-
-## Headers for Authentication
-
-### Setting Headers in GraphiQL
-
-1. Click **HTTP Headers** at the bottom
-2. Add headers as JSON:
-
-```json
-{
-  "Authorization": "Bearer YOUR_ACCESS_TOKEN",
-  "Content-Type": "application/json",
-  "Accept-Language": "en_US"
-}
-```
-
-### Common Headers
-
-| Header | Purpose | Example |
-|--------|---------|---------|
-| `Authorization` | Customer/Admin token | `Bearer eyJhbGc...` |
-| `X-Cart-Token` | Guest cart token | `550e8400-e29b...` |
-| `Content-Type` | Request format | `application/json` |
-| `Accept-Language` | Locale | `en_US` or `fr_FR` |
-
-## Schema Explorer
-
-GraphiQL includes a powerful schema browser on the right sidebar.
-
-### How to Use
-
-1. Click **Docs** tab (top right)
-2. Search for a type, query, or mutation
-3. Click to view details
-4. See field documentation and arguments
-
-### Common Query Types to Explore
-
-- **Query** - Read operations
-  - `products` - Get products
-  - `customer` - Get customer profile
-  - `cart` - Get cart details
-
-- **Mutation** - Write operations
-  - `createLogin` - Customer login
-  - `addProductsToCart` - Add to cart
-  - `createOrder` - Create order
-
-## Troubleshooting Common Issues
-
-### Query Returns `null`
-
-**Problem:**
-```graphql
-query {
-  product(id: "999") {
-    name
-  }
-}
-
-# Returns: { "data": { "product": null } }
-```
-
-**Solution:**
-- Check the ID exists
-- Verify correct ID format
-- Check status/channel filters
-
-### Authentication Error
-
-**Problem:**
-```json
-{
-  "errors": [
-    {
-      "message": "Unauthenticated"
-    }
-  ]
-}
-```
-
-**Solution:**
-1. Get valid token via `createLogin` mutation
-2. Add token to headers
-3. Verify token hasn't expired
-
-### Validation Error
-
-**Problem:**
-```json
-{
-  "errors": [
-    {
-      "extensions": {
-        "validation": {
-          "email": ["The email field is invalid"]
-        }
-      }
-    }
-  ]
-}
-```
-
-**Solution:**
-- Check input format
-- Verify all required fields provided
-- See error details in extensions
-
-### Rate Limit Error
-
-**Problem:**
-```json
-{
-  "errors": [
-    {
-      "message": "Too many requests"
-    }
-  ]
-}
-```
-
-**Solution:**
-- Wait before making new requests
-- Reduce request frequency
-- Implement exponential backoff
-
-## Exporting Queries
-
-### Copy cURL Command
-
-1. Right-click query result
-2. Select "Copy as cURL"
-3. Use in terminal:
-
-```bash
-curl 'https://your-domain.com/api/graphql' \
-  -H 'content-type: application/json' \
-  --data-raw '{"query":"query { ... }"}'
-```
-
-### Export to Postman
-
-1. Get query text
-2. Create Postman request with:
-   - **Method:** POST
-   - **URL:** `https://your-domain.com/api/graphql`
-   - **Body:** GraphQL query
-
-## Performance Tips
-
-### Write Efficient Queries
-
-**❌ Slow - Too many fields:**
-```graphql
-query {
-  products(first: 1000) {
-    edges {
-      node {
-        id
-        name
-        description
-        attributes {
-          edges {
-            node { id code value }
-          }
-        }
-        # ... 20+ more fields
-      }
-    }
-  }
-}
-```
-
-**✅ Fast - Only needed fields:**
-```graphql
-query {
-  products(first: 20) {
-    edges {
-      node {
-        id
-        name
-        price
-      }
-    }
-  }
-}
-```
-
-### Use Pagination
-
-Always use pagination with `first` or `last`:
-
-```graphql
-query {
-  products(first: 20, after: "cursor") {
-    pageInfo {
-      hasNextPage
-      endCursor
-    }
-    edges {
-      node { id name }
-    }
-  }
-}
-```
-
-## Keyboard Shortcuts
+## Keyboard shortcuts
 
 | Shortcut | Action |
 |----------|--------|
-| `Ctrl+Enter` / `Cmd+Enter` | Execute query |
-| `Ctrl+Shift+P` | Prettify query |
-| `Ctrl+Space` | Auto-complete |
-| `Ctrl+F` | Find in query |
+| `Ctrl+Enter` / `Cmd+Enter` | Run the current operation |
+| `Ctrl+Space` | Trigger autocomplete |
+| `Shift+Ctrl+P` | Prettify the query |
 
-## External Resources
+## Writing queries that stay fast
 
-### Postman Collection
+- **Select only what you render.** The point of GraphQL is that a screen fetches its own field set — asking for every field on every node gives away the advantage.
+- **Always paginate.** Collections take `first` (or `last`); page with `after: <endCursor>` until `pageInfo.hasNextPage` is false. See [Pagination](/api/pagination).
+- **Use variables, not string interpolation.** They are validated against the schema and keep the query text stable for client-side caching.
+- **Store `_id`, pass `id` back.** Nodes carry both — the numeric `_id` is what belongs in your database and in REST URLs. See [Identifiers](/api/graphql-api/identifiers).
 
-Download the full Postman collection with pre-built requests:
+## Related Documentation
 
-📥 [Download Bagisto GraphQL Postman Collection](../../Bagisto%20Graphql%20API%20Platform.postman_collection.json)
-
-**Steps:**
-1. Download collection file
-2. Import into Postman
-3. Set environment variables
-4. Execute pre-built requests
-
-## Real-World Examples
-
-### Complete Checkout Flow
-
-1. **Create Cart**
-```graphql
-mutation {
-  createCartToken(input: {}) {
-    cartToken
-  }
-}
-```
-
-2. **Add Product**
-```graphql
-mutation {
-  addProductsToCart(input: {
-    cartId: "CART_ID_FROM_STEP_1"
-    items: [{ productId: "1", quantity: 2 }]
-  }) {
-    cart { id }
-  }
-}
-```
-
-3. **Estimate Shipping**
-```graphql
-mutation {
-  estimateShipping(input: {
-    cartId: "CART_ID"
-    country: "US"
-    state: "CA"
-    zipCode: "90210"
-  }) {
-    shippingMethods {
-      edges {
-        node { code title price }
-      }
-    }
-  }
-}
-```
-
-4. **Create Order**
-```graphql
-mutation {
-  createGuestOrder(input: {
-    cartId: "CART_ID"
-    billingAddress: {
-      firstName: "John"
-      lastName: "Doe"
-      email: "john@example.com"
-      address: "123 Main St"
-      city: "New York"
-      country: "US"
-      state: "NY"
-      zipCode: "10001"
-    }
-    shippingMethod: "flatrate_flatrate"
-    paymentMethod: "paypal"
-  }) {
-    order { id incrementId }
-  }
-}
-```
-
----
-
-**Get Started:**
-1. 🌐 Open [GraphiQL Playground](https://api-demo.bagisto.com/api/graphiql)
-2. 📋 Try one of the queries above
-3. 💡 Explore the schema using Docs
-4. 🚀 Build your application!
-
-**Need Help?**
-- 📚 [Authentication Guide](/api/graphql-api/authentication)
-- 🛍️ [Shop API Reference](/api/graphql-api/shop-api)
-- 💻 [Integration Guides](/api/graphql-api/integrations)
-- 💬 [Community Forum](https://forums.bagisto.com)
+- [Authentication](/api/graphql-api/authentication) — the credential model
+- [Shop API Reference](/api/graphql-api/shop-api) — every shop operation
+- [Integration Guides](/api/integrations) — client code once the query works
+- [Identifiers (`id` vs `_id`)](/api/graphql-api/identifiers)

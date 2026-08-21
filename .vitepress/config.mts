@@ -144,6 +144,8 @@ export default defineConfig(({ command, mode }) => {
               { text: 'Status Codes', link: '/api/errors' },
               { text: 'Pagination', link: '/api/pagination' },
               { text: 'Sorting', link: '/api/sorting' },
+              { text: 'Integration Guides', link: '/api/integrations' },
+              { text: 'Testing & Debugging', link: '/api/testing-debugging' },
             ],
           },
           {
@@ -1371,7 +1373,6 @@ export default defineConfig(({ command, mode }) => {
               { text: 'Identifiers (id, _id, IRI)', link: '/api/graphql-api/identifiers' },
               { text: 'Playground Guide', link: '/api/graphql-api/playground' },
               { text: 'Best Practices', link: '/api/graphql-api/best-practices' },
-              { text: 'Integration Guides', link: '/api/graphql-api/integrations' },
             ]
           },
           { 
@@ -1380,7 +1381,6 @@ export default defineConfig(({ command, mode }) => {
             items: [
               { text: 'Introduction', link: '/api/rest-api/introduction' },
               { text: 'Authentication', link: '/api/rest-api/authentication' },
-              { text: 'Integration Guides', link: '/api/rest-api/integrations' },
 
               {
                 text: 'Shop API',
@@ -2349,7 +2349,7 @@ export default defineConfig(({ command, mode }) => {
                   }
                 ]
               },
-              { text: 'Testing & Debugging', link: '/api/rest-api/testing-debugging' },
+              { text: 'Playground Guide', link: '/api/rest-api/playground' },
               { text: 'Best Practices', link: '/api/rest-api/best-practices' },
             ]
           },

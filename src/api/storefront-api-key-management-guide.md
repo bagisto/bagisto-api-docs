@@ -580,4 +580,4 @@ Since the window is hourly, a naive retry loop can burn a long wait. Cache catal
 - [Authentication Guide](./authentication) — Learn about API authentication methods
 - [REST API Guide](./rest-api/introduction.html) — Explore REST API endpoints
 - [GraphQL API Guide](./graphql-api/introduction.html) — Discover GraphQL capabilities
-- [Integration Guides](/api/rest-api/integrations) — Real-world integration examples
+- [Integration Guides](/api/integrations) — Client code for every supported language

@@ -39,7 +39,7 @@ features:
     icon: 🔑
     link: /api/storefront-api-key-management-guide
   - title: Integration Guides
-    details: Best practices, real-world examples, and step-by-step guides for integrating Bagisto APIs into your application architecture.
+    details: Ready-to-paste client code for JavaScript, Python, PHP, Ruby, Go, Java, and cURL — REST and GraphQL both, each already sending the right headers, with login and an authenticated call wired up.
     icon: 📚
     link: /api/integrations
 ---
