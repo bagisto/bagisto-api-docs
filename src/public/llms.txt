@@ -27,6 +27,15 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Agent Skills](/api/build-with-ai/agent-skills): The [`bagisto/agent-skills`](https://github.com/bagisto/agent-skills) repository packages Bagisto's build-rules as installable **agent skills** —…
 - [MCP Server](/api/build-with-ai/mcp-server): Run from inside the cloned repo so $(pwd) fills the absolute path. Verify shows the server connected.
 
+## For Developers
+
+- [For Developers](/api/for-developers): Everything so far describes the API as a consumer sees it. This section is the other side: **how to add your own endpoints to it** from your own Bagisto…
+- [Build an Endpoint](/api/for-developers/build-an-endpoint): One resource class declares the endpoint on both transports; one provider fetches the data. This page builds a read endpoint end to end — a single product…
+- [Conventions](/api/for-developers/conventions): The rules your endpoints must follow to behave like the rest of the API — and the mistakes that cost the most time to diagnose.
+- [Register Your Package](/api/for-developers/register-your-package): The host discovers your endpoints from two things: a **directory** it scans for `#[ApiResource]` classes, and **tagged bindings** for the classes that serve…
+- [Test & Ship](/api/for-developers/test-and-ship): An endpoint is not done when it returns data in Postman. It is done when both transports are covered by tests and integrators can discover it.
+- [Write Endpoints](/api/for-developers/write-endpoints): A write takes an **input DTO**, runs through a **processor**, and returns a result. The same processor serves the REST `Post` and the GraphQL mutation.
+
 ## GraphQL API
 
 - [Admin API Reference](/api/graphql-api/admin-api): The Bagisto Admin API provides comprehensive administrative endpoints for managing your e-commerce platform. All Admin API operations require authenticated…
@@ -747,6 +756,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Set Checkout Address](/api/graphql-api/shop/mutations/set-billing-address): Set the billing address and use it as the shipping address too by setting useForShipping to true.
 - [Set Payment Method](/api/graphql-api/shop/mutations/set-payment-method): Set the payment method for a cart.
 - [Set Shipping Method](/api/graphql-api/shop/mutations/set-shipping-method): Set the shipping method for a checkout.
+- [Social Login](/api/graphql-api/shop/mutations/social-login): Sign in (or sign up) with a Google ID token from Google Identity Services (web) or the Google SDK (mobile).
 - [Toggle Wishlist Item](/api/graphql-api/shop/mutations/toggle-wishlist): Toggle a product in the wishlist. If the product is not in the wishlist, it gets added.
 - [Update Cart Item](/api/graphql-api/shop/mutations/update-cart-item): Modify the quantity of an item in the shopping cart.
 - [Update Customer Address](/api/graphql-api/shop/mutations/update-customer-address): Update an existing customer address.
@@ -1515,6 +1525,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Forgot Password](/api/rest-api/shop/customers/forgot-password): Request a password reset email.
 - [Get Customer Addresses](/api/rest-api/shop/customers/get-customer-addresses): Retrieve all saved addresses for the authenticated customer.
 - [Get Customer Profile](/api/rest-api/shop/customers/get-customer-profile): Retrieve the authenticated customer's profile information.
+- [Social Login](/api/rest-api/shop/customers/social-login): Sign in (or sign up) with a Google ID token obtained from Google Identity Services (web) or the Google SDK (mobile).
 - [Update Customer Address](/api/rest-api/shop/customers/update-customer-address): Update an existing customer address.
 - [Update Customer Profile](/api/rest-api/shop/customers/update-customer-profile): Update the authenticated customer's profile information.
 
