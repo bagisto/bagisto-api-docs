@@ -47,11 +47,7 @@ examples:
 
 Removes one customer-group (tier) price row from a product. This is a parent-scoped mutation — pass the product as the `productId` argument and the row IRI as `input.id`. The row must belong to the named product. The mutation echoes a snapshot of the row as it was just before deletion — select `_id` (not `id`, since this is a parent-scoped resource with no standalone route).
 
-::: tip
 See the [Products overview](/api/graphql-api/admin/catalog/products/) for how the catalog product menu fits together.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
 
 ## Input
 

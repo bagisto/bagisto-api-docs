@@ -59,5 +59,3 @@ the detail.
 **Relations.** Campaigns draw on **Email Templates** (the body), **Events** (the
 optional date anchor), and **Newsletter Subscribers** (the audience — a send
 reaches the subscribed members of the chosen customer group).
-
-All Campaigns operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

@@ -19,13 +19,11 @@ Removes a customer group. Returns a confirmation message.
 |----------|--------|
 | `/api/admin/customers/groups/{id}` | DELETE |
 
-::: warning Two delete guards (HTTP 400)
+### Two delete guards (HTTP 400)
+
 - **System group** — refuses if `is_user_defined=0`.
 - **In use** — refuses if `customers().count() > 0`.
-:::
 
 Permission: `customers.groups.delete`.
 
-::: tip
 For the system-group and in-use delete rules, see the [Customer Groups overview](./index.md).
-:::

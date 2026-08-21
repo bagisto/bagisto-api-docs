@@ -53,8 +53,4 @@ Returns every customer-group (tier) price attached to a product as a plain list 
 
 The `productId` argument is the parent product.
 
-::: tip
 See the [Products overview](/api/graphql-api/admin/catalog/products/) for how the catalog product menu fits together.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

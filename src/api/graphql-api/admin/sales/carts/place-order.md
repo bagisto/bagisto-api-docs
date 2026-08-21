@@ -46,16 +46,14 @@ Finalises a fully prepared draft cart into a real order — the same flow as the
 admin Create-Order screen's place-order step. Items, addresses, shipping and
 payment must already be set on the draft cart.
 
-::: warning Select result fields, not `id`
+### Select result fields, not `id`
+
 Select `orderId` (the new order's id), `incrementId`, `customerId`, `grandTotal`,
 `success`, `message`. Do **not** select `id` (or `_id`): this is an action result
 with no addressable record, so the auto-generated IRI field is `null` and
 selecting it errors out the whole payload.
-:::
 
-::: tip Prerequisites
-The example uses an illustrative cart id. Admin cart endpoints only operate on **draft carts** (`is_active=0`) — storefront carts are rejected. Create a draft cart first with the [`createAdminDraftCart`](../../customers/create-draft-cart.md) mutation and use the returned `cartId`.
-:::
+**Prerequisites** — The example uses an illustrative cart id. Admin cart endpoints only operate on **draft carts** (`is_active=0`) — storefront carts are rejected. Create a draft cart first with the [`createAdminDraftCart`](../../customers/create-draft-cart.md) mutation and use the returned `cartId`.
 
 ## Operation
 

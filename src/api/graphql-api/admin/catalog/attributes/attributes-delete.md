@@ -44,18 +44,14 @@ Deletes a user-defined attribute. `id` is the attribute IRI (`/api/admin/catalog
 
 A system attribute (`isUserDefined = 0`) cannot be deleted (`403`), and an attribute still attached to one or more attribute families is refused until it is removed from those families (`409`).
 
-::: tip
 See the [Attributes overview](/api/graphql-api/admin/catalog/attributes/) for how attributes, options, and families fit together.
-:::
 
 Each failure returns an `errors[]` entry:
 
 | Condition | Message |
 |-----------|---------|
 | System attribute (`isUserDefined = 0`) | `System attributes cannot be deleted.` |
-| Attribute is referenced by one or more attribute families | `Attribute is part of one or more attribute families. Remove it from those families first.` |
+| Attribute is referenced by one or more attribute families | `Attribute is part of one or more attribute families (group IDs: 12, 20, 28). Remove it from those families first.` — the message names the blocking group ids |
 | Unknown id | `Attribute not found.` |
 
 For bulk deletion, use [`createAdminAttributeMassDelete`](/api/graphql-api/admin/catalog/attributes/attributes-mass-delete).
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

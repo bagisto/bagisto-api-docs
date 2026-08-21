@@ -35,9 +35,7 @@ examples:
 Deletes a cart rule — the **Delete** row action on the admin
 **Marketing → Promotions → Cart Rules** screen.
 
-::: tip
 New here? Read the [Cart Rules overview](/api/graphql-api/admin/marketing/promotions/cart-rules/) for what a cart rule does and how its fields behave.
-:::
 
 ## Operation
 
@@ -53,14 +51,14 @@ New here? Read the [Cart Rules overview](/api/graphql-api/admin/marketing/promot
   [list](/api/graphql-api/admin/marketing/promotions/cart-rules-list) query to
   discover valid ids.
 
-::: warning Confirm success via the absence of `errors`
+### Confirm success via the absence of `errors`
+
 The delete mutation returns a success acknowledgement, not the deleted rule's
 data — `adminMarketingCartRule` resolves to `null` on the payload. **Treat a
 response with no `errors[]` as a successful delete.** If you need a confirmation
 message in the body, use the REST endpoint
 (`DELETE /api/admin/marketing/cart-rules/{id}`), which returns
 `{ "message": "Cart rule deleted." }`.
-:::
 
 ## Input fields
 

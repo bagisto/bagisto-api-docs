@@ -51,5 +51,3 @@ A refused delete returns an error (equivalent to HTTP 422 on REST). Re-assign or
 | [Mass delete sources](/api/graphql-api/admin/settings/inventory-sources/mass-delete) | `createAdminSettingsInventorySourceMassDelete` mutation |
 
 Permissions: `settings.inventory_sources.create` / `.edit` / `.delete`.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

@@ -91,10 +91,6 @@ Reopens a declined or canceled RMA request back to **Pending**. The `canReopen` 
 |-------|------|----------|-------------|
 | `id` | `ID` | yes | The return IRI (`/api/admin/rma/requests/{id}`). |
 
-::: tip
 See the [Returns overview](/api/graphql-api/admin/sales/returns/) for the status workflow.
-:::
 
 Permission: `sales.rma.requests`.
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

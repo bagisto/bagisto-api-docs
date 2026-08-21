@@ -105,9 +105,9 @@ GraphQL counterpart of `GET /api/admin/bookings`. Returns a cursor-paginated lis
 
 `sales.bookings.view`
 
-::: warning Order objects are returned whole
+### Order objects are returned whole
+
 `order` and `orderItem` are returned as JSON — **query them bare, without a sub-selection** (`order`, not `order { … }`). The whole object comes back. See [Booking Detail](/api/graphql-api/admin/sales/bookings/detail) for the keys inside each.
-:::
 
 ## Fields
 

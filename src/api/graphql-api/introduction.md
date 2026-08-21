@@ -280,7 +280,7 @@ Parameters:
 - 📚 [Shop API Reference](/api/graphql-api/shop-api) - Complete shop operations guide
 - 🔑 [Admin API Reference](/api/graphql-api/admin-api) - Admin operations guide
 - 🔐 [Authentication Guide](/api/graphql-api/authentication) - Detailed auth methods
-- 🧪 [Integration Guides](/api/graphql-api/integrations) - Code examples for your stack
+- 🧪 [Integration Guides (GraphQL)](/api/graphql-api/integrations) - Code examples for your stack
 - 💡 [Best Practices](/api/graphql-api/best-practices) - Performance and security tips
 
 ## Support & Resources

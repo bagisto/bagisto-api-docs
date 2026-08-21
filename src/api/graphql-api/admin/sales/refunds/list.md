@@ -135,9 +135,9 @@ GraphQL counterpart of `GET /api/admin/refunds`. Returns a cursor-paginated list
 
 `sales.refunds.view`
 
-::: warning Address objects are returned whole
+### Address objects are returned whole
+
 `billingAddress` and `shippingAddress` are returned as JSON — **query them bare, without a sub-selection** (`billingAddress`, not `billingAddress { … }`). The whole object comes back.
-:::
 
 ## Fields
 

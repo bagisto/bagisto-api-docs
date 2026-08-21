@@ -271,6 +271,12 @@ Orders** screen.
   `{ data, meta }` envelope instead of cursors, and returns `items` as a **flat
   array** (same fields).
 
+## The Node `id` Is Not the Order's Path
+
+`id` resolves to `/api/admin/orders/export?id=<id>` — the export route, not a readable order path. It is the one order field you should never follow.
+
+Use `_id` for the numeric order id, and read a single order with [`adminOrderDetail`](/api/graphql-api/admin/sales/orders/order-detail), which is a separate resource at `/api/admin/orders/<id>`. Everything else on the node resolves normally.
+
 ## Filtering
 
 Pass any of these arguments alongside `first` / `after` to narrow the list

@@ -86,8 +86,4 @@ Lists every saved address for a customer. The admin Create-Order screen uses thi
 |----------|------|----------|-------------|
 | `customerId` | Int! | yes | The customer whose addresses to list. Unknown customer → error. |
 
-::: tip Menu overview
 See the [Customer Addresses overview](/api/graphql-api/admin/customers/) for how the address book fits into the customer screen.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

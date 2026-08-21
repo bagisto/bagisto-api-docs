@@ -64,6 +64,3 @@ schema and the current values in a single round trip.
   the admin and are **read-only** through the API.
 - **Password fields** are masked in the UI but stored as plaintext (a Bagisto
   core behaviour, not an API limitation).
-
-All Configuration operations require an admin Bearer token — see
-[Authentication](/api/graphql-api/admin/authentication).

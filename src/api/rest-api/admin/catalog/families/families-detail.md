@@ -75,16 +75,6 @@ an attribute family — e.g. when opening the edit form in the
 requirement (`\d+`) — this prevents the `{id}` segment from matching any other
 path under `/catalog/families/`.
 
-## Authentication
-
-Every request requires:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain the Bearer token via [Authentication](/api/rest-api/admin/authentication).
-
 ## Path Parameter
 
 | Parameter | Type | Required | Description |
@@ -131,56 +121,7 @@ Each entry represents one attribute mapped to the group via
 | `column` | integer | Layout column position of this attribute within the group |
 | `position` | integer | Display order position of this attribute within the group |
 
-::: tip Plain arrays — no follow-up calls needed
-`attributeGroups` and the nested `attributes` arrays are serialized as plain
-inline JSON objects — there are no IRI strings or sub-resource links. The full
-structure is embedded in a single response.
-:::
-
-## Example Request
-
-```bash
-curl -X GET "https://your-domain.com/api/admin/catalog/families/1" \
-  -H "Authorization: Bearer <token>" \
-  -H "Accept: application/json"
-```
-
-## Example Response
-
-```json
-{
-  "id": 1,
-  "code": "default",
-  "name": "Default",
-  "attributeGroups": [
-    {
-      "id": 1,
-      "code": "general",
-      "name": "General",
-      "column": 1,
-      "position": 1,
-      "attributes": [
-        {
-          "id": 1,
-          "code": "sku",
-          "type": "text",
-          "isRequired": 1,
-          "column": 1,
-          "position": 1
-        },
-        {
-          "id": 2,
-          "code": "name",
-          "type": "text",
-          "isRequired": 1,
-          "column": 1,
-          "position": 2
-        }
-      ]
-    }
-  ]
-}
-```
+`attributeGroups` and the nested `attributes` arrays arrive as plain inline JSON — no IRI strings, no sub-resource links — so one call returns the family's whole structure. Every id inside is numeric.
 
 ## Errors
 

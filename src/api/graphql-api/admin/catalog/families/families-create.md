@@ -53,10 +53,6 @@ examples:
 
 Creates a new attribute family. A family is the set of attribute groups (and the attributes within each group) that a product of that family is edited against. You may seed the family's structure inline by passing `attributeGroups`, where each group may carry `customAttributes` to attach existing attributes to it. `code` must be unique.
 
-::: tip
-See the [Attribute Families overview](/api/graphql-api/admin/catalog/families/) for how families relate to attributes and products.
-:::
+See the [Attribute Families overview](/api/graphql-api/admin/catalog/families/) for how this menu works.
 
 The mutation payload returns the new family's scalar fields. The `attributeGroups` connection is not resolved on the mutation result — re-query [`adminAttributeFamily`](/api/graphql-api/admin/catalog/families/families-detail) to read the full structure back.
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

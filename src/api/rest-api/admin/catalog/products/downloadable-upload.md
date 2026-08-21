@@ -42,13 +42,9 @@ examples:
 
 Uploads the binary file for a **file-type** downloadable link or sample and returns its stored `path`.
 
-::: tip How the two-step flow works
-This endpoint only **stores the file** and returns its `path`. You then attach that path to the link/sample on the [product update](/api/rest-api/admin/catalog/products/update): set `downloadable_links[link_x][file] = <path>` and `type = file` (or `downloadable_samples[sample_x][file]`). URL-type links/samples don't need this — set their `url` directly on the update.
-:::
+Uploading is only half the job. This endpoint **stores the file and returns its `path`** — it does not attach anything to the product. Attach the returned path on the [product update](/api/rest-api/admin/catalog/products/update) by setting `downloadable_links[link_x][file]` to that path along with `type: file`, or `downloadable_samples[sample_x][file]` for a sample. Skip this endpoint entirely for URL-type links and samples: set their `url` directly on the update.
 
-::: warning REST only
-Binary file parts are not transportable over JSON GraphQL — these endpoints are REST-only.
-:::
+Both endpoints are REST-only. A binary file part cannot be carried in a JSON GraphQL request.
 
 ## Endpoints
 

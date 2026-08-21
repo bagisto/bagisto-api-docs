@@ -69,9 +69,7 @@ examples:
 
 Create a theme customization block. This is a **step-1** create: it sets the block's scalar fields only, and the block starts with empty `translations`. Add the per-locale content afterwards with the [Update](./update) mutation.
 
-::: tip
 See the [Themes overview](./) for what each `type` renders. The `type` is fixed at creation and cannot be changed later.
-:::
 
 ## Operation
 
@@ -95,4 +93,4 @@ See the [Themes overview](./) for what each `type` renders. The `type` is fixed 
 - Per-locale content (`options`) is **not** accepted here — set it with the [Update](./update) mutation.
 - Image / file fields are path strings only; binary upload is not available — use the admin panel to upload files.
 
-Permission: `settings.themes.create`. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+Permission: `settings.themes.create`.

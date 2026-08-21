@@ -64,6 +64,3 @@ Deletion is refused (returns an `errors[]` message) when:
 - The role is **assigned to one or more admins** — reassign those admins to a different role first.
 - It is the **last remaining role** — at least one role must always exist.
 
-::: tip
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
-:::

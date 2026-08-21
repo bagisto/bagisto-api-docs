@@ -54,15 +54,13 @@ examples:
 Updates an existing sitemap — the **Edit Sitemap** action on the admin
 **Marketing → Search & SEO → Sitemaps** screen.
 
-::: tip
 New here? Read the [Sitemaps overview](/api/graphql-api/admin/marketing/search-seo/sitemaps/) for what a sitemap does and how its fields behave.
-:::
 
-::: warning Updating does not regenerate the XML
+### Updating does not regenerate the XML
+
 Editing the definition does not rebuild the XML files. Call the
 [generate](/api/graphql-api/admin/marketing/search-seo/sitemaps-generate)
 mutation explicitly after an update.
-:::
 
 ## Operation
 

@@ -72,8 +72,6 @@ Returns the current progress of an import **without advancing it**. Poll this be
 - `stats` is returned as a raw JSON object — query it bare (no sub-selection).
 - The job's entity is exposed as `code` (e.g. `products`), not `type`.
 
-::: tip Prerequisites
 The example uses an illustrative `id`. Replace it with the stats IRI of an import that exists in your store — use the [`adminSettingsDataTransferImports`](./list.md) query to discover valid ids.
-:::
 
-Permission: `settings.data_transfer.imports.view`. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+Permission: `settings.data_transfer.imports.view`.

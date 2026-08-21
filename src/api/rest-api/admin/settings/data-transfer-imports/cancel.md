@@ -14,8 +14,8 @@ examples:
 
 Sets state to `cancelled`.
 
-::: warning Terminal-state guard
+### Terminal-state guard
+
 Refuses (HTTP 422) when the import is in a terminal state (`completed`, `processed`, `failed`, `cancelled`).
-:::
 
 Permission: `settings.data_transfer.imports.edit`.

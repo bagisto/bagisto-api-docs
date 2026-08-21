@@ -74,8 +74,4 @@ Lists up to **5 most-recent distinct products** the customer has ordered. The ad
 |----------|------|----------|-------------|
 | `customerId` | Int! | yes | The customer whose recent items to read. |
 
-::: tip Menu overview
 See the [Customers overview](/api/graphql-api/admin/customers/) for how the Create-Order sidebar panels work.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

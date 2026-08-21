@@ -53,8 +53,4 @@ To attach a file, send the request as `multipart/form-data` with `return_id`, `m
 
 `sales.rma.requests`
 
-::: tip
 See the [Returns overview](/api/rest-api/admin/sales/returns/) for the conversation flow.
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

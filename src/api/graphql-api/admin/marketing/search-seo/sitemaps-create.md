@@ -54,16 +54,14 @@ examples:
 Creates a sitemap definition — the **Create Sitemap** action on the admin
 **Marketing → Search & SEO → Sitemaps** screen.
 
-::: tip
 New here? Read the [Sitemaps overview](/api/graphql-api/admin/marketing/search-seo/sitemaps/) for what a sitemap does and how its fields behave.
-:::
 
-::: warning Creating does not build the XML
+### Creating does not build the XML
+
 Saving the row only stores the definition. To write the actual XML files, call
 the [generate](/api/graphql-api/admin/marketing/search-seo/sitemaps-generate)
 mutation explicitly — `generatedAt`, `indexFile`, and `generatedSitemaps` stay
 empty until then.
-:::
 
 ## Operation
 

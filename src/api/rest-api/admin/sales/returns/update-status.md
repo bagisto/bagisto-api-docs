@@ -85,8 +85,4 @@ Any other status just updates the status. Every status change adds a note to the
 
 `sales.rma.requests`
 
-::: tip
 See the [Returns overview](/api/rest-api/admin/sales/returns/) for the full status workflow.
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

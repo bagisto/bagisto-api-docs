@@ -32,9 +32,7 @@ examples:
 Updates an existing sitemap — the **Edit Sitemap** action on the admin
 **Marketing → Search & SEO → Sitemaps** screen.
 
-::: tip
 New here? Read the [Sitemaps overview](/api/rest-api/admin/marketing/search-seo/sitemaps/) for what a sitemap does and how its fields behave.
-:::
 
 ## Endpoint
 
@@ -50,11 +48,11 @@ New here? Read the [Sitemaps overview](/api/rest-api/admin/marketing/search-seo/
   omitted fields keep their existing values.
 - Returns the full updated sitemap payload.
 
-::: warning No auto-regeneration
+### No auto-regeneration
+
 Changing `file_name` / `path` does not rebuild the XML. Call
 [generate](/api/rest-api/admin/marketing/search-seo/sitemaps-generate)
 (`POST /api/admin/marketing/sitemaps/{id}/generate`) to refresh the files.
-:::
 
 ## Request body
 

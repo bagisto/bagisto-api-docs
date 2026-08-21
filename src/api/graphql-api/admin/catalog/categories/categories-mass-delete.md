@@ -38,14 +38,10 @@ examples:
 
 Deletes several categories in one call. `indices` is the list of category ids to delete. The whole batch is **pre-validated**: if any id is the root category or a channel root, the entire batch is rejected with an error and nothing is deleted. Ids that don't exist are silently skipped and do not appear in `deleted`. `deleted` is the list of ids actually removed.
 
-::: tip
-See the [Categories overview](/api/graphql-api/admin/catalog/categories/) for how the menu works.
-:::
+See the [Categories overview](/api/graphql-api/admin/catalog/categories/) for how this menu works.
 
 ## Input
 
 | Field | Type | Notes |
 |-------|------|-------|
-| `indices` | `[Int!]!` | Category ids to delete |
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+| `indices` | Iterable | Category ids to delete. Declared nullable in the schema; the API rejects an empty list with `400`. |

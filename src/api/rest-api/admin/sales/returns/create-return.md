@@ -93,8 +93,4 @@ To attach proof images, send the request as `multipart/form-data` with the field
 
 `sales.rma.requests.create`
 
-::: tip
 See the [Returns overview](/api/rest-api/admin/sales/returns/) for the status workflow.
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

@@ -55,33 +55,15 @@ Paginated, filterable, and sortable category list that mirrors the Bagisto admin
 listing for the admin API — same columns, same filters, and the same sort options
 used by the datagrid.
 
-::: tip How this menu works
-For the flat-list vs. tree shapes, hierarchy/move semantics, and display modes, see the [Categories overview](/api/rest-api/admin/catalog/categories/).
-:::
+For the flat-list versus tree shapes, hierarchy and move semantics, and display modes, see the [Categories overview](/api/rest-api/admin/catalog/categories/).
 
-::: tip Distinct from the tree endpoint
-`GET /api/admin/catalog/categories` (this endpoint) returns a **flat, paginated
-list** of categories — ideal for datagrid/table views.
-
-`GET /api/admin/catalog/categories/tree` returns the full **nested hierarchy**,
-ideal for tree-picker UIs.
-:::
+This endpoint returns a **flat, paginated list**, which is what a datagrid needs. For the nested hierarchy behind a tree picker use [`GET /api/admin/catalog/categories/tree`](/api/rest-api/admin/catalog/categories/categories-tree) instead.
 
 ## Endpoint
 
 | Endpoint | Method | Authentication |
 |----------|--------|----------------|
 | `/api/admin/catalog/categories` | GET | Admin Bearer token |
-
-## Authentication
-
-Every request requires:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain the Bearer token via [Authentication](/api/rest-api/admin/authentication).
 
 ## Query Parameters
 
@@ -133,48 +115,6 @@ Responses use the standard admin `{ data, meta }` envelope.
 | `translations` | null | Always `null` in list responses — full translations are available via the detail endpoint `GET /api/admin/catalog/categories/{id}` |
 | `filterableAttributeIds` | null | Always `null` in list responses — available via the detail endpoint |
 
-## Example Request
-
-```bash
-curl -X GET "https://your-domain.com/api/admin/catalog/categories?per_page=10&page=1&status=1&sort=name-asc" \
-  -H "Authorization: Bearer <token>" \
-  -H "Accept: application/json"
-```
-
-## Example Response
-
-```json
-{
-  "data": [
-    {
-      "id": 7,
-      "position": 1,
-      "status": 1,
-      "parentId": 1,
-      "displayMode": "products_and_description",
-      "logoUrl": null,
-      "bannerUrl": null,
-      "name": "Apparel",
-      "slug": "apparel",
-      "description": "Men's and women's apparel",
-      "locale": "en",
-      "createdAt": "2026-01-12T08:15:00+00:00",
-      "updatedAt": "2026-04-30T14:20:09+00:00",
-      "translations": null,
-      "filterableAttributeIds": null
-    }
-  ],
-  "meta": {
-    "currentPage": 1,
-    "perPage": 10,
-    "lastPage": 5,
-    "total": 47,
-    "from": 1,
-    "to": 10
-  }
-}
-```
-
 ## Sorting
 
 Two forms are accepted — choose whichever suits your client:
@@ -204,19 +144,19 @@ param takes precedence.
 
 ## Errors
 
-| HTTP Status | Cause |
-|-------------|-------|
-| `401 Unauthorized` | Missing, expired, or revoked admin Bearer token |
-| `401 Unauthorized` | Missing or invalid admin Bearer token |
+| HTTP | Detail |
+|------|--------|
+| `401` | `Unauthenticated.` |
 
-**Unknown filter parameters** are silently ignored — no error is returned. Invalid
-`status` values outside `0` or `1` are also silently dropped (the filter is not applied).
+The listing never rejects a bad filter. An unknown parameter is ignored, and an out-of-range `status` is dropped rather than applied — both return the full unfiltered list, so a wrong filter looks like a successful query. `?per_page=999` is clamped to `50`, and `?per_page=0` falls back to `10`.
 
-## Notes
+## Fields That Stay Null on the Listing
 
-- **`translations` and `filterableAttributeIds` are always `null` in list rows.** These heavy fields are only populated by the detail endpoint `GET /api/admin/catalog/categories/{id}`, which resolves all locale translations in one call.
-- **`name`, `slug`, and `description`** are resolved from the `category_translations` table for the requested locale. If no translation exists for a category in that locale, these fields are `null`.
-- **`parent_id` filter** returns only direct children of the specified parent. For the full subtree rooted at a node, use the tree endpoint with `?rootId=<id>`.
-- **No automatic status filter.** This endpoint returns all statuses by default — admin operators need to see disabled and draft categories. Pass `?status=1` to restrict to enabled categories.
-- Envelope-wrapped: `{ data: [...], meta: { currentPage, perPage, lastPage, total, from, to } }`.
-- `per_page` caps at **50**; values ≤ 0 fall back to the default of **10**.
+`translations` and `filterableAttributeIds` are present on every row but always `null`. Both resolve only on [`GET /api/admin/catalog/categories/{id}`](/api/rest-api/admin/catalog/categories/categories-detail), which returns all locale translations in one call.
+
+## Behaviour Worth Knowing
+
+- **No implicit status filter.** Every status is returned so an admin can find a disabled category. Pass `?status=1` for enabled only.
+- **`parent_id` returns direct children only**, not the whole subtree. For a full branch use the tree endpoint with `?rootId=<id>`.
+- **`name`, `slug`, and `description` are per-locale.** A category with no translation in the requested locale returns `null` for all three — the row still appears, so an empty name is not a missing category.
+- **Scalars are real types.** `status`, `position`, and `parentId` are integers, and timestamps are ISO 8601 with offset — note the product listing uses `2026-04-19 11:56:43` instead, so the two are not interchangeable.

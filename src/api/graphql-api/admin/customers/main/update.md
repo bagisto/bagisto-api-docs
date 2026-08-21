@@ -70,8 +70,4 @@ Updates a customer. The update is partial — send only the fields you want to c
 
 Permission: `customers.customers.edit`. The response carries the updated scalars and the nested `group` object.
 
-::: tip
 See the [Customers overview](/api/graphql-api/admin/customers/main/) for how the menu works.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

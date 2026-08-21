@@ -205,9 +205,7 @@ examples:
 
 List the theme customization blocks configured for the store. Each row carries the block's scalar fields; the per-locale `options` content is returned only by the [Detail](./detail) query.
 
-::: tip
 See the [Themes overview](./) for what each `type` renders and what the fields mean.
-:::
 
 ## Operation
 
@@ -246,5 +244,3 @@ Each filter narrows the result; supplying more than one combines with logical **
 | `order` | `String` | `asc`, `desc` |
 
 The per-locale `options` are not included on the listing — query [`adminSettingsTheme(id:)`](./detail) for a single block to read its `translations`.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

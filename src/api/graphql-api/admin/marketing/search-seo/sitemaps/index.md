@@ -31,5 +31,3 @@ A sitemap has two parts: a **definition** (where the file lives) and a **generat
 | [Generate](/api/graphql-api/admin/marketing/search-seo/sitemaps-generate) | `createAdminMarketingSitemapGenerate` mutation |
 
 `indexFile` and `generatedSitemaps` resolve only on the **detail** query — they are omitted from list rows.
-
-All Sitemaps operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

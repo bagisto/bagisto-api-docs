@@ -35,11 +35,7 @@ examples:
 
 Uploads a new image for the given product.
 
-::: warning REST only — GraphQL upload not supported
-Binary file parts are **not transportable over JSON GraphQL.** The GraphQL
-`createAdminCatalogProductImage` mutation exists as a placeholder only and
-will not accept a file. Use this REST endpoint for image upload.
-:::
+Image upload is REST-only. A binary file part cannot be carried in a JSON GraphQL request, so the `createAdminCatalogProductImage` mutation exists as a placeholder and rejects any call. Reordering and deleting images, which carry no binary payload, do work over GraphQL.
 
 ## Endpoint
 

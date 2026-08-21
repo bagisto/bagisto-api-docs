@@ -92,9 +92,7 @@ Duplicates an existing cart rule into a brand-new rule — the **Copy** row acti
 on the admin **Marketing → Promotions → Cart Rules** datagrid. The new rule is a
 ready-to-edit clone that starts inactive.
 
-::: tip
 New here? Read the [Cart Rules overview](/api/graphql-api/admin/marketing/promotions/cart-rules/) for what a cart rule does and how its fields behave.
-:::
 
 ## Operation
 

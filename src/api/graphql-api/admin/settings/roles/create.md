@@ -70,6 +70,3 @@ Creates a new admin role with a name, description, and permission set.
 - When `permissionType` is `custom`, the `permissions` **string array** is required — supply the permission keys this role should grant.
 - When `permissionType` is `all`, omit `permissions` (the role is granted full access; any list is ignored and stored as `[]`).
 
-::: tip
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
-:::

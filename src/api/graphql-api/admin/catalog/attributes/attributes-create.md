@@ -108,10 +108,6 @@ examples:
 
 Creates a new product attribute. The `code` must be unique and pass the code rule (letters, digits, underscore) and may not be a reserved word. `code`, `adminName`, and `type` are required. For `select`, `multiselect`, and `checkbox` types you may supply `options`; per-locale labels go under each option's `translations`. The mutation returns the full attribute detail.
 
-::: tip
 See the [Attributes overview](/api/graphql-api/admin/catalog/attributes/) for how attributes, options, and families fit together.
-:::
 
 The nested `options` and their `translations` are not returned on the mutation payload — re-query [`adminAttribute`](/api/graphql-api/admin/catalog/attributes/attributes-detail) to read them back.
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

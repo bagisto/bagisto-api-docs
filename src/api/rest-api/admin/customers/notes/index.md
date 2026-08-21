@@ -32,5 +32,3 @@ When adding a note you can set `customer_notified` to email the note's text to t
 | [Add Note](./create.md) | `POST /api/admin/customers/{customerId}/notes` |
 
 Permission: `customers.customers.edit`.
-
-All endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

@@ -104,9 +104,7 @@ examples:
 
 Fetch a single theme customization block by id. The `translations` field is a field-selectable connection — each `node` carries one locale's `_id`, `locale`, and `options` content. Select `translations { edges { node { _id locale options } } }` to read it.
 
-::: tip
 The shape of each locale's `options` depends on the block's `type` — see the [Themes overview](./). The example shows a `services_content` block; an `image_carousel` block would carry an `images` array, a `static_content` block an `html` / `css` pair, and so on.
-:::
 
 ## Operation
 
@@ -115,5 +113,3 @@ The shape of each locale's `options` depends on the block's `type` — see the [
 | `adminSettingsTheme(id: ID!)` | Query | Get one theme customization block, with per-locale content |
 
 The `id` argument is the resource IRI (`/api/admin/settings/themes/{id}`). Use the [`adminSettingsThemes`](./list) query to discover valid ids; each row's `_id` is the numeric id.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

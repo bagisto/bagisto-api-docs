@@ -213,8 +213,4 @@ Each filter narrows the result; supplying more than one combines with logical **
 | `sort` | `String` | `id` (default), `name`, `email` |
 | `order` | `String` | `asc`, `desc` (default `desc`) |
 
-::: tip Overview
 For field meanings, create/update/delete rules, and delete guards, see the [Users overview](./).
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

@@ -132,9 +132,7 @@ examples:
 
 Options are the selectable values of a `select`, `multiselect`, or `checkbox` attribute (e.g. the Red / Green / Blue values of a "Color" attribute). They cannot be added to any other attribute type. Per-locale labels go under each option's `translations`. All three mutations return the option as `adminAttributeOption`; select its `_id` (the numeric option id) rather than `id`, since the option has no standalone detail route.
 
-::: tip
 See the [Attributes overview](/api/graphql-api/admin/catalog/attributes/) for how attributes, options, and families fit together.
-:::
 
 ## Operations
 
@@ -165,5 +163,3 @@ Create takes the parent `attributeId: Int!` inside `input`. Update and delete id
 | Attribute is not `select`/`multiselect`/`checkbox` | `This attribute type does not support options.` |
 | Delete refused — option in use by products | `This option is used by N product(s) and cannot be deleted.` |
 | Unknown id | `Attribute option not found.` |
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

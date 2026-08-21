@@ -34,5 +34,3 @@ Each rewrite maps a **source path** to a **destination path** for a given entity
 | [Update](/api/graphql-api/admin/marketing/search-seo/url-rewrites-update) | `updateAdminMarketingUrlRewrite` mutation |
 | [Delete](/api/graphql-api/admin/marketing/search-seo/url-rewrites-delete) | `deleteAdminMarketingUrlRewrite` mutation |
 | [Mass Delete](/api/graphql-api/admin/marketing/search-seo/url-rewrites-mass-delete) | `createAdminMarketingUrlRewriteMassDelete` mutation |
-
-All URL Rewrites operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

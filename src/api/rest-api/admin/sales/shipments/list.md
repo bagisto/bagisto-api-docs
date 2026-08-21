@@ -67,9 +67,7 @@ examples:
 
 Mirrors the admin **Sales → Shipments** datagrid. Every shipment **column** plus the order/customer context and both the billing and shipping addresses are populated on each row — the field set is identical to [Shipment Detail](/api/rest-api/admin/sales/orders/get-shipment) except for the shipped line `items`, which are returned only by the detail endpoint (`[]` on the listing).
 
-::: tip How this menu works
 For when a shipment row appears and what each field means, see the [Shipments overview](/api/rest-api/admin/sales/shipments/).
-:::
 
 ## Endpoint
 

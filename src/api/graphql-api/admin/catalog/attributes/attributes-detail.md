@@ -114,27 +114,13 @@ e.g. when pre-populating the edit form in Catalog → Attributes.
 |-----------|------|
 | `adminAttribute` | Query (item) |
 
-## Authentication
-
-Every request must include an admin Bearer token:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain a token via the [`createAdminLogin`](/api/graphql-api/admin/authentication)
-mutation.
-
 ## Arguments
 
 | Argument | Type | Required | Description |
 |----------|------|----------|-------------|
 | `id` | `ID!` | Yes | API Platform IRI of the attribute (e.g. `"/api/admin/catalog/attributes/12"`) |
 
-::: tip Finding the IRI
-The IRI can be taken directly from `id` in any `adminAttributes` edge
-node, or constructed as `/api/admin/catalog/attributes/{numericId}`.
-:::
+Take the IRI straight from the `id` of an [`adminAttributes`](/api/graphql-api/admin/catalog/attributes/attributes-listing) edge node, or build it as `/api/admin/catalog/attributes/<numericId>`.
 
 ## Fields
 
@@ -164,7 +150,7 @@ node, or constructed as `/api/admin/catalog/attributes/{numericId}`.
 | `createdAt` | `String` | ISO 8601 creation timestamp |
 | `updatedAt` | `String` | ISO 8601 last-update timestamp |
 | `translations` | scalar (JSON array) | All locale translations — see shape below |
-| `options` | scalar (JSON array\|null) | Options for `select`/`multiselect`/`checkbox` types; `null` for other types |
+| `options` | Iterable | Options for `select`, `multiselect`, and `checkbox` types; `[]` for every other type |
 
 ### `translations` item shape
 
@@ -197,120 +183,23 @@ corresponds to one row in `attribute_options`:
 | `locale` | string | Locale code (e.g. `en`, `fr`) |
 | `label` | string\|null | Locale-specific display label for the option |
 
-::: warning translations and options are returned whole
-`translations` and `options` (each option with its nested `translations`) are returned as **whole JSON** — query each as a bare field (`translations`, not `translations { … }`). The entire structure comes back, and they resolve over GraphQL.
-:::
+### Translations and Options Are JSON Scalars
 
-## Example Query
+Select `translations` and `options` as **bare fields** — a sub-selection is a schema error. Each returns its whole structure in one piece, including every option's own nested `translations`.
 
-```graphql
-query AdminCatalogAttribute($id: ID!) {
-  adminAttribute(id: $id) {
-    id
-    _id
-    code
-    type
-    adminName
-    isRequired
-    isUnique
-    valuePerLocale
-    valuePerChannel
-    isFilterable
-    isConfigurable
-    isVisibleOnFront
-    isUserDefined
-    swatchType
-    position
-    locale
-    validation
-    defaultValue
-    createdAt
-    updatedAt
-    translations
-    options
-  }
-}
-```
-
-```json
-{
-  "id": "/api/admin/catalog/attributes/12"
-}
-```
-
-## Example Response
-
-```json
-{
-  "data": {
-    "adminAttribute": {
-      "id": "/api/admin/catalog/attributes/12",
-      "_id": 12,
-      "code": "color",
-      "type": "select",
-      "adminName": "Color",
-      "isRequired": 0,
-      "isUnique": 0,
-      "valuePerLocale": 0,
-      "valuePerChannel": 0,
-      "isFilterable": 1,
-      "isConfigurable": 1,
-      "isVisibleOnFront": 1,
-      "isUserDefined": 1,
-      "swatchType": "color",
-      "position": 5,
-      "locale": "en",
-      "validation": null,
-      "defaultValue": null,
-      "isComparable": 0,
-      "enableWysiwyg": 0,
-      "regex": null,
-      "createdAt": "2026-01-12T08:15:00+00:00",
-      "updatedAt": "2026-04-30T14:20:09+00:00",
-      "translations": [
-        { "locale": "en", "name": "Color" },
-        { "locale": "fr", "name": "Couleur" }
-      ],
-      "options": [
-        {
-          "id": 33,
-          "adminName": "Red",
-          "sortOrder": 1,
-          "swatchValue": "#FF0000",
-          "swatchValueUrl": null,
-          "translations": [
-            { "locale": "en", "label": "Red" },
-            { "locale": "fr", "label": "Rouge" }
-          ]
-        },
-        {
-          "id": 34,
-          "adminName": "Blue",
-          "sortOrder": 2,
-          "swatchValue": "#0000FF",
-          "swatchValueUrl": null,
-          "translations": [
-            { "locale": "en", "label": "Blue" },
-            { "locale": "fr", "label": "Bleu" }
-          ]
-        }
-      ]
-    }
-  }
-}
-```
+An option carries `id` (numeric, not an IRI), `adminName`, `sortOrder`, `swatchValue`, `swatchValueUrl`, and `translations`. Only `select`, `multiselect`, and `checkbox` attributes have options; every other type returns an empty list.
 
 ## Errors
 
-| Scenario | GraphQL `errors[]` | HTTP Status |
-|----------|-------------------|-------------|
-| Unknown ID | `"Attribute not found"` in `errors[]`, `data.adminAttribute: null` | `200` (GraphQL convention) |
-| Missing auth | `"Unauthenticated"` in `errors[]` | `200` |
+| Condition | Result |
+|-----------|--------|
+| Unknown or deleted id | HTTP `200` with `Attribute not found.` in `errors[]` and `null` in `data.adminAttribute` |
+| Missing or invalid token | HTTP `401` with `{"message": "Unauthenticated.", "error": "unauthenticated"}` — rejected by the transport before GraphQL runs |
 
-## Notes
+## Working With This Query
 
-- **`translations` and `options` are plain JSON scalars**, not typed GraphQL object lists. You access them as regular JSON arrays in the response. This avoids API Platform serializing nested objects as IRI strings instead of inline objects — a known behaviour when using nested DTO types in API Platform GraphQL.
-- **`options` is `null` for non-option types.** Only `select`, `multiselect`, and `checkbox` attributes have options. For all other types, `options` is `null`.
-- **`translations` contains every locale in the DB**, not just the current app locale. If the store has translations for `en`, `fr`, and `de`, all three entries are returned. Missing locale entries have `null` name.
-- **The `id` argument is the IRI**, not the numeric integer. Use the `_id` field from listing queries and construct `"/api/admin/catalog/attributes/{_id}"`, or pass the `id` field directly from a listing result.
-- **GraphQL and REST return identical data** for this query — both return `translations` and `options` as plain JSON arrays queried bare (no sub-selection), and every camelCase flag field (`isRequired`, `isConfigurable`, `adminName`, etc.) resolves over GraphQL.
+- **`options` is `[]` for a non-option type, not `null`.** Only `select`, `multiselect`, and `checkbox` carry options; a `text` attribute returns an empty list. Test the length, not for null.
+- **`translations` carries one entry per stored locale row**, not just the requested one, so a multi-locale store returns them all.
+- **An option's `id` is the numeric option id**, not an IRI — unlike the attribute's own `id`. Send that number when referencing the option on a product's attribute value.
+- **The boolean flags are integers**, `0` or `1`, not booleans.
+- **The `id` argument is the IRI, not the number.** Build it as `/api/admin/catalog/attributes/<_id>` or pass a listing edge's `id` straight through.

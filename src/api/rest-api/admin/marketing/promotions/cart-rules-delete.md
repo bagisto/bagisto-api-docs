@@ -21,9 +21,7 @@ examples:
 Deletes a cart rule — the **Delete** row action on the admin **Marketing →
 Promotions → Cart Rules** screen.
 
-::: tip
 New here? Read the [Cart Rules overview](/api/rest-api/admin/marketing/promotions/cart-rules/) for what a cart rule does and how its fields behave.
-:::
 
 ## Endpoint
 

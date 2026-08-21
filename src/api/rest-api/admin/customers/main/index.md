@@ -58,5 +58,3 @@ The activity aggregates (`totalOrders`, `totalAddresses`, `totalAmountSpent`) ar
 | [Mass Update Status](./mass-update-status.md) | `POST /api/admin/customers/mass-update-status` |
 
 Permissions: `customers.customers.create` / `.edit` / `.delete`.
-
-All endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

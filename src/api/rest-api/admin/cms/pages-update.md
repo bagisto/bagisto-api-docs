@@ -77,10 +77,9 @@ examples:
 
 Updates a CMS page using a locale-nested payload.
 
-::: warning Locale-nested payload required
-Unlike [Create](/api/rest-api/admin/cms/pages-create) (top-level fields
-broadcast to all locales), **Update** validates and writes per-locale via
-nested blocks:
+### The Payload Is Locale-Nested
+
+Update writes per locale, so the translated fields go inside a block keyed by locale code — unlike [Create](/api/rest-api/admin/cms/pages-create), which takes them at the top level and broadcasts them to every locale:
 
 ```json
 {
@@ -94,17 +93,9 @@ nested blocks:
 }
 ```
 
-The top-level `locale` field names which locale block is being updated.
-`url_key` uniqueness excludes the current page (no false-positive collisions
-against itself). Only the named locale changes — other locales are left
-untouched. `channels` **replaces** the page's current channel assignment.
-:::
+The top-level `locale` names which block is being written. Only that locale changes; the others are left untouched. `url_key` uniqueness excludes the page itself, so re-sending the current slug is not a collision. `channels` **replaces** the page's channel assignment rather than adding to it.
 
-::: tip Changing `url_key` creates a redirect
-When you change a locale's `url_key`, the store records a **301 redirect**
-from the old slug to the new one, so existing links keep working. Deleting
-the page later removes those redirects.
-:::
+Changing a locale's `url_key` records a **301 redirect** from the old slug to the new one, so existing links keep working. That redirect is permanent: it is **not** removed when the page is later deleted, so the old slug keeps redirecting to a URL that no longer resolves. Clean it up through [URL Rewrites](/api/rest-api/admin/marketing/search-seo/url-rewrites-list) if that matters.
 
 ## Endpoint
 

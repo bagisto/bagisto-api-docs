@@ -51,5 +51,3 @@ In a single delete the guard returns a `400`; in mass delete the blocked id is r
 | [Mass Delete](./mass-delete.md) | `POST /api/admin/customers/groups/mass-delete` |
 
 Permissions: `customers.groups.create` / `.edit` / `.delete`.
-
-All endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

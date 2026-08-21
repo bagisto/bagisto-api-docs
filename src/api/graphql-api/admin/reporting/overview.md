@@ -222,8 +222,6 @@ examples:
 | **Endpoint** | `POST /api/admin/graphql` |
 | **Returns** | A single object: `{ entity, type, dateRange, statistics }` |
 
-All admin endpoints require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
-
 The Overview query returns a single headline figure across the whole store for the chosen `type`. It is an API convenience aggregation — there is **no** matching "Overview" screen in the admin panel (the admin Reporting menu goes straight to Sales / Customers / Products). Use it to fetch one top-line number without having to call the per-section queries.
 
 ## Understanding `type` — Overview is **four** separate headlines
@@ -270,9 +268,9 @@ query AdminReportingOverview($type: String, $start: String, $end: String, $chann
 
 Figures with a `previous` / `current` / `progress` shape are period comparisons: `current` is the chosen window, `previous` is the preceding window of equal length, and `progress` is the percentage change (can be negative).
 
-::: tip No View Details, no Export
+### No View Details, no Export
+
 Unlike the Sales / Customers / Products queries, the Overview query has **no View Details and no Export** — it is a top-line summary only. Reporting requires only authentication; there is no permission gate.
-:::
 
 ## Response shapes by `type`
 
@@ -297,9 +295,9 @@ Unlike the Sales / Customers / Products queries, the Overview query has **no Vie
 | `customers` | `{ previous, current, progress }` | New customers registered in the window. |
 | `over_time` | `{ previous, current }` — each an array of `{ label, total }` | One bucket per day for both windows. |
 
-::: tip `over_time` rows differ for customers
+### `over_time` rows differ for customers
+
 For `total-customers`, the `over_time` rows carry only `label` and `total` — there is **no** `count` field (unlike `total-sales` / `total-orders`).
-:::
 
 ### `top-selling-products-by-revenue`
 

@@ -67,4 +67,4 @@ The mutation returns a snapshot of the deleted block, so you can read back its `
 - Do **not** select the node's IRI `id` field on this mutation — the IRI cannot be generated for a deleted record and the field resolves with an `errors[]` entry. Select `_id` instead, as shown.
 - Use the [`adminSettingsThemes`](./list) query to discover valid ids.
 
-Permission: `settings.themes.delete`. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+Permission: `settings.themes.delete`.

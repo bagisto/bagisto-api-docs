@@ -105,10 +105,6 @@ Opens an RMA request for an order item. Use [List Returnable Items](../queries/l
 
 Attaching proof images is REST-only (multipart) — not available over GraphQL.
 
-::: tip
 See the [Returns overview](/api/graphql-api/admin/sales/returns/) for the status workflow.
-:::
 
 Permission: `sales.rma.requests.create`.
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

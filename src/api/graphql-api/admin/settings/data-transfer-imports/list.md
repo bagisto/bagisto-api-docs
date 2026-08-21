@@ -263,5 +263,3 @@ Each filter narrows the result; supplying more than one combines with logical **
 - The heavy `errors` and `summary` fields are **left null on listing rows** to keep the response light — fetch a single import with the [detail](./detail.md) query to read them.
 - `code` is the entity being imported (`products`, `customers`, `tax_rates`, …). `action` is `append` or `delete`.
 - `processedRowsCount` advances as the import runs; `errorsCount` / `invalidRowsCount` reflect validation outcomes.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

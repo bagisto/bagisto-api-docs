@@ -222,8 +222,4 @@ Each filter narrows the result; supplying more than one combines with logical **
 | `sort` | `String` | `id` (default), `rating`, `created_at` |
 | `order` | `String` | `asc`, `desc` (default `desc`) |
 
-::: tip
 See the [Reviews overview](/api/graphql-api/admin/customers/reviews/) for how moderation works.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

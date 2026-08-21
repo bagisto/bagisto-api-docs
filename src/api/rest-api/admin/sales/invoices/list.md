@@ -115,9 +115,7 @@ examples:
 
 Listing of every invoice across all orders, matching the admin Invoices grid. Every invoice **field** plus the `billingAddress` / `shippingAddress` objects are populated on each row — only the line `items` are left empty on the listing. Requires the `sales.invoices.view` permission.
 
-::: tip How this menu works
 For the invoice `state` semantics, why a paid order can read "pending", the red payment-due countdown, and the print / send-duplicate / mass-status actions, see the [Invoices overview](/api/rest-api/admin/sales/invoices/).
-:::
 
 ## Endpoint
 
@@ -155,11 +153,9 @@ Each row carries the full invoice column set, order/customer context, and the bi
 | Addresses | `billingAddress`, `shippingAddress` (objects) |
 | Line items (empty on listing) | `items` (`[]`) |
 
-::: warning A `null` here means the DB is genuinely empty
-Listing rows return the actual stored value for every column. A `null` (e.g. `transactionId`, `customerName`, `baseCurrencyCode`) means that row has no value stored for it — not that the listing is withholding data. Only the line `items` are deliberately omitted on the listing.
-:::
+### A `null` here means the DB is genuinely empty
 
-::: info
+Listing rows return the actual stored value for every column. A `null` (e.g. `transactionId`, `customerName`, `baseCurrencyCode`) means that row has no value stored for it — not that the listing is withholding data. Only the line `items` are deliberately omitted on the listing.
+
 For invoice **detail** + **PDF** + **create**, see the per-order endpoints
 under [Orders](/api/rest-api/admin/sales/orders/get-invoice).
-:::

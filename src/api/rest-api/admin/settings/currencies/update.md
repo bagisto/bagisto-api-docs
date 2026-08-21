@@ -19,8 +19,8 @@ examples:
 |----------|--------|
 | `/api/admin/settings/currencies/{id}` | PUT |
 
-::: warning `code` is immutable
+### `code` is immutable
+
 Mirrors the monolith — `code` is silently dropped from the update payload. Only `name`, `symbol`, separators, and `currency_position` are editable.
-:::
 
 Permission: `settings.currencies.edit`.

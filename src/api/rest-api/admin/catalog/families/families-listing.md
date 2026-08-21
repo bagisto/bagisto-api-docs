@@ -48,25 +48,13 @@ admin **Catalog → Attribute Families** datagrid 1:1. This is the authoritative
 family-management listing for the admin API — same 3 columns and the same sort
 options used by the datagrid.
 
-::: tip How this menu works
-For how a family's attribute groups + attributes are structured and the delete guards, see the [Attribute Families overview](/api/rest-api/admin/catalog/families/).
-:::
+For how a family's attribute groups and attributes are structured, and the delete guards, see the [Attribute Families overview](/api/rest-api/admin/catalog/families/).
 
 ## Endpoint
 
 | Endpoint | Method | Authentication |
 |----------|--------|----------------|
 | `/api/admin/catalog/families` | GET | Admin Bearer token |
-
-## Authentication
-
-Every request requires:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain the Bearer token via [Authentication](/api/rest-api/admin/authentication).
 
 ## Query Parameters
 
@@ -103,47 +91,7 @@ Responses use the standard admin `{ data, meta }` envelope.
 | `code` | string | Family code (e.g. `default`, `apparel`) |
 | `name` | string | Family display name (e.g. `Default`, `Apparel`) |
 
-::: tip Slim listing by design
-The listing returns only 3 columns. The `attribute_families` table carries no
-timestamps (`$timestamps = false` on the Eloquent model), so `createdAt` and
-`updatedAt` do not exist. Attribute groups and their associated attributes are
-only available via the detail endpoint `GET /api/admin/catalog/families/{id}`.
-:::
-
-## Example Request
-
-```bash
-curl -X GET "https://your-domain.com/api/admin/catalog/families?per_page=10&page=1&sort=id&order=desc" \
-  -H "Authorization: Bearer <token>" \
-  -H "Accept: application/json"
-```
-
-## Example Response
-
-```json
-{
-  "data": [
-    {
-      "id": 1,
-      "code": "default",
-      "name": "Default"
-    },
-    {
-      "id": 3,
-      "code": "apparel",
-      "name": "Apparel"
-    }
-  ],
-  "meta": {
-    "currentPage": 1,
-    "perPage": 10,
-    "lastPage": 1,
-    "total": 2,
-    "from": 1,
-    "to": 2
-  }
-}
-```
+The listing is deliberately three columns. Families carry **no timestamps at all** — there is no `createdAt` or `updatedAt` on this resource, unlike every other admin listing — so you cannot sort or filter by date here. Attribute groups and their attributes resolve only on [`GET /api/admin/catalog/families/{id}`](/api/rest-api/admin/catalog/families/families-detail).
 
 ## Sorting
 

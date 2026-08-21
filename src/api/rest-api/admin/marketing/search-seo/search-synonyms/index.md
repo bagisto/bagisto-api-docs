@@ -27,5 +27,3 @@ A synonym group widens storefront search recall by treating several words as equ
 | [Update](/api/rest-api/admin/marketing/search-seo/search-synonyms-update) | `PUT /api/admin/marketing/search-synonyms/{id}` |
 | [Delete](/api/rest-api/admin/marketing/search-seo/search-synonyms-delete) | `DELETE /api/admin/marketing/search-synonyms/{id}` |
 | [Mass Delete](/api/rest-api/admin/marketing/search-seo/search-synonyms-mass-delete) | `POST /api/admin/marketing/search-synonyms/mass-delete` |
-
-All Search Synonyms endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

@@ -58,10 +58,8 @@ mutation returns the freshly-resolved values for that slug (the same shape as th
 [Values](./values) query), so the client can refresh its form state without a
 follow-up read. See the [Configuration overview](./) for the full flow.
 
-::: tip Selection set
 The payload wraps the result in `adminConfigurationUpdate` — select `slug`,
 `success`, `message`, `channel`, `locale`, and `values` inside it.
-:::
 
 ## Input
 
@@ -83,25 +81,25 @@ from the client. Call Menu first to know which rules apply to a given code.
 Requires the admin role to carry `configuration` (or the finer-grained
 `configuration.edit`), or `permission_type = "all"`.
 
-::: warning Stay in scope
+### Stay in scope
+
 Every key in `values` must start with the supplied `slug.` prefix. A request
 with `slug: "sales.order_settings"` cannot write `catalog.inventory.stock_threshold`
 even if the fully-qualified key is supplied — the server rejects it before any
 write.
-:::
 
-::: warning File / image fields are REST-only
+### File / image fields are REST-only
+
 GraphQL has no binary transport, so `image` / `file` fields cannot be set here.
 Sending a non-string value for such a field is rejected; use the REST multipart
 endpoint instead.
-:::
 
-::: warning Custom fields are read-only
+### Custom fields are read-only
+
 Fields whose schema declares `type: "custom"` (blade-rendered in the admin)
 cannot be written via the API.
-:::
 
-::: warning Password fields are stored plaintext
+### Password fields are stored plaintext
+
 `type: "password"` fields are UI-masking only; the value is stored as plaintext.
 This is a Bagisto core behaviour, not an API limitation.
-:::

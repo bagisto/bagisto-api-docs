@@ -31,12 +31,10 @@ Edits a customer group. The update is partial — send only the fields you want 
 
 `code` uniqueness excludes self.
 
-::: warning System group restrictions
+### System group restrictions
+
 For system groups (`is_user_defined=0`), attempting to change `code` or `is_user_defined` returns 422. Only `name` is editable.
-:::
 
 Permission: `customers.groups.edit`.
 
-::: tip
 For what customer groups are and the system-group rules, see the [Customer Groups overview](./index.md).
-:::

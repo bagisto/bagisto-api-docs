@@ -78,16 +78,6 @@ a category — e.g. when opening the edit form in the Catalog → Categories UI.
 requirement (`\d+`) — this prevents the `{id}` segment from matching the
 `/tree` path of the tree endpoint.
 
-## Authentication
-
-Every request requires:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain the Bearer token via [Authentication](/api/rest-api/admin/authentication).
-
 ## Path Parameter
 
 | Parameter | Type | Required | Description |
@@ -132,66 +122,18 @@ Each entry in the `translations` array corresponds to one locale row in
 | `metaDescription` | string\|null | SEO meta description in this locale |
 | `metaKeywords` | string\|null | SEO meta keywords in this locale |
 
-## Example Request
-
-```bash
-curl -X GET "https://your-domain.com/api/admin/catalog/categories/7" \
-  -H "Authorization: Bearer <token>" \
-  -H "Accept: application/json"
-```
-
-## Example Response
-
-```json
-{
-  "id": 7,
-  "position": 1,
-  "status": 1,
-  "parentId": 1,
-  "displayMode": "products_and_description",
-  "logoUrl": "https://example.com/storage/category/7/logo.webp",
-  "bannerUrl": null,
-  "name": "Apparel",
-  "slug": "apparel",
-  "description": "Men's and women's apparel",
-  "locale": "en",
-  "createdAt": "2026-01-12T08:15:00+00:00",
-  "updatedAt": "2026-04-30T14:20:09+00:00",
-  "translations": [
-    {
-      "locale": "en",
-      "name": "Apparel",
-      "slug": "apparel",
-      "description": "Men's and women's apparel",
-      "metaTitle": null,
-      "metaDescription": null,
-      "metaKeywords": null
-    },
-    {
-      "locale": "fr",
-      "name": "Vêtements",
-      "slug": "vetements",
-      "description": null,
-      "metaTitle": null,
-      "metaDescription": null,
-      "metaKeywords": null
-    }
-  ],
-  "filterableAttributeIds": [11, 23]
-}
-```
-
 ## Errors
 
-| HTTP Status | Cause |
-|-------------|-------|
-| `401 Unauthorized` | Missing, expired, or revoked admin Bearer token |
-| `401 Unauthorized` | Missing or invalid admin Bearer token |
-| `404 Not Found` | The specified `{id}` does not exist in the database |
+| HTTP | Detail |
+|------|--------|
+| `401` | `Unauthenticated.` |
+| `404` | `{"type": "/errors/404", "title": "Not Found", "status": 404, "detail": "Category not found."}` |
 
-## Notes
+A non-numeric `{id}` also returns `404`. The route constrains the segment to digits, which is what keeps `/catalog/categories/tree` routing to the tree endpoint instead of being read as an id.
 
-- **`translations` contains every locale in the DB**, not just the current app locale. If the store has 3 locale rows for this category (`en`, `fr`, `de`), all three are returned. Fields with no content for a locale are `null`.
-- **`filterableAttributeIds`** is an array of integer attribute IDs. An empty array `[]` means no filterable attributes have been configured for the category. This differs from `null`, which would mean the field was not resolved — but in practice the detail provider always returns an array.
-- **The `{id}` route parameter must be a digit.** Requesting `/api/admin/catalog/categories/tree` will NOT match this endpoint because the `requirements: ['id' => '\d+']` constraint rejects the non-numeric string `tree`. The tree endpoint has its own route at `GET /api/admin/catalog/categories/tree`.
-- **Top-level `name`, `slug`, `description`, and `locale` fields** reflect the app's current default locale. They are a convenience shortcut — the same values are present in the `translations` array entry for that locale.
+## Working With This Endpoint
+
+- **`translations` carries one entry per stored locale row**, not just the requested one, so a multi-locale store returns them all. Unset text fields come back as the empty string `""`, not `null`.
+- **The top-level `name`, `slug`, and `description` duplicate the requested locale's entry.** They are a shortcut, not extra data — `locale` tells you which entry they came from.
+- **`filterableAttributeIds` is a flat integer array.** `[]` means none are configured; it is the layered-navigation attribute set for this category, not the products' attributes.
+- **The response is a bare object**, unlike the listing, which wraps rows in `{ data, meta }`.

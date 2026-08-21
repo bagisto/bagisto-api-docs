@@ -38,5 +38,3 @@ Every address belongs to exactly one customer. Address endpoints are nested unde
 | [Set as Default](./set-default.md) | `POST /api/admin/customers/{customerId}/addresses/{id}/set-default` |
 
 Permissions: `customers.addresses.create` / `.edit` / `.delete`.
-
-All endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

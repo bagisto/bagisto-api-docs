@@ -172,10 +172,8 @@ section has, each field's dotted `code` (the key you read and write), its
 `type`, `default`, scoping flags, `validation`, and `options`. See the
 [Configuration overview](./) for how Menu, Values, and Update fit together.
 
-::: tip Selection set
 The query exposes two fields: `slug` (echoes the requested scope) and `tree`
 (the schema, a JSON array — select it bare; it is not a typed sub-object).
-:::
 
 ## Arguments
 
@@ -186,10 +184,10 @@ The query exposes two fields: `slug` (echoes the requested scope) and `tree`
 | `channel` | `String` | Channel code used when resolving values. Defaults to the default channel. |
 | `locale` | `String` | Locale code used when resolving values. Defaults to the app locale. |
 
-::: warning Arguments are snake_case
+### Arguments are snake_case
+
 The flag is **`include_values`**, not `includeValues`. All admin GraphQL query
 arguments use snake_case in this API.
-:::
 
 ## Field shape
 

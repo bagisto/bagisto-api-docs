@@ -102,24 +102,24 @@ Requires the admin role to carry `configuration` (or the finer-grained
 | 404 | Slug not registered. |
 | 422 | Validation failed, out-of-scope key, missing `slug` / `values`, or an attempt to write a custom (blade) field. |
 
-::: warning Stay in scope
+### Stay in scope
+
 Every key in `values` must start with the supplied `slug.` prefix. A request
 with `slug: "sales.order_settings"` cannot write `catalog.inventory.stock_threshold`
 even if the fully-qualified key is supplied — the server rejects it with the
 offending key before any write happens.
-:::
 
-::: warning File / image fields are multipart-only
+### File / image fields are multipart-only
+
 JSON (and GraphQL) cannot carry binaries. To set an `image` / `file` field, send
 `multipart/form-data` with the file at `values[<code>]`.
-:::
 
-::: warning Custom fields are read-only
+### Custom fields are read-only
+
 Fields whose schema declares `type: "custom"` (blade-rendered in the admin)
 cannot be written via the API.
-:::
 
-::: warning Password fields are stored plaintext
+### Password fields are stored plaintext
+
 `type: "password"` fields are UI-masking only; the value is stored as plaintext.
 This is a Bagisto core behaviour, not an API limitation.
-:::

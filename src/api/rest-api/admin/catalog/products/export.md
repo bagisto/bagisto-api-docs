@@ -81,9 +81,7 @@ Downloads the products datagrid as a **csv, xls or xlsx file** — the same data
 
 Unlike the [listing](/api/rest-api/admin/catalog/products), the export is **not paginated** — it streams **every row that matches the current filters**, so you can export a whole filtered catalog in one call.
 
-::: tip REST only
-There is no GraphQL counterpart — binary file streams aren't expressible over GraphQL. Use this REST endpoint for the export.
-:::
+Export is REST-only. The response is a file stream, which GraphQL cannot express, so there is no matching operation on the GraphQL endpoint.
 
 ## Endpoint
 

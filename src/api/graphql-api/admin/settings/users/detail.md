@@ -55,8 +55,4 @@ The `password` and `api_token` values are never returned.
 |-----------|------|---------|
 | `adminSettingsUser(id: ID!)` | Query | Fetch one admin user |
 
-::: tip Overview
 For field meanings, create/update/delete rules, and delete guards, see the [Users overview](./).
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

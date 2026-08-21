@@ -17,7 +17,29 @@ examples:
         "id": 314,
         "itemsQty": 3,
         "grandTotal": 300,
-        "items": [ /* updated rows */ ],
+        "items": [
+          {
+            "id": 375,
+            "cartId": 510,
+            "productId": 2,
+            "parentId": null,
+            "sku": "ws-blossom-skirt-w24",
+            "type": "simple",
+            "name": "Blossom Breeze Cotton Printed Short Skirt-24",
+            "quantity": 3,
+            "price": 24.99,
+            "formattedPrice": "$24.99",
+            "total": 74.97,
+            "formattedTotal": "$74.97",
+            "taxAmount": 0,
+            "formattedTaxAmount": "$0.00",
+            "discountAmount": 0,
+            "formattedDiscountAmount": "$0.00",
+            "additional": null,
+            "child": null,
+            "children": []
+          }
+        ],
         "success": true,
         "message": "Cart items updated."
       }

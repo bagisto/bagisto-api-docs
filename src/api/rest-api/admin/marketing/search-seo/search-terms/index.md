@@ -31,5 +31,3 @@ Search terms are **storefront-originated** — there is no create endpoint. Ever
 | [Mass Delete](/api/rest-api/admin/marketing/search-seo/search-terms-mass-delete) | `POST /api/admin/marketing/search-terms/mass-delete` |
 
 There is no create endpoint — search terms are recorded automatically by storefront searches.
-
-All Search Terms endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

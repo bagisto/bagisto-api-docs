@@ -41,6 +41,4 @@ examples:
 
 Fetches a single customer group by id, including the detail-only `customersCount` (the number of customers currently assigned to the group).
 
-::: tip Menu overview
 See the [Customer Groups overview](/api/graphql-api/admin/customers/groups/) for what customer groups do and how they relate to the rest of the store.
-:::

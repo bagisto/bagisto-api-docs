@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: admin-catalog-products-list
     title: List Products (Datagrid)
-    description: The canonical admin product listing over GraphQL — a cursor-paginated query returning the full catalog product row, mirroring the admin Catalog → Products datagrid. Supports filtering by type, status, SKU, name, price range, attribute family, channel, and locale.
+    description: The canonical admin product listing — a cursor-paginated query mirroring the Catalog → Products datagrid, with every scalar column the listing can resolve.
     query: |
       query AdminCatalogProducts(
         $first: Int
@@ -31,6 +31,7 @@ examples:
               sku
               name
               type
+              parentId
               status
               price
               formattedPrice
@@ -50,12 +51,14 @@ examples:
               urlKey
               visibleIndividually
               shortDescription
+              description
               metaTitle
               metaDescription
               metaKeywords
               weight
               featured
               new
+              additional
               createdAt
               updatedAt
             }
@@ -63,8 +66,8 @@ examples:
           pageInfo {
             hasNextPage
             hasPreviousPage
-            endCursor
             startCursor
+            endCursor
           }
           totalCount
         }
@@ -86,19 +89,20 @@ examples:
                 "node": {
                   "id": "/api/admin/catalog/products/22",
                   "_id": 22,
-                  "sku": "bagistoNGRY3424234KJCKJK",
+                  "sku": "SP-001",
                   "name": "Acme Drawstring Bag",
                   "type": "simple",
-                  "status": 1,
+                  "parentId": null,
+                  "status": "1",
                   "price": "3000.0000",
                   "formattedPrice": "$3,000.00",
                   "specialPrice": "2700.0000",
                   "formattedSpecialPrice": "$2,700.00",
                   "specialPriceFrom": null,
                   "specialPriceTo": null,
-                  "quantity": 98,
+                  "quantity": "98",
                   "baseImageUrl": "http://localhost:8000/storage/product/22/1qfyoglc5BP46kofrxYrkJ2MXRxu9lAVG3BDFlTZ.webp",
-                  "imagesCount": 1,
+                  "imagesCount": "1",
                   "categoryId": null,
                   "categoryName": null,
                   "channel": "default",
@@ -106,26 +110,79 @@ examples:
                   "attributeFamilyId": 1,
                   "attributeFamilyName": "Default",
                   "urlKey": "acme-drawstring-bag",
-                  "visibleIndividually": true,
+                  "visibleIndividually": "1",
                   "shortDescription": "Many desktop publishing packages and web page editors now use",
-                  "metaTitle": "",
+                  "description": "A roomy drawstring bag in durable cotton canvas.",
+                  "metaTitle": "Acme Drawstring Bag",
                   "metaDescription": "",
                   "metaKeywords": "",
-                  "weight": 32,
-                  "featured": true,
-                  "new": true,
-                  "createdAt": "2024-04-19 11:56:43",
-                  "updatedAt": "2026-04-23 16:36:14"
+                  "weight": "32",
+                  "featured": "1",
+                  "new": "",
+                  "additional": null,
+                  "createdAt": "2026-04-19T11:56:43+05:30",
+                  "updatedAt": "2026-04-23T16:36:14+05:30"
                 }
               }
             ],
             "pageInfo": {
               "hasNextPage": true,
               "hasPreviousPage": false,
-              "endCursor": "MA==",
-              "startCursor": "MA=="
+              "startCursor": "MA==",
+              "endCursor": "MA=="
             },
             "totalCount": 265
+          }
+        }
+      }
+  - id: admin-catalog-products-sorted
+    title: Sorted and Price-Filtered
+    description: Sorting takes either a column plus a direction, or a single compound token. Both forms below are equivalent.
+    query: |
+      query AdminCatalogProducts($first: Int, $sort: String, $order: String, $priceFrom: Float, $priceTo: Float) {
+        adminCatalogProducts(
+          first: $first
+          sort: $sort
+          order: $order
+          price_from: $priceFrom
+          price_to: $priceTo
+        ) {
+          edges {
+            node {
+              _id
+              sku
+              name
+              price
+              formattedPrice
+            }
+          }
+          totalCount
+        }
+      }
+    variables: |
+      {
+        "first": 5,
+        "sort": "price",
+        "order": "asc",
+        "priceFrom": 10,
+        "priceTo": 500
+      }
+    response: |
+      {
+        "data": {
+          "adminCatalogProducts": {
+            "edges": [
+              {
+                "node": {
+                  "_id": 85,
+                  "sku": "SP-014",
+                  "name": "PureStride Classic White Sneakers",
+                  "price": "60.9900",
+                  "formattedPrice": "$60.99"
+                }
+              }
+            ],
+            "totalCount": 41
           }
         }
       }
@@ -133,22 +190,11 @@ examples:
 
 # List Products
 
-The **canonical admin product listing** over GraphQL — a cursor-paginated query
-that mirrors the Bagisto admin **Catalog → Products** datagrid. Returns the full
-product row with filtering, sorting, and cursor pagination. This is the query you
-want for product-management screens.
+The canonical admin product listing, mirroring the Bagisto admin **Catalog → Products** datagrid. Cursor-paginated, filterable, and sortable — this is the query behind a product-management screen.
 
-::: tip How this menu works
-For the product types, the two-step create flow, status vs. visibleIndividually, and the per-product sub-resources, see the [Products overview](/api/graphql-api/admin/catalog/products/).
-:::
+For the product types, the two-step create flow, `status` versus `visibleIndividually`, and the per-product sub-resources, see the [Products overview](/api/graphql-api/admin/catalog/products/).
 
-::: tip Not the Create-Order search
-`adminCatalogProducts` (this query) is the full product listing.
-
-A separate slim search — [`adminProducts`](/api/graphql-api/admin/catalog/products/list) — powers the admin
-Create-Order "Add Product" modal only. Use this query for the actual product
-listing.
-:::
+A separate slim search, [`adminProducts`](/api/graphql-api/admin/catalog/products/list), powers the Create-Order "Add Product" modal only. It is not the listing.
 
 ## Operation
 
@@ -156,277 +202,116 @@ listing.
 |-----------|------|------------|
 | `adminCatalogProducts` | Query | Cursor (`first` / `after`) |
 
-## Authentication
-
-Every request must include an admin Bearer token:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain a token via the [`createAdminLogin`](/api/graphql-api/admin/authentication)
-mutation.
-
 ## Arguments
 
-| Argument | Type | Description | Example |
-|----------|------|-------------|---------|
-| `first` | `Int` | Number of items to return per page (default `10`, max `50`) | `10` |
-| `after` | `String` | Cursor from a previous `pageInfo.endCursor` for keyset pagination | `"MA=="` |
-| `product_id` | `String` | Filter by product ID — single integer or comma-separated list | `"142"` or `"1,2,3"` |
-| `sku` | `String` | Partial SKU match (SQL `LIKE %value%`) | `"SP-001"` |
-| `name` | `String` | Partial product name match (SQL `LIKE %value%`) | `"Classic Watch"` |
-| `type` | `String` | Filter by product type | `"simple"` |
-| `status` | `Int` | Filter by status: `0` = disabled, `1` = enabled | `1` |
-| `attribute_family` | `String` | Filter by attribute family ID | `"1"` |
-| `channel` | `String` | Channel code for value resolution (default: current channel) | `"default"` |
-| `locale` | `String` | Locale code for name/category resolution (default: app locale) | `"en"` |
-| `price_from` | `Float` | Minimum price filter (inclusive) | `10.0` |
-| `price_to` | `Float` | Maximum price filter (inclusive) | `500.0` |
-| `sort` | `String` | Column to sort by (see Sorting section below) | `"product_id"` |
-| `order` | `String` | Sort direction: `"asc"` or `"desc"` (default `"desc"`) | `"desc"` |
+| Argument | Type | Description |
+|----------|------|-------------|
+| `first` | Int | Page size, default `10`, capped at `50`. |
+| `after` | String | Cursor from a previous `pageInfo.endCursor`. |
+| `last` | Int | Page size when paging backwards. |
+| `before` | String | Cursor from a previous `pageInfo.startCursor`. |
+| `product_id` | String | One id (`"142"`) or a comma-separated list (`"1,2,3"`). |
+| `sku` | String | Partial SKU match. |
+| `name` | String | Partial name match. |
+| `type` | String | `simple`, `configurable`, `bundle`, `grouped`, `downloadable`, `virtual`, or `booking`. |
+| `status` | Int | `0` disabled, `1` enabled. |
+| `attribute_family` | String | Attribute family id. |
+| `channel` | String | Channel code used to resolve values. Defaults to the current channel. |
+| `locale` | String | Locale code used to resolve name and category. Defaults to the app locale. |
+| `price_from` | Float | Minimum price, inclusive. |
+| `price_to` | Float | Maximum price, inclusive. |
+| `sort` | String | Column to sort by — see [Sorting](#sorting). |
+| `order` | String | `asc` or `desc`. Defaults to `desc`. |
 
-### Valid `type` values
-
-`"simple"`, `"configurable"`, `"bundle"`, `"grouped"`, `"downloadable"`,
-`"virtual"`, `"booking"`
+Filters combine with AND, so each one you add narrows the result. Four of the argument names are snake_case (`product_id`, `attribute_family`, `price_from`, `price_to`) while the rest are single words — that is the literal schema, not a typo.
 
 ## Node Fields
 
-Each `edges[].node` object contains the following fields:
-
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | `ID` | API Platform IRI (e.g. `/api/admin/catalog/products/142`) |
-| `_id` | `Int` | Raw product ID |
-| `sku` | `String` | Product SKU |
-| `name` | `String` | Product name (resolved via `locale` and `channel`) |
-| `type` | `String` | Product type |
-| `status` | `Int` | `1` = enabled, `0` = disabled |
-| `price` | `String` | Raw price as a decimal string (e.g. `"3000.0000"`) |
-| `formattedPrice` | `String` | Locale-formatted price (e.g. `"$3,000.00"`) |
-| `specialPrice` | `String` | Raw special (sale) price as a decimal string; `null` if none |
-| `formattedSpecialPrice` | `String` | Locale-formatted special price; `null` if none |
-| `specialPriceFrom` | `String` | Start of the special-price window; `null` unless a dated window is set |
-| `specialPriceTo` | `String` | End of the special-price window; `null` unless a dated window is set |
-| `quantity` | `Int` | Sum of inventory qty across all inventory sources |
-| `baseImageUrl` | `String` | Storage URL of the first product image; `null` if no images |
-| `imagesCount` | `Int` | Total number of images attached to the product |
-| `categoryId` | `Int` | ID of the first category this product belongs to; `null` if uncategorized |
-| `categoryName` | `String` | Translated name of that category; `null` if uncategorized |
-| `channel` | `String` | Channel code used for resolution |
-| `locale` | `String` | Locale code used for resolution |
-| `attributeFamilyId` | `Int` | Attribute family ID |
-| `attributeFamilyName` | `String` | Attribute family name |
-| `urlKey` | `String` | URL slug (e.g. `"acme-drawstring-bag"`) |
-| `visibleIndividually` | `Boolean` | Whether the product appears in category/search listings |
-| `shortDescription` | `String` | Short description |
-| `metaTitle` | `String` | SEO meta title (empty string when unset) |
-| `metaDescription` | `String` | SEO meta description (empty string when unset) |
-| `metaKeywords` | `String` | SEO meta keywords (empty string when unset) |
-| `weight` | `Float` | Product weight |
-| `featured` | `Boolean` | Whether the product is flagged as featured |
-| `new` | `Boolean` | Whether the product is flagged as "new" |
-| `createdAt` | `String` | Creation timestamp |
-| `updatedAt` | `String` | Last-update timestamp |
+| `id` | ID! | Resource identifier in IRI form, `/api/admin/catalog/products/<id>`. |
+| `_id` | Int! | Numeric product id. |
+| `sku` | String! | Product SKU. |
+| `type` | String! | Product type. |
+| `parentId` | String | Parent product id for a configurable variant, `null` for a standalone product. |
+| `name` | String | Resolved for the requested channel and locale. |
+| `status` | String | `"1"` enabled, `""` disabled. |
+| `price` | String | Decimal string, four places (`"3000.0000"`). |
+| `formattedPrice` | String | The same price in the channel currency. |
+| `specialPrice` | String | Sale price as a decimal string, `null` when none. |
+| `formattedSpecialPrice` | String | Formatted sale price, `null` when none. |
+| `specialPriceFrom` | String | Start of the sale window, `null` unless a dated window is set. |
+| `specialPriceTo` | String | End of the sale window, `null` unless a dated window is set. |
+| `quantity` | String | Inventory summed across every source. |
+| `baseImageUrl` | String | URL of the first product image. |
+| `imagesCount` | String | Number of images attached. |
+| `categoryId` | String | Id of the **first** category only, `null` when uncategorized. |
+| `categoryName` | String | Translated name of that first category. |
+| `channel` | String | Channel code used for resolution. |
+| `locale` | String | Locale code used for resolution. |
+| `attributeFamilyId` | Int | Attribute family id. |
+| `attributeFamilyName` | String | Attribute family name. |
+| `urlKey` | String | URL slug. |
+| `visibleIndividually` | String | `"1"` when the product appears in listings, `""` when it does not. |
+| `shortDescription` | String | Short description, HTML. |
+| `description` | String | Full description, HTML. |
+| `metaTitle` | String | SEO meta title. |
+| `metaDescription` | String | SEO meta description. |
+| `metaKeywords` | String | SEO meta keywords. |
+| `weight` | String | Product weight. |
+| `featured` | String | `"1"` when flagged featured, `""` when not. |
+| `new` | String | `"1"` when flagged new, `""` when not. |
+| `additional` | String | Type-specific extra data, `null` for most products. |
+| `createdAt` | String | ISO 8601 with offset, `2026-04-19T11:56:43+05:30`. |
+| `updatedAt` | String | ISO 8601 with offset. |
 
-Notes on the listing values:
+Four traps in these values:
 
-- `price`, `specialPrice` are **decimal strings**, not numbers.
-- `specialPriceFrom` / `specialPriceTo` are `null` unless a **dated**
-  special-price window is configured.
-- `quantity` is the **summed** inventory across all sources.
+- **Booleans arrive as `"1"` or the empty string `""`, never `true`/`false`.** `status`, `visibleIndividually`, `featured`, and `new` are all typed String. `""` is falsy in JavaScript so a plain `if (node.featured)` happens to work, but `node.featured === false` and `node.status === "0"` never match anything. Compare against `"1"`, or coerce.
+- **Numbers arrive as strings too.** `price`, `quantity`, `imagesCount`, `weight`, and `categoryId` are String; only `_id` and `attributeFamilyId` are Int. Sorting a page client-side on `price` without casting compares `"100.0000"` below `"60.9900"`.
+- **`categoryId` and `categoryName` describe the first category only.** A product in three categories reports one, matching what the datagrid shows. Read the full set from the `categories` connection on [Product Detail](/api/graphql-api/admin/catalog/products/products-detail).
+- **`quantity` is a sum across inventory sources**, not a per-source figure. For the breakdown use [List Inventories](/api/graphql-api/admin/catalog/products/inventories-list).
 
-The following fields are **detail-only** and always come back `null` on the
-listing — fetch them from the single-product query `adminCatalogProduct(id:)`:
+### Fields That Stay Null on the Listing
 
-- `taxCategoryId`, `manageStock`, `inStock`
-- the relation blocks: `translations`, `images`, `categories`, `inventories`,
-  `customerGroupPrices`, `superAttributes`, `variants`, `bundleOptions`,
-  `linkedProducts`, `downloadableLinks`, `downloadableSamples`, `videos`,
-  `channels`, `relatedProducts`, `upSells`, `crossSells`.
+`taxCategoryId`, `manageStock`, and `inStock` are resolved per product and are always `null` here. So is every relation connection — `translations`, `images`, `videos`, `categories`, `inventories`, `customerGroupPrices`, `superAttributes`, `variants`, `bundleOptions`, `linkedProducts`, `downloadableLinks`, `downloadableSamples`, `customizableOptions`, `attributeValues`, `channels`, `relatedProducts`, `upSells`, and `crossSells`. They resolve only on `adminCatalogProduct(id:)`.
 
-## Example Query
-
-```graphql
-query AdminCatalogProducts(
-  $first: Int
-  $after: String
-  $sku: String
-  $type: String
-  $status: Int
-  $priceFrom: Float
-  $priceTo: Float
-) {
-  adminCatalogProducts(
-    first: $first
-    after: $after
-    sku: $sku
-    type: $type
-    status: $status
-    price_from: $priceFrom
-    price_to: $priceTo
-  ) {
-    edges {
-      cursor
-      node {
-        id
-        _id
-        sku
-        name
-        type
-        status
-        price
-        formattedPrice
-        specialPrice
-        formattedSpecialPrice
-        specialPriceFrom
-        specialPriceTo
-        quantity
-        baseImageUrl
-        imagesCount
-        categoryId
-        categoryName
-        channel
-        locale
-        attributeFamilyId
-        attributeFamilyName
-        urlKey
-        visibleIndividually
-        shortDescription
-        metaTitle
-        metaDescription
-        metaKeywords
-        weight
-        featured
-        new
-        createdAt
-        updatedAt
-      }
-    }
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      endCursor
-      startCursor
-    }
-    totalCount
-  }
-}
-```
-
-```json
-{
-  "first": 10,
-  "sku": "SP-",
-  "type": "simple",
-  "status": 1
-}
-```
-
-## Example Response
-
-```json
-{
-  "data": {
-    "adminCatalogProducts": {
-      "edges": [
-        {
-          "cursor": "MA==",
-          "node": {
-            "id": "/api/admin/catalog/products/22",
-            "_id": 22,
-            "sku": "bagistoNGRY3424234KJCKJK",
-            "name": "Acme Drawstring Bag",
-            "type": "simple",
-            "status": 1,
-            "price": "3000.0000",
-            "formattedPrice": "$3,000.00",
-            "specialPrice": "2700.0000",
-            "formattedSpecialPrice": "$2,700.00",
-            "specialPriceFrom": null,
-            "specialPriceTo": null,
-            "quantity": 98,
-            "baseImageUrl": "http://localhost:8000/storage/product/22/1qfyoglc5BP46kofrxYrkJ2MXRxu9lAVG3BDFlTZ.webp",
-            "imagesCount": 1,
-            "categoryId": null,
-            "categoryName": null,
-            "channel": "default",
-            "locale": "en",
-            "attributeFamilyId": 1,
-            "attributeFamilyName": "Default",
-            "urlKey": "acme-drawstring-bag",
-            "visibleIndividually": true,
-            "shortDescription": "Many desktop publishing packages and web page editors now use",
-            "metaTitle": "",
-            "metaDescription": "",
-            "metaKeywords": "",
-            "weight": 32,
-            "featured": true,
-            "new": true,
-            "createdAt": "2024-04-19 11:56:43",
-            "updatedAt": "2026-04-23 16:36:14"
-          }
-        }
-      ],
-      "pageInfo": {
-        "hasNextPage": true,
-        "hasPreviousPage": false,
-        "endCursor": "MA==",
-        "startCursor": "MA=="
-      },
-      "totalCount": 265
-    }
-  }
-}
-```
+Selecting them on the listing is not an error — you simply get nulls and empty edges, at no query cost.
 
 ## Sorting
 
-Pass `sort` with the column name and `order` for direction. A compound form
-`sort=name-asc` is also accepted (splits on `-` to extract column and direction).
-
-**Sortable columns:**
+Pass `sort` with a column and `order` with a direction. The compound form `sort: "name-asc"` is also accepted and splits on the hyphen.
 
 | `sort` value | Sorts by |
 |---|---|
-| `product_id` | Product ID (default) |
+| `product_id` | Product id (default) |
 | `name` | Product name |
 | `sku` | SKU |
 | `price` | Price |
-| `quantity` | Inventory quantity (SUM across sources) |
-| `status` | Enabled/disabled status |
+| `quantity` | Inventory quantity, summed across sources |
+| `status` | Enabled / disabled |
 | `type` | Product type |
-| `attribute_family` | Attribute family ID |
+| `attribute_family` | Attribute family id |
 | `channel` | Channel code |
+
+Products with no resolved `name` in the requested locale sort first on an ascending `name` — they are not filtered out.
 
 ## Cursor Pagination
 
-- `first` controls the page size (default `10`, max `50`).
-- To fetch the next page, pass the `pageInfo.endCursor` value as `after` in the
-  next request.
-- `totalCount` reflects the full count of matching products across all pages.
+`first` sets the page size. Pass the previous response's `pageInfo.endCursor` as `after` to advance. `totalCount` is the full match count across all pages, not the size of the current page.
 
-## How It Differs from `adminProducts`
+## How It Differs From `adminProducts`
 
 | | `adminCatalogProducts` | `adminProducts` |
 |---|---|---|
-| Purpose | The canonical product listing (catalog management) | Slim Create-Order "Add Product" search |
-| Row shape | Full product row | Slim row (9 fields) |
-| Filters | Full set (price range, attribute family, status, type, etc.) | A handful (query text, sku, type, status, categoryId, channel) |
+| Purpose | The product listing, for catalog management | Create-Order "Add Product" search |
+| Row shape | Every scalar column | Nine fields |
+| Filters | Full set including price range and attribute family | Free text, sku, type, status, categoryId |
+| Scalar types | Strings, including the numbers and booleans | Real `Int`, `Float`, and `Boolean` |
 | Default status filter | None — all statuses returned | None — all statuses returned |
 
-Use **this** query for the product listing; use
-[`adminProducts`](/api/graphql-api/admin/catalog/products/list) only for the
-Create-Order product search.
+The scalar-type difference is the one that bites: the two queries describe the same products with different JSON types, so a shared parsing helper will break on one of them.
 
-## Notes
+## Search Engine
 
-- **Elasticsearch is not yet supported.** Even when the Bagisto admin panel is
-  configured to use Elasticsearch for catalog search, this query always uses the
-  database path.
-- **No automatic status filter** — unlike `GET /api/shop/products` (the
-  storefront product list), this query returns all statuses by default. Pass
-  `status: 1` to restrict to enabled products.
-- **Multi-category products** — only the first associated category's `categoryId`
-  and `categoryName` are included (matching the datagrid display).
+The listing always queries the database. Configuring the admin panel to use Elasticsearch for catalog search does not change this query's behaviour.

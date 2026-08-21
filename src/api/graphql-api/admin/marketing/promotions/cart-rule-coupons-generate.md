@@ -72,9 +72,7 @@ examples:
 Bulk-creates several coupon codes in one call — the **Generate Coupons** action on
 the admin **Marketing → Promotions → Cart Rules → Coupons** screen.
 
-::: tip
 New here? Read the [Cart Rule Coupons overview](/api/graphql-api/admin/marketing/promotions/cart-rule-coupons/) for what a coupon does and how its fields behave.
-:::
 
 ## Operation
 

@@ -123,9 +123,9 @@ GraphQL counterpart of `GET /api/admin/bookings/{id}`. Returns a single booking 
 
 Pass the booking IRI (`/api/admin/bookings/{id}`) as `id`. Permission: `sales.bookings.view`.
 
-::: warning order, orderItem, billingAddress, shippingAddress, invoices, shipments and refunds are returned whole
+### Order, orderItem, billingAddress, shippingAddress, invoices, shipments and refunds are returned whole
+
 `order`, `orderItem`, `billingAddress`, `shippingAddress`, `invoices`, `shipments` and `refunds` are returned as whole JSON objects/arrays — **query them bare, without a sub-selection** (`billingAddress`, not `billingAddress { … }`; `invoices`, not `invoices { edges { node { … } } }`). The complete object/array comes back. The keys inside each are listed below for reference.
-:::
 
 ## Fields
 

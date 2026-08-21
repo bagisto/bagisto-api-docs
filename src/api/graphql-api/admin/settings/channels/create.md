@@ -121,6 +121,6 @@ Optional: `hostname`, `description`, `timezone`, `theme`, `allowedIps`, and the 
 
 - The create mutation payload returns the channel's scalar fields, the SEO triplet (`seoMetaTitle` / `seoMetaDescription` / `seoMetaKeywords` + the `homeSeo` object). The nested **connections** (`locales` / `currencies` / `inventorySources` / `translations`) are **not** resolved in a mutation payload — re-query [`adminSettingsChannel(id:)`](./detail) with the returned `_id` to read them.
 
-::: warning Logo / favicon upload deferred
+### Logo / favicon upload deferred
+
 The `logo` and `favicon` fields accept an already-uploaded path string only. Direct binary image upload is not yet supported over GraphQL.
-:::

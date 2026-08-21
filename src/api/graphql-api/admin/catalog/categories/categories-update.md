@@ -66,10 +66,6 @@ examples:
 
 Updates a category and returns its detail. Unlike create, the translatable values (`slug`, `name`, `description`, optional meta fields) are **nested under a key matching the locale code** (e.g. `"en"`), and `locale` names which block is written. Top-level fields: `id` (the category IRI), `position`, `attributes`, `parentId`, `displayMode`, `status`. **Moving** a category is part of this same mutation — change `parentId` and `position` to re-parent and re-order; there is no separate move operation (this mirrors the admin panel).
 
-::: tip
-See the [Categories overview](/api/graphql-api/admin/catalog/categories/) for how the menu works.
-:::
+See the [Categories overview](/api/graphql-api/admin/catalog/categories/) for how this menu works.
 
 The update mutation payload resolves the category's scalar fields. The category's `translations` and `filterableAttributeIds` are not returned here — re-query [`adminCategory`](/api/graphql-api/admin/catalog/categories/categories-detail) for the full detail.
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

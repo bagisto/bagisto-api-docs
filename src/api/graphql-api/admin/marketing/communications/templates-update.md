@@ -53,9 +53,7 @@ Updates an email template — the **Edit** row action on the admin
 **Marketing → Communications → Email Templates** screen. Only the fields you send
 are changed; the rest keep their current values.
 
-::: tip
 New here? Read the [Email Templates overview](/api/graphql-api/admin/marketing/communications/templates/) for what an email template does and how its fields behave.
-:::
 
 ## Operation
 

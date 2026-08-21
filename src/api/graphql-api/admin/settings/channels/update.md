@@ -100,6 +100,4 @@ Partially updates a channel — send only the fields you want to change. Fields 
 - **`code` is unique.** Changing it must not collide with another channel.
 - **Connections are not in the mutation payload.** The update payload returns scalars + the SEO triplet; re-query [`adminSettingsChannel(id:)`](./detail) to read the refreshed `locales` / `currencies` / `inventorySources` / `translations` connections.
 
-::: tip Prerequisites
 The example uses an illustrative `id`. Replace it with a channel id that exists in your store — use the [`adminSettingsChannels`](./list) query to discover valid ids.
-:::

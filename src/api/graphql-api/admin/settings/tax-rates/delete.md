@@ -57,9 +57,7 @@ Permanently removes a tax rate. On success the mutation returns a snapshot of th
 |-----------|------|---------|
 | `deleteAdminSettingsTaxRate(input:)` | Mutation | Delete a tax rate |
 
-::: tip Prerequisites
 The example uses an illustrative `id` value. Replace it with the id of a tax rate that exists in your store — use the [`adminSettingsTaxRates`](./list) query to discover valid ids.
-:::
 
 ## Notes
 

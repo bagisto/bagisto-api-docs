@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: admin-catalog-product-detail
     title: Catalog Product Detail — type-aware (GraphQL)
-    description: Fetch a single catalog product by IRI. Every nested block is a field-selectable Relay connection (edges { node }) — images, videos, categories, inventories, customerGroupPrices, translations, channels, attributeValues, and the type-specific blocks (superAttributes/variants, bundleOptions, linkedProducts, downloadableLinks/downloadableSamples, customizableOptions). Type-specific connections are empty on non-matching types. The full computed attributes field set and bookingProduct are REST-only — over GraphQL use the attributeValues connection.
+    description: Fetch a single catalog product by IRI. Every nested block is a field-selectable Relay connection, so sub-select only what you need. Type-specific connections come back with empty edges on non-matching types. The example selects every field the query resolves; `attributes`, `bookingProduct`, and `warnings` are REST-only and omitted.
     query: |
       query AdminCatalogProduct($id: ID!) {
         adminCatalogProduct(id: $id) {
@@ -359,12 +359,12 @@ examples:
             "metaKeywords": null,
             "weight": "0.5",
             "taxCategoryId": null,
-            "manageStock": "1",
+            "manageStock": null,
             "inStock": "1",
-            "featured": "0",
+            "featured": "",
             "new": "1",
-            "createdAt": "2026-01-12 08:15:00",
-            "updatedAt": "2026-04-30 14:20:09",
+            "createdAt": "2026-01-12T08:15:00+05:30",
+            "updatedAt": "2026-04-30T14:20:09+05:30",
             "translations": {
               "edges": [
                 { "node": { "_id": 91, "locale": "en", "name": "Classic Watch", "description": "Full HTML description.", "shortDescription": "A premium timepiece.", "urlKey": "classic-watch", "metaTitle": null, "metaDescription": null, "metaKeywords": null } }
@@ -372,7 +372,7 @@ examples:
             },
             "images": {
               "edges": [
-                { "node": { "_id": 1, "type": "image", "path": "product/42/img1.webp", "url": "http://localhost/storage/product/42/img1.webp", "position": 1 } }
+                { "node": { "_id": 1, "type": "images", "path": "product/42/img1.webp", "url": "http://localhost/storage/product/42/img1.webp", "position": 1 } }
               ]
             },
             "videos": { "edges": [] },
@@ -383,7 +383,7 @@ examples:
             },
             "inventories": {
               "edges": [
-                { "node": { "_id": 12, "sourceId": 1, "sourceCode": "default", "qty": 42 } }
+                { "node": { "_id": 12, "sourceId": "1", "sourceCode": "default", "qty": 42 } }
               ]
             },
             "customerGroupPrices": { "edges": [] },
@@ -394,8 +394,8 @@ examples:
             },
             "attributeValues": {
               "edges": [
-                { "node": { "_id": 1001, "attributeId": 8, "code": "status", "adminName": "Status", "type": "boolean", "isRequired": true, "groupCode": "settings", "value": "1" } },
-                { "node": { "_id": 1002, "attributeId": 11, "code": "price", "adminName": "Price", "type": "price", "isRequired": true, "groupCode": "price", "value": "99.9900" } }
+                { "node": { "_id": 1001, "attributeId": 8, "code": "status", "adminName": "Status", "type": "boolean", "isRequired": "1", "groupCode": "settings", "value": "1" } },
+                { "node": { "_id": 1002, "attributeId": 11, "code": "price", "adminName": "Price", "type": "price", "isRequired": "1", "groupCode": "price", "value": "99.9900" } }
               ]
             },
             "superAttributes": { "edges": [] },
@@ -425,15 +425,7 @@ you need with `edges { node { … } }`.
 |-----------|------|
 | `adminCatalogProduct` | Query (item) |
 
-::: tip Overview
-See the [Products overview](/api/graphql-api/admin/catalog/products/) for how this
-menu works, product types, and the create/update flow.
-:::
-
-## Authentication
-
-All admin endpoints require an admin Bearer token — see
-[Authentication](/api/graphql-api/admin/authentication).
+For product types, the two-step create flow, and the per-product sub-resources, see the [Products overview](/api/graphql-api/admin/catalog/products/).
 
 ## Arguments
 
@@ -441,14 +433,16 @@ All admin endpoints require an admin Bearer token — see
 |----------|------|----------|-------------|
 | `id` | `ID!` | Yes | API Platform IRI of the product (e.g. `"/api/admin/catalog/products/42"`) |
 
-## Response shape
+## Response Shape
 
-- **Top-level scalars** (`sku`, `name`, `type`, `price`, `formattedPrice`, `quantity`,
-  `inStock`, `status`, `weight`, `urlKey`, `meta*`, `created/updated`, …) are always
-  returned. Eloquent stringifies numeric/boolean scalars over GraphQL, so `status`
-  comes back as `"1"`, `inStock` as `"1"`, etc. — cast client-side.
-- **Connections** — every nested block is a connection you sub-select with
-  `{ edges { node { … } } }`:
+Top-level scalars carry the same values as the listing, so the traps are the same:
+
+- **Booleans arrive as `"1"` or the empty string `""`**, never `true`/`false`. `status`, `visibleIndividually`, `featured`, `new`, and `inStock` are all typed String, so `status === "0"` never matches and `featured === false` never matches. Compare against `"1"`, or coerce.
+- **Numbers arrive as strings.** `price`, `quantity`, `imagesCount`, `weight`, and `categoryId` are String; only `_id` and `attributeFamilyId` are Int.
+- **`taxCategoryId` and `manageStock` are frequently `null`** even on the detail query — they resolve only when the product actually carries that attribute value.
+- **Timestamps are ISO 8601 with offset**, `2026-01-12T08:15:00+05:30`.
+
+Every nested block is a connection you sub-select with `{ edges { node { … } } }`:
 
 | Connection | Node fields | Present for |
 |------------|-------------|-------------|
@@ -469,28 +463,33 @@ All admin endpoints require an admin Bearer token — see
 | `customizableOptions` | `_id`, `type`, `isRequired`, `sortOrder`, `maxCharacters`, `supportedFileExtensions`, `translations { edges { node { _id locale label } } }`, `prices { edges { node { _id label price sortOrder } } }` | all |
 | `relatedProducts` / `upSells` / `crossSells` | `_id`, `sku`, `type`, `name` | all |
 
-Type-specific connections (`superAttributes`/`variants`, `bundleOptions`,
-`linkedProducts`, `downloadableLinks`/`downloadableSamples`) return **empty edges**
-on non-matching types — switch on `type` to know which to read.
+Type-specific connections (`superAttributes` / `variants`, `bundleOptions`, `linkedProducts`, `downloadableLinks` / `downloadableSamples`) return **empty edges** on non-matching types — switch on `type` to know which to read. Selecting all of them regardless is safe.
 
-::: warning attributes and bookingProduct are REST-only
-The full computed **`attributes`** block (the admin edit-screen field set, with
-*empty* family fields shown) and the **`bookingProduct`** block are returned only by
-the REST endpoint `GET /api/admin/catalog/products/{id}`. Over GraphQL, query the
-**`attributeValues`** connection for the product's stored attribute values (one node
-per set value; empty fields are not included), and read booking products via REST.
-:::
+Two connection details worth knowing:
 
-## Notes
+- **An image node's `type` is the string `"images"`**, plural, not `"image"` — it names the storage folder, not the media kind. Video nodes carry `"videos"` for the same reason.
+- **`channels` lists only the product's assigned channels**, not every channel in the store. The REST detail's `channels` block instead lists every channel with an `assigned` flag, so the two are not interchangeable.
 
-- **Connections, not bare JSON (changed).** Nested data is now field-selectable —
-  query `images { edges { node { url } } }`, not bare `images`. This matches the
-  storefront/Shopify shape; pick only the fields you need.
-- **`id` argument is the IRI.** Construct it as `"/api/admin/catalog/products/{_id}"`
-  from a listing's `_id`, or pass a listing edge's `id` directly.
-- **REST is the flat counterpart.** `GET /api/admin/catalog/products/{id}` returns the
-  same data with every nested block as a flat inline array/object (plus the full
-  `attributes` and `bookingProduct` blocks).
-- **Mutations don't return connections.** `createAdminCatalogProduct` /
-  `updateAdminCatalogProduct` return the product's scalars; re-query
-  `adminCatalogProduct` for the connections.
+### Configurable Option Lists
+
+A configurable exposes its option data twice, and the two answer different questions:
+
+- **`superAttributes { edges { node { options { edges { node } } } } }`** — every option the attribute defines, whether or not a variant uses it. This is the set to render in a picker.
+- **`variants { edges { node { attributeValues { edges { node { code adminName value } } } } } }`** — the option value actually chosen for each existing variant.
+
+### Fields That Are REST-Only
+
+Three fields exist in the schema but always resolve `null` over GraphQL — `attributes`, `bookingProduct`, and `warnings`. They are returned only by `GET /api/admin/catalog/products/{id}`.
+
+- **`attributes`** is the admin edit-screen field set, including family fields the product has *not* filled in. The GraphQL equivalent is the `attributeValues` connection, which carries one node per **stored** value — an unset field simply has no node, so you cannot tell "empty" from "not in this family" without the REST block.
+- **`bookingProduct`** carries the booking sub-type, slots, and tickets. There is no GraphQL equivalent; read booking configuration over REST.
+- **`warnings`** is populated only on the update response, never on a read.
+
+## Errors
+
+An unknown or deleted id returns HTTP `200` with `"Product not found."` in the GraphQL `errors[]` array and `null` in `data.adminCatalogProduct`.
+
+## Working With This Query
+
+- **The `id` argument is the IRI**, not the numeric id. Build it as `/api/admin/catalog/products/{_id}` from a listing row's `_id`, or pass a listing edge's `id` straight through.
+- **REST is the flat counterpart.** `GET /api/admin/catalog/products/{id}` returns the same data with every nested block as an inline array, and adds `attributes`, `bookingProduct`, and the full `superAttributes[].options`.

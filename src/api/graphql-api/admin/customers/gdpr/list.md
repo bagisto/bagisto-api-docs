@@ -191,8 +191,4 @@ Each filter narrows the result; supplying more than one combines with logical **
 | `sort` | `String` | `id` (default), `status`, `type`, `created_at` |
 | `order` | `String` | `asc`, `desc` (default `desc`) |
 
-::: tip
 See the [GDPR overview](/api/graphql-api/admin/customers/gdpr/) for how requests are processed.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

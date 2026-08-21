@@ -46,20 +46,29 @@ The response is a one-element array describing the token's access.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | string | Identifier of the permissions payload (`permissions`). |
-| `permissionType` | string | One of `all`, `custom`, or `same_as_web`. |
-| `permissions` | array | The granted ACL keys, or `["*"]` for full access. |
+| `id` | String | Identifier of the payload, always the literal `permissions`. |
+| `permissionType` | String | One of `all`, `custom`, or `same_as_web`. |
+| `permissions` | Array | The granted ACL keys, or `["*"]` for full access. |
 
-`permissionType` semantics:
+## Permission Modes
 
-- `all` — full access. `permissions` is `["*"]`.
-- `custom` — `permissions` lists the explicitly granted ACL keys.
-- `same_as_web` — the token follows the admin's web role; `permissions` lists the keys that role currently grants.
+- `all` — full access. `permissions` is the single-element `["*"]`, never an expanded list of keys.
+- `custom` — `permissions` lists the explicitly granted ACL keys, frozen onto the token when it was generated.
+- `same_as_web` — the token mirrors the owning admin's current role, so the returned keys change whenever that role changes.
 
-In every case the effective `permissions` are capped by the admin's role — a token can never do more than its owner admin can currently do.
+In every case the effective `permissions` are capped by the owning admin's role — a token can never do more than its owner currently can.
+
+## Using the Result
+
+Match a key against the `permission` field of a [menu](/api/rest-api/admin/navigation/menu) node, or against the ACL key named on an endpoint's page, to decide whether to render its UI.
+
+Two things to handle:
+
+- **`["*"]` is a wildcard, not a key.** A literal `permissions.includes('sales.orders')` returns false for a full-access token. Branch on `permissionType === 'all'` first.
+- **Keys are exact, not prefixes.** Holding `catalog` does not imply `catalog.products` — the example above lists both because both were granted. Check the exact key an endpoint requires.
+
+Gating on this endpoint is advisory. The API re-checks on every call, so a client that skips the check still gets a `403` rather than unauthorized access.
 
 ## Errors
 
-A request without a valid token returns `401 Unauthorized`.
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
+A request without a valid token returns HTTP `401` with `{"message": "Unauthenticated.", "error": "unauthenticated"}`. Any valid token can call this endpoint — there is no permission gate on it.

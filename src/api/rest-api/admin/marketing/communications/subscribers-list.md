@@ -55,9 +55,7 @@ examples:
 Lists every newsletter subscriber in the store — the data behind the admin
 **Marketing → Communications → Newsletter Subscribers** datagrid.
 
-::: tip
 New here? Read the [Newsletter Subscribers overview](/api/rest-api/admin/marketing/communications/subscribers/) for what a subscriber is and how its fields behave.
-:::
 
 ## Endpoint
 

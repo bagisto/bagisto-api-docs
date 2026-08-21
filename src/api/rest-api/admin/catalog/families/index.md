@@ -34,4 +34,4 @@ A family **cannot be deleted** if it is the last remaining family, or if any pro
 | [Update family](/api/rest-api/admin/catalog/families/families-update) | `PUT /api/admin/catalog/families/{id}` |
 | [Delete family](/api/rest-api/admin/catalog/families/families-delete) | `DELETE /api/admin/catalog/families/{id}` |
 
-All Attribute Families endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication). Reads require `catalog.families.view`; writes require the matching `catalog.families.create` / `.edit` / `.delete` permission.
+Reads require `catalog.families.view`; writes require the matching `catalog.families.create` / `.edit` / `.delete` permission.

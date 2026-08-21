@@ -48,8 +48,4 @@ No additional permission is required beyond authentication — the password conf
 |-----------|------|---------|
 | `createAdminSettingsUserDeleteSelf(input:)` | Mutation | Delete your own admin account |
 
-::: warning
 The response above is illustrative. Running this mutation permanently deletes your account and invalidates your token, so it is not executed against the live API in these docs.
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

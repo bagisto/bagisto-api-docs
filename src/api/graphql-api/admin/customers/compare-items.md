@@ -70,8 +70,4 @@ Lists the products the customer has added to their compare list. The admin Creat
 |----------|------|----------|-------------|
 | `customerId` | Int! | yes | The customer whose compare list to read. |
 
-::: tip Menu overview
 See the [Customers overview](/api/graphql-api/admin/customers/) for how the Create-Order sidebar panels work.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

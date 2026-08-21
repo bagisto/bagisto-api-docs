@@ -24,7 +24,29 @@ examples:
         "itemsCount": 2,
         "itemsQty": 2,
         "grandTotal": 200,
-        "items": [ /* ... full updated cart payload ... */ ],
+        "items": [
+          {
+            "id": 375,
+            "cartId": 510,
+            "productId": 2,
+            "parentId": null,
+            "sku": "ws-blossom-skirt-w24",
+            "type": "simple",
+            "name": "Blossom Breeze Cotton Printed Short Skirt-24",
+            "quantity": 1,
+            "price": 24.99,
+            "formattedPrice": "$24.99",
+            "total": 24.99,
+            "formattedTotal": "$24.99",
+            "taxAmount": 0,
+            "formattedTaxAmount": "$0.00",
+            "discountAmount": 0,
+            "formattedDiscountAmount": "$0.00",
+            "additional": null,
+            "child": null,
+            "children": []
+          }
+        ],
         "success": true,
         "message": "Item added to cart."
       }
@@ -71,13 +93,13 @@ Example bundle body:
 }
 ```
 
-::: tip REST also accepts the raw storefront keys
+### REST also accepts the raw storefront keys
+
 Because REST forwards the whole body to the cart, it additionally accepts the
 storefront snake_case shape — `selected_configurable_option`, `bundle_options`
 (map of `optionId => [productIds]`), `bundle_option_qty`, `qty` (map of
 `productId => quantity`), `links`. The typed fields above are recommended because
 they also work over GraphQL.
-:::
 
 ## Endpoint
 

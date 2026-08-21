@@ -52,11 +52,7 @@ Adds a new customer-group (tier) price to a product. This is a parent-scoped mut
 
 `valueType` is `fixed` (a flat price at that quantity) or `discount` (a discount off the base price).
 
-::: tip
 See the [Products overview](/api/graphql-api/admin/catalog/products/) for how the catalog product menu fits together.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
 
 ## Input
 

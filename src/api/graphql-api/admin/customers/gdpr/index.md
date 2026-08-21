@@ -39,5 +39,3 @@ Processing refuses to re-run on a request that is already approved or revoked.
 | [Download Data Export](./download-data.md) | `createAdminCustomerGdprDownloadData` mutation |
 
 Permissions: `customers.gdpr_requests.view` / `.edit` / `.delete`.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

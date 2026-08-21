@@ -50,9 +50,7 @@ examples:
 Updates an existing marketing event — the **Edit Event** action on the admin
 **Marketing → Communications → Events** screen.
 
-::: tip
 New here? Read the [Events overview](/api/graphql-api/admin/marketing/communications/events/) for what an event does and how its fields behave.
-:::
 
 ## Operation
 

@@ -52,8 +52,4 @@ Returns the conversation thread of an RMA request, newest first. Returned as a *
 
 `sales.rma.requests`
 
-::: tip
 See the [Returns overview](/api/rest-api/admin/sales/returns/) for the conversation flow.
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

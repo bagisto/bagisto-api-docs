@@ -45,12 +45,12 @@ examples:
 
 Deletes another admin user by id. The mutation returns a snapshot of the deleted record, so you can read back its `_id`, `name`, `email`, `roleId`, `roleName`, and `status` in the same response. The `password` and `api_token` values are never returned.
 
-::: warning Delete guards
+### Delete guards
+
 - **Cannot delete yourself** through this endpoint — the id must belong to a different admin. To remove your own account use [Delete My Account](./delete-self).
 - **Cannot delete the last remaining admin.**
 
 A blocked delete returns the reason in the `errors` array and leaves the account intact.
-:::
 
 ## Operation
 
@@ -65,8 +65,6 @@ A blocked delete returns the reason in the `errors` array and leaves the account
 - Do **not** select the node's IRI `id` field on this mutation — the IRI cannot be generated for a deleted record and the field resolves with an `errors[]` entry. Select `_id` instead, as shown.
 - Use the [`adminSettingsUsers`](./list.md) query to discover valid ids.
 
-::: tip Overview
 For field meanings and create/update rules, see the [Users overview](./).
-:::
 
 Requires the `settings.users.users.delete` permission and an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

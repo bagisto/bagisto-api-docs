@@ -39,12 +39,10 @@ Appends an internal note to a customer's record. The response is the created not
 | `note` | string | yes | Non-empty. Empty → 422. |
 | `customer_notified` | boolean | no | When true, fires the customer notification email listener. |
 
-::: tip Append-only
+### Append-only
+
 Notes are append-only. There is no update/delete endpoint — every note is a separate row for audit.
-:::
 
 Permission: `customers.customers.edit`.
 
-::: tip
 For how the notes log works, see the [Notes overview](./index.md).
-:::

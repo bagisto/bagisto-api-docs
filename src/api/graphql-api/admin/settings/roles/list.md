@@ -227,6 +227,3 @@ Each filter narrows the result; supplying more than one combines with logical **
 - The seeded **Administrator** role (`_id: 1`) has `null` timestamps — it predates timestamp tracking.
 - Page forward with `first` + `after` (pass the previous response's `endCursor`); `totalCount` is the unfiltered total.
 
-::: tip
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
-:::

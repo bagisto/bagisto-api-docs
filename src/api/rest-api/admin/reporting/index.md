@@ -20,9 +20,9 @@ Each report page exposes several metrics, and you pick one with the `?type=` que
 | [Customers](/api/rest-api/admin/reporting/customers) | New customers, traffic, top customers/groups | `total-customers` (default) + 5 more |
 | [Products](/api/rest-api/admin/reporting/products) | Sold quantities, wishlists, top sellers, reviews, search terms | `total-sold-quantities` (default) + 7 more |
 
-::: tip Overview has no matching admin screen
+### Overview has no matching admin screen
+
 The admin Reporting menu goes straight to Sales / Customers / Products — there is **no** "Overview" screen in the panel. Overview is an API convenience that fetches one top-line number without calling the per-section endpoints.
-:::
 
 ## Three shapes per report — Stats, View Details, Export
 

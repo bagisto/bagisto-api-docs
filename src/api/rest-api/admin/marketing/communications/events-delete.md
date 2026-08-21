@@ -21,9 +21,7 @@ examples:
 Deletes a marketing event — the **Delete** row action on the admin **Marketing →
 Communications → Events** screen.
 
-::: tip
 New here? Read the [Events overview](/api/rest-api/admin/marketing/communications/events/) for what an event does and how its fields behave.
-:::
 
 ## Endpoint
 

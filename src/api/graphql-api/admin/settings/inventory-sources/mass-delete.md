@@ -39,9 +39,7 @@ examples:
 
 Deletes several inventory sources by numeric id in one call.
 
-::: tip How this menu works
 For field meanings and the delete guards, see the [Inventory Sources overview](/api/graphql-api/admin/settings/inventory-sources/).
-:::
 
 ## Operation
 
@@ -53,4 +51,4 @@ For field meanings and the delete guards, see the [Inventory Sources overview](/
 
 `deleted` is a plain array of the removed numeric ids; `message` is a plain string.
 
-Permission: `settings.inventory_sources.delete`. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+Permission: `settings.inventory_sources.delete`.

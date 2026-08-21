@@ -147,14 +147,30 @@ Creation is deliberately minimal: `createAdminCatalogProduct` creates the shell 
 
 Two independent flags control storefront presence:
 
-- **`status`** — `1` enabled / `0` disabled. A disabled product is fully hidden from the storefront.
-- **`visibleIndividually`** — whether the product appears in category/search listings. Variant products and grouped-component products are usually set to `0` (reachable only through their parent), while still being `status = 1`.
+- **`status`** — enabled or disabled. A disabled product is fully hidden from the storefront.
+- **`visibleIndividually`** — whether the product appears in category and search listings. Variants and grouped components are usually off, reachable only through their parent, while still being enabled.
 
-Both must effectively be on for a product to be browsable on its own.
+Both must be on for a product to be browsable on its own.
 
-## Nested data is returned whole
+Over GraphQL both arrive as **strings**, `"1"` for on and the empty string `""` for off — never `true`/`false` and never `"0"`. Compare against `"1"`.
 
-On the single-product query, nested blocks (`translations`, `images`, `categories`, `inventories`, `customerGroupPrices`, and the type-specific blocks like `variants` / `bundleOptions` / `downloadableLinks`) are returned as **whole JSON** — query each as a bare field (`translations`, not `translations { … }`); the entire array comes back. They resolve over GraphQL on the detail query.
+## Nested Data Is Field-Selectable
+
+On the single-product query every nested block — `translations`, `images`, `videos`, `categories`, `inventories`, `customerGroupPrices`, `channels`, `attributeValues`, and the type-specific blocks such as `variants`, `bundleOptions`, and `downloadableLinks` — is a **Relay connection**. Sub-select it with `edges { node { … } }` and take only the fields you need:
+
+```graphql
+images {
+  edges {
+    node {
+      _id
+      url
+      position
+    }
+  }
+}
+```
+
+Selecting a connection as a bare field is a schema error. Three fields go the other way and are plain JSON scalars queried bare: `attributes`, `bookingProduct`, and `warnings` — and all three resolve `null` over GraphQL, so read them from the REST detail instead.
 
 ## Per-product sub-resources
 
@@ -251,4 +267,4 @@ Each `node` carries these scalar columns. **Heavy fields are `null` on the listi
 
 The canonical product listing is [List products](/api/graphql-api/admin/catalog/products) (`adminCatalogProducts` query) above. There is also a separate slim [Add-Product Search](/api/graphql-api/admin/catalog/products/list) (`adminProducts` query) used only by the Create-Order "Add Product" modal — not the product listing.
 
-All Products operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication). Reads require `catalog.products.view`; writes require the matching `catalog.products.create` / `.edit` / `.delete` permission.
+Reads require `catalog.products.view`; writes require the matching `catalog.products.create` / `.edit` / `.delete` permission.

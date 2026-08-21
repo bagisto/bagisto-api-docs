@@ -47,11 +47,7 @@ examples:
 
 The same endpoint as [Customer Review Detail](/api/rest-api/admin/customers/reviews/detail), highlighting a review that carries attachments. REST has no connections, so the review's `images` come back as a **flat JSON array** — the same data the GraphQL endpoint serves as an `images { edges { node } }` connection. Each image carries its `id`, storage `path`, and a ready-to-use `url`.
 
-::: tip Overview
 See the [Customer Reviews overview](/api/rest-api/admin/customers/reviews/) for the moderation flow.
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
 
 | Endpoint | Method |
 |----------|--------|

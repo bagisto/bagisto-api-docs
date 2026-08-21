@@ -47,5 +47,3 @@ A rule has three parts: **who it applies to**, **when it applies**, and **what i
 `conditions`, `channels`, and `customerGroups` resolve only on the **detail** query — they are `null` on list rows (`couponCode` is present on both).
 
 Coupon-gated rules (`couponType` `1`) draw their codes from the related [Cart Rule Coupons](/api/graphql-api/admin/marketing/promotions/cart-rule-coupons-list).
-
-All Cart Rules operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

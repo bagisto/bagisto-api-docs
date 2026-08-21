@@ -34,5 +34,3 @@ So "login as customer" becomes "get a customer token".
 | [Issue Impersonation Token](./create.md) | `createAdminCustomerImpersonate` mutation |
 
 Permission: `customers.customers.edit`.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

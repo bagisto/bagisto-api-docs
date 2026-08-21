@@ -68,10 +68,6 @@ examples:
 
 Creates a new category and returns its detail. On **create**, the translatable values (`slug`, `name`, `description`, optional `metaTitle` / `metaDescription` / `metaKeywords`) are supplied at the **top level** and broadcast to the configured locales — this differs from update, which takes those values **nested under a locale key**. Required: `slug`, `name`, `position`, `attributes` (filterable attribute ids); `description` is required when `displayMode` is `description_only` or `products_and_description`. Logo/banner image upload is not available — set them in the admin panel.
 
-::: tip
-See the [Categories overview](/api/graphql-api/admin/catalog/categories/) for how the menu works.
-:::
+See the [Categories overview](/api/graphql-api/admin/catalog/categories/) for how this menu works.
 
 The create mutation payload resolves the category's scalar fields. The category's `translations` and `filterableAttributeIds` are not returned here — re-query [`adminCategory`](/api/graphql-api/admin/catalog/categories/categories-detail) for the full detail.
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

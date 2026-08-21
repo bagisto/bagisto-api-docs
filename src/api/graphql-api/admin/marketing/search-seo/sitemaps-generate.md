@@ -49,9 +49,7 @@ Builds the actual XML files for a sitemap — the **Generate** action on the adm
 categories, products, and pages, writes the index file plus per-batch XML files,
 and records their paths on the sitemap.
 
-::: tip
 New here? Read the [Sitemaps overview](/api/graphql-api/admin/marketing/search-seo/sitemaps/) for what a sitemap does and how its fields behave.
-:::
 
 ## Operation
 

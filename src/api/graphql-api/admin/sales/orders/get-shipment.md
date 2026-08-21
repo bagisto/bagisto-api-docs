@@ -126,9 +126,9 @@ GraphQL counterpart of `GET /api/admin/shipments/{id}`. Returns a single shipmen
 
 Pass the shipment IRI (`/api/admin/shipments/{id}`) as `id`. Permission: `sales.shipments.view`.
 
-::: warning billingAddress, shippingAddress and items are returned whole
+### Nested Objects Are Returned Whole
+
 `billingAddress`, `shippingAddress` and `items` are returned as JSON — **query them bare, without a sub-selection** (`shippingAddress`, not `shippingAddress { … }`). The whole object/array comes back. The keys inside each are listed below for reference.
-:::
 
 ## Fields
 

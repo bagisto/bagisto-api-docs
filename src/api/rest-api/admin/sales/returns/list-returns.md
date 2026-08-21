@@ -67,8 +67,4 @@ The response is wrapped in the `{ data, meta }` envelope.
 
 `sales.rma.requests`
 
-::: tip
 See the [Returns overview](/api/rest-api/admin/sales/returns/) for the status workflow and action semantics.
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

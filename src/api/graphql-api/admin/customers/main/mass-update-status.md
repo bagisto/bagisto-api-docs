@@ -40,8 +40,4 @@ Activates or deactivates the supplied customers in one call. `value` must be `0`
 
 Permission: `customers.customers.edit`.
 
-::: tip
 See the [Customers overview](/api/graphql-api/admin/customers/main/) for how the menu works.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

@@ -533,7 +533,7 @@ Returns the aggregate statistics that power the Bagisto admin **Reporting → Sa
 | **Endpoint** | `POST /api/admin/graphql` |
 | **Returns** | A single object: `{ entity, type, dateRange, statistics }` |
 
-All admin endpoints require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication). Reporting has **no permission gate**; any authenticated admin can read it.
+Reporting has **no permission gate**; any authenticated admin can read it.
 
 ## Understanding `type` — the Sales report is **ten** separate calls
 

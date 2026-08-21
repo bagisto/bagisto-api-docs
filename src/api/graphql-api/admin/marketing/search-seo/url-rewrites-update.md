@@ -55,9 +55,7 @@ examples:
 Updates an existing URL rewrite — the **Edit** action on the admin **Marketing →
 Search & SEO → URL Rewrites** screen.
 
-::: tip
 New here? Read the [URL Rewrites overview](/api/graphql-api/admin/marketing/search-seo/url-rewrites/) for what a URL rewrite does and how its fields behave.
-:::
 
 ## Operation
 

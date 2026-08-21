@@ -18,5 +18,3 @@ Communications is the store's **outbound email** toolkit — define a reusable e
 ## How they fit together
 
 A **Campaign** is the hub: it pairs an **Email Template** (the body) with a **customer group** of **Newsletter Subscribers** (the audience), sent over a **channel**, and may reference an **Event** (the occasion). Sending a campaign queues the template to every subscribed member of its customer group. Templates and events are reusable building blocks — many campaigns can share one template. Subscribers are created by the storefront opt-in, not through this API.
-
-All Communications endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

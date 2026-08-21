@@ -131,9 +131,7 @@ examples:
 
 Equivalent to [`GET /api/admin/cms/pages`](/api/rest-api/admin/cms/pages-list). Cursor pagination via `first` / `after`.
 
-::: tip
-For what CMS Pages are, how multi-locale / multi-channel works, and the `previewUrl` / `htmlContent` semantics, see the [CMS Pages overview](/api/graphql-api/admin/cms/pages/).
-:::
+For what CMS Pages are, how multi-locale and multi-channel work, and the `previewUrl` and `htmlContent` semantics, see the [CMS Pages overview](/api/graphql-api/admin/cms/pages/).
 
 ## Operation
 
@@ -145,7 +143,10 @@ For what CMS Pages are, how multi-locale / multi-channel works, and the `preview
 
 | Arg | Type | Notes |
 |-----|------|-------|
-| `first`, `after` | cursor pagination | Page size + cursor from a previous `pageInfo.endCursor`. |
+| `first` | `Int` | Page size, default `10`, capped at `50`. |
+| `after` | `String` | Cursor from a previous `pageInfo.endCursor`. |
+| `last` | `Int` | Page size when paging backwards. |
+| `before` | `String` | Cursor from a previous `pageInfo.startCursor`. |
 | `id` | `Int` | Filter by ID. |
 | `page_title` | `String` | Partial title match. |
 | `url_key` | `String` | Partial url_key match. |
@@ -170,8 +171,13 @@ For what CMS Pages are, how multi-locale / multi-channel works, and the `preview
 | `channel` | `String` | Resolved channel code. |
 | `channels` | Connection | Every assigned channel — query via `channels { edges { node { … } } }` (node: `id`, `code`, `name`). |
 | `translations` | Connection | Per-locale content — query via `translations { edges { node { … } } }` (node: `locale`, `pageTitle`, `urlKey`, `htmlContent`, `metaTitle`, `metaKeywords`, `metaDescription`). |
-| `createdAt` / `updatedAt` | `String` | ISO 8601. |
+| `createdAt` / `updatedAt` | `String` | ISO 8601 with offset. |
+| `message` | `String` | Always `null` on a read. It carries the confirmation text on a delete result only. |
 
-::: tip Field-selectable connections on the listing
-`translations` and `channels` are **Relay connections** on the listing too — select them with `edges { node { … } }` and pick exactly the sub-fields you need. (Over REST they come back as plain JSON arrays.) Every scalar field above resolves over GraphQL — none come back `null` for transport reasons.
-:::
+### Connections Resolve on the Listing Too
+
+`translations` and `channels` are Relay connections here, not just on the detail query — select them with `edges { node { … } }` and take only the sub-fields you need. Over REST the same data arrives as plain JSON arrays, so the two transports are not shape-compatible.
+
+Both nested node types carry a **routeless `id`** — `/api/admin_cms_page_translations/<id>` and `/api/admin_cms_page_channels/<id>`. Neither is a queryable path; read `_id` instead. Only the page's own `id` (`/api/admin/cms/pages/<id>`) can be followed.
+
+Filters combine with AND. Note `page_title` and `url_key` are snake_case while the fields they match are camelCase, and `channel` filters by numeric channel **id** even though the `channel` field returns a code string.

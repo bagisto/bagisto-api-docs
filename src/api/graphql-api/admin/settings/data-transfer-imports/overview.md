@@ -56,5 +56,3 @@ Poll [stats](./stats.md) between [start](./start.md) / [link](./link.md) / [inde
 | [Cancel import](./cancel.md) | `cancelAdminSettingsDataTransferImportCancel` mutation |
 
 Permissions: `settings.data_transfer.imports.create` / `.edit` / `.delete` / `.view`.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

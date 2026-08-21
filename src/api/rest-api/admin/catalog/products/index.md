@@ -155,10 +155,10 @@ Creation is deliberately minimal: a `POST` creates the shell from just `sku` + `
 
 Two independent flags control storefront presence:
 
-- **`status`** — `1` enabled / `0` disabled. A disabled product is fully hidden from the storefront.
-- **`visibleIndividually`** — whether the product appears in category/search listings. Variant products and grouped-component products are usually set to `0` (reachable only through their parent), while still being `status = 1`.
+- **`status`** — `1` enabled, `0` disabled. A disabled product is fully hidden from the storefront.
+- **`visibleIndividually`** — whether the product appears in category and search listings. Variants and grouped components are usually `false`, reachable only through their parent, while still being enabled.
 
-Both must effectively be on for a product to be browsable on its own. (`status` is stored on the flattened product table, resolved per channel + locale.)
+Both must be on for a product to be browsable on its own. Over REST `status` is a number and `visibleIndividually` a boolean; the GraphQL API returns both as strings, so the two transports are not interchangeable here.
 
 ## Per-product sub-resources
 
@@ -272,4 +272,4 @@ Every row carries these scalar columns. **Heavy fields are `null` on the listing
 
 The canonical product listing is [List products](/api/rest-api/admin/catalog/products) (`GET /api/admin/catalog/products`) above. There is also a separate slim [Add-Product Search](/api/rest-api/admin/catalog/products/list) (`GET /api/admin/products`) used only by the Create-Order "Add Product" modal — not the product listing.
 
-All Products endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication). Reads require `catalog.products.view`; writes require the matching `catalog.products.create` / `.edit` / `.delete` permission.
+Reads require `catalog.products.view`; writes require the matching `catalog.products.create` / `.edit` / `.delete` permission.

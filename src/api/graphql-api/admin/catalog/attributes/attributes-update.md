@@ -86,10 +86,6 @@ examples:
 
 Updates an existing attribute. `id` is the attribute IRI (`/api/admin/catalog/attributes/{id}`). `code` is immutable — supplying a different value raises an `errors[]` entry. `type` cannot be changed while product attribute values still reference the attribute. Supplying `options` replaces the **full** option set (items with an `id` are updated, items without an `id` are inserted, and omitted ids are deleted). The mutation returns the full attribute detail.
 
-::: tip
 See the [Attributes overview](/api/graphql-api/admin/catalog/attributes/) for how attributes, options, and families fit together.
-:::
 
 The nested `options` and their `translations` are not returned on the mutation payload — re-query [`adminAttribute`](/api/graphql-api/admin/catalog/attributes/attributes-detail) to read them back.
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

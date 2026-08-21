@@ -65,5 +65,3 @@ A block's actual content lives in its per-locale `options` and is **not** set at
 | [Mass update status](./mass-update-status) | `createAdminSettingsThemeMassUpdateStatus` mutation |
 
 Permissions: `settings.themes.create` / `.edit` / `.delete`.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

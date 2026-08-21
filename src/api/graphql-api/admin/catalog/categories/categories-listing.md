@@ -26,6 +26,7 @@ examples:
               _id
               name
               slug
+              description
               status
               position
               parentId
@@ -65,6 +66,7 @@ examples:
                   "_id": 7,
                   "name": "Apparel",
                   "slug": "apparel",
+                  "description": "<p>Clothing and accessories for every season.</p>",
                   "status": 1,
                   "position": 1,
                   "parentId": 1,
@@ -95,17 +97,9 @@ Cursor-paginated GraphQL query that mirrors the Bagisto admin **Catalog →
 Categories** datagrid. Returns the flat category list with filtering, sorting,
 and cursor pagination.
 
-::: tip How this menu works
-For the flat-list vs. tree shapes, hierarchy/move semantics, and display modes, see the [Categories overview](/api/graphql-api/admin/catalog/categories/).
-:::
+For the flat-list versus tree shapes, hierarchy and move semantics, and display modes, see the [Categories overview](/api/graphql-api/admin/catalog/categories/).
 
-::: tip Distinct from the tree query
-`adminCategories` (this query) returns a **flat, cursor-paginated list**
-— ideal for datagrid/table views.
-
-`adminCategoryTrees` returns the **nested hierarchy** — ideal for
-tree-picker UIs.
-:::
+This query returns a **flat, cursor-paginated list**, which is what a datagrid needs. For the nested hierarchy behind a tree picker use [`adminCategoryTrees`](/api/graphql-api/admin/catalog/categories/categories-tree) instead.
 
 ## Operation
 
@@ -113,23 +107,14 @@ tree-picker UIs.
 |-----------|------|------------|
 | `adminCategories` | Query | Cursor (`first` / `after`) |
 
-## Authentication
-
-Every request must include an admin Bearer token:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain a token via the [`createAdminLogin`](/api/graphql-api/admin/authentication)
-mutation.
-
 ## Arguments
 
 | Argument | Type | Description | Example |
 |----------|------|-------------|---------|
 | `first` | `Int` | Number of items per page (default `10`, max `50`) | `10` |
 | `after` | `String` | Cursor from a previous `pageInfo.endCursor` for keyset pagination | `"MA=="` |
+| `last` | `Int` | Page size when paging backwards | `10` |
+| `before` | `String` | Cursor from a previous `pageInfo.startCursor` | `"MA=="` |
 | `category_id` | `String` | Filter by category ID — single integer or comma-separated list (e.g. `"12"` or `"12,18"`) | `"7"` |
 | `name` | `String` | Partial category name match (SQL `LIKE %value%`) | `"Apparel"` |
 | `position` | `Int` | Exact position filter | `1` |
@@ -139,12 +124,7 @@ mutation.
 | `sort` | `String` | Column to sort by (see Sorting section below) | `"id"` |
 | `order` | `String` | Sort direction: `"asc"` or `"desc"` (default `"desc"`) | `"desc"` |
 
-::: tip extraArgs convention
-API Platform does not automatically expose filter arguments in the GraphQL schema
-for `QueryCollection` operations. This query uses `extraArgs` declared on the
-`QueryCollection` operation to surface all filter/sort arguments as first-class
-GraphQL arguments. Pass them directly alongside `first` and `after`.
-:::
+Every filter is a first-class GraphQL argument — pass them alongside `first` and `after`, not inside a nested filter object. Filters combine with AND, so each one narrows the result. Note that `category_id`, `parent_id`, `sort`, and `order` are snake_case or single words while the rest are camelCase; that is the literal schema.
 
 ## Node Fields
 
@@ -159,105 +139,13 @@ Each `edges[].node` object contains:
 | `status` | `Int` | `1` = enabled, `0` = disabled |
 | `position` | `Int` | Display order position |
 | `parentId` | `Int` | Parent category ID; `null` for root nodes |
+| `description` | `String` | Category description, HTML, resolved via `locale` |
 | `displayMode` | `String` | Category display mode (e.g. `products_and_description`) |
 | `locale` | `String` | Locale used for name/slug/description resolution |
 | `logoUrl` | `String` | Storage URL for the category logo; `null` if not set |
 | `bannerUrl` | `String` | Storage URL for the category banner; `null` if not set |
 | `createdAt` | `String` | ISO 8601 creation timestamp |
 | `updatedAt` | `String` | ISO 8601 last-update timestamp |
-
-## Example Query
-
-```graphql
-query AdminCatalogCategories(
-  $first: Int
-  $after: String
-  $name: String
-  $status: Int
-  $locale: String
-) {
-  adminCategories(
-    first: $first
-    after: $after
-    name: $name
-    status: $status
-    locale: $locale
-  ) {
-    edges {
-      cursor
-      node {
-        id
-        _id
-        name
-        slug
-        status
-        position
-        parentId
-        displayMode
-        locale
-        logoUrl
-        bannerUrl
-        createdAt
-        updatedAt
-      }
-    }
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      endCursor
-      startCursor
-    }
-    totalCount
-  }
-}
-```
-
-```json
-{
-  "first": 10,
-  "name": "Apparel",
-  "status": 1,
-  "locale": "en"
-}
-```
-
-## Example Response
-
-```json
-{
-  "data": {
-    "adminCategories": {
-      "edges": [
-        {
-          "cursor": "MA==",
-          "node": {
-            "id": "/api/admin/catalog/categories/7",
-            "_id": 7,
-            "name": "Apparel",
-            "slug": "apparel",
-            "status": 1,
-            "position": 1,
-            "parentId": 1,
-            "displayMode": "products_and_description",
-            "locale": "en",
-            "logoUrl": null,
-            "bannerUrl": null,
-            "createdAt": "2026-01-12T08:15:00+00:00",
-            "updatedAt": "2026-04-30T14:20:09+00:00"
-          }
-        }
-      ],
-      "pageInfo": {
-        "hasNextPage": false,
-        "hasPreviousPage": false,
-        "endCursor": "MA==",
-        "startCursor": "MA=="
-      },
-      "totalCount": 1
-    }
-  }
-}
-```
 
 ## Sorting
 
@@ -280,9 +168,13 @@ Pass `sort` with the column name and `order` for direction. The compound form
   next request.
 - `totalCount` reflects the full count of matching categories across all pages.
 
-## Notes
+## Fields That Stay Null on the Listing
 
-- **`translations` and `filterableAttributeIds` are not available** in this query — they are only returned by the item query `adminCategory(id: ID!)`. Use the item query when you need per-locale metadata for a specific category.
-- **Same provider as the REST endpoint** — `AdminCategoryCollectionProvider` serves both transports with identical filter and sort semantics.
-- **No automatic status filter** — this query returns all statuses by default. Pass `status: 1` to restrict to enabled categories.
-- **`parent_id` filter** returns only direct children of the specified parent. For the full subtree use `adminCategoryTrees` with `rootId`.
+`translations` and `filterableAttributeIds` are declared on the type but resolve only on the item query [`adminCategory(id:)`](/api/graphql-api/admin/catalog/categories/categories-detail). Selecting them here is not an error — you simply get `null`.
+
+## Behaviour Worth Knowing
+
+- **No implicit status filter.** Every status is returned so an admin can find a disabled category. Pass `status: 1` for enabled only.
+- **`parent_id` returns direct children only**, not the whole subtree. For a full branch use [`adminCategoryTrees`](/api/graphql-api/admin/catalog/categories/categories-tree) with `rootId`.
+- **Scalars are real types here.** `status`, `position`, `parentId`, and `_id` come back as `Int`, unlike the product listing, where the same concepts are strings. Timestamps are ISO 8601 with offset.
+- **REST returns the same rows** through `GET /api/admin/catalog/categories`, with identical filter and sort semantics.

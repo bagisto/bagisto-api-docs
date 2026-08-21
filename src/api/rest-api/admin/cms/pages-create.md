@@ -55,12 +55,7 @@ examples:
 
 Creates a new CMS page.
 
-::: warning Top-level fields vs. update locale-nested
-**Create** takes the translated fields (`page_title`, `html_content`,
-`meta_*`, `url_key`) at the **top level** — they are broadcast to every
-locale by the core `PageRepository`. The [Update endpoint](/api/rest-api/admin/cms/pages-update),
-in contrast, requires a **locale-nested** payload (`{ "en": { "page_title": "...", ... } }`).
-:::
+Create takes the translated fields — `page_title`, `html_content`, `url_key`, and the `meta_*` set — at the **top level**, and the same values are written to every configured locale. [Update](/api/rest-api/admin/cms/pages-update) works the other way round: it requires a locale-nested payload such as `{ "en": { "page_title": "…" } }` and touches only the locale you name. Send a create payload to update and nothing is written.
 
 ## Endpoint
 

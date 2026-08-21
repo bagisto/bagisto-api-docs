@@ -44,8 +44,4 @@ Deletes the supplied customer ids in one call. The per-id active-orders guard sk
 
 Permission: `customers.customers.delete`.
 
-::: tip
 See the [Customers overview](/api/graphql-api/admin/customers/main/) for how the menu works.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

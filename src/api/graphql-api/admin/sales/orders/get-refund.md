@@ -190,7 +190,7 @@ examples:
 
 # Get Refund
 
-GraphQL counterpart of `GET /api/admin/refunds/{id}`. Returns a single refund with the full totals/adjustment breakdown, order/customer context, payment info, billing & shipping addresses, and the refunded line items. Requires the `sales.refunds.view` permission. All admin endpoints require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+GraphQL counterpart of `GET /api/admin/refunds/{id}`. Returns a single refund with the full totals/adjustment breakdown, order/customer context, payment info, billing & shipping addresses, and the refunded line items. Requires the `sales.refunds.view` permission.
 
 ## Operation
 
@@ -200,13 +200,13 @@ GraphQL counterpart of `GET /api/admin/refunds/{id}`. Returns a single refund wi
 
 Pass the refund IRI (`/api/admin/refunds/{id}`) as `id`.
 
-::: tip Identifier vs IRI
-`id` is the resource IRI; `_id` is the plain numeric id. Use the IRI for the `id` argument.
-:::
+### Identifier vs IRI
 
-::: warning Objects & lists are returned whole
+`id` is the resource IRI; `_id` is the plain numeric id. Use the IRI for the `id` argument.
+
+### Objects & lists are returned whole
+
 `billingAddress`, `shippingAddress`, and `items` are returned as JSON — **query them bare, without a sub-selection** (`items`, not `items { … }`). The whole object/array comes back. `items` is **not** a cursor connection.
-:::
 
 ## Fields
 

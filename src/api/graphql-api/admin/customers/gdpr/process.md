@@ -51,18 +51,14 @@ examples:
 
 Approves and executes a GDPR request. For `type=delete` requests this cascades the customer deletion (`customerDeleted` reports whether it happened); for `type=update` it marks the request approved so the admin can apply the changes manually.
 
-::: warning Destructive
-For delete requests this permanently removes the customer. Already-approved or revoked requests are refused (surfaced in `errors[]`).
-:::
+### Destructive
 
-::: tip GraphQL input quirk
+For delete requests this permanently removes the customer. Already-approved or revoked requests are refused (surfaced in `errors[]`).
+
+### GraphQL input quirk
+
 The input uses `requestId` (not `id`) — `id` is reserved as the resource IRI on mutation inputs.
-:::
 
 Permission: `customers.gdpr_requests.edit`.
 
-::: tip
 See the [GDPR overview](/api/graphql-api/admin/customers/gdpr/) for how requests are processed.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

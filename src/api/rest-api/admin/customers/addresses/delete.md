@@ -21,6 +21,4 @@ Removes an address from a customer's address book. Returns a confirmation messag
 
 Same ownership guard as Update — an address whose owner doesn't match the path `customerId` is rejected with `403`. Permission: `customers.addresses.delete`.
 
-::: tip
 For the address-book overview, see the [Addresses overview](./index.md).
-:::

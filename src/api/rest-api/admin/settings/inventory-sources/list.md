@@ -18,9 +18,7 @@ examples:
 
 Returns every inventory source configured in the store in the `{ data, meta }` envelope. Every column is populated on each row, so you can read whatever you need without a follow-up call.
 
-::: tip How this menu works
 For what an inventory source is, field meanings, and the delete guards, see the [Inventory Sources overview](/api/rest-api/admin/settings/inventory-sources/list).
-:::
 
 ## Pagination
 

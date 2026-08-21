@@ -48,5 +48,3 @@ and reach the subscribed members tracked under [Newsletter Subscribers](/api/res
 | [Update](/api/rest-api/admin/marketing/communications/campaigns-update) | `PUT /api/admin/marketing/campaigns/{id}` |
 | [Delete](/api/rest-api/admin/marketing/communications/campaigns-delete) | `DELETE /api/admin/marketing/campaigns/{id}` |
 | [Send](/api/rest-api/admin/marketing/communications/campaigns-send) | `POST /api/admin/marketing/campaigns/{id}/send` |
-
-All Campaigns endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

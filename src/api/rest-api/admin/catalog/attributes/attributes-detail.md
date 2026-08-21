@@ -94,16 +94,6 @@ an attribute — e.g. when opening the edit form in the Catalog → Attributes U
 requirement (`\d+`) — this prevents the `{id}` segment from matching any other
 path under `/catalog/attributes/`.
 
-## Authentication
-
-Every request requires:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain the Bearer token via [Authentication](/api/rest-api/admin/authentication).
-
 ## Path Parameter
 
 | Parameter | Type | Required | Description |
@@ -140,7 +130,7 @@ following fields:
 | `enableWysiwyg` | integer | `1` if a rich-text (WYSIWYG) editor is used for a `textarea` attribute, else `0` |
 | `regex` | string\|null | Custom regular-expression pattern, used when `validation` is `regex`; `null` otherwise |
 | `translations` | array | All locale translations (see below) |
-| `options` | array\|null | Attribute options for `select`, `multiselect`, `checkbox` types; `null` for all other types |
+| `options` | array | Attribute options for `select`, `multiselect`, and `checkbox` types; `[]` for every other type |
 
 ### `translations[]` item shape
 
@@ -174,71 +164,6 @@ Each entry corresponds to one row in `attribute_option_translations`:
 | `locale` | string | Locale code (e.g. `en`, `fr`) |
 | `label` | string\|null | Locale-specific display label for the option |
 
-## Example Request
-
-```bash
-curl -X GET "https://your-domain.com/api/admin/catalog/attributes/12" \
-  -H "Authorization: Bearer <token>" \
-  -H "Accept: application/json"
-```
-
-## Example Response
-
-```json
-{
-  "id": 12,
-  "code": "color",
-  "type": "select",
-  "adminName": "Color",
-  "isRequired": 0,
-  "isUnique": 0,
-  "valuePerLocale": 0,
-  "valuePerChannel": 0,
-  "isFilterable": 1,
-  "isConfigurable": 1,
-  "isVisibleOnFront": 1,
-  "isUserDefined": 1,
-  "swatchType": "color",
-  "position": 5,
-  "locale": "en",
-  "createdAt": "2026-01-12T08:15:00+00:00",
-  "updatedAt": "2026-04-30T14:20:09+00:00",
-  "validation": null,
-  "defaultValue": null,
-  "isComparable": 0,
-  "enableWysiwyg": 0,
-  "regex": null,
-  "translations": [
-    { "locale": "en", "name": "Color" },
-    { "locale": "fr", "name": "Couleur" }
-  ],
-  "options": [
-    {
-      "id": 33,
-      "adminName": "Red",
-      "sortOrder": 1,
-      "swatchValue": "#FF0000",
-      "swatchValueUrl": null,
-      "translations": [
-        { "locale": "en", "label": "Red" },
-        { "locale": "fr", "label": "Rouge" }
-      ]
-    },
-    {
-      "id": 34,
-      "adminName": "Blue",
-      "sortOrder": 2,
-      "swatchValue": "#0000FF",
-      "swatchValueUrl": null,
-      "translations": [
-        { "locale": "en", "label": "Blue" },
-        { "locale": "fr", "label": "Bleu" }
-      ]
-    }
-  ]
-}
-```
-
 ## Errors
 
 | HTTP Status | Cause |
@@ -250,7 +175,7 @@ curl -X GET "https://your-domain.com/api/admin/catalog/attributes/12" \
 ## Notes
 
 - **`translations` contains every locale in the DB**, not just the current app locale. If the store has translations for `en`, `fr`, and `de`, all three entries are returned. Fields with no content for a locale are `null`.
-- **`options` is `null` for non-option types.** Only `select`, `multiselect`, and `checkbox` attributes have options. For all other types (`text`, `textarea`, `price`, `boolean`, `datetime`, `date`, `image`, `file`), `options` is `null`.
+- **`options` is `[]` for a non-option type, not `null`.** Only `select`, `multiselect`, and `checkbox` carry options; `text`, `textarea`, `price`, `boolean`, `datetime`, `date`, `image`, and `file` all return an empty list. Test the length, not for null.
 - **`translations` and `options` are plain arrays**, not IRIs. Nested objects (options and their translations) are serialized inline in the response — there are no follow-up requests needed.
 - **The `{id}` route parameter must be a digit.** The route carries a `requirements: ['id' => '\d+']` constraint — non-numeric path segments are rejected with `404` before reaching the provider.
 - **`swatchValueUrl`** is only non-null for options of attributes with `swatch_type = 'image'`. For `color` and `text` swatches, `swatchValue` carries the display value directly and `swatchValueUrl` is always `null`.

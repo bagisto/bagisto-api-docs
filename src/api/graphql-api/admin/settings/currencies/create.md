@@ -81,5 +81,3 @@ Adds a new currency to the store. `code` and `name` are required; the formatting
 
 - A duplicate `code` is rejected with *"The code has already been taken."*
 - Permission: `settings.currencies.create`.
-
-All currency operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

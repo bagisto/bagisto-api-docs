@@ -48,9 +48,7 @@ examples:
 
 Deletes a single inventory source by its IRI `id`.
 
-::: tip How this menu works
 For field meanings and the delete guards, see the [Inventory Sources overview](/api/graphql-api/admin/settings/inventory-sources/).
-:::
 
 ## Operation
 
@@ -64,8 +62,8 @@ The mutation returns the deleted record under `adminSettingsInventorySource` —
 
 Select **`message`** for the success confirmation — it resolves to `"Inventory source deleted successfully."` on a successful delete. `message` is `null` on read / list / create / update; a failed delete returns a top-level `errors[]` entry instead.
 
-::: warning Delete guards
-A delete is **refused** (error, equivalent to HTTP 422 on REST) when it would remove the **last remaining** inventory source, or when the source is still **referenced by product inventories**. Re-assign or zero out those product quantities first.
-:::
+### Delete guards
 
-Permission: `settings.inventory_sources.delete`. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+A delete is **refused** (error, equivalent to HTTP 422 on REST) when it would remove the **last remaining** inventory source, or when the source is still **referenced by product inventories**. Re-assign or zero out those product quantities first.
+
+Permission: `settings.inventory_sources.delete`.

@@ -50,5 +50,3 @@ In a single delete the guard surfaces as an `errors[]` entry; in mass delete the
 | [Mass Delete](./mass-delete.md) | `createAdminCustomerGroupMassDelete` mutation |
 
 Permissions: `customers.groups.create` / `.edit` / `.delete`.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

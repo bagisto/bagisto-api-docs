@@ -88,28 +88,13 @@ e.g. when pre-populating the edit form in Catalog → Categories.
 |-----------|------|
 | `adminCategory` | Query (item) |
 
-## Authentication
-
-Every request must include an admin Bearer token:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain a token via the [`createAdminLogin`](/api/graphql-api/admin/authentication)
-mutation.
-
 ## Arguments
 
 | Argument | Type | Required | Description |
 |----------|------|----------|-------------|
 | `id` | `ID!` | Yes | API Platform IRI of the category (e.g. `"/api/admin/catalog/categories/7"`) |
 
-::: tip Finding the IRI
-The IRI can be taken directly from `id` in any `adminCategories` or
-`adminCategoryTrees` edge node, or constructed as
-`/api/admin/catalog/categories/{numericId}`.
-:::
+Take the IRI straight from the `id` of an [`adminCategories`](/api/graphql-api/admin/catalog/categories/categories-listing) edge node, or build it as `/api/admin/catalog/categories/<numericId>`. A tree node's `id` will not work — that one resolves to `/api/admin/admin_category_trees/<id>`, so use its `_id` to build the path.
 
 ## Node Fields
 
@@ -147,94 +132,17 @@ element corresponds to one locale row in `category_translations`:
 | `metaDescription` | string\|null | SEO meta description |
 | `metaKeywords` | string\|null | SEO meta keywords |
 
-## Example Query
-
-```graphql
-query AdminCatalogCategory($id: ID!) {
-  adminCategory(id: $id) {
-    id
-    _id
-    name
-    slug
-    status
-    position
-    parentId
-    displayMode
-    logoUrl
-    bannerUrl
-    description
-    locale
-    createdAt
-    updatedAt
-    translations
-    filterableAttributeIds
-  }
-}
-```
-
-```json
-{
-  "id": "/api/admin/catalog/categories/7"
-}
-```
-
-## Example Response
-
-```json
-{
-  "data": {
-    "adminCategory": {
-      "id": "/api/admin/catalog/categories/7",
-      "_id": 7,
-      "name": "Apparel",
-      "slug": "apparel",
-      "status": 1,
-      "position": 1,
-      "parentId": 1,
-      "displayMode": "products_and_description",
-      "logoUrl": "https://example.com/storage/category/7/logo.webp",
-      "bannerUrl": null,
-      "description": "Men's and women's apparel",
-      "locale": "en",
-      "createdAt": "2026-01-12T08:15:00+00:00",
-      "updatedAt": "2026-04-30T14:20:09+00:00",
-      "translations": [
-        {
-          "locale": "en",
-          "name": "Apparel",
-          "slug": "apparel",
-          "description": "Men's and women's apparel",
-          "metaTitle": null,
-          "metaDescription": null,
-          "metaKeywords": null
-        },
-        {
-          "locale": "fr",
-          "name": "Vêtements",
-          "slug": "vetements",
-          "description": null,
-          "metaTitle": null,
-          "metaDescription": null,
-          "metaKeywords": null
-        }
-      ],
-      "filterableAttributeIds": [11, 23]
-    }
-  }
-}
-```
-
 ## Errors
 
-| Scenario | GraphQL `errors[]` | HTTP Status |
-|----------|-------------------|-------------|
-| Unknown ID | `"Category not found"` in `errors[]`, `data.adminCategory: null` | `200` (GraphQL convention) |
-| Missing auth | `"Unauthenticated"` in `errors[]` | `200` |
+| Condition | Result |
+|-----------|--------|
+| Unknown or deleted id | HTTP `200` with `Category not found.` in `errors[]` and `null` in `data.adminCategory` |
+| Missing or invalid token | HTTP `401` with `{"message": "Unauthenticated.", "error": "unauthenticated"}` — rejected by the transport before GraphQL runs |
 
-## Notes
+## Working With This Query
 
-- **`translations` is a plain JSON scalar**, not a typed GraphQL object list. You access it as a regular JSON array. This avoids API Platform serializing nested DTO objects as IRI strings instead of inline objects.
-- **`translations` contains every locale in the DB**, not just the current app locale. If the store has 3 locale rows (`en`, `fr`, `de`), all three are returned. Fields without content for a locale are `null`.
-- **`filterableAttributeIds`** is a plain JSON scalar array of integers. An empty array `[]` means no filterable attributes have been configured for this category.
-- **The `id` argument is the IRI**, not the numeric integer. Use the `_id` field from listing or tree queries and construct `"/api/admin/catalog/categories/{_id}"`, or pass the `id` field directly.
-- **`translations` and `filterableAttributeIds` are returned whole** — query each as a bare field (no sub-selection); the entire structure resolves over GraphQL. The REST detail endpoint returns the same data.
+- **`translations` and `filterableAttributeIds` are JSON scalars.** Select each as a **bare field** — a sub-selection is a schema error. The whole structure comes back in one piece.
+- **`translations` carries one entry per stored locale row**, not just the requested one, so a multi-locale store returns them all. Unset text fields come back as the empty string `""`, not `null`.
+- **The top-level `name`, `slug`, and `description` duplicate the requested locale's entry.** They are a shortcut, not extra data — `locale` tells you which entry they came from.
+- **`filterableAttributeIds` is a flat integer array.** `[]` means none are configured; it is the layered-navigation attribute set for this category, not the products' attributes.
+- **The `id` argument is the IRI, not the number.** Build it as `/api/admin/catalog/categories/<_id>` or pass a listing edge's `id` straight through.

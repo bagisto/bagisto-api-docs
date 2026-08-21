@@ -101,8 +101,4 @@ The `id` argument is the review IRI (`/api/admin/customers/reviews/{id}`).
 | `path` | `String` | Storage path of the image. |
 | `url` | `String` | Public URL resolved from the storage path. |
 
-::: tip
 See the [Reviews overview](/api/graphql-api/admin/customers/reviews/) for how moderation works.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

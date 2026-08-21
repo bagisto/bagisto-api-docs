@@ -28,9 +28,9 @@ The `statistics` payload **changes shape per `type`** — sometimes an object, s
 
 `start` / `end` (both `YYYY-MM-DD`) bound the figures and drive the `previous` baseline behind every `progress` percentage — the previous period is the same-length window immediately before `start`. `start` defaults to **30 days ago**, `end` to **today**. `channel` (a channel **code**) scopes the figures to a single storefront channel.
 
-::: warning `dateRange` is `null` over GraphQL
+### `dateRange` is `null` over GraphQL
+
 The camelCase `dateRange` field returns **`null`** over GraphQL in this build; `type` and `statistics` are fully populated. If you need the formatted label, read it from the [REST endpoint](/api/rest-api/admin/dashboard/stats), or reconstruct it from the `start` / `end` you sent.
-:::
 
 ## Queries in this menu
 

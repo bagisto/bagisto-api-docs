@@ -24,13 +24,9 @@ examples:
 
 # Product Images — Upload
 
-::: warning REST only — GraphQL upload not supported
-Binary uploads are not transportable over JSON GraphQL. The
-`createAdminCatalogProductImage` mutation exists as a placeholder only and
-will not accept a file.
+Image upload is **REST-only**. A binary file part cannot be carried in a JSON GraphQL request, so `createAdminCatalogProductImage` exists in the schema as a placeholder and rejects any call — it will not accept a file.
 
-Use [`POST /api/admin/catalog/products/{productId}/images`](/api/rest-api/admin/catalog/products/images-upload) instead.
-:::
+Upload through [`POST /api/admin/catalog/products/{productId}/images`](/api/rest-api/admin/catalog/products/images-upload) instead. Reordering and deleting images, which carry no binary payload, do work over GraphQL.
 
 ## See also
 

@@ -35,9 +35,7 @@ examples:
 Deletes a URL rewrite — the **Delete** row action on the admin **Marketing →
 Search & SEO → URL Rewrites** screen.
 
-::: tip
 New here? Read the [URL Rewrites overview](/api/graphql-api/admin/marketing/search-seo/url-rewrites/) for what a URL rewrite does and how its fields behave.
-:::
 
 ## Operation
 
@@ -53,14 +51,14 @@ New here? Read the [URL Rewrites overview](/api/graphql-api/admin/marketing/sear
   [list](/api/graphql-api/admin/marketing/search-seo/url-rewrites-list) query to
   discover valid ids.
 
-::: warning Confirm success via the absence of `errors`
+### Confirm success via the absence of `errors`
+
 The delete mutation returns a success acknowledgement, not the deleted rewrite's
 data — `adminMarketingUrlRewrite` resolves to `null` on the payload. **Treat a
 response with no `errors[]` as a successful delete.** If you need a confirmation
 message in the body, use the REST endpoint
 (`DELETE /api/admin/marketing/url-rewrites/{id}`), which returns
 `{ "message": "URL rewrite deleted." }`.
-:::
 
 ## Input fields
 

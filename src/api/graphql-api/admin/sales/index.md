@@ -18,5 +18,3 @@ The Sales section covers everything about an order after (and during) checkout �
 | [Bookings](/api/graphql-api/admin/sales/bookings/) | Booking lines produced by orders that contain a booking product. |
 
 Invoices, shipments, refunds, transactions, and bookings are **documents an order produces** — a row appears in those menus only once the corresponding document exists for an order.
-
-All Sales operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

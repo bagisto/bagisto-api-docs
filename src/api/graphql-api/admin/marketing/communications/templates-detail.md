@@ -41,9 +41,7 @@ examples:
 Returns a single email template with its full field set — the data behind the
 admin **Marketing → Communications → Email Templates** view screen.
 
-::: tip
 New here? Read the [Email Templates overview](/api/graphql-api/admin/marketing/communications/templates/) for what an email template does and how its fields behave.
-:::
 
 ## Operation
 

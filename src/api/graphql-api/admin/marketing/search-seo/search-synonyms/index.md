@@ -39,5 +39,3 @@ most-used low-result terms tells you which synonym groups to create.
 | [Update](/api/graphql-api/admin/marketing/search-seo/search-synonyms-update) | `updateAdminMarketingSearchSynonym` mutation |
 | [Delete](/api/graphql-api/admin/marketing/search-seo/search-synonyms-delete) | `deleteAdminMarketingSearchSynonym` mutation |
 | [Mass Delete](/api/graphql-api/admin/marketing/search-seo/search-synonyms-mass-delete) | `createAdminMarketingSearchSynonymMassDelete` mutation |
-
-All Search Synonyms operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

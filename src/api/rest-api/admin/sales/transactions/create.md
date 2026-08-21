@@ -49,9 +49,9 @@ The API equivalent of the admin **Sales → Transactions → Create** ("Record P
 
 Partial payments are supported. Once the cumulative recorded payments for an invoice reach its grand total, the invoice is marked **paid** and the order advances to **completed** (when it already has a shipment) or **processing**.
 
-::: tip Two ways to create a transaction
+### Two ways to create a transaction
+
 This endpoint records an **arbitrary or partial** payment you specify (invoice, method, amount). Alternatively, the **Create Transaction** checkbox on [invoice creation](/api/rest-api/admin/sales/orders/create-invoice) captures the **full** invoice amount in one step using the order's payment method. Both result in a transaction that appears in the Transactions listing.
-:::
 
 ## Endpoint
 

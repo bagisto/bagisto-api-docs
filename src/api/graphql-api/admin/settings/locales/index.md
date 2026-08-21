@@ -52,5 +52,3 @@ In a single delete the guard surfaces as an `errors[]` entry; in mass delete the
 | [Mass delete locales](./mass-delete.md) | `createAdminSettingsLocaleMassDelete` mutation |
 
 Permissions: `settings.locales.create` / `.edit` / `.delete`.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

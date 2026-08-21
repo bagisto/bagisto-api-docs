@@ -62,6 +62,4 @@ The customer-nested URL keeps fresh Create-Order distinct from Reorder, which
 is important because the two have completely different inputs and side-effects.
 Reorder consumes an existing order id; this endpoint only needs the customer.
 
-::: tip
 For how the Create-Order helper panels fit together, see the [Create-Order Helpers overview](./create-order-helpers/index.md).
-:::

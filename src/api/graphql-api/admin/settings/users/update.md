@@ -54,9 +54,7 @@ examples:
 
 Partially updates an admin user — send only the fields you want to change. `email` must stay unique. `password` is **optional** on update: include it to set a new hashed password, or omit it to keep the existing one. The `password` is never returned.
 
-::: tip Prerequisites
 The example uses an illustrative `id`. Replace it with the id of a user that exists in your store — use the [`adminSettingsUsers`](./list) query to discover valid ids.
-:::
 
 ## Operation
 
@@ -64,8 +62,6 @@ The example uses an illustrative `id`. Replace it with the id of a user that exi
 |-----------|------|---------|
 | `updateAdminSettingsUser(input:)` | Mutation | Update an admin user |
 
-::: tip Overview
 For field meanings and the delete guards, see the [Users overview](./).
-:::
 
 Requires the `settings.users.users.edit` permission and an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

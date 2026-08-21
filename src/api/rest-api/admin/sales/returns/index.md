@@ -58,4 +58,4 @@ The three read-only helper lists — **returnable items**, **return reasons**, a
 | [List return messages](./list-return-messages) | `GET /api/admin/rma/messages?return_id=` |
 | [Send a message](./send-return-message) | `POST /api/admin/rma/messages` |
 
-Permissions: `sales.rma.requests` for reads / status changes / reopen / messages, and `sales.rma.requests.create` to create a return. All endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
+Permissions: `sales.rma.requests` for reads / status changes / reopen / messages, and `sales.rma.requests.create` to create a return.

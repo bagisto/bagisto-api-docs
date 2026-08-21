@@ -4,7 +4,7 @@ apiType: rest
 examples:
   - id: admin-catalog-product-mass-delete
     title: Mass Delete Catalog Products
-    description: Deletes a batch of catalog products in one call. Non-existent IDs are silently skipped. Mirrors Bagisto monolith `ProductController::massDestroy`.
+    description: Deletes a batch of catalog products in one call. Ids that do not exist are skipped without an error, and `deleted` lists only the ones actually removed.
     query: |
       curl -X POST "https://your-domain.com/api/admin/catalog/products/mass-delete" \
         -H "Authorization: Bearer <token>" \
@@ -18,6 +18,7 @@ examples:
       }
     response: |
       {
+        "id": 1,
         "deleted": [12, 18],
         "message": "Products deleted successfully."
       }
@@ -56,19 +57,24 @@ Products → Mass Delete** in the Bagisto admin panel.
 
 | Field | Type | Notes |
 |-------|------|-------|
-| `deleted` | int[] | IDs that were processed (echoes the request — non-existent IDs are still listed) |
-| `message` | string | Translated confirmation |
+| `id` | integer | Always `1`. This is an action result, not a record — ignore it. |
+| `deleted` | int[] | The ids that were actually removed. |
+| `message` | string | Translated confirmation. |
+
+**`deleted` is not an echo of `indices`.** Ids that do not exist are dropped silently, so sending `[1403, 999999]` returns `deleted: [1403]`. Compare the two lists to find out what was skipped — nothing else reports it.
+
+## Behaviour
+
+- **Best effort, no transaction.** The batch does not roll back if one id fails partway through; ids processed before the failure stay deleted.
+- **Configurable variants cascade** with their parent, so a parent id can remove more rows than you listed.
+- **Order history is unaffected** — order items keep their product snapshot.
 
 ## Errors
 
-| HTTP | Cause |
-|------|-------|
-| `400 Bad Request` | Empty / malformed `indices` |
-| `401 Unauthorized` | Missing or invalid admin Bearer token |
-| `403 Forbidden` | Admin role lacks `catalog.products.delete` |
-| `500 Internal Server Error` | Underlying delete threw — matches monolith best-effort behaviour |
+| HTTP | Detail |
+|------|--------|
+| `400` | `The indices field is required and must be a non-empty array.` |
+| `401` | `Unauthenticated.` |
+| `403` | `You do not have permission to manage products.` — token lacks `catalog.products.delete` |
 
-## Notes
-
-- Mirrors the monolith **best-effort** semantics — the call does not short-circuit on a missing or invalid ID.
-- For configurable products, variants cascade automatically through the core repository.
+Note the validation failures here are `400`, not the `422` used by the single-product create and update endpoints.

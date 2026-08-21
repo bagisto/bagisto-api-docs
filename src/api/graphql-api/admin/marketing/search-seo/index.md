@@ -18,5 +18,3 @@ Search & SEO controls **how the store is searched and how search engines index i
 ## How they fit together
 
 The four resources cover the two halves of discoverability. **Search Terms** and **Search Synonyms** shape *on-site* search: search terms reveal what shoppers actually look for (and where results are thin), and synonyms widen recall so those queries return more products. **URL Rewrites** and **Sitemaps** shape *off-site* discovery: rewrites preserve inbound links across slug changes, and sitemaps hand the crawler the full list of product, category, and page URLs to index.
-
-All Search & SEO operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

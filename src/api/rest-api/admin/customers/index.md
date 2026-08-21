@@ -40,5 +40,3 @@ A few behaviours are common to every Customers menu over REST:
 - **Nested objects, not flat ids.** A customer's detail/list rows return the group as a nested `group` object; a review's detail returns nested `product` and `customer` objects plus an `images` array — no flat id/name columns to cross-reference.
 - **Detail-only fields.** Aggregates and nested data (a customer's `totalOrders` / `totalAddresses` / `totalAmountSpent`, a review's images) are populated only on the single-record `GET`, not on the listing rows.
 - **Permission gates.** Write operations are gated by the matching `customers.*` permission; an admin whose role lacks it gets a `403`.
-
-All Customers endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

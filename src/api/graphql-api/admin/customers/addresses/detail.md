@@ -58,6 +58,4 @@ examples:
 
 Fetches a single saved address for a customer by its id. The address must belong to the `customerId` passed in, otherwise an error is returned.
 
-::: tip Menu overview
 See the [Customer Addresses overview](/api/graphql-api/admin/customers/) for how the address book fits into the customer screen.
-:::

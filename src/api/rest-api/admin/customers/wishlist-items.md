@@ -50,6 +50,4 @@ Returns the standard `{ data, meta }` envelope. Each row in `data`:
 
 Requires an admin Bearer token.
 
-::: tip
 For how the Create-Order helper panels fit together, see the [Create-Order Helpers overview](./create-order-helpers/index.md).
-:::

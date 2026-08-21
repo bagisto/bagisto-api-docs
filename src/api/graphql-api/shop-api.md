@@ -1369,5 +1369,5 @@ query {
 
 **📚 Related Documentation:**
 - 🔐 [Authentication](/api/graphql-api/authentication)
-- 💻 [Integration Guides](/api/graphql-api/integrations)
+- 💻 [Integration Guides (GraphQL)](/api/graphql-api/integrations)
 - 🎯 [Best Practices](/api/graphql-api/best-practices)

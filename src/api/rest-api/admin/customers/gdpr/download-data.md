@@ -43,11 +43,7 @@ examples:
 
 Returns an ad-hoc data dump (not bound to a GDPR request) of everything stored for the customer.
 
-::: tip Overview
 See the [GDPR Requests overview](/api/rest-api/admin/customers/gdpr/) for the full feature flow.
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
 
 | Endpoint | Method |
 |----------|--------|
@@ -67,8 +63,8 @@ All admin endpoints require an admin Bearer token — see [Authentication](/api/
 | `data.wishlist` | array | Wishlist entries. |
 | `data.notes` | array | Admin notes recorded on the customer. |
 
-::: tip Full GDPR export
+### Full GDPR export
+
 This covers addresses, orders, reviews, wishlist, and notes. A sub-section that has no rows returns an empty array.
-:::
 
 Permission: `customers.gdpr_requests.view`.

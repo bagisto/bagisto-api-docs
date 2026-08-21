@@ -47,6 +47,4 @@ Appends a note to a customer's timeline. Notes are append-only — each call add
 
 Permission: `customers.customers.edit`.
 
-::: tip Menu overview
 See the [Customer Notes overview](/api/graphql-api/admin/customers/) for how notes appear on the customer screen.
-:::

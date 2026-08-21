@@ -45,9 +45,7 @@ Generates several random coupon codes for a cart rule in one call — the
 **Generate Coupons** action on the **Coupons** tab of the admin **Marketing →
 Promotions → Cart Rules** screen.
 
-::: tip
 New here? Read the [Cart Rule Coupons overview](/api/rest-api/admin/marketing/promotions/cart-rule-coupons/) for what these coupons do and how they relate to a cart rule.
-:::
 
 ## Endpoint
 

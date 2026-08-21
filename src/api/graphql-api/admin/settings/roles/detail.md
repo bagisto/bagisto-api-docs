@@ -70,6 +70,3 @@ Fetches a single role by its IRI id, returning its full permission set.
 - For a `custom` role, `permissions` is the full **string array** of granted permission keys.
 - For an `all` role, `permissions` is `null` — the role has full access with no explicit key list.
 
-::: tip
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
-:::

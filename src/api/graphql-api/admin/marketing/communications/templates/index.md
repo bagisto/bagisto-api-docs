@@ -27,5 +27,3 @@ A template has three parts: a **name** to identify it, a **status** that control
 | [Create](/api/graphql-api/admin/marketing/communications/templates-create) | `createAdminMarketingTemplate` mutation |
 | [Update](/api/graphql-api/admin/marketing/communications/templates-update) | `updateAdminMarketingTemplate` mutation |
 | [Delete](/api/graphql-api/admin/marketing/communications/templates-delete) | `deleteAdminMarketingTemplate` mutation |
-
-All Email Templates operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

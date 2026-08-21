@@ -104,10 +104,6 @@ Any other status just updates the status. Every status change adds a note to the
 | `rmaStatusId` | `Int` | yes | The next status id (one of the request's `availableStatuses`). |
 | `shipping` | `Float` | no | Shipping amount to include when the status creates a refund. Defaults to `0`. |
 
-::: tip
 See the [Returns overview](/api/graphql-api/admin/sales/returns/) for the full status workflow.
-:::
 
 Permission: `sales.rma.requests`.
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

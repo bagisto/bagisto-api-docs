@@ -144,6 +144,8 @@ export default defineConfig(({ command, mode }) => {
               { text: 'Status Codes', link: '/api/errors' },
               { text: 'Pagination', link: '/api/pagination' },
               { text: 'Sorting', link: '/api/sorting' },
+              { text: 'Integration Guides', link: '/api/integrations' },
+              { text: 'Testing & Debugging', link: '/api/testing-debugging' },
             ],
           },
           {
@@ -187,6 +189,8 @@ export default defineConfig(({ command, mode }) => {
                   { text: 'Product Management', link: '/api/workflows/admin/product-management' },
                   { text: 'Order Fulfillment Actions', link: '/api/workflows/admin/order-fulfillment-actions' },
                   { text: 'Customers (Impersonate & GDPR)', link: '/api/workflows/admin/customers' },
+                  { text: 'Returns / RMA', link: '/api/workflows/admin/returns-rma' },
+                  { text: 'EU Withdrawal', link: '/api/workflows/admin/eu-withdrawal' },
                   { text: 'Marketing', link: '/api/workflows/admin/marketing' },
                   { text: 'Configuration', link: '/api/workflows/admin/configuration' },
                 ],
@@ -1369,7 +1373,6 @@ export default defineConfig(({ command, mode }) => {
               { text: 'Identifiers (id, _id, IRI)', link: '/api/graphql-api/identifiers' },
               { text: 'Playground Guide', link: '/api/graphql-api/playground' },
               { text: 'Best Practices', link: '/api/graphql-api/best-practices' },
-              { text: 'Integration Guides', link: '/api/graphql-api/integrations' },
             ]
           },
           { 
@@ -1378,7 +1381,6 @@ export default defineConfig(({ command, mode }) => {
             items: [
               { text: 'Introduction', link: '/api/rest-api/introduction' },
               { text: 'Authentication', link: '/api/rest-api/authentication' },
-              { text: 'Integration Guides', link: '/api/rest-api/integrations' },
 
               {
                 text: 'Shop API',
@@ -1587,6 +1589,14 @@ export default defineConfig(({ command, mode }) => {
                       { text: 'Create Compare Item', link: '/api/rest-api/shop/compare/create' },
                       { text: 'Delete Compare Item', link: '/api/rest-api/shop/compare/delete' },
                       { text: 'Delete All Compare Items', link: '/api/rest-api/shop/compare/delete-all' },
+                    ]
+                  },
+                  {
+                    text: 'Contact Us',
+                    collapsed: true,
+                    link: '/api/rest-api/shop/contact-us/',
+                    items: [
+                      { text: 'Submit an Enquiry', link: '/api/rest-api/shop/contact-us/submit-contact-us' },
                     ]
                   },
                   {
@@ -2339,7 +2349,7 @@ export default defineConfig(({ command, mode }) => {
                   }
                 ]
               },
-              { text: 'Testing & Debugging', link: '/api/rest-api/testing-debugging' },
+              { text: 'Playground Guide', link: '/api/rest-api/playground' },
               { text: 'Best Practices', link: '/api/rest-api/best-practices' },
             ]
           },

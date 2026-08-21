@@ -33,9 +33,7 @@ examples:
 Creates a sitemap definition — the **Create Sitemap** action on the admin
 **Marketing → Search & SEO → Sitemaps** screen.
 
-::: tip
 New here? Read the [Sitemaps overview](/api/rest-api/admin/marketing/search-seo/sitemaps/) for what a sitemap does and how its fields behave.
-:::
 
 ## Endpoint
 
@@ -49,12 +47,12 @@ New here? Read the [Sitemaps overview](/api/rest-api/admin/marketing/search-seo/
   permission.
 - Returns the full sitemap payload.
 
-::: warning The XML is not built on save
+### The XML is not built on save
+
 Creating the row only registers the definition — `generatedAt`, `indexFile`,
 and `generatedSitemaps` stay empty. Call
 [generate](/api/rest-api/admin/marketing/search-seo/sitemaps-generate)
 (`POST /api/admin/marketing/sitemaps/{id}/generate`) to build the XML files.
-:::
 
 ## Request body
 

@@ -15,8 +15,8 @@ examples:
 
 # Mass Delete Currencies
 
-::: warning Whole-batch pre-validation
+### Whole-batch pre-validation
+
 Rejects with HTTP 400 if the batch would empty the currencies table OR if any id is a channel `base_currency_id`. Non-existent IDs silently skipped. Empty `indices` → 422.
-:::
 
 Permission: `settings.currencies.delete`.

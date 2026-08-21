@@ -31,5 +31,3 @@ When adding a note you can set `customerNotified` to email the note's text to th
 | [Add Note](./create.md) | `createAdminCustomerNote` mutation |
 
 Permission: `customers.customers.edit`.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

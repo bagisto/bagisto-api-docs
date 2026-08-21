@@ -47,4 +47,6 @@ The one thing that does not carry over literally between transports is category 
 
 ## Customize
 
+Every call below links to its **REST** endpoint page for concreteness. The sequence is transport-agnostic — the same flow works over GraphQL with the equivalent query or mutation, and each REST page cross-links to its GraphQL twin. Pick whichever transport your client uses; only the request shape changes, never the order of steps.
+
 To change catalog behavior on the server, see [Customization → Shop](/api/workflows/customization/).

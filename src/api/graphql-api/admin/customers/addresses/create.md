@@ -77,6 +77,4 @@ Adds a new address to a customer's address book. When `defaultAddress` is `true`
 
 Permission: `customers.addresses.create`.
 
-::: tip Menu overview
 See the [Customer Addresses overview](/api/graphql-api/admin/customers/) for the full address-book flow.
-:::

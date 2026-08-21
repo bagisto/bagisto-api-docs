@@ -107,30 +107,13 @@ Cursor-paginated GraphQL query that returns the full nested category hierarchy.
 Each edge node represents a root-level category and carries its complete subtree
 under `children`. Leaf nodes have `children: []`.
 
-::: tip Distinct from the flat listing query
-`adminCategoryTrees` (this query) returns the **nested hierarchy** —
-ideal for tree-picker UIs and navigation menus.
-
-`adminCategories` returns a **flat, cursor-paginated list** — ideal for
-datagrid/table views with filtering and sorting.
-:::
+This query returns the **nested hierarchy**, which is what a tree picker or navigation menu needs. For a flat, filterable, sortable list use [`adminCategories`](/api/graphql-api/admin/catalog/categories/categories-listing) instead.
 
 ## Operation
 
 | Operation | Type | Pagination |
 |-----------|------|------------|
 | `adminCategoryTrees` | Query | Cursor (`first` / `after`) |
-
-## Authentication
-
-Every request must include an admin Bearer token:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain a token via the [`createAdminLogin`](/api/graphql-api/admin/authentication)
-mutation.
 
 ## Arguments
 
@@ -142,11 +125,7 @@ mutation.
 | `status` | `Int` | Filter by status: `0` = disabled, `1` = enabled. Ancestor nodes are preserved when they have qualifying descendants. | `1` |
 | `rootId` | `Int` | Limit the tree to descendants of this category ID (inclusive). Returns empty if the ID is unknown. | `1` |
 
-::: tip extraArgs convention
-API Platform does not automatically expose filter arguments in the GraphQL schema
-for `QueryCollection` operations. This query uses `extraArgs` to surface `locale`,
-`status`, and `rootId` as first-class GraphQL arguments alongside `first` and `after`.
-:::
+Every filter is a first-class GraphQL argument — pass `locale`, `status`, and `rootId` alongside `first` and `after`, not inside a nested filter object.
 
 ## Node Fields
 
@@ -164,117 +143,13 @@ Each `edges[].node` object represents a root-level category and contains:
 | `displayMode` | `String` | Category display mode |
 | `children` | scalar (JSON array) | Nested child nodes (recursive plain objects); `[]` for leaf nodes |
 
-### `children` structure
+### The children Structure
 
-`children` is returned as a **plain JSON array** (not a GraphQL connection type).
-Each element in the array has the same scalar shape as the parent node: `id`,
-`name`, `slug`, `status`, `position`, `parentId`, `displayMode`, and `children`.
-This recursive structure continues down to leaf nodes which have `children: []`.
+`children` is a **plain JSON scalar**, not a connection — select it bare, then walk it as an ordinary nested array with no `edges`/`node` wrappers.
 
-## Example Query
+Each element repeats the same shape recursively — `id`, `name`, `slug`, `status`, `position`, `parentId`, `displayMode`, `children` — down to leaves, which carry `children: []`.
 
-```graphql
-query AdminCatalogCategoryTrees(
-  $first: Int
-  $after: String
-  $locale: String
-  $status: Int
-  $rootId: Int
-) {
-  adminCategoryTrees(
-    first: $first
-    after: $after
-    locale: $locale
-    status: $status
-    rootId: $rootId
-  ) {
-    edges {
-      cursor
-      node {
-        id
-        _id
-        name
-        slug
-        status
-        position
-        parentId
-        displayMode
-        children
-      }
-    }
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      endCursor
-      startCursor
-    }
-    totalCount
-  }
-}
-```
-
-```json
-{
-  "first": 10,
-  "locale": "en",
-  "status": 1
-}
-```
-
-## Example Response
-
-```json
-{
-  "data": {
-    "adminCategoryTrees": {
-      "edges": [
-        {
-          "cursor": "MA==",
-          "node": {
-            "id": "/api/admin/admin_category_trees/1",
-            "_id": 1,
-            "name": "Root Category",
-            "slug": "root",
-            "status": 1,
-            "position": 0,
-            "parentId": null,
-            "displayMode": null,
-            "children": [
-              {
-                "id": 2,
-                "name": "Apparel",
-                "slug": "apparel",
-                "status": 1,
-                "position": 1,
-                "parentId": 1,
-                "displayMode": null,
-                "children": []
-              },
-              {
-                "id": 5,
-                "name": "Electronics",
-                "slug": "electronics",
-                "status": 1,
-                "position": 2,
-                "parentId": 1,
-                "displayMode": null,
-                "children": []
-              }
-            ]
-          }
-        }
-      ],
-      "pageInfo": {
-        "hasNextPage": false,
-        "hasPreviousPage": false,
-        "endCursor": "MA==",
-        "startCursor": "MA=="
-      },
-      "totalCount": 1
-    }
-  }
-}
-```
+One difference will catch you: **a nested child identifies itself with `id` holding the numeric id**, while the top-level connection node uses `id` for the IRI and `_id` for the number. So `node.id` is `/api/admin/admin_category_trees/1` but `node.children[0].id` is `2`. Read `_id` at the top level and `id` inside `children`.
 
 ## Filtering by Root
 
@@ -291,10 +166,10 @@ To get the subtree rooted at a specific category, pass `rootId`:
 If the `rootId` does not exist in the database, `totalCount` will be `0` and
 `edges` will be empty.
 
-## Notes
+## Behaviour Worth Knowing
 
-- **`children` is a plain JSON array**, not a GraphQL connection. You traverse it as a standard JSON array without `edges`/`node` wrappers. This is intentional — nested DTOs would cause API Platform to serialize them as IRI strings instead of inline objects.
-- **`status` filtering preserves ancestor nodes.** When `status: 1` is applied, a disabled parent still appears if it has at least one enabled descendant, so the tree remains navigable.
-- **Cursor pagination operates on root nodes.** The `first`/`after` arguments page through the top-level nodes; each root node's full subtree is always returned in the same response.
-- **Same provider as the REST tree endpoint** — `AdminCategoryTreeProvider` serves both transports, so filter semantics are identical between `adminCategoryTrees` and `GET /api/admin/catalog/categories/tree`.
-- **`translations` and `filterableAttributeIds` are not included** in tree nodes. Use the item query `adminCategory(id: ID!)` when you need the full detail for a specific category.
+- **Pagination counts root nodes, not categories.** `first` and `after` page through top-level nodes only, and each one always arrives with its complete subtree. A store with a single root therefore reports `totalCount: 1` no matter how many categories exist beneath it — do not read it as a category count.
+- **`status` filtering keeps ancestors.** With `status: 1`, a disabled parent still appears when any descendant is enabled, so the branch stays reachable.
+- **The node IRI is routeless.** `id` resolves to `/api/admin/admin_category_trees/<id>`, which is not a queryable path. Use `_id`, and fetch a category with [`adminCategory(id:)`](/api/graphql-api/admin/catalog/categories/categories-detail) using `/api/admin/catalog/categories/<_id>`.
+- **Tree nodes carry no `locale`, `translations`, or `filterableAttributeIds`.** Names and slugs are already resolved for the requested locale; for per-locale metadata use the item query.
+- **REST returns the same tree** through `GET /api/admin/catalog/categories/tree`, with identical filter semantics.

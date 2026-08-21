@@ -38,12 +38,12 @@ examples:
 
 # Create Import (GraphQL)
 
-::: warning REST only
+### REST only
+
 Creating an import requires **uploading the source file** (CSV / XLSX / XML) as multipart form data, which cannot be carried over a JSON GraphQL request. The `createAdminSettingsDataTransferImport` mutation always **rejects** with an error pointing to the REST endpoint.
 
 Create the import over REST: [Create Import](/api/rest-api/admin/settings/data-transfer-imports/create).
-:::
 
 Once an import row exists (created over REST), you can drive the rest of the lifecycle over GraphQL — [validate](./validate.md), [start](./start.md), [link](./link.md), [index](./index.md), poll [stats](./stats.md), and [cancel](./cancel.md).
 
-Permission: `settings.data_transfer.imports.create`. All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+Permission: `settings.data_transfer.imports.create`.

@@ -57,6 +57,4 @@ Returns the standard `{ data, meta }` envelope. Each row in `data`:
 Returns only **top-level** items (`cart_items.parent_id IS NULL`). Empty `data`
 array when the customer has no active cart. Requires an admin Bearer token.
 
-::: tip
 For how the Create-Order helper panels fit together, see the [Create-Order Helpers overview](./create-order-helpers/index.md).
-:::

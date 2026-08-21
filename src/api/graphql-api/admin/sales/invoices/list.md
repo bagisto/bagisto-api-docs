@@ -200,19 +200,17 @@ examples:
 
 # List Invoices
 
-GraphQL counterpart of `GET /api/admin/invoices`. Returns a cursor-paginated list of invoices — every invoice **column** is populated on each row, so you can query whichever fields you need without a follow-up call. Requires the `sales.invoices.view` permission. All admin endpoints require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
+GraphQL counterpart of `GET /api/admin/invoices`. Returns a cursor-paginated list of invoices — every invoice **column** is populated on each row, so you can query whichever fields you need without a follow-up call. Requires the `sales.invoices.view` permission.
 
-::: tip How this menu works
 For the invoice `state` semantics, why a paid order can read "pending", the red payment-due countdown, and the print / send-duplicate / mass-status operations, see the [Invoices overview](/api/graphql-api/admin/sales/invoices/).
-:::
 
 ## Operation
 
 `adminInvoices(first, after, id, order_id, state, base_grand_total_from, base_grand_total_to, created_at_from, created_at_to, date_range, sort, order)` — a cursor `QueryCollection`. Every REST query parameter is also exposed as a GraphQL argument; see the [REST page](/api/rest-api/admin/sales/invoices/list) for the full argument table.
 
-::: tip What's on the listing
+### What's on the listing
+
 Every **column** of the invoice (state, totals, currency codes, reminders, timestamps), the order/customer context (`customerName`, `customerEmail`, `orderStatus`, `orderStatusLabel`, `orderDate`, `channelName`), **and** the `billingAddress` / `shippingAddress` objects are returned on every listing row. Only `items` (the line items) is left empty (`[]`) on the listing — it's the one heavy per-row relation; fetch it with [Get Invoice](/api/graphql-api/admin/sales/orders/get-invoice). The field set is otherwise identical to the single-invoice query.
-:::
 
 ## Fields
 
@@ -228,8 +226,8 @@ Same field set as [Get Invoice](/api/graphql-api/admin/sales/orders/get-invoice)
 | Addresses | `billingAddress`, `shippingAddress` (JSON objects — query bare) | ✓ |
 | Line items | `items` | **detail only** (`[]` on listing) |
 
-::: warning A `null` here means the DB is genuinely empty
+### A `null` here means the DB is genuinely empty
+
 Listing rows return the actual stored value for every column. If a field comes back `null` (e.g. `baseCurrencyCode`, `transactionId`, `customerName`), that row has no value stored for it — it is **not** the listing withholding data. Only `items` is deliberately omitted on the listing.
-:::
 
 **Amounts — which one to show.** Use `formattedGrandTotal` for a viewer working in the order's currency, and `baseGrandTotal` / `formattedBaseGrandTotal` for reporting in the store's base currency. For a single-currency store the two are identical.

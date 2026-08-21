@@ -6,6 +6,8 @@ outline: false
 
 Turn a ready cart into an order: set addresses, choose a shipping method, choose a payment method, place the order. A logged-in customer's saved addresses (and past orders) are surfaced so they can reuse them.
 
+An address form needs the country and state lists to render its dropdowns, so fetch those alongside the saved addresses — they are public and cacheable, and they do not depend on the cart.
+
 ## Prerequisites
 
 - A cart with at least one item ([Cart workflow](/api/workflows/shop/cart)).
@@ -32,6 +34,7 @@ flowchart TD
 | # | Step | Endpoint | Depends on | Note |
 |---|------|----------|-----------|------|
 | 1 | Read saved addresses | [GET addresses](/api/rest-api/shop/checkout/get-addresses) | logged-in customer | Customer path; prefill from saved. Past orders: [customer orders](/api/rest-api/shop/customer-orders/get-customer-orders) |
+| 1b | Populate the address form | [GET countries](/api/rest-api/shop/countries/get-countries) · [GET country states](/api/rest-api/shop/countries/get-country-states) | — | Both are public reads. Fetch states per country — a country with none takes a free-text state |
 | 2 | Set billing address | [POST set-billing-address](/api/rest-api/shop/checkout/set-billing-address) · [GraphQL](/api/graphql-api/shop/checkout) | cart with items | Guest sends a full address; customer may reuse a saved one |
 | 3 | Set shipping address | [POST set-shipping-address](/api/rest-api/shop/checkout/set-shipping-address) | billing set | |
 | 4 | List shipping methods | [GET shipping-methods](/api/rest-api/shop/checkout/get-shipping-methods) | shipping address set | |
@@ -65,5 +68,7 @@ The order row is created only when the shopper's browser lands on the store's **
 Follow each linked endpoint page for the exact request / response body.
 
 ## Customize
+
+Every call below links to its **REST** endpoint page for concreteness. The sequence is transport-agnostic — the same flow works over GraphQL with the equivalent query or mutation, and each REST page cross-links to its GraphQL twin. Pick whichever transport your client uses; only the request shape changes, never the order of steps.
 
 To change checkout behavior on the server, see [Customization → Shop](/api/workflows/customization/).

@@ -65,9 +65,7 @@ Creates a catalog rule — the **Create Rule** action on the admin **Marketing �
 Promotions → Catalog Rules** screen. Saving recomputes affected product prices in
 the background, so a new rule may take a moment to show on the storefront.
 
-::: tip
 New here? Read the [Catalog Rules overview](/api/rest-api/admin/marketing/promotions/catalog-rules/) for what a catalog rule does and how its fields behave.
-:::
 
 ## Endpoint
 

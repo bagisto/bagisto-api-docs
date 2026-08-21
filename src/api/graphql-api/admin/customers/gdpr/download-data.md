@@ -91,8 +91,4 @@ The `data` field is a JSON value — query it bare (no sub-selection).
 
 Permission: `customers.gdpr_requests.view`.
 
-::: tip
 See the [GDPR overview](/api/graphql-api/admin/customers/gdpr/) for how requests are processed.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

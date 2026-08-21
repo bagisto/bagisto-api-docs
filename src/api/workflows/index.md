@@ -41,6 +41,8 @@ Every flow page uses the same blocks:
 
 Extending the API itself (adding or changing endpoints) — see [Customization](/api/workflows/customization/).
 
+Every call below links to its **REST** endpoint page for concreteness. The sequence is transport-agnostic — the same flow works over GraphQL with the equivalent query or mutation, and each REST page cross-links to its GraphQL twin. Pick whichever transport your client uses; only the request shape changes, never the order of steps.
+
 ::: tip Building with an AI agent?
 See [Build with AI](/api/build-with-ai/) for the `llms.txt` index, the agent skills, and the optional docs MCP server.
 :::

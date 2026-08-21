@@ -25,9 +25,7 @@ examples:
 Returns a single search-synonym group with its full field set — the data behind
 the admin **Marketing → Search & SEO → Search Synonyms** view screen.
 
-::: tip
 New here? Read the [Search Synonyms overview](/api/rest-api/admin/marketing/search-seo/search-synonyms/) for what a search synonym is and how its fields behave.
-:::
 
 ## Endpoint
 

@@ -50,6 +50,4 @@ Creates a new customer group. API-created groups are always user-defined (`isUse
 
 Permission: `customers.groups.create`.
 
-::: tip Menu overview
 See the [Customer Groups overview](/api/graphql-api/admin/customers/groups/) for what customer groups do and how they relate to the rest of the store.
-:::

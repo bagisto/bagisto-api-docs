@@ -52,9 +52,7 @@ examples:
 Creates a campaign — the **Create Campaign** action on the admin **Marketing →
 Communications → Campaigns** screen.
 
-::: tip
 New here? Read the [Campaigns overview](/api/rest-api/admin/marketing/communications/campaigns/) for what a campaign does and how its fields behave.
-:::
 
 ## Endpoint
 

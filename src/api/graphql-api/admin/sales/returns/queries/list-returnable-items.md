@@ -83,10 +83,6 @@ The `orderId` argument is required. There is no customer scope — the admin can
 | `rmaQuantity` | Quantity already placed on returns. |
 | `rmaReturnPeriod` | The return window (in days) for this item. |
 
-::: tip
 See the [Returns overview](/api/graphql-api/admin/sales/returns/) for how a return is created.
-:::
 
 Permission: `sales.rma.requests`.
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

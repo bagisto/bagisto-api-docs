@@ -114,9 +114,7 @@ Creates a cart rule — the **Create Cart Rule** action on the admin
 **Marketing → Promotions → Cart Rules** screen. A cart rule discounts the cart at
 checkout, optionally gated behind a coupon code.
 
-::: tip
 New here? Read the [Cart Rules overview](/api/graphql-api/admin/marketing/promotions/cart-rules/) for what a cart rule does and how its fields behave.
-:::
 
 ## Operation
 

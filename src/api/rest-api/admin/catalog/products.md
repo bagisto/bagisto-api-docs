@@ -38,6 +38,7 @@ examples:
             "urlKey": "acme-drawstring-bag",
             "visibleIndividually": true,
             "shortDescription": "Many desktop publishing packages and web page editors now use",
+            "description": "A roomy drawstring bag in durable cotton canvas.",
             "metaTitle": "",
             "metaDescription": "",
             "metaKeywords": "",
@@ -71,33 +72,15 @@ product list that mirrors the Bagisto admin **Catalog → Products** datagrid 1:
 Same columns, same filters, and the same sort options used by the admin screen.
 This is the listing you want for product-management screens.
 
-::: tip How this menu works
-For the product types, the two-step create flow, status vs. visibleIndividually, and the per-product sub-resources, see the [Products overview](/api/rest-api/admin/catalog/products/).
-:::
+For the product types, the two-step create flow, `status` versus `visibleIndividually`, and the per-product sub-resources, see the [Products overview](/api/rest-api/admin/catalog/products/).
 
-::: tip Not the Create-Order search
-`GET /api/admin/catalog/products` (this endpoint) is the full product listing.
-
-A separate slim search — [`GET /api/admin/products`](/api/rest-api/admin/catalog/products/list) — powers the admin
-Create-Order "Add Product" modal only. Use this page for the actual product
-listing.
-:::
+A separate slim search, [`GET /api/admin/products`](/api/rest-api/admin/catalog/products/list), powers the Create-Order "Add Product" modal only. It is not the listing.
 
 ## Endpoint
 
 | Endpoint | Method | Authentication |
 |----------|--------|----------------|
 | `/api/admin/catalog/products` | GET | Admin Bearer token |
-
-## Authentication
-
-Every request requires:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain the Bearer token via [Authentication](/api/rest-api/admin/authentication).
 
 ## Query Parameters
 
@@ -164,7 +147,8 @@ Responses use the standard admin `{ data, meta }` envelope.
 | `attributeFamilyName` | string\|null | Attribute family name |
 | `urlKey` | string\|null | URL slug (e.g. `acme-drawstring-bag`) |
 | `visibleIndividually` | boolean\|null | Whether the product appears in category/search listings |
-| `shortDescription` | string\|null | Short description |
+| `shortDescription` | string\|null | Short description, HTML |
+| `description` | string\|null | Full description, HTML |
 | `metaTitle` | string\|null | SEO meta title (empty string when unset) |
 | `metaDescription` | string\|null | SEO meta description (empty string when unset) |
 | `metaKeywords` | string\|null | SEO meta keywords (empty string when unset) |
@@ -174,80 +158,23 @@ Responses use the standard admin `{ data, meta }` envelope.
 | `createdAt` | string | Creation timestamp |
 | `updatedAt` | string | Last-update timestamp |
 
-Notes on the listing values:
+Four traps in these values:
 
-- `price`, `specialPrice` are **decimal strings**, not numbers.
-- `specialPriceFrom` / `specialPriceTo` are `null` unless a **dated** special-price
-  window is configured.
-- `quantity` is the **summed** inventory across all sources.
+- **`price` and `specialPrice` are decimal strings**, not numbers — `"3000.0000"`. Everything else numeric on the row (`quantity`, `imagesCount`, `weight`, `attributeFamilyId`) is a real number, so cast the two price fields before arithmetic or comparison.
+- **`specialPriceFrom` and `specialPriceTo` stay `null` unless a dated window is set.** A product can carry a `specialPrice` with both dates `null` — that means the sale price applies indefinitely, not that there is no sale.
+- **`categoryId` and `categoryName` describe the first category only.** A product in three categories reports one, matching what the datagrid shows. Read the full set from the `categories` block on [Product Detail](/api/rest-api/admin/catalog/products/products-detail).
+- **`quantity` is a sum across inventory sources**, not a per-source figure. For the breakdown use [List Inventories](/api/rest-api/admin/catalog/products/inventories-list).
 
-The following fields are **detail-only** and always come back `null` on the
-listing — fetch them from the single-product endpoint
-`GET /api/admin/catalog/products/{id}`:
+The same product over GraphQL comes back with **different JSON types** — `status`, `quantity`, `weight`, `featured`, and `new` are all strings there, and timestamps are ISO 8601 rather than the `2026-04-19 11:56:43` form used here. A parsing helper written against this endpoint will not survive being pointed at `adminCatalogProducts`.
 
-- `taxCategoryId`, `manageStock`, `inStock`
-- the relation blocks: `translations`, `images`, `categories`, `inventories`,
-  `customerGroupPrices`, `superAttributes`, `variants`, `bundleOptions`,
-  `linkedProducts`, `downloadableLinks`, `downloadableSamples`, `videos`,
-  `channels`, `relatedProducts`, `upSells`, `crossSells`.
+### Fields That Stay Null on the Listing
 
-## Example Request
+Every row carries all 55 keys, but the following resolve only on the single-product endpoint `GET /api/admin/catalog/products/{id}`:
 
-```bash
-curl -X GET "https://your-domain.com/api/admin/catalog/products?per_page=10&page=1&type=simple&status=1" \
-  -H "Authorization: Bearer <token>" \
-  -H "Accept: application/json"
-```
+- `taxCategoryId`, `manageStock`, `inStock`, `attributes`, `bookingProduct`, `warnings`
+- the relation blocks: `translations`, `images`, `videos`, `categories`, `inventories`, `customerGroupPrices`, `superAttributes`, `variants`, `bundleOptions`, `linkedProducts`, `downloadableLinks`, `downloadableSamples`, `customizableOptions`, `channels`, `relatedProducts`, `upSells`, `crossSells`
 
-## Example Response
-
-```json
-{
-  "data": [
-    {
-      "id": 22,
-      "sku": "bagistoNGRY3424234KJCKJK",
-      "name": "Acme Drawstring Bag",
-      "type": "simple",
-      "status": 1,
-      "price": "3000.0000",
-      "formattedPrice": "$3,000.00",
-      "specialPrice": "2700.0000",
-      "formattedSpecialPrice": "$2,700.00",
-      "specialPriceFrom": null,
-      "specialPriceTo": null,
-      "quantity": 98,
-      "baseImageUrl": "http://localhost:8000/storage/product/22/1qfyoglc5BP46kofrxYrkJ2MXRxu9lAVG3BDFlTZ.webp",
-      "imagesCount": 1,
-      "categoryId": null,
-      "categoryName": null,
-      "channel": "default",
-      "locale": "en",
-      "attributeFamilyId": 1,
-      "attributeFamilyName": "Default",
-      "urlKey": "acme-drawstring-bag",
-      "visibleIndividually": true,
-      "shortDescription": "Many desktop publishing packages and web page editors now use",
-      "metaTitle": "",
-      "metaDescription": "",
-      "metaKeywords": "",
-      "weight": 32,
-      "featured": true,
-      "new": true,
-      "createdAt": "2024-04-19 11:56:43",
-      "updatedAt": "2026-04-23 16:36:14"
-    }
-  ],
-  "meta": {
-    "currentPage": 1,
-    "perPage": 10,
-    "lastPage": 27,
-    "total": 265,
-    "from": 1,
-    "to": 10
-  }
-}
-```
+They are present as `null` rather than omitted, so a key-existence check is not a substitute for a null check.
 
 ## Sorting
 
@@ -285,23 +212,21 @@ param takes precedence.
 
 | HTTP Status | Cause |
 |-------------|-------|
-| `401 Unauthorized` | Missing, expired, or revoked admin Bearer token |
-| `401 Unauthorized` | Missing or invalid admin Bearer token |
+| `401` | Missing, malformed, expired, or revoked admin Bearer token |
 
-**Unknown filter parameters** (e.g. a misspelled `?tpye=simple`) are silently
-ignored — no error is returned. Invalid `status` or `type` values outside their
-documented ranges are also silently dropped (the filter is not applied).
+The listing never rejects a bad filter, but the three ways it can go wrong are not the same:
 
-## Notes
+- **An unknown parameter is ignored.** A misspelled `?tpye=simple` returns `200` and the unfiltered list — no error, no hint.
+- **An out-of-range `status` is dropped.** `?status=7` returns the full unfiltered count, not zero.
+- **An unrecognised `type` is applied and matches nothing.** `?type=notatype` returns `total: 0`. It does not behave like `status`, so an empty result may mean a typo rather than an empty catalog.
 
-- **Elasticsearch is not yet supported.** Even when the Bagisto admin panel is
-  configured to use Elasticsearch for catalog search, this endpoint always uses
-  the database query path.
-- **No automatic status filter.** Unlike `GET /api/shop/products` which only
-  returns `status = 1` products, this endpoint returns all statuses by default.
-  Admin operators need to see disabled and draft products. Pass `?status=1` to
-  restrict to enabled products.
-- **Multi-category products** — only the first associated category's `categoryId`
-  and `categoryName` are included in the row (matching the datagrid display).
-- **Products with no inventory** return `quantity: 0`.
-- **Products with no images** return `baseImageUrl: null` and `imagesCount: 0`.
+`?per_page=999` is clamped to `50` rather than rejected.
+
+## Search Engine
+
+The listing always queries the database. Configuring the admin panel to use Elasticsearch for catalog search does not change this endpoint's behaviour.
+
+## How It Differs From the Storefront Listing
+
+- **No implicit `status = 1` filter.** `GET /api/shop/products` hides disabled products; this endpoint returns every status so an admin can find a draft or disabled product. Pass `?status=1` for enabled only.
+- **Products with no inventory** return `quantity: 0`, and products with no images return `baseImageUrl: null` with `imagesCount: 0` — neither is excluded from the listing.

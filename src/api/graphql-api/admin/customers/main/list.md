@@ -182,7 +182,11 @@ examples:
 
 # List Customers (Datagrid)
 
-Returns the paginated, filterable customer list that backs the admin Customers datagrid. The customer's group is returned as a nested `group` object (`id` / `code` / `name`). The detail-only counters (`totalOrders`, `totalAddresses`, `totalAmountSpent`) resolve only on the single-customer query and are omitted here.
+Returns the paginated, filterable customer list that backs the admin Customers datagrid. The customer's group comes back as a nested `group` object.
+
+The three counters — `totalOrders`, `totalAddresses`, and `totalAmountSpent` — **do resolve on this listing**, with real per-customer values, so there is no need to call the detail query per row just to show them. They arrive as **strings** (`"13"`, `"689.98"`), so cast before doing arithmetic. Over REST the same three are omitted from listing rows entirely and appear only on the detail endpoint, which is the one place the two transports genuinely differ here.
+
+The nested `group` node carries a **routeless `id`** (`/api/admin_customer_group_refs/<id>`) — not a queryable path. Read `group { _id code name }`, and use [Customer Groups](/api/graphql-api/admin/customers/groups/list) to work with the group itself.
 
 ## Arguments
 
@@ -219,8 +223,4 @@ Each filter narrows the result; supplying more than one combines with logical **
 | `sort` | `String` | `id` (default), `email`, `first_name` |
 | `order` | `String` | `asc`, `desc` (default `desc`) |
 
-::: tip
 See the [Customers overview](/api/graphql-api/admin/customers/main/) for how the menu works.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

@@ -68,6 +68,3 @@ Creates a new exchange rate linking a target currency to a conversion `rate`.
 
 Permission: `settings.exchange_rates.create`.
 
-::: tip
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
-:::

@@ -27,9 +27,9 @@ So the relationship is: **products → tax category → tax rates**. Editing a c
 - **Update** — re-syncs the category. The `taxrates` list you send **replaces** the current set (rates not in the list are detached, new ones are attached). It is required and must be non-empty.
 - **Delete** — removes the category, but only if it has **no tax rates attached**. A category that still has rates attached is refused. Because both create and update require a non-empty `taxrates` list, a category becomes deletable only once it has no attached rates.
 
-::: warning Delete guard
+### Delete guard
+
 You can't delete a tax category that still has tax rates attached — the request is refused. The category must be empty of rates before it can be removed.
-:::
 
 ## Operations in this menu
 
@@ -42,5 +42,3 @@ You can't delete a tax category that still has tax rates attached — the reques
 | [Delete a tax category](./delete.md) | `deleteAdminSettingsTaxCategory` mutation |
 
 Permissions: `settings.taxes.tax_categories.create` / `.edit` / `.delete`.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

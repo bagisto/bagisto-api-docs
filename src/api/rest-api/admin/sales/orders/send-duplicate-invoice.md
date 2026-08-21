@@ -59,6 +59,4 @@ Emails a copy of the invoice. Requires the `sales.invoices.view` permission.
 | `success` | Boolean | Whether the email was queued. |
 | `message` | String | Human-readable result message. |
 
-::: tip Recipient
-Whatever address you pass in `email` is the actual recipient. Leave it out to send to the order's customer.
-:::
+**Recipient** — Whatever address you pass in `email` is the actual recipient. Leave it out to send to the order's customer.

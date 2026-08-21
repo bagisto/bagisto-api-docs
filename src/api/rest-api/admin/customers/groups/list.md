@@ -53,6 +53,4 @@ The `meta` object carries `currentPage`, `perPage`, `lastPage`, `total`, `from`,
 
 `customersCount` is detail-only — null on listing rows.
 
-::: tip
 For what customer groups are and how they're used, see the [Customer Groups overview](./index.md).
-:::

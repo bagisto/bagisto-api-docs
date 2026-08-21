@@ -58,5 +58,3 @@ Both the single [Delete](./delete.md) and [Mass delete](./mass-delete.md) operat
 | [Mass delete currencies](./mass-delete.md) | `createAdminSettingsCurrencyMassDelete` mutation |
 
 Permissions: `settings.currencies.create` / `.edit` / `.delete`.
-
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

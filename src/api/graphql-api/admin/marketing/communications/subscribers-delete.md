@@ -37,9 +37,7 @@ Deletes a newsletter subscriber — the **Delete** row action on the admin
 subscriber is linked to a registered customer, that customer is unsubscribed
 before the row is removed.
 
-::: tip
 New here? Read the [Newsletter Subscribers overview](/api/graphql-api/admin/marketing/communications/subscribers/) for what a subscriber is and how its fields behave.
-:::
 
 ## Operation
 
@@ -55,14 +53,14 @@ New here? Read the [Newsletter Subscribers overview](/api/graphql-api/admin/mark
   [list](/api/graphql-api/admin/marketing/communications/subscribers-list) query to
   discover valid ids.
 
-::: warning Confirm success via the absence of `errors`
+### Confirm success via the absence of `errors`
+
 The delete mutation returns a success acknowledgement, not the deleted
 subscriber's data — `adminMarketingSubscriber` resolves to `null` on the payload.
 **Treat a response with no `errors[]` as a successful delete.** If you need a
 confirmation message in the body, use the REST endpoint
 (`DELETE /api/admin/marketing/subscribers/{id}`), which returns
 `{ "message": "Subscriber deleted." }`.
-:::
 
 ## Input fields
 

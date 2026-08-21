@@ -27,19 +27,15 @@ examples:
 
 # Update GDPR Request
 
-::: tip Overview
 See the [GDPR Requests overview](/api/rest-api/admin/customers/gdpr/) for the full feature flow.
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
 
 | Endpoint | Method |
 |----------|--------|
 | `/api/admin/customers/gdpr-requests/{id}` | PUT |
 
-::: tip Pure metadata write — no side effects
+### Pure metadata write — no side effects
+
 For `pending → processing` / `pending → declined` use this endpoint. For the destructive cascade (delete customer when `type=delete`), use [Process GDPR Request](./process).
-:::
 
 Allowed `status` values: `pending`, `processing`, `declined`, `approved`, `revoked`. Invalid → 422. Updating the status still triggers the status-change notification email.
 

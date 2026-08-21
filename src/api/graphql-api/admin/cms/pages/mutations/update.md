@@ -108,9 +108,7 @@ examples:
 
 Edits **one locale** of an existing CMS page. Equivalent to [`PUT /api/admin/cms/pages/{id}`](/api/rest-api/admin/cms/pages-update).
 
-::: tip Prerequisites
-The example uses an illustrative `id` value. Replace it with the id of a CMS page that exists in your store — use the [`adminCmsPages`](/api/graphql-api/admin/cms/pages/queries/list) query to discover valid ids.
-:::
+The example uses an illustrative id. Replace it with a CMS page that exists in your store — [`adminCmsPages`](/api/graphql-api/admin/cms/pages/queries/list) lists valid ids.
 
 ## Operation
 
@@ -135,7 +133,7 @@ This differs from [Create](/api/graphql-api/admin/cms/pages/mutations/create), w
 
 ## Changing `url_key` creates a redirect
 
-When you change a locale's `url_key`, the store automatically records a **301 redirect** from the old slug to the new one, so existing links and bookmarks keep working. Deleting the page later removes those redirects.
+When you change a locale's `url_key`, the store records a **301 redirect** from the old slug to the new one, so existing links and bookmarks keep working. That redirect is permanent: it is **not** removed when the page is later deleted, so the old slug keeps redirecting to a URL that no longer resolves. Clean it up through [URL Rewrites](/api/graphql-api/admin/marketing/search-seo/url-rewrites-list) if that matters.
 
 ## Response
 

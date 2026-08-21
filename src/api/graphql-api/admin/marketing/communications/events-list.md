@@ -131,9 +131,7 @@ examples:
 Lists every marketing event in the store — the data behind the admin
 **Marketing → Communications → Events** datagrid.
 
-::: tip
 New here? Read the [Events overview](/api/graphql-api/admin/marketing/communications/events/) for what an event does and how its fields behave.
-:::
 
 ## Operation
 

@@ -62,6 +62,3 @@ Updates an existing role's name, description, permission type, and permission se
 - **Switching `permissionType` to `all` clears `permissions` to `[]`** — the response above shows this: the role was `custom` with permission keys before the update and comes back with an empty `permissions` array.
 - When `permissionType` is `custom`, supply the full `permissions` **string array** you want the role to have.
 
-::: tip
-All operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).
-:::

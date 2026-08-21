@@ -38,9 +38,7 @@ examples:
 
 Bulk-deletes a batch of user-defined attributes in a single mutation. `indices` is the list of attribute ids to delete. The batch is pre-validated: if any id belongs to a system attribute (`isUserDefined = 0`), the entire batch is rejected and nothing is deleted. Non-existent ids are silently skipped and do not appear in `deleted`.
 
-::: tip
 See the [Attributes overview](/api/graphql-api/admin/catalog/attributes/) for how attributes, options, and families fit together.
-:::
 
 ## Input
 
@@ -49,5 +47,3 @@ See the [Attributes overview](/api/graphql-api/admin/catalog/attributes/) for ho
 | `indices` | `[Int!]!` | Attribute ids to delete |
 
 A batch containing a system attribute returns an `errors[]` entry `System attributes cannot be deleted.` and no row is touched.
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

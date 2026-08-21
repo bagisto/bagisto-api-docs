@@ -207,10 +207,6 @@ Each filter narrows the result; supplying more than one combines with logical **
 | `sort` | `String` | `id` (default), `order_id`, `created_at` |
 | `order` | `String` | `asc`, `desc` (default `desc`) |
 
-::: tip
 See the [Returns overview](/api/graphql-api/admin/sales/returns/) for the status workflow and action semantics.
-:::
 
 Permission: `sales.rma.requests`.
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

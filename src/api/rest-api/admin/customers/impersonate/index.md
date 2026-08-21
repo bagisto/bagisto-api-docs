@@ -35,5 +35,3 @@ So "login as customer" becomes "get a customer token".
 | [Issue Impersonation Token](./create.md) | `POST /api/admin/customers/{customerId}/impersonate` |
 
 Permission: `customers.customers.edit`.
-
-All endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

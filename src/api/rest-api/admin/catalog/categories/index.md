@@ -37,4 +37,4 @@ The single-category endpoint embeds the full `translations` and `filterableAttri
 | [Mass delete](/api/rest-api/admin/catalog/categories/categories-mass-delete) | `POST /api/admin/catalog/categories/mass-delete` |
 | [Mass update status](/api/rest-api/admin/catalog/categories/categories-mass-update-status) | `POST /api/admin/catalog/categories/mass-update-status` |
 
-All Categories endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication). Reads require `catalog.categories.view`; writes require the matching `catalog.categories.create` / `.edit` / `.delete` permission.
+Reads require `catalog.categories.view`; writes require the matching `catalog.categories.create` / `.edit` / `.delete` permission.

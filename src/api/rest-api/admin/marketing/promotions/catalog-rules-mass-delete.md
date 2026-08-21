@@ -28,9 +28,7 @@ Deletes several catalog rules in one call — the **Mass Delete** action on the
 admin **Marketing → Promotions → Catalog Rules** datagrid. Removing rules
 recomputes affected product prices in the background.
 
-::: tip
 New here? Read the [Catalog Rules overview](/api/rest-api/admin/marketing/promotions/catalog-rules/) for what a catalog rule does and how its fields behave.
-:::
 
 ## Endpoint
 

@@ -210,8 +210,8 @@ Each filter narrows the result; supplying more than one combines with logical **
 | `taxRates` | The attached tax rates connection — **detail-only**. Has empty `edges` on the listing (see the note below). |
 | `createdAt` / `updatedAt` | ISO 8601 timestamps. |
 
-::: tip taxRates is detail-only
+### TaxRates is detail-only
+
 The `taxRates` connection is **not** loaded on the listing — its `edges` are empty for every row here to keep the list query light. To read a category's attached rates, fetch the single category with the [detail query](./detail.md) and select `taxRates { edges { node { _id identifier taxRate } } }`.
-:::
 
 Pass `first` (page size) and `after` (an `endCursor` from a previous page) to paginate. `totalCount` is the total number of tax categories across all pages.

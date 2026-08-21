@@ -212,5 +212,3 @@ Each filter narrows the result; supplying more than one combines with logical **
 - Results are cursor-paginated — pass `first` for the page size and `after` (an `endCursor`) to page forward.
 - `symbol` and `currencyPosition` may be `null` for currencies created without those fields set.
 - The seeded default currency (`USD`) carries `null` timestamps because it predates timestamp tracking.
-
-All currency operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

@@ -21,5 +21,3 @@ Promotions are the store's **discounting engine**. There are two kinds, and they
 ## How they relate
 
 A **Catalog Rule** and a **Cart Rule** can both touch the same order: the catalog rule lowers the per-product price the shopper sees, then the cart rule discounts the resulting cart total. **Cart Rule Coupons** exist only to feed a cart rule whose coupon type is *specific code* — they are a sub-resource of a single cart rule, not a standalone promotion.
-
-All Promotions operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

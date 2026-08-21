@@ -105,9 +105,7 @@ Cursor-paginated GraphQL query that mirrors the Bagisto admin **Catalog →
 Attributes** datagrid. Returns the flat attribute list with filtering, sorting,
 and cursor pagination.
 
-::: tip How this menu works
-For attribute types, options, and the configurable/filterable flags, see the [Attributes overview](/api/graphql-api/admin/catalog/attributes/).
-:::
+For attribute types, options, and the configurable and filterable flags, see the [Attributes overview](/api/graphql-api/admin/catalog/attributes/).
 
 ## Operation
 
@@ -115,30 +113,14 @@ For attribute types, options, and the configurable/filterable flags, see the [At
 |-----------|------|------------|
 | `adminAttributes` | Query | Cursor (`first` / `after`) |
 
-::: tip Operation name
-API Platform derives the GraphQL operation name from the resource `shortName`.
-`AdminAttribute` has `shortName: 'AdminAttribute'`, so the collection query is
-`adminAttributes` (the `Catalog` segment is the API tag, not part of
-the name). The item query is `adminAttribute(id: ID!)`.
-:::
-
-## Authentication
-
-Every request must include an admin Bearer token:
-
-```
-Authorization: Bearer <token>
-```
-
-Obtain a token via the [`createAdminLogin`](/api/graphql-api/admin/authentication)
-mutation.
-
 ## Arguments
 
 | Argument | Type | Description | Example |
 |----------|------|-------------|---------|
 | `first` | `Int` | Number of items per page (default `10`, max `50`) | `10` |
 | `after` | `String` | Cursor from a previous `pageInfo.endCursor` for keyset pagination | `"MA=="` |
+| `last` | `Int` | Page size when paging backwards | `10` |
+| `before` | `String` | Cursor from a previous `pageInfo.startCursor` | `"MA=="` |
 | `id` | `String` | Filter by attribute ID — single integer or comma-separated list (e.g. `"1"` or `"1,2"`) | `"12"` |
 | `code` | `String` | Partial attribute code match (SQL `LIKE %value%`) | `"color"` |
 | `type` | `String` | Exact attribute type filter | `"select"` |
@@ -153,12 +135,7 @@ mutation.
 | `sort` | `String` | Column to sort by (see Sorting section below) | `"id"` |
 | `order` | `String` | Sort direction: `"asc"` or `"desc"` (default `"desc"`) | `"desc"` |
 
-::: tip extraArgs convention
-API Platform does not automatically expose filter arguments in the GraphQL schema
-for `QueryCollection` operations. This query uses `extraArgs` declared on the
-`QueryCollection` operation to surface all filter/sort arguments as first-class
-GraphQL arguments. Pass them directly alongside `first` and `after`.
-:::
+Every filter is a first-class GraphQL argument — pass them alongside `first` and `after`, not inside a nested filter object. Filters combine with AND, so each one narrows the result. Most filter names are snake_case (`admin_name`, `is_required`) while the node fields they filter are camelCase (`adminName`, `isRequired`); that mismatch is the literal schema.
 
 ## Node Fields
 
@@ -185,114 +162,11 @@ Each `edges[].node` object contains:
 | `createdAt` | `String` | ISO 8601 creation timestamp |
 | `updatedAt` | `String` | ISO 8601 last-update timestamp |
 
-::: warning translations and options not available in listing
-`translations` and `options` are **not returned** in this query — they are only
-available in the item query `adminAttribute(id: ID!)`. Use the item query when
-you need per-locale display names or option lists for a specific attribute.
-:::
+## Fields That Stay Null on the Listing
 
-## Example Query
+`translations`, `options`, `validation`, `defaultValue`, `isComparable`, `enableWysiwyg`, and `regex` are declared on the type but resolve only on the item query [`adminAttribute(id:)`](/api/graphql-api/admin/catalog/attributes/attributes-detail). Selecting them here is not an error — you simply get `null`.
 
-```graphql
-query AdminCatalogAttributes(
-  $first: Int
-  $after: String
-  $type: String
-  $is_configurable: Int
-  $locale: String
-) {
-  adminAttributes(
-    first: $first
-    after: $after
-    type: $type
-    is_configurable: $is_configurable
-    locale: $locale
-  ) {
-    edges {
-      cursor
-      node {
-        id
-        _id
-        code
-        type
-        adminName
-        isRequired
-        isUnique
-        valuePerLocale
-        valuePerChannel
-        isFilterable
-        isConfigurable
-        isVisibleOnFront
-        isUserDefined
-        swatchType
-        position
-        locale
-        createdAt
-        updatedAt
-      }
-    }
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      endCursor
-      startCursor
-    }
-    totalCount
-  }
-}
-```
-
-```json
-{
-  "first": 10,
-  "type": "select",
-  "is_configurable": 1,
-  "locale": "en"
-}
-```
-
-## Example Response
-
-```json
-{
-  "data": {
-    "adminAttributes": {
-      "edges": [
-        {
-          "cursor": "MA==",
-          "node": {
-            "id": "/api/admin/catalog/attributes/12",
-            "_id": 12,
-            "code": "color",
-            "type": "select",
-            "adminName": "Color",
-            "isRequired": 0,
-            "isUnique": 0,
-            "valuePerLocale": 0,
-            "valuePerChannel": 0,
-            "isFilterable": 1,
-            "isConfigurable": 1,
-            "isVisibleOnFront": 1,
-            "isUserDefined": 1,
-            "swatchType": "color",
-            "position": 5,
-            "locale": "en",
-            "createdAt": "2026-01-12T08:15:00+00:00",
-            "updatedAt": "2026-04-30T14:20:09+00:00"
-          }
-        }
-      ],
-      "pageInfo": {
-        "hasNextPage": false,
-        "hasPreviousPage": false,
-        "endCursor": "MA==",
-        "startCursor": "MA=="
-      },
-      "totalCount": 1
-    }
-  }
-}
-```
+`swatchType` and `position` are also frequently `null` on the listing, but for a different reason: they are genuinely unset on most attributes rather than withheld.
 
 ## Sorting
 
@@ -315,9 +189,9 @@ Pass `sort` with the column name and `order` for direction.
   next request.
 - `totalCount` reflects the full count of matching attributes across all pages.
 
-## Notes
+## Behaviour Worth Knowing
 
-- **GraphQL and REST share identical filter and sort semantics** — the same results are returned over both transports.
-- **No automatic filter applied.** All attributes (system and user-defined) are returned by default. Pass `is_user_defined: 1` to restrict to admin-created attributes.
-- **Pass filter and sort arguments at the top level** of the query, alongside `first` and `after`.
-- **Every camelCase flag field resolves over GraphQL** — `isRequired`, `isConfigurable`, `isFilterable`, etc. all come back populated; GraphQL and REST return the same values.
+- **The boolean flags are integers, not booleans.** `isRequired`, `isUnique`, `isFilterable`, `isConfigurable`, `isVisibleOnFront`, `isUserDefined`, `valuePerLocale`, and `valuePerChannel` all come back as `0` or `1`. Note `0` is falsy in JavaScript but `"0"` would not be — these are real `Int`s here, unlike the product listing where the same concepts are strings.
+- **System attributes are included.** The listing returns both Bagisto's built-in attributes and admin-created ones. Pass `is_user_defined: 1` for admin-created only — useful because system attributes cannot be deleted.
+- **`swatchType` is only meaningful for swatch-capable types.** It stays `null` on a plain `text` or `select` attribute rather than carrying a default.
+- **REST returns the same rows** through `GET /api/admin/catalog/attributes`, with identical filter and sort semantics.

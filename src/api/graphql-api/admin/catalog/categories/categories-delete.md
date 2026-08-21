@@ -40,9 +40,7 @@ examples:
 
 Deletes a category. The only input field is `id` (the category IRI). The mutation is **refused** for the root category and for any category referenced as a channel's root category — those return an error and the record is kept. The payload returns a snapshot of the deleted record's scalar fields.
 
-::: tip
-See the [Categories overview](/api/graphql-api/admin/catalog/categories/) for how the menu works.
-:::
+See the [Categories overview](/api/graphql-api/admin/catalog/categories/) for how this menu works.
 
 ## Errors
 
@@ -52,5 +50,3 @@ See the [Categories overview](/api/graphql-api/admin/catalog/categories/) for ho
 | Unknown id | `Category not found.` |
 
 For bulk deletion, use [`createAdminCategoryMassDelete`](/api/graphql-api/admin/catalog/categories/categories-mass-delete).
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

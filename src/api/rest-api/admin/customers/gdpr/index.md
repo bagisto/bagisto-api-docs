@@ -40,5 +40,3 @@ Processing refuses to re-run on a request that is already approved or revoked.
 | [Download Data Export](./download-data.md) | `POST /api/admin/customers/{customerId}/gdpr-download-data` |
 
 Permissions: `customers.gdpr_requests.view` / `.edit` / `.delete`.
-
-All endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

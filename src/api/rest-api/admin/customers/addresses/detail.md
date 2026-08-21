@@ -53,6 +53,4 @@ Returns a single saved address for a customer.
 
 An address whose owner doesn't match the path `customerId` is rejected with `403`; an unknown address → `404`.
 
-::: tip
 For address-book behaviour and the default-address rules, see the [Addresses overview](./index.md).
-:::

@@ -59,8 +59,4 @@ Returns the items of an order that can be put on a return, each with the trusted
 
 `sales.rma.requests`
 
-::: tip
 See the [Returns overview](/api/rest-api/admin/sales/returns/) for how a return is created.
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

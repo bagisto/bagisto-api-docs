@@ -42,11 +42,7 @@ examples:
 
 Partial update — send only the fields you want to change. Returns the full customer record (group nested under `group`).
 
-::: tip Overview
 See the [Customers menu overview](/api/rest-api/admin/customers/main/) for the full feature flow.
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
 
 ## Endpoint
 

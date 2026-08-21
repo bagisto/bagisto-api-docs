@@ -49,8 +49,4 @@ Returns a single GDPR request by IRI, with the requesting customer's name and em
 
 The `id` argument is the request IRI (`/api/admin/customers/gdpr-requests/{id}`).
 
-::: tip
 See the [GDPR overview](/api/graphql-api/admin/customers/gdpr/) for how requests are processed.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

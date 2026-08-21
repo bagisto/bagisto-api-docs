@@ -12,9 +12,9 @@ examples:
 
 # Delete Admin User
 
-::: warning Two guards (HTTP 400)
+### Two guards (HTTP 400)
+
 - **Self-delete** — refuses if the caller is deleting themselves.
 - **Last admin** — refuses if this is the only admin remaining.
-:::
 
 Permission: `settings.users.delete`.

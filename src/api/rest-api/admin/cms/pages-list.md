@@ -98,9 +98,7 @@ examples:
 
 Paginated CMS-pages list (datagrid parity), returned in the `{ data, meta }` envelope.
 
-::: tip
-For what CMS Pages are, how multi-locale / multi-channel works, and the `previewUrl` / `htmlContent` semantics, see the [CMS Pages overview](/api/rest-api/admin/cms/pages/).
-:::
+For what CMS Pages are, how multi-locale and multi-channel work, and the `previewUrl` and `htmlContent` semantics, see the [CMS Pages overview](/api/rest-api/admin/cms/pages/).
 
 ## Endpoint
 

@@ -14,8 +14,8 @@ examples:
 
 Step-1: name, type, sort_order, channel_id, theme_code. Per-locale `options` are configured via PUT.
 
-::: warning Theme uploads deferred
+### Theme uploads deferred
+
 Multipart binary upload for theme images is **not yet supported via the API** — use the admin panel.
-:::
 
 Permission: `settings.themes.create`.

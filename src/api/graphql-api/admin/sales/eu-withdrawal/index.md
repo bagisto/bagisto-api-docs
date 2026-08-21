@@ -34,4 +34,4 @@ The two outcomes are mutually exclusive: **declining clears any prior refund met
 | [Mark refunded](/api/graphql-api/admin/sales/eu-withdrawal/mutations/mark-refunded) | `markRefundedAdminEuWithdrawal` mutation |
 | [Resend confirmation](/api/graphql-api/admin/sales/eu-withdrawal/mutations/resend-confirmation) | `resendConfirmationAdminEuWithdrawal` mutation |
 
-All EU Withdrawal operations run against the admin GraphQL endpoint `POST /api/admin/graphql` and require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication). The list and view queries require the `sales.eu_withdrawals` permission; each mutation requires its own permission (noted on its page).
+The list and view queries require the `sales.eu_withdrawals` permission; each mutation requires its own permission, noted on its page.

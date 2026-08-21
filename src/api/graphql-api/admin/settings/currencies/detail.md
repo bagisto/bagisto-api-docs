@@ -58,5 +58,3 @@ Returns a single currency by its IRI id, including its full formatting configura
 - `id` is the IRI form (`/api/admin/settings/currencies/{id}`). Use the numeric `_id` when you need the bare id.
 - An unknown id returns `null`.
 - Use the [`adminSettingsCurrencies`](./list.md) query to discover valid ids.
-
-All currency operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

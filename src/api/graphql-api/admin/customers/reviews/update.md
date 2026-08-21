@@ -75,12 +75,6 @@ The mutation response returns the review's scalars plus the nested `product` and
 
 Permission: `customers.reviews.edit`.
 
-::: tip Prerequisites
 The example uses an illustrative `id`. Replace it with a review that exists in your store — use [`adminCustomerReviews`](./list.md) to discover valid ids.
-:::
 
-::: tip
 See the [Reviews overview](/api/graphql-api/admin/customers/reviews/) for how moderation works.
-:::
-
-All admin operations require an admin Bearer token — see [Authentication](/api/graphql-api/admin/authentication).

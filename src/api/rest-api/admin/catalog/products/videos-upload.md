@@ -28,9 +28,7 @@ examples:
 
 Uploads a new video for the given product.
 
-::: warning REST only — GraphQL upload not supported
-Binary file parts are **not transportable over JSON GraphQL.** The GraphQL `createAdminCatalogProductVideo` mutation exists as a placeholder only and rejects with 422. Use this REST endpoint for video upload.
-:::
+Video upload is REST-only. A binary file part cannot be carried in a JSON GraphQL request, so the `createAdminCatalogProductVideo` mutation exists as a placeholder and rejects with `422`.
 
 ## Endpoint
 

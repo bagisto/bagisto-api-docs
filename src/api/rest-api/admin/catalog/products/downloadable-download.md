@@ -18,9 +18,7 @@ examples:
 
 Streams the stored file for a given product attribute (the file behind a downloadable product's file/sample attribute) as a binary attachment.
 
-::: warning REST only — binary
-Returns a binary stream, not JSON. Send `Accept: application/octet-stream`. No GraphQL counterpart (binary streams aren't expressible over GraphQL).
-:::
+The response is a binary stream, not JSON — send `Accept: application/octet-stream`. There is no GraphQL counterpart, because a file stream cannot be expressed over GraphQL.
 
 ## Endpoint
 

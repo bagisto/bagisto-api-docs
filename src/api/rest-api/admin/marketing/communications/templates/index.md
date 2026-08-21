@@ -27,5 +27,3 @@ A template is intentionally simple — a name, a status, and an HTML body.
 | [Create](/api/rest-api/admin/marketing/communications/templates-create) | `POST /api/admin/marketing/templates` |
 | [Update](/api/rest-api/admin/marketing/communications/templates-update) | `PUT /api/admin/marketing/templates/{id}` |
 | [Delete](/api/rest-api/admin/marketing/communications/templates-delete) | `DELETE /api/admin/marketing/templates/{id}` |
-
-All Email Templates endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

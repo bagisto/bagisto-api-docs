@@ -31,5 +31,3 @@ There is no mass-delete for events — the admin UI exposes per-row delete only.
 | [Create](/api/rest-api/admin/marketing/communications/events-create) | `POST /api/admin/marketing/events` |
 | [Update](/api/rest-api/admin/marketing/communications/events-update) | `PUT /api/admin/marketing/events/{id}` |
 | [Delete](/api/rest-api/admin/marketing/communications/events-delete) | `DELETE /api/admin/marketing/events/{id}` |
-
-All Events endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

@@ -55,5 +55,3 @@ Each filter narrows the result; supplying more than one combines with logical **
 |-----------|--------|
 | `sort` | `id` (default), `name`, `type`, `sort_order`, `theme_code`, `channel_id`, `status` |
 | `order` | `asc`, `desc` |
-
-All operations require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).

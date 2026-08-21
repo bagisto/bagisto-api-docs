@@ -13,11 +13,7 @@ examples:
 
 # Delete GDPR Request
 
-::: tip Overview
 See the [GDPR Requests overview](/api/rest-api/admin/customers/gdpr/) for the full feature flow.
-:::
-
-All admin endpoints require an admin Bearer token — see [Authentication](/api/rest-api/admin/authentication).
 
 | Endpoint | Method |
 |----------|--------|
