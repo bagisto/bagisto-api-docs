@@ -32,20 +32,20 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Admin API Reference](/api/graphql-api/admin-api): The Bagisto Admin API provides comprehensive administrative endpoints for managing your e-commerce platform. All Admin API operations require authenticated…
 - [Authentication (GraphQL)](/api/graphql-api/authentication): The full authentication model — public access, customer login, guest checkout, and admin — lives on the central [Authentication](/api/authentication) page.…
 - [Best Practices & Testing Guide](/api/graphql-api/best-practices): Comprehensive guide for optimizing your Bagisto GraphQL API integration with best practices, performance tips, and testing strategies.
-- [Identifiers — `id`, `_id` and IRIs](/api/graphql-api/identifiers): Every GraphQL node exposes **two** identifier fields, and they are not interchangeable:
+- [Identifiers — `id`, `_id` and IRIs](/api/graphql-api/identifiers): Most GraphQL nodes expose **two** identifier fields, and they are not interchangeable:
 - [Integration Guides](/api/graphql-api/integrations): Language and framework examples for the Bagisto **GraphQL** API. Every example targets the shop endpoint and carries the required headers.
 - [GraphQL API - Introduction](/api/graphql-api/introduction): Welcome to the Bagisto GraphQL API documentation! This guide will help you build modern, efficient e-commerce applications using our comprehensive GraphQL…
 - [Cursor Pagination Guide](/api/graphql-api/pagination): Bagisto GraphQL API uses cursor-based pagination for efficiently handling large datasets. This guide explains how to implement pagination in your applications.
-- [Interactive Playground Guide](/api/graphql-api/playground): Test and explore the Bagisto GraphQL API using our interactive playgrounds. No authentication required to explore the schema!
+- [Interactive Playground Guide](/api/graphql-api/playground): Bagisto ships a **GraphiQL** playground — an in-browser editor with schema autocomplete, inline docs, and a run button. It is the fastest way to shape a query…
 - [Shop API Reference](/api/graphql-api/shop-api): The Bagisto Shop API provides all necessary endpoints for customer-facing e-commerce operations including product browsing, shopping cart management, and…
 
 ## GraphQL API › Admin
 
-- [Admin Authentication](/api/graphql-api/admin/authentication): Every Admin GraphQL request carries the admin Bearer token. This example reads the authenticated admin's own profile to confirm the token works.
+- [Admin Authentication](/api/graphql-api/admin/authentication): Every Admin GraphQL request carries the admin Bearer token. This example reads the authenticated admin's own profile to confirm the token works, and selects…
 
 ## GraphQL API › Admin › Catalog
 
-- [List Products](/api/graphql-api/admin/catalog/products): The canonical admin product listing over GraphQL — a cursor-paginated query returning the full catalog product row, mirroring the admin Catalog → Products…
+- [List Products](/api/graphql-api/admin/catalog/products): The canonical admin product listing — a cursor-paginated query mirroring the Catalog → Products datagrid, with every scalar column the listing can resolve.
 
 ## GraphQL API › Admin › Catalog › Attributes
 
@@ -94,10 +94,10 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Product Images — Upload](/api/graphql-api/admin/catalog/products/images-upload): GraphQL upload is NOT supported — binary file parts are not transportable over JSON GraphQL. Use the REST endpoint.
 - [Product Inventories — List](/api/graphql-api/admin/catalog/products/inventories-list): Cursor connection of per-source inventory rows for a product.
 - [Product Inventories — Bulk Update (GraphQL)](/api/graphql-api/admin/catalog/products/inventories-update): Parent-scoped mutation. Pass a source id with a positive qty to set it, qty 0 to zero it out; sources not in the payload are left untouched. The mutation…
-- [Add-Product Search (Create-Order)](/api/graphql-api/admin/catalog/products/list): The slim product search behind the admin Create-Order "Add Product" modal. NOT the product listing — for the full product list with all columns and filters use…
-- [Catalog Products — Mass Delete](/api/graphql-api/admin/catalog/products/mass-delete): GraphQL counterpart of POST /api/admin/catalog/products/mass-delete. Mirrors monolith best-effort semantics — non-existent IDs are silently skipped.
+- [Add-Product Search (Create-Order)](/api/graphql-api/admin/catalog/products/list): The slim product search behind the admin Create-Order "Add Product" modal. Not the product listing — for the full datagrid with every column and filter use…
+- [Catalog Products — Mass Delete](/api/graphql-api/admin/catalog/products/mass-delete): Deletes a batch of products in one call. Ids that do not exist are skipped without an error, and `deleted` lists only the ones actually removed.
 - [Catalog Products — Mass Update Status](/api/graphql-api/admin/catalog/products/mass-update-status): GraphQL counterpart of POST /api/admin/catalog/products/mass-update-status. Fires catalog.product.update.{before,after} per ID.
-- [Catalog Product — Detail (GraphQL)](/api/graphql-api/admin/catalog/products/products-detail): Fetch a single catalog product by IRI. Every nested block is a field-selectable Relay connection (edges { node }) — images, videos, categories, inventories,…
+- [Catalog Product — Detail (GraphQL)](/api/graphql-api/admin/catalog/products/products-detail): Fetch a single catalog product by IRI. Every nested block is a field-selectable Relay connection, so sub-select only what you need. Type-specific connections…
 - [Catalog Product — Update](/api/graphql-api/admin/catalog/products/update): Full update of a simple product covering every field on the edit form. Structural/common fields (price, cost, special price, weight, status, categories,…
 
 ## GraphQL API › Admin › Cms › Pages
@@ -328,12 +328,12 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 ## GraphQL API › Admin › Navigation
 
-- [Get Admin Menu (GraphQL)](/api/graphql-api/admin/navigation/menu): Returns the admin sidebar as a nested tree, filtered to what the authenticated token's role is allowed to see. Use it to build a back-office navigation/sidebar…
-- [Get Admin Permissions (GraphQL)](/api/graphql-api/admin/navigation/permissions): Returns the authenticated token's effective permissions so you can gate UI up front — show or hide buttons, menus and actions without triggering…
+- [Get Admin Menu](/api/graphql-api/admin/navigation/menu): Returns the admin sidebar as a permission-filtered nested tree. The response below is trimmed to three top-level menus; a full-access token returns the whole…
+- [Get Admin Permissions](/api/graphql-api/admin/navigation/permissions): A token whose permission mode is All returns the wildcard rather than an expanded key list.
 
 ## GraphQL API › Admin › Profile
 
-- [Get Admin Profile](/api/graphql-api/admin/profile/get-profile): Read the authenticated admin's profile. Requires the Bearer token in the Authorization header.
+- [Get Admin Profile](/api/graphql-api/admin/profile/get-profile): Read the authenticated admin's profile. The token identifies the admin, so the query takes no arguments. This example selects every field the query returns.
 
 ## GraphQL API › Admin › Reporting
 
@@ -662,7 +662,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 ## GraphQL API › Shop › Contact Us
 
-- [Contact Us](/api/graphql-api/shop/contact-us): The Contact Us menu lets a visitor send the store a message through the storefront contact form — name, email, contact number, and message. A client uses it to…
+- [Contact Us](/api/graphql-api/shop/contact-us): The Contact Us menu is the storefront enquiry form. It is a single mutation, and it is **public** — a visitor who is not logged in can send a message.
 
 ## GraphQL API › Shop › Country
 
@@ -721,7 +721,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Cancel Customer Order](/api/graphql-api/shop/mutations/cancel-customer-order): Cancel a customer order that is in pending status, restoring inventory to stock.
 - [Create Cart](/api/graphql-api/shop/mutations/create-cart): Create a new shopping cart session.
 - [Create Compare Item](/api/graphql-api/shop/mutations/create-compare-item): Add a product to the authenticated customer's comparison list. The customer is auto-detected from the Bearer token.
-- [Create Contact Us](/api/graphql-api/shop/mutations/create-contact-us): Submit a contact us form with name, email, contact number, and message.
+- [Create Contact Us](/api/graphql-api/shop/mutations/create-contact-us): Send a contact-form enquiry. Public — the storefront key is the only credential needed, and a customer token is not used.
 - [Create Customer Address](/api/graphql-api/shop/mutations/create-customer-address): Create a new address for the authenticated customer.
 - [Create Newsletter](/api/graphql-api/shop/mutations/create-newsletter): Subscribe an email address to the newsletter on the current channel. A customer token is optional and only links the subscription to that account.
 - [Create Product Review](/api/graphql-api/shop/mutations/create-product-review): Create a basic product review with title, comment, and rating.
@@ -847,12 +847,14 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 - [API Authentication Guide](/api/authentication): Authentication depends on the surface you are calling. There are two, each with a fixed scheme:
 - [Status Codes](/api/errors): How the API reports failures. The two transports signal errors differently — REST uses the HTTP status, GraphQL always returns `200` and puts the failure in…
+- [Integration Guides](/api/integrations): Working client code for the Bagisto API in the language you are building in. Both transports are covered — pick one, wire up the client below, then follow the…
 - [Introduction](/api/introduction): Bagisto provides comprehensive API solutions to help developers integrate and extend the platform's functionality. Whether you're building mobile apps,…
 - [Pagination](/api/pagination): How to page through list endpoints. The mechanics are the same across every Shop list, so endpoint pages don't repeat them. The two transports page differently…
 - [Rate Limiting](/api/rate-limiting): Bagisto APIs implement rate limiting to ensure fair usage and protect infrastructure from abuse. This guide explains how rate limiting works and how to handle…
 - [Setup & Configuration](/api/setup): Get the Bagisto API up and running in just a few minutes. Choose the installation method that works best for your setup.
 - [Sorting](/api/sorting): How to sort and filter list endpoints. The mechanics are the same across every Shop list, so endpoint pages don't repeat them.
-- [Storefront API Key Management Guide](/api/storefront-api-key-management-guide): Bagisto uses **API keys** to authenticate requests to your storefront and shop API endpoints. Think of your API key as a secure password that identifies your…
+- [Storefront API Key Management Guide](/api/storefront-api-key-management-guide): Bagisto uses **storefront API keys** to identify the application calling your `/api/shop/*` and `/api/graphql` endpoints. The key says *which app* is calling —…
+- [Testing & Debugging](/api/testing-debugging): How to exercise the Bagisto API by hand and work out why a call failed. Almost everything here applies to **both transports** — the tools are the same, and…
 
 ## REST API
 
@@ -860,8 +862,8 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [REST API Best Practices](/api/rest-api/best-practices): This guide provides best practices and recommendations for building robust, scalable, and secure applications using the Bagisto REST API.
 - [Integration Guides](/api/rest-api/integrations): Language and framework examples for the Bagisto **REST** API. Every example carries the required headers.
 - [REST API - Introduction](/api/rest-api/introduction): Welcome to the Bagisto REST API documentation! This guide will help you build modern, efficient e-commerce applications using our comprehensive REST API…
+- [Interactive Playground Guide](/api/rest-api/playground): Bagisto ships **Swagger UI** for the REST API — every endpoint listed with its parameters, request body, and response schema, and a **Try it out** button that…
 - [Shop API Resources](/api/rest-api/shop-resources): The Shop API provides comprehensive endpoints for customer-facing e-commerce operations. This resource covers product browsing, catalog management, and basic…
-- [Testing & Debugging REST APIs](/api/rest-api/testing-debugging): This guide covers how to test and debug Bagisto REST API endpoints using various tools and methods.
 
 ## REST API › Admin
 
@@ -921,8 +923,8 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Product Images — Upload](/api/rest-api/admin/catalog/products/images-upload): Multipart upload of a single product image. Allowed mime types — bmp, jpeg, jpg, png, webp.
 - [Product Inventories — List](/api/rest-api/admin/catalog/products/inventories-list): Returns one row per inventory_source that has a product_inventories entry for the product. The envelope `meta.totalQty` is the sum across all sources.
 - [Product Inventories — Bulk Update](/api/rest-api/admin/catalog/products/inventories-update): Mirrors Bagisto monolith `ProductController::updateInventories`. Sources passed with qty=0 are kept but zeroed-out; sources NOT in the payload are left…
-- [Add-Product Search (Create-Order)](/api/rest-api/admin/catalog/products/list): The slim product search behind the admin Create-Order "Add Product" modal. NOT the product listing — for the full product list with all columns and filters use…
-- [Catalog Products — Mass Delete](/api/rest-api/admin/catalog/products/mass-delete): Deletes a batch of catalog products in one call. Non-existent IDs are silently skipped. Mirrors Bagisto monolith `ProductController::massDestroy`.
+- [Add-Product Search (Create-Order)](/api/rest-api/admin/catalog/products/list): The slim product search behind the admin Create-Order "Add Product" modal. Not the product listing — for the full datagrid with every column and filter use…
+- [Catalog Products — Mass Delete](/api/rest-api/admin/catalog/products/mass-delete): Deletes a batch of catalog products in one call. Ids that do not exist are skipped without an error, and `deleted` lists only the ones actually removed.
 - [Catalog Products — Mass Update Status](/api/rest-api/admin/catalog/products/mass-update-status): Bulk-flips the `status` flag of a batch of products to either 0 (disabled) or 1 (enabled). Mirrors Bagisto monolith `ProductController::massUpdate` —…
 - [Catalog Product — Detail](/api/rest-api/admin/catalog/products/products-detail): Single catalog product record with all detail-level fields populated. Type-specific blocks (superAttributes/variants for configurable, bundleOptions for…
 - [Catalog Product — Update](/api/rest-api/admin/catalog/products/update): Partial update — send only the attribute codes you change. Every attribute on the product's family is editable by its code (name, url_key, price, status,…
@@ -1155,12 +1157,12 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 ## REST API › Admin › Navigation
 
-- [Get Admin Menu](/api/rest-api/admin/navigation/menu): Returns the admin sidebar as a permission-filtered nested tree for the authenticated token.
+- [Get Admin Menu](/api/rest-api/admin/navigation/menu): Returns the admin sidebar as a permission-filtered nested tree. The response below is trimmed to three top-level menus; a full-access token returns the whole…
 - [Get Admin Permissions](/api/rest-api/admin/navigation/permissions): A token whose role grants full access returns the `all` permission type and a single wildcard.
 
 ## REST API › Admin › Profile
 
-- [Get Admin Profile](/api/rest-api/admin/profile/get-profile): Return the authenticated admin's profile. Requires the Bearer token in the Authorization header.
+- [Get Admin Profile](/api/rest-api/admin/profile/get-profile): Return the authenticated admin's profile. The token identifies the admin, so the endpoint takes no parameters.
 
 ## REST API › Admin › Reporting
 
@@ -1466,6 +1468,11 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Get Compare Item](/api/rest-api/shop/compare/get): Retrieve a specific compare item by its ID.
 - [Get Compare Items](/api/rest-api/shop/compare/list): Retrieve the authenticated customer's product comparison list.
 
+## REST API › Shop › Contact Us
+
+- [Contact Us](/api/rest-api/shop/contact-us): The Contact Us menu is the storefront enquiry form. It is a single endpoint, and it is **public** — a visitor who is not logged in can send a message.
+- [Submit an Enquiry](/api/rest-api/shop/contact-us/submit-contact-us): Send a contact-form enquiry. Public — the storefront key is the only credential needed, and a customer token is not used.
+
 ## REST API › Shop › Countries
 
 - [Country and State](/api/rest-api/shop/countries): The Country and State menu provides the reference data behind address forms — the list of countries the store accepts and the states / regions within each…
@@ -1598,9 +1605,11 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Configuration (Admin)](/api/workflows/admin/configuration): The store's flat key/value settings — everything under **Configuration** in the admin (general, catalog, sales, customer, email, payment, shipping, …). Unlike…
 - [Admin Create-Order Flow](/api/workflows/admin/create-order-flow): Place an order for a customer from the admin side — the API equivalent of the admin panel's **Create Order** screen. Every request carries the admin…
 - [Customers — Impersonate & GDPR (Admin)](/api/workflows/admin/customers): Most of the Customers menu is straight CRUD — customers, groups, review moderation, notes, addresses — covered in the…
+- [EU Withdrawal (Admin)](/api/workflows/admin/eu-withdrawal): Handle the right-of-withdrawal declarations customers file against their orders: review the queue, resend the acknowledgement, and record the outcome. This is…
 - [Marketing (Admin)](/api/workflows/admin/marketing): The Marketing menu spans three groups — **Promotions** (discount rules + coupons), **Communications** (email templates, events, campaigns, newsletter…
 - [Order Fulfillment Actions (Admin)](/api/workflows/admin/order-fulfillment-actions): Once an order exists it moves through a lifecycle — invoice, ship, refund, or cancel. Each action is a per-order endpoint under `/api/admin/orders/{id}/…` with…
 - [Product Management (Admin)](/api/workflows/admin/product-management): Creating and editing products is the most structured admin flow — seven product types, a two-step create, a partial-update that can silently wipe fields if…
+- [Returns / RMA (Admin)](/api/workflows/admin/returns-rma): Process the return requests customers raise on the storefront: review the queue, move a request through its status chain, exchange messages with the customer,…
 
 ## Workflows › Customization
 
