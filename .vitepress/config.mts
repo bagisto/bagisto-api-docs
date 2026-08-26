@@ -158,6 +158,18 @@ export default defineConfig(({ command, mode }) => {
             ],
           },
           {
+            text: 'For Developers',
+            collapsed: true,
+            items: [
+              { text: 'Introduction', link: '/api/for-developers/' },
+              { text: 'Register Your Package', link: '/api/for-developers/register-your-package' },
+              { text: 'Build an Endpoint', link: '/api/for-developers/build-an-endpoint' },
+              { text: 'Write Endpoints', link: '/api/for-developers/write-endpoints' },
+              { text: 'Conventions', link: '/api/for-developers/conventions' },
+              { text: 'Test & Ship', link: '/api/for-developers/test-and-ship' },
+            ],
+          },
+          {
             text: 'Workflows',
             collapsed: true,
             items: [
@@ -401,6 +413,7 @@ export default defineConfig(({ command, mode }) => {
                             items: [
                               { text: 'Customer Registration', link: '/api/graphql-api/shop/mutations/customer-registration' },
                               { text: 'Customer Login', link: '/api/graphql-api/shop/mutations/customer-login' },
+                              { text: 'Social Login', link: '/api/graphql-api/shop/mutations/social-login' },
                               { text: 'Customer Verify Token', link: '/api/graphql-api/shop/mutations/customer-verify-token' },
                               { text: 'Customer Logout', link: '/api/graphql-api/shop/mutations/customer-logout' },
                               { text: 'Update Customer Profile', link: '/api/graphql-api/shop/mutations/update-customer-profile' },
@@ -1472,6 +1485,7 @@ export default defineConfig(({ command, mode }) => {
                     items: [
                           { text: 'Registration', link: '/api/rest-api/shop/customers/customer-registration' },
                           { text: 'Login', link: '/api/rest-api/shop/customers/customer-login' },
+                          { text: 'Social Login', link: '/api/rest-api/shop/customers/social-login' },
                           { text: 'Verify Token', link: '/api/rest-api/shop/customers/customer-verify-token' },
                           { text: 'Customer Logout', link: '/api/rest-api/shop/customers/customer-logout' },
                           { text: 'Forgot Password', link: '/api/rest-api/shop/customers/forgot-password' },

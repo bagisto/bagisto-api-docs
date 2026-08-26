@@ -86,7 +86,7 @@ The skills are a router over the most-used surfaces, not a mirror of this docume
 
 Together with the Settings menus that configure returns — reasons, statuses, rules, and custom fields — that is roughly one page in seven of this documentation. An agent following only the skill's routing tables will not find them, so when you are building any of those, point it at [`/llms.txt`](/llms.txt) and the pages above directly. Everything it needs is documented; the skill just does not signpost it.
 
-The `bagisto-api-develop` skill targets Bagisto 2.3.8 and pins an older API Platform dependency set. If you are extending the API on 2.4.x, treat its install steps as out of date and follow the package's own requirements instead — the rest of its conventions still apply.
+The `bagisto-api-develop` skill targets Bagisto 2.3.8 and pins an older API Platform dependency set, and it covers extending the API package itself rather than adding endpoints from your own module. For either job on 2.4.x, [For Developers](/api/for-developers/) is the current reference — registration wiring, the resource/provider/processor pattern, the naming rules, and the traps. Point the agent there alongside the skill, and treat the skill's install steps as out of date.
 
 ## After installing
 

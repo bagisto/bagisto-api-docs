@@ -32,6 +32,8 @@ These follow the [llms.txt convention](https://llmstxt.org). The index opens wit
 
 Mind the GraphQL rules: on action mutations select **result fields** (`cartId`, `orderId`, `success`) — not `id`; inputs are camelCase; the Shop and Admin GraphQL endpoints are separate (`/api/graphql` vs `/api/admin/graphql`).
 
+**Extending the API rather than consuming it?** Point the agent at [For Developers](/api/for-developers/) instead — the registration wiring, the resource/provider/processor pattern, and the conventions an added endpoint has to follow. The skills do not carry that; these pages are the reference for it.
+
 ## Two ways to give the agent this knowledge
 
 - **[Agent Skills](/api/build-with-ai/agent-skills)** — install packaged build-rules once; the agent then knows the storefront flows, the auth model, and the transport gotchas without you pasting context. **Start here.**
