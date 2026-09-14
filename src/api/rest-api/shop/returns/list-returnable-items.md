@@ -74,7 +74,7 @@ The response is a plain JSON array. Each item is a returnable-item object.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `orderItemId` | integer | Id of the order item — use this when raising a return. |
+| `orderItemId` | integer | Id of the order item (order line) — send this as `order_item_id` when raising a return. |
 | `productId` | integer | Id of the product. |
 | `sku` | string | Product SKU. |
 | `name` | string | Product name. |
@@ -89,6 +89,12 @@ The response is a plain JSON array. Each item is a returnable-item object.
 | `rmaQuantity` | integer | Units already placed into a return. |
 | `rmaReturnPeriod` | integer | Return window in days. |
 
+::: warning
+`orderItemId` is the id of the **order line**, not of the product. Sending a `productId` as `order_item_id` when raising a return fails with `The selected item is not eligible for return.`
+:::
+
+Units held by a canceled or declined return are released back into `currentQuantity`, so a shopper who withdrew a request can raise a new one for the same item.
+
 ## Status Codes
 
 | Status | Meaning |
@@ -101,5 +107,6 @@ The response is a plain JSON array. Each item is a returnable-item object.
 ## Related Resources
 
 - [List Return Reasons](/api/rest-api/shop/returns/list-return-reasons) — the reason ids to choose from
+- [List Return Custom Fields](/api/rest-api/shop/returns/list-return-custom-fields) — the extra questions to answer in `custom_attributes`
 - [Raise a Return](/api/rest-api/shop/returns/create-return) — raise a return against one order item
 - [Returns Overview](/api/rest-api/shop/returns/) — the returns menu overview, including the settings that gate it

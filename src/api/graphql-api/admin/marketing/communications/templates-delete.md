@@ -51,6 +51,11 @@ New here? Read the [Email Templates overview](/api/graphql-api/admin/marketing/c
   [list](/api/graphql-api/admin/marketing/communications/templates-list) query to
   discover valid ids.
 
+### A template a campaign sends cannot be deleted
+
+Removing it would leave that campaign with nothing to send, so the mutation comes
+back with an `errors[]` entry instead. Point the campaign at another template first.
+
 ### Confirm success via the absence of `errors`
 
 The delete mutation returns a success acknowledgement, not the deleted template's

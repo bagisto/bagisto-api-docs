@@ -108,11 +108,19 @@ core listener (search reindex, cache flush, etc.) is triggered.
 | `type` | string | yes | One of `text`, `textarea`, `price`, `boolean`, `select`, `multiselect`, `checkbox`, `date`, `datetime`, `image`, `file`. |
 | `swatch_type` | string\|null | no | `color`, `image`, or `text`. Only relevant for `select`/`multiselect`. |
 | `is_required` / `is_unique` / `is_filterable` / `is_configurable` / `is_visible_on_front` / `is_comparable` / `value_per_locale` / `value_per_channel` / `enable_wysiwyg` | boolean | no | Standard attribute flags. |
-| `validation` | string\|null | no | Validation rule (`numeric`, `email`, `decimal`, `url`). |
+| `validation` | string\|null | no | Validation rule — `numeric`, `email`, `decimal`, `url` or `regex`. |
+| `regex` | string\|null | with `regex` | The pattern values must match, e.g. `/^[A-Z]{2}-\d{4}$/`. |
 | `default_value` | string\|null | no | Default value for the attribute. |
 | `position` | integer | no | Display order. |
 | `translations` | object | no | Map of locale → `{ name }`. |
 | `options` | array | no | Initial options (select/multiselect/checkbox only). Each entry: `{ admin_name, sort_order?, swatch_value?, translations? }`. |
+
+
+## Validation and the regex pattern
+
+`validation` names the rule a value must satisfy — `numeric`, `email`, `decimal`, `url` or `regex`. Choosing `regex` makes `regex` required, and the pattern is checked before it is stored.
+
+A pattern must be delimited with `/`, may carry only the `i`, `m`, `s` and `u` modifiers, and must compile. That is narrower than PHP alone accepts because the same pattern is also written into the storefront's own form rules, where a `#` delimiter or a PCRE-only modifier would break the form for every product using the attribute. A pattern that does not qualify is refused rather than stored.
 
 ## Response
 

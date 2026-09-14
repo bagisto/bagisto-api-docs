@@ -17,7 +17,7 @@ examples:
         "statusId": 1,
         "statusTitle": "Pending",
         "statusColor": "#FDB022",
-        "packageCondition": "opened",
+        "packageCondition": "open",
         "information": "Item arrived damaged.",
         "canClose": true,
         "canReopen": false,
@@ -38,6 +38,15 @@ examples:
             "id": 5,
             "path": "rma/12/damage-front.png",
             "url": "https://example.com/storage/rma/12/damage-front.png"
+          }
+        ],
+        "customAttributes": [
+          {
+            "field_id": 1,
+            "code": "invoice_number",
+            "label": "Invoice number",
+            "type": "text",
+            "value": "INV-9921"
           }
         ],
         "messagesCount": 2,
@@ -113,6 +122,12 @@ This endpoint requires an authenticated customer — send the storefront key and
 | `images[].id` | integer | Image id. |
 | `images[].path` | string | Stored file path. |
 | `images[].url` | string | Public URL of the image. |
+| `customAttributes` | array | Answers to the return's custom fields — `field_id`, `code`, `label`, `type`, `value`. Empty when the store has no custom fields. |
+| `customAttributes[].field_id` | integer | Id of the custom field that was answered. |
+| `customAttributes[].code` | string | Machine name of the custom field. |
+| `customAttributes[].label` | string | Label of the custom field. |
+| `customAttributes[].type` | string | Input type of the custom field. |
+| `customAttributes[].value` | string | The shopper's answer. |
 | `messagesCount` | integer | Number of conversation messages on the return. |
 | `createdAt` | string | ISO 8601 creation timestamp. |
 | `updatedAt` | string | ISO 8601 last update timestamp. |

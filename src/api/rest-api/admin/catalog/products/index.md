@@ -46,7 +46,7 @@ examples:
             "createdAt": "2024-04-16 17:32:38",
             "updatedAt": "2026-04-07 15:20:30",
             "taxCategoryId": null,
-            "manageStock": null,
+            "manageStock": true,
             "inStock": null,
             "translations": null,
             "images": null,
@@ -217,10 +217,10 @@ Every row carries these scalar columns. **Heavy fields are `null` on the listing
 | `specialPriceFrom` | string\|null | Start date of the special-price window (`null` = always on). |
 | `specialPriceTo` | string\|null | End date of the special-price window (`null` = no end). |
 | `quantity` | integer | Total stock across inventory sources. |
-| `baseImageUrl` | string\|null | Medium-cache base image URL. |
+| `baseImageUrl` | string\|null | URL of the product's first image by position — the picture the admin listing shows. |
 | `imagesCount` | integer | Number of images. |
-| `categoryId` | integer\|null | Primary category ID. |
-| `categoryName` | string\|null | Primary category name. |
+| `categoryId` | integer\|null | Lowest category id the product is in. |
+| `categoryName` | string\|null | Every category the product is in, comma-separated. |
 | `channel` | string | Resolved channel code. |
 | `locale` | string | Resolved locale code. |
 | `attributeFamilyId` | integer | Attribute-family ID. |
@@ -234,7 +234,7 @@ Every row carries these scalar columns. **Heavy fields are `null` on the listing
 | `new` | boolean | "New" flag. |
 | `createdAt` / `updatedAt` | string | Timestamps. |
 | `taxCategoryId` | integer\|null | **Detail-only** — `null` on the listing. |
-| `manageStock` | boolean\|null | **Detail-only** — `null` on the listing. |
+| `manageStock` | boolean\|null | Whether stock is tracked for this product. |
 | `inStock` | boolean\|null | **Detail-only** — `null` on the listing. |
 | `translations`, `images`, `categories`, `inventories`, `customerGroupPrices`, `superAttributes`, `variants`, `bundleOptions`, `linkedProducts`, `downloadableLinks`, `downloadableSamples` | array\|null | Relation blocks — **all `null` on the listing**; populated only on the [detail endpoint](/api/rest-api/admin/catalog/products/products-detail). |
 

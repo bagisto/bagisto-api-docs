@@ -65,7 +65,7 @@ examples:
               "rememberToken": null,
               "subscribedToNewsLetter": true,
               "status": "1",
-              "token": "7b65c50e0c15cdc684d36e5819eb7c19",
+              "token": "1535|cusalnrd79pvOpEDorYMISQOwQh3P22DrAzcMvE7835a8e31",
               "phone": "5550123"
             }
           }
@@ -138,7 +138,7 @@ examples:
               "rememberToken": null,
               "subscribedToNewsLetter": true,
               "status": "1",
-              "token": "7b65c50e0c15cdc684d36e5819eb7c19",
+              "token": "1535|cusalnrd79pvOpEDorYMISQOwQh3P22DrAzcMvE7835a8e31",
               "phone": "5550123",
               "deviceToken": "your_fcm_device_token"
             }
@@ -159,7 +159,7 @@ The `deviceToken` field applies only when the [Bagisto Push Notification](https:
 |------|------|----------|-------------|
 | `firstName` | String | ✅ Yes | Customer's first name |
 | `lastName` | String | ✅ Yes | Customer's last name |
-| `email` | String | ✅ Yes | Customer's email address (must be unique) |
+| `email` | String | ✅ Yes | Customer's email address, unique within the channel being registered on |
 | `password` | String | ✅ Yes | Password for the account (min. 8 characters) |
 | `confirmPassword` | String | ✅ Yes | Must match `password` |
 | `phone` | String | ❌ No | Customer's phone number |
@@ -167,6 +167,8 @@ The `deviceToken` field applies only when the [Bagisto Push Notification](https:
 | `dateOfBirth` | String | ❌ No | Date of birth in `MM/DD/YYYY` format |
 | `subscribedToNewsLetter` | Boolean | ❌ No | Opt-in to marketing emails. Default: `false` |
 | `deviceToken` | String | ❌ No | FCM device token for push notifications. Only required if the [Bagisto Push Notification](https://bagisto.com/en/extensions/push-notifications-for-bagisto/) package is installed. |
+
+`status`, `isVerified` and `isSuspended` are optional and the value sent for them is not used. The server decides the account's state the way the web storefront sign-up does: `status` is `1` and `isSuspended` is `0`, and `isVerified` follows the store's **email verification** setting under Configuration → Customers → Settings → Email — `1` while it is switched off, `0` while it is switched on and the address has not been confirmed. An account with `isVerified` of `0` cannot sign in until the customer follows the link in the verification email.
 
 The account's **channel** and **customer group** are not arguments. The server assigns them automatically — the channel from the request's storefront, and the store's default customer group — exactly as the web storefront sign-up does. Select `channelId` and `customerGroupId` to read them back.
 
@@ -181,9 +183,9 @@ The account's **channel** and **customer group** are not arguments. The server a
 | `lastName` | String | Customer's last name |
 | `name` | String | Full name (first + last) |
 | `token` | String | Authentication token for use in subsequent requests |
-| `status` | String | Account status (`1` = active) |
-| `isVerified` | String | Whether the account is verified |
-| `isSuspended` | String | Whether the account is suspended |
+| `status` | String | Account status — `1` active, `0` inactive. An inactive account cannot sign in |
+| `isVerified` | String | Email verification state — `1` verified, `0` awaiting confirmation. An unverified account cannot sign in |
+| `isSuspended` | String | Suspension state — `0` not suspended, `1` suspended by an administrator |
 | `subscribedToNewsLetter` | Boolean | Newsletter subscription status |
 | `gender` | String | Customer's gender |
 | `dateOfBirth` | String | Customer's date of birth |
@@ -201,12 +203,12 @@ Authorization: Bearer <token>
 ```
 e.g.
 ```
-"Authorization": "Bearer 7b65c50e0c15cdc684d36e5819eb7c19"
+"Authorization": "Bearer 1535|cusalnrd79pvOpEDorYMISQOwQh3P22DrAzcMvE7835a8e31"
 ```
 
 ## Validation Rules
 
-- Email must be in valid format and unique across all customers
+- Email must be in valid format and unique within the channel being registered on — the same address may hold a separate account on each channel a store runs
 - Password must be at least 8 characters
 - `confirmPassword` must match `password`
 - First name and last name are required

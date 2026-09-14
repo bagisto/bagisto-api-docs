@@ -56,16 +56,21 @@ See the [Customers menu overview](/api/rest-api/admin/customers/main/) for the f
 |-------|------|----------|-------------|
 | `first_name` | string | yes | |
 | `last_name` | string | yes | |
-| `email` | string | yes | Unique. |
+| `email` | string | yes | Unique within the customer's channel. |
 | `phone` | string | no | |
 | `gender` | enum | no | `Male`, `Female`, `Other` |
 | `date_of_birth` | date | no | |
 | `customer_group_id` | integer | yes | |
-| `channel_id` | integer | no | |
+| `channel_id` | integer | no | Channel the customer belongs to. Defaults to the current channel. |
 | `status` | integer | no | `0` or `1` (default `1`). |
 | `subscribed_to_news_letter` | boolean | no | |
 | `send_password` | boolean | no | Default `true` — a random password is generated and the credentials are emailed to the customer. When false, explicit `password` is required. |
 | `password` | string | conditional | Required when `send_password=false`; min 6 chars. |
+
+
+## Email uniqueness is per channel
+
+An email has to be unique within a channel, not across the whole store — the same address may hold a separate account on each channel a store runs. `channel_id` decides which channel the customer belongs to, and defaults to the current one when omitted.
 
 ## Permission
 

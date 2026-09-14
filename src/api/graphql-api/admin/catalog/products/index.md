@@ -221,9 +221,9 @@ Each `node` carries these scalar columns. **Heavy fields are `null` on the listi
 | `specialPrice` / `formattedSpecialPrice` | `String` | Discounted price, when set. |
 | `specialPriceFrom` / `specialPriceTo` | `String` | Special-price window (`null` = always on / no end). |
 | `quantity` | `Int` | Total stock across inventory sources. |
-| `baseImageUrl` | `String` | Medium-cache base image URL. |
+| `baseImageUrl` | `String` | URL of the product's first image by position — the picture the admin listing shows. |
 | `imagesCount` | `Int` | Number of images. |
-| `categoryId` / `categoryName` | `Int` / `String` | Primary category. |
+| `categoryId` / `categoryName` | `Int` / `String` | Lowest category id the product is in, and every category it is in, comma-separated. |
 | `channel` / `locale` | `String` | Resolved channel / locale. |
 | `attributeFamilyId` / `attributeFamilyName` | `Int` / `String` | Attribute family. |
 | `urlKey` | `String` | Storefront URL slug. |
@@ -231,7 +231,8 @@ Each `node` carries these scalar columns. **Heavy fields are `null` on the listi
 | `shortDescription` / `description` / `metaTitle` / `metaDescription` / `metaKeywords` | `String` | Resolved content / SEO. |
 | `weight` | `Float` | Product weight. |
 | `createdAt` / `updatedAt` | `String` | Timestamps. |
-| `taxCategoryId` / `manageStock` / `inStock` | — | **Detail-only** — `null` on the listing. |
+| `manageStock` | `Boolean` | Whether stock is tracked for this product. |
+| `taxCategoryId` / `inStock` | — | **Detail-only** — `null` on the listing. |
 | `translations`, `images`, `categories`, `inventories`, `customerGroupPrices`, `superAttributes`, `variants`, `bundleOptions`, `linkedProducts`, `downloadableLinks`, `downloadableSamples` | — | Relation blocks — **all `null` on the listing**; populated only on the [detail query](/api/graphql-api/admin/catalog/products/products-detail). |
 
 ## Actions

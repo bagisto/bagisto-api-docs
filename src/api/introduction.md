@@ -4,6 +4,8 @@ Bagisto provides comprehensive API solutions to help developers integrate and ex
 
 Both transports expose the **same** data and behaviour — pick the one that fits how you build. Full CRUD, pagination, and token authentication are available on both; the differences below are what actually set them apart.
 
+These docs describe the latest Bagisto core and how each of its features is exposed through the API. Every endpoint page reflects what the current release of the platform does — the same validation, the same rules and the same events the admin panel and storefront run — so what you read here is what the store itself does.
+
 ## GraphQL API
 
 The Bagisto GraphQL API enables flexible, efficient data fetching from a single endpoint. Ideal for:

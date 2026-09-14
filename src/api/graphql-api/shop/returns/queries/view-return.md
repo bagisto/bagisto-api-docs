@@ -20,6 +20,7 @@ examples:
           isExpired
           item
           images
+          customAttributes
           messagesCount
           createdAt
           updatedAt
@@ -39,7 +40,7 @@ examples:
             "statusId": 1,
             "statusTitle": "Pending",
             "statusColor": "#FDB022",
-            "packageCondition": "opened",
+            "packageCondition": "open",
             "information": "Item arrived damaged.",
             "canClose": true,
             "canReopen": false,
@@ -62,6 +63,15 @@ examples:
                 "url": "https://example.com/storage/rma/12/damage-front.png"
               }
             ],
+            "customAttributes": [
+              {
+                "field_id": 1,
+                "code": "invoice_number",
+                "label": "Invoice number",
+                "type": "text",
+                "value": "INV-9921"
+              }
+            ],
             "messagesCount": 2,
             "createdAt": "2026-07-20T10:15:30+00:00",
             "updatedAt": "2026-07-20T10:15:30+00:00"
@@ -81,7 +91,7 @@ examples:
 
 ## About
 
-The `customerReturn` query returns a single return (RMA) request **owned by the authenticated customer**, with the full detail — the returned item, attached images, status and the action flags (`canClose`, `canReopen`, `isExpired`). If the return does not exist or belongs to a different customer, the query returns a not-found error.
+The `customerReturn` query returns a single return (RMA) request **owned by the authenticated customer**, with the full detail — the returned item, attached images, the custom-field answers, status and the action flags (`canClose`, `canReopen`, `isExpired`). If the return does not exist or belongs to a different customer, the query returns a not-found error.
 
 ## Authentication
 
@@ -103,7 +113,7 @@ This query requires an authenticated customer — send the storefront key and a 
 | `statusId` | `Int!` | Numeric status id. |
 | `statusTitle` | `String!` | Status label, e.g. `Pending`. |
 | `statusColor` | `String!` | Hex color for the status badge. |
-| `packageCondition` | `String` | Reported package condition, e.g. `opened`. |
+| `packageCondition` | `String` | Reported package condition — `open` or `packed`. |
 | `information` | `String` | Free-text note supplied when the return was raised. |
 | `canClose` | `Boolean` | Whether the return can be closed (marked solved). |
 | `canReopen` | `Boolean` | Whether the return can be reopened back to pending. |
@@ -122,6 +132,12 @@ This query requires an authenticated customer — send the storefront key and a 
 | `images[].id` | `Int` | Image id. |
 | `images[].path` | `String` | Stored file path. |
 | `images[].url` | `String` | Public URL of the image. |
+| `customAttributes` | `Array` | Answers to the return's custom fields. Empty when the store has no custom fields. Query bare (a JSON array). |
+| `customAttributes[].field_id` | `Int` | Id of the custom field that was answered. |
+| `customAttributes[].code` | `String` | Machine name of the custom field. |
+| `customAttributes[].label` | `String` | Label of the custom field. |
+| `customAttributes[].type` | `String` | Input type of the custom field. |
+| `customAttributes[].value` | `String` | The shopper's answer. |
 | `messagesCount` | `Int!` | Number of conversation messages on the return. |
 | `createdAt` | `DateTime!` | Return creation timestamp. |
 | `updatedAt` | `DateTime!` | Return last update timestamp. |

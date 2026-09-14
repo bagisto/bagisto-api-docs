@@ -21,6 +21,8 @@ examples:
               _id
               fileName
               path
+              channels
+              urls
               generatedAt
               createdAt
               updatedAt
@@ -51,6 +53,10 @@ examples:
                   "_id": 1,
                   "fileName": "sitemap.xml",
                   "path": "/",
+                  "channels": [1],
+                  "urls": [
+                    "https://example.com/storage/sitemaps/default/sitemap-1-1.xml"
+                  ],
                   "generatedAt": null,
                   "createdAt": "2026-06-20T10:00:00+05:30",
                   "updatedAt": "2026-06-20T10:00:00+05:30"
@@ -116,6 +122,10 @@ examples:
                   "_id": 1,
                   "fileName": "sitemap.xml",
                   "path": "/",
+                  "channels": [1],
+                  "urls": [
+                    "https://example.com/storage/sitemaps/default/sitemap-1-1.xml"
+                  ],
                   "generatedAt": null,
                   "createdAt": "2026-06-20T10:00:00+05:30"
                 }

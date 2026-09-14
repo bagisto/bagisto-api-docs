@@ -51,6 +51,11 @@ New here? Read the [Events overview](/api/graphql-api/admin/marketing/communicat
   [list](/api/graphql-api/admin/marketing/communications/events-list) query to
   discover valid ids.
 
+### An event a campaign is scheduled against cannot be deleted
+
+Removing it would leave that campaign with nothing to fire on, so the mutation comes
+back with an `errors[]` entry instead. Point the campaign at another event first.
+
 ### Confirm success via the absence of `errors`
 
 The delete mutation returns a success acknowledgement, not the deleted event's

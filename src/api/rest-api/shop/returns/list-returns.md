@@ -18,11 +18,11 @@ examples:
           "statusId": 1,
           "statusTitle": "Pending",
           "statusColor": "#FDB022",
-          "packageCondition": "opened",
+          "packageCondition": "open",
           "information": "Item arrived damaged.",
-          "canClose": null,
-          "canReopen": null,
-          "isExpired": null,
+          "canClose": true,
+          "canReopen": false,
+          "isExpired": false,
           "item": {
             "id": 30,
             "order_item_id": 78,
@@ -34,7 +34,16 @@ examples:
             "reason": "Damaged product",
             "variant_id": null
           },
-          "images": null,
+          "images": [],
+          "customAttributes": [
+            {
+              "field_id": 1,
+              "code": "invoice_number",
+              "label": "Invoice number",
+              "type": "text",
+              "value": "INV-9921"
+            }
+          ],
           "messagesCount": 2,
           "createdAt": "2026-07-20T10:15:30.000000Z",
           "updatedAt": "2026-07-20T10:15:30.000000Z"
@@ -51,7 +60,7 @@ examples:
 
 # List Returns
 
-Retrieve the authenticated customer's **own** return (RMA) requests, newest first. Requests are always scoped to the logged-in customer — a customer can never see another customer's returns. The detail-only action flags (`canClose`, `canReopen`, `isExpired`) and the `images` array come back `null` on the listing — fetch a single return to get them.
+Retrieve the authenticated customer's **own** return (RMA) requests, newest first. Requests are always scoped to the logged-in customer — a customer can never see another customer's returns. Every row carries the full return — the action flags (`canClose`, `canReopen`, `isExpired`), the `images` array and the `customAttributes` answers included — so a listing is enough to render the returns screen without a follow-up call per row.
 
 ## Endpoint
 
@@ -89,13 +98,14 @@ The response is a plain JSON array. Each item is a return object.
 | `statusId` | integer | Numeric status id. |
 | `statusTitle` | string | Status label, e.g. `Pending`. |
 | `statusColor` | string | Hex color for the status badge. |
-| `packageCondition` | string | Reported package condition, e.g. `opened`. |
+| `packageCondition` | string | Reported package condition — `open` or `packed`. |
 | `information` | string | Free-text note supplied when the return was raised. |
-| `canClose` | boolean | Whether the return can be closed. `null` on the listing. |
-| `canReopen` | boolean | Whether the return can be reopened. `null` on the listing. |
-| `isExpired` | boolean | Whether the return is past its action window. `null` on the listing. |
+| `canClose` | boolean | Whether the return can be closed. |
+| `canReopen` | boolean | Whether the return can be reopened. |
+| `isExpired` | boolean | Whether the return is past its action window. |
 | `item` | object | The returned item — `id`, `order_item_id`, `sku`, `name`, `quantity`, `resolution`, `reason_id`, `reason`, `variant_id`. |
-| `images` | array | Attached images (`id`, `path`, `url`). `null` on the listing. |
+| `images` | array | Attached images (`id`, `path`, `url`). Empty when none were attached. |
+| `customAttributes` | array | Answers to the return's custom fields — `field_id`, `code`, `label`, `type`, `value`. Empty when the store has no custom fields. |
 | `messagesCount` | integer | Number of conversation messages on the return. |
 | `createdAt` | string | ISO 8601 creation timestamp. |
 | `updatedAt` | string | ISO 8601 last update timestamp. |

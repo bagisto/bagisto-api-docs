@@ -20,7 +20,7 @@ Optional per-request headers `X-LOCALE`, `X-CURRENCY`, `X-CHANNEL` control what 
 The landing screen is built from admin-managed content, not just products:
 
 - **CMS pages** (About, Privacy, Terms, custom landing copy) — the admin authors these; the storefront reads them via the [CMS Pages query (GraphQL)](/api/graphql-api/shop/cms-pages/). Render them as static pages and footer links.
-- **Theme customizations** (hero image carousel, static blocks, featured/category carousels, footer links) — the homepage layout the admin configures. Read with [Get Theme Customizations](/api/rest-api/shop/theme-customizations/get-theme-customizations). Each block tells you what to render (a product-carousel block gives you the product ids to fetch; an image block gives banners).
+- **Sections** (hero image carousel, static blocks, featured/category carousels, footer links) — the homepage layout the merchandiser arranges. Read with [List Sections](/api/rest-api/shop/sections/list). Each section tells you what to render (a product-carousel section gives you the product ids to fetch; an image section gives banners).
 - **Navigation** — [Get Categories](/api/rest-api/shop/categories/get-categories) for the menu, or [Category Tree](/api/rest-api/shop/categories/get-category-tree) for a nested megamenu.
 
 ## 2. Catalog

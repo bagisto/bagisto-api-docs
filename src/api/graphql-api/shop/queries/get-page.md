@@ -274,6 +274,6 @@ Use `urlKey` to implement client-side routing so users access pages via human-re
 ## Related Resources
 
 - [Get All CMS Pages](/api/graphql-api/shop/queries/get-pages) - Query all CMS pages
-- [Theme Customisations](/api/graphql-api/shop/queries/theme-customisations) - Query storefront theme customisations
+- [Sections](/api/graphql-api/shop/sections/list) - Query the storefront sections a channel draws
 - [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation
 - [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources

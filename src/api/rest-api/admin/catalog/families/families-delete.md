@@ -50,7 +50,7 @@ Deletes an attribute family.
 
 | HTTP | Cause |
 |------|-------|
-| `400 Bad Request` | The family is the last one in the store (`At least one attribute family is required.`) |
+| `400 Bad Request` | The family is the default one (`The default attribute family cannot be deleted.`) |
 | `400 Bad Request` | Products reference this family |
 | `401 Unauthorized` | Missing or invalid Bearer token |
 | `404 Not Found` | The family does not exist |

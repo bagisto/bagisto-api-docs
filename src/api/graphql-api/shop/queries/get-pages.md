@@ -291,6 +291,6 @@ List all CMS pages in an admin dashboard for quick access and management.
 ## Related Resources
 
 - [Get Single CMS Page](/api/graphql-api/shop/queries/get-page) - Query a single page by ID
-- [Theme Customisations](/api/graphql-api/shop/queries/theme-customisations) - Query storefront theme customisations
+- [Sections](/api/graphql-api/shop/sections/list) - Query the storefront sections a channel draws
 - [Pagination Guide](/api/graphql-api/pagination) - Cursor pagination documentation
 - [Shop API Overview](/api/graphql-api/shop-api) - Overview of Shop API resources

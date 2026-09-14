@@ -23,7 +23,7 @@ Create and update accept the nested `attributeGroups` (with `customAttributes`).
 
 ## Delete guards
 
-A family **cannot be deleted** if it is the last remaining family, or if any product is still assigned to it — both return an error. Reassign or remove those products first.
+A family **cannot be deleted** if it is the **default** family, which backs every product form, or if any product is still assigned to it — both return an error. Reassign or remove those products first.
 
 ## Operations in this menu
 

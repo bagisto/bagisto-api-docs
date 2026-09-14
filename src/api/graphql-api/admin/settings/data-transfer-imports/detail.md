@@ -21,6 +21,8 @@ examples:
           fieldSeparator
           filePath
           imagesDirectoryPath
+          imageSource
+          imagesArchiveName
           errorFilePath
           summary
           startedAt
@@ -53,8 +55,10 @@ examples:
               "Invalid column names: \"Name\", \"SKU\", \"Attribute Family\", \"Price\", \"Quantity\", \"ID\", \"Status\", \"Category\", \"Type\"."
             ],
             "fieldSeparator": ",",
-            "filePath": "imports/695deb404dcb9_abfe03fa9c1740306b93d365d3213c217cdb1f08003dd58a400edd76729f985c.csv",
+            "filePath": "imports/3/695deb404dcb9_abfe03fa9c1740306b93d365d3213c217cdb1f08003dd58a400edd76729f985c.csv",
             "imagesDirectoryPath": "",
+            "imageSource": "directory",
+            "imagesArchiveName": null,
             "errorFilePath": null,
             "summary": null,
             "startedAt": null,

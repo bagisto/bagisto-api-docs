@@ -14,7 +14,7 @@ examples:
         -F "field_separator=," \
         -F "file=@products-revised.csv"
     response: |
-      { "id": 12, "type": "products", "action": "append", "state": "pending", "validationStrategy": "skip-errors", "allowedErrors": 10, "fieldSeparator": ",", "processedRowsCount": 0, "invalidRowsCount": 0, "errorsCount": 0, "filePath": "imports/products-revised.csv", "createdAt": "2026-06-08 09:00:00" }
+      { "id": 12, "type": "products", "action": "append", "state": "pending", "validationStrategy": "skip-errors", "allowedErrors": 10, "fieldSeparator": ",", "processedRowsCount": 0, "invalidRowsCount": 0, "errorsCount": 0, "filePath": "imports/12/products-revised.csv", "createdAt": "2026-06-08 09:00:00" }
 ---
 
 # Update Import
@@ -35,7 +35,9 @@ Send the request as `multipart/form-data`. The `file` field is optional — when
 | `allowed_errors` | yes | Integer `≥ 0`. |
 | `field_separator` | yes | The column delimiter, e.g. `,`. |
 | `process_in_queue` | no | When `true`, large imports are processed asynchronously. |
-| `images_directory_path` | no | Folder containing referenced product images. |
+| `image_source` | no | Where a product import reads the images its rows name: `directory`, `upload` or `url`. |
+| `upload_images` | with `upload` | A ZIP of the images, up to 100 MB. A replacement archive starts from an empty folder, so an image dropped from it stops being matched. Not required if one has already been uploaded for this import. |
+| `images_directory_path` | with `directory` | Folder under `storage/app/import` holding the images. |
 | `file` | no | A replacement import file (`csv`, `xls`, `xlsx`, or `xml`). |
 
 Returns the updated import detail.

@@ -3,7 +3,7 @@ outline: false
 examples:
   - id: admin-catalog-family-delete
     title: Delete Attribute Family
-    description: Delete a family. Refused if it is the last family in the store or any product still uses it.
+    description: Delete a family. Refused if it is the default family or any product still uses it.
     query: |
       mutation DeleteAdminAttributeFamily($input: deleteAdminAttributeFamilyInput!) {
         deleteAdminAttributeFamily(input: $input) {
@@ -46,6 +46,6 @@ See the [Attribute Families overview](/api/graphql-api/admin/catalog/families/) 
 
 | Condition | Message |
 |-----------|---------|
-| Family is the last one in the store | `At least one attribute family is required.` |
+| Family is the default one | `The default attribute family cannot be deleted.` |
 | One or more products still use the family | `Cannot delete — attribute family is in use by N product(s).` |
 | Unknown id | `Attribute family not found.` |

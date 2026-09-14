@@ -34,4 +34,5 @@ New here? Read the [Email Templates overview](/api/rest-api/admin/marketing/comm
 - Requires an admin Bearer token and the `marketing.communications.email_templates.delete`
   permission.
 - Returns a success message on completion.
+- A template a campaign still sends cannot be deleted — it comes back as a `400`, since removing it would leave that campaign with nothing to send. Point the campaign at another template first.
 - An unknown id returns a `404`.

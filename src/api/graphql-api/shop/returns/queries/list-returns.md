@@ -27,6 +27,7 @@ examples:
               isExpired
               item
               images
+              customAttributes
               messagesCount
               createdAt
               updatedAt
@@ -59,11 +60,11 @@ examples:
                   "statusId": 1,
                   "statusTitle": "Pending",
                   "statusColor": "#FDB022",
-                  "packageCondition": "opened",
+                  "packageCondition": "open",
                   "information": "Item arrived damaged.",
-                  "canClose": null,
-                  "canReopen": null,
-                  "isExpired": null,
+                  "canClose": true,
+                  "canReopen": false,
+                  "isExpired": false,
                   "item": {
                     "id": 30,
                     "order_item_id": 78,
@@ -75,7 +76,16 @@ examples:
                     "reason": "Damaged product",
                     "variant_id": null
                   },
-                  "images": null,
+                  "images": [],
+                  "customAttributes": [
+                    {
+                      "field_id": 1,
+                      "code": "invoice_number",
+                      "label": "Invoice number",
+                      "type": "text",
+                      "value": "INV-9921"
+                    }
+                  ],
                   "messagesCount": 2,
                   "createdAt": "2026-07-20T10:15:30+00:00",
                   "updatedAt": "2026-07-20T10:15:30+00:00"
@@ -102,7 +112,7 @@ examples:
 
 ## About
 
-The `customerReturns` query returns a paginated list of the authenticated customer's **own** return (RMA) requests. Requests are always scoped to the logged-in customer — you can never see another customer's returns. Results are ordered newest first. The detail-only action flags (`canClose`, `canReopen`, `isExpired`) and the `images` array come back `null` on the listing — fetch a single return to get them.
+The `customerReturns` query returns a paginated list of the authenticated customer's **own** return (RMA) requests. Requests are always scoped to the logged-in customer — you can never see another customer's returns. Results are ordered newest first. Every node carries the full return — the action flags (`canClose`, `canReopen`, `isExpired`), the `images` array and the `customAttributes` answers included — so one listing query is enough to render the returns screen without a follow-up query per row.
 
 ## Authentication
 
@@ -129,13 +139,14 @@ This query requires an authenticated customer — send the storefront key and a 
 | `edges.node.statusId` | `Int!` | Numeric status id. |
 | `edges.node.statusTitle` | `String!` | Status label, e.g. `Pending`. |
 | `edges.node.statusColor` | `String!` | Hex color for the status badge. |
-| `edges.node.packageCondition` | `String` | Reported package condition, e.g. `opened`. |
+| `edges.node.packageCondition` | `String` | Reported package condition — `open` or `packed`. |
 | `edges.node.information` | `String` | Free-text note supplied when the return was raised. |
-| `edges.node.canClose` | `Boolean` | Whether the return can be closed. `null` on the listing. |
-| `edges.node.canReopen` | `Boolean` | Whether the return can be reopened. `null` on the listing. |
-| `edges.node.isExpired` | `Boolean` | Whether the return is past its action window. `null` on the listing. |
+| `edges.node.canClose` | `Boolean` | Whether the return can be closed. |
+| `edges.node.canReopen` | `Boolean` | Whether the return can be reopened. |
+| `edges.node.isExpired` | `Boolean` | Whether the return is past its action window. |
 | `edges.node.item` | `Object` | The returned item — `id`, `order_item_id`, `sku`, `name`, `quantity`, `resolution`, `reason_id`, `reason`, `variant_id`. Query bare (a JSON object). |
-| `edges.node.images` | `Array` | Attached images (`id`, `path`, `url`). `null` on the listing. Query bare (a JSON array). |
+| `edges.node.images` | `Array` | Attached images (`id`, `path`, `url`). Empty when none were attached. Query bare (a JSON array). |
+| `edges.node.customAttributes` | `Array` | Answers to the return's custom fields — `field_id`, `code`, `label`, `type`, `value`. Empty when the store has no custom fields. Query bare (a JSON array). |
 | `edges.node.messagesCount` | `Int!` | Number of conversation messages on the return. |
 | `edges.node.createdAt` | `DateTime!` | Return creation timestamp. |
 | `edges.node.updatedAt` | `DateTime!` | Return last update timestamp. |

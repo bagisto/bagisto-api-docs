@@ -89,3 +89,9 @@ Updates an existing attribute. `id` is the attribute IRI (`/api/admin/catalog/at
 See the [Attributes overview](/api/graphql-api/admin/catalog/attributes/) for how attributes, options, and families fit together.
 
 The nested `options` and their `translations` are not returned on the mutation payload — re-query [`adminAttribute`](/api/graphql-api/admin/catalog/attributes/attributes-detail) to read them back.
+
+## Validation and the regex pattern
+
+`validation` names the rule a value must satisfy — `numeric`, `email`, `decimal`, `url` or `regex`. Choosing `regex` makes `regex` required, and the pattern is checked before it is stored.
+
+A pattern must be delimited with `/`, may carry only the `i`, `m`, `s` and `u` modifiers, and must compile. That is narrower than PHP alone accepts because the same pattern is also written into the storefront's own form rules, where a `#` delimiter or a PCRE-only modifier would break the form for every product using the attribute. A pattern that does not qualify is refused rather than stored.

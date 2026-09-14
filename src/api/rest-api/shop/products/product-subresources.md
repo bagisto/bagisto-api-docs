@@ -19,7 +19,9 @@ examples:
           "path": "product/2/XmdfIafCjuYEhHiBkHvzmOuDT0mpGHDTi9QhnUoY.webp",
           "productId": 2,
           "position": 1,
-          "publicPath": "http://localhost/storage/product/2/XmdfIafCjuYEhHiBkHvzmOuDT0mpGHDTi9QhnUoY.webp"
+          "publicPath": "http://localhost/storage/product/2/XmdfIafCjuYEhHiBkHvzmOuDT0mpGHDTi9QhnUoY.webp",
+          "altText": "Blue running shoe, side view",
+          "fileName": "XmdfIafCjuYEhHiBkHvzmOuDT0mpGHDTi9QhnUoY"
         }
       ]
     commonErrors:
@@ -48,7 +50,9 @@ examples:
           "path": "product/4/nRO8G2ljoUejAr6agYhx5eZTUwBIeft61dNRwNw6.webp",
           "productId": 4,
           "position": 1,
-          "publicPath": "http://localhost/storage/product/4/nRO8G2ljoUejAr6agYhx5eZTUwBIeft61dNRwNw6.webp"
+          "publicPath": "http://localhost/storage/product/4/nRO8G2ljoUejAr6agYhx5eZTUwBIeft61dNRwNw6.webp",
+          "altText": "Blue running shoe, side view",
+          "fileName": "nRO8G2ljoUejAr6agYhx5eZTUwBIeft61dNRwNw6"
         }
       ]
 
@@ -68,7 +72,9 @@ examples:
         "path": "product/2/XmdfIafCjuYEhHiBkHvzmOuDT0mpGHDTi9QhnUoY.webp",
         "productId": 2,
         "position": 1,
-        "publicPath": "http://localhost/storage/product/2/XmdfIafCjuYEhHiBkHvzmOuDT0mpGHDTi9QhnUoY.webp"
+        "publicPath": "http://localhost/storage/product/2/XmdfIafCjuYEhHiBkHvzmOuDT0mpGHDTi9QhnUoY.webp",
+        "altText": "Blue running shoe, side view",
+        "fileName": "XmdfIafCjuYEhHiBkHvzmOuDT0mpGHDTi9QhnUoY"
       }
 
   - id: list-product-videos
@@ -255,6 +261,8 @@ The underscored form is the framework's default snake-case route, kept where no 
 ## Endpoints in this group
 
 ### Images (`type = images`)
+
+Images come back in gallery order — the order the storefront draws them in, lowest `position` first, which is also the product's main image. Each carries `altText`, the description stored for the current locale, and `fileName`, the file's base name without directory or extension.
 
 | Method | Path                                       | Purpose                                        |
 |--------|--------------------------------------------|------------------------------------------------|

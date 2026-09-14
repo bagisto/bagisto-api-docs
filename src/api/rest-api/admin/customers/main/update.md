@@ -50,6 +50,6 @@ See the [Customers menu overview](/api/rest-api/admin/customers/main/) for the f
 |----------|--------|
 | `/api/admin/customers/{id}` | PUT |
 
-Same fields as Create — all optional (partial update). `password` is hashed if supplied. Email uniqueness excludes self.
+Same fields as Create — all optional (partial update). `password` is hashed if supplied. Email uniqueness is checked within the customer's channel and excludes the customer itself, so the same address may hold a separate account on another channel.
 
 Permission: `customers.customers.edit`.

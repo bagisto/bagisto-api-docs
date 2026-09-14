@@ -63,7 +63,7 @@ Reference data and access control — mostly straight CRUD (+ mass-delete where 
 
 - **[Currencies](/api/rest-api/admin/settings/currencies/list)** · **[Locales](/api/rest-api/admin/settings/locales/list)** · **[Exchange Rates](/api/rest-api/admin/settings/exchange-rates/list)** · **[Channels](/api/rest-api/admin/settings/channels/list)**
 - **[Inventory Sources](/api/rest-api/admin/settings/inventory-sources/list)** · **[Tax Rates](/api/rest-api/admin/settings/tax-rates/list)** · **[Tax Categories](/api/rest-api/admin/settings/tax-categories/list)**
-- **[Users](/api/rest-api/admin/settings/users/list)** · **[Roles](/api/rest-api/admin/settings/roles/list)** · **[Themes](/api/rest-api/admin/settings/themes/list)** · **[Data Transfer Imports](/api/rest-api/admin/settings/data-transfer-imports/)**
+- **[Users](/api/rest-api/admin/settings/users/list)** · **[Roles](/api/rest-api/admin/settings/roles/list)** · **[Data Transfer Imports](/api/rest-api/admin/settings/data-transfer-imports/)**
 - **[Return Reasons](/api/rest-api/admin/settings/return-reasons/list)** · **[Return Statuses](/api/rest-api/admin/settings/return-statuses/list)** · **[Return Rules](/api/rest-api/admin/settings/return-rules/list)** · **[Return Custom Fields](/api/rest-api/admin/settings/return-custom-fields/list)** — the RMA reference data. Rules gate eligibility, so configure one before the storefront return form can offer anything.
 
 ## 8. Configuration

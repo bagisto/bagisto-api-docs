@@ -17,6 +17,10 @@ examples:
             "id": 1,
             "fileName": "sitemap.xml",
             "path": "/",
+            "channels": [1],
+            "urls": [
+              "https://example.com/storage/sitemaps/default/sitemap-1-1.xml"
+            ],
             "generatedAt": null,
             "createdAt": "2026-06-20T10:00:00+05:30",
             "updatedAt": "2026-06-20T10:00:00+05:30"
@@ -26,9 +30,9 @@ examples:
       }
   - id: list-filtered
     title: Filter Sitemaps
-    description: Filter by file name, sorted by file name. Filters compose with logical AND.
+    description: Filter by file name and channel, sorted by file name. Filters compose with logical AND.
     query: |
-      curl -X GET "https://your-domain.com/api/admin/marketing/sitemaps?file_name=sitemap&sort=file_name&order=asc" \
+      curl -X GET "https://your-domain.com/api/admin/marketing/sitemaps?file_name=sitemap&channel_id=1&sort=file_name&order=asc" \
         -H "Authorization: Bearer <token>"
     variables: |
       {}
@@ -39,6 +43,10 @@ examples:
             "id": 1,
             "fileName": "sitemap.xml",
             "path": "/",
+            "channels": [1],
+            "urls": [
+              "https://example.com/storage/sitemaps/default/sitemap-1-1.xml"
+            ],
             "generatedAt": null,
             "createdAt": "2026-06-20T10:00:00+05:30",
             "updatedAt": "2026-06-20T10:00:00+05:30"
@@ -68,10 +76,11 @@ Admin collections return a `{ data, meta }` body envelope:
 - `data` — the sitemap rows for this page.
 - `meta` — `currentPage`, `perPage`, `lastPage`, `total`, `from`, `to`.
 
-Each row carries the flat sitemap fields shown in the example. The built XML
-paths — `indexFile` and `generatedSitemaps` — are served only by the
+Each row carries the flat sitemap fields shown in the example, the `channels` it
+covers and the public index `urls` for them. What the last generate run wrote —
+`generatedFiles` — is served only by the
 [detail](/api/rest-api/admin/marketing/search-seo/sitemaps-detail) endpoint;
-they are not present on list rows. `generatedAt` stays `null` until the sitemap
+it is not present on list rows. `generatedAt` stays `null` until the sitemap
 has been generated at least once.
 
 ## Query parameters
@@ -80,6 +89,7 @@ has been generated at least once.
 |-----------|-------------|
 | `page`, `per_page` | Pagination (`per_page` default 10, max 50) |
 | `file_name` | File name — partial match |
+| `channel_id` | Only sitemaps covering this channel |
 | `sort`, `order` | Sort field (`id`, `file_name`) + `asc` / `desc` (default `id desc`) |
 
 Filters compose with logical AND — more filters narrow the result.

@@ -19,7 +19,12 @@ examples:
         "id": 1,
         "fileName": "sitemap-v2.xml",
         "path": "/",
+        "channels": [1],
+        "urls": [
+          "https://example.com/storage/sitemaps/default/sitemap-v2-1-1.xml"
+        ],
         "generatedAt": null,
+        "generatedFiles": [],
         "indexFile": null,
         "generatedSitemaps": [],
         "createdAt": "2026-06-20T10:00:00+05:30",
@@ -48,6 +53,12 @@ New here? Read the [Sitemaps overview](/api/rest-api/admin/marketing/search-seo/
   omitted fields keep their existing values.
 - Returns the full updated sitemap payload.
 
+### Channels are replaced, not merged
+
+Sending `channels` sets the sitemap's channels to exactly that list, so include
+every channel it should cover. Leaving it out keeps the current ones, which is
+what makes renaming a file safe.
+
 ### No auto-regeneration
 
 Changing `file_name` / `path` does not rebuild the XML. Call
@@ -60,3 +71,4 @@ Changing `file_name` / `path` does not rebuild the XML. Call
 |-------|------|----------|-------|
 | `file_name` | string | no | Index file name — letters, digits, `-`, `_`, `.`; must end with `.xml` |
 | `path` | string | no | Where the index file is written — must start and end with `/`, no `//` |
+| `channels` | integer[] | no | Channel ids the sitemap covers. The list you send **replaces** the current one; omit it to keep the channels the sitemap already covers |

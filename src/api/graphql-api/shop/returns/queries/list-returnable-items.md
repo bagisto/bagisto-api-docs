@@ -83,7 +83,7 @@ The query returns a plain list of items, not a cursor connection — there is no
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `orderItemId` | `Int!` | Id of the order item — use this when raising a return. |
+| `orderItemId` | `Int!` | Id of the order item (order line) — send this as `orderItemId` when raising a return. |
 | `productId` | `Int!` | Id of the product. |
 | `sku` | `String!` | Product SKU. |
 | `name` | `String!` | Product name. |
@@ -98,8 +98,15 @@ The query returns a plain list of items, not a cursor connection — there is no
 | `rmaQuantity` | `Int!` | Units already placed into a return. |
 | `rmaReturnPeriod` | `Int!` | Return window in days. |
 
+::: warning
+`orderItemId` is the id of the **order line**, not of the product. Sending a `productId` as `orderItemId` when raising a return fails with `The selected item is not eligible for return.`
+:::
+
+Units held by a canceled or declined return are released back into `currentQuantity`, so a shopper who withdrew a request can raise a new one for the same item.
+
 ## Related Resources
 
 - [List Return Reasons](/api/graphql-api/shop/returns/queries/list-return-reasons)
+- [List Return Custom Fields](/api/graphql-api/shop/returns/queries/list-return-custom-fields)
 - [Raise a Return](/api/graphql-api/shop/returns/mutations/create-return)
 - [Returns Overview](/api/graphql-api/shop/returns/)

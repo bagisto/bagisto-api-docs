@@ -34,4 +34,5 @@ New here? Read the [Events overview](/api/rest-api/admin/marketing/communication
 - Requires an admin Bearer token and the `marketing.communications.events.delete`
   permission.
 - Returns a success message on completion.
+- An event a campaign is scheduled against cannot be deleted — it comes back as a `400`, since removing it would leave that campaign with nothing to fire on. Point the campaign at another event first.
 - An unknown id returns a `404`.

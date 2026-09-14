@@ -52,6 +52,35 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 - [Admin Authentication](/api/graphql-api/admin/authentication): Every Admin GraphQL request carries the admin Bearer token. This example reads the authenticated admin's own profile to confirm the token works, and selects…
 
+## GraphQL API › Admin › Appearance
+
+- [Appearance](/api/graphql-api/admin/appearance): Appearance is where a store chooses how the storefront looks. It holds two things: the themes the installation has, and the sections each channel draws inside…
+
+## GraphQL API › Admin › Appearance › Sections
+
+- [Sections](/api/graphql-api/admin/appearance/sections): A section is one block of a storefront page. Each belongs to one theme and one channel, carries content per locale, and is drawn in the order the channel gives…
+- [createAdminAppearanceSection](/api/graphql-api/admin/appearance/sections/create): Adds a section to a theme and channel. The section is created **switched off with a staged on-state**, so it is drawn in the editor and its preview but not on…
+- [deleteAdminAppearanceSection](/api/graphql-api/admin/appearance/sections/delete): Removes a section and its content for every locale. Media the section uploaded is cleaned up with it.
+- [adminAppearanceSection](/api/graphql-api/admin/appearance/sections/detail): One section with every locale's content.
+- [createAdminAppearanceSectionDiscard](/api/graphql-api/admin/appearance/sections/discard): Throws away every staged edit of a theme and channel. The published content, statuses and order are left exactly as they are, so the storefront does not change.
+- [createAdminAppearanceSectionDraft](/api/graphql-api/admin/appearance/sections/draft): Holds a section's content as an unpublished draft for one locale. The storefront keeps drawing the published content until…
+- [createAdminAppearanceSectionDuplicate](/api/graphql-api/admin/appearance/sections/duplicate): Copies a section, including its content in every locale, into the same theme and channel.
+- [adminAppearanceSectionFields](/api/graphql-api/admin/appearance/sections/fields): The field set a section's type is built from, together with the values it currently holds. This is what makes a client-side editor possible without knowing the…
+- [adminAppearanceSections](/api/graphql-api/admin/appearance/sections/list): The sections a channel holds for a theme, in the order they are drawn, with `footer_links` last. Returns a plain list — one channel's page layout is not…
+- [adminAppearanceSectionPreview](/api/graphql-api/admin/appearance/sections/preview): The sections a channel would draw if its staged edits were published: draft content replaces published content, staged status and order are applied, sections…
+- [createAdminAppearanceSectionPublish](/api/graphql-api/admin/appearance/sections/publish): Promotes every staged edit of a theme and channel — content in all locales, on/off states and order — to what the storefront draws. Sections holding nothing…
+- [createAdminAppearanceSectionReorder](/api/graphql-api/admin/appearance/sections/reorder): Stages the order sections are drawn in. `footer_links` is moved back to the end of whatever order is sent, and the payload returns the order that was actually…
+- [createAdminAppearanceSectionStatus](/api/graphql-api/admin/appearance/sections/status): Stages a section on or off. Like every other edit, it reaches the storefront only when the theme is published.
+- [updateAdminAppearanceSection](/api/graphql-api/admin/appearance/sections/update): Writes a section's **published** values — what the storefront draws immediately. To hold a change back until publishing, use…
+
+## GraphQL API › Admin › Appearance › Themes
+
+- [Themes](/api/graphql-api/admin/appearance/themes): The theme gallery: every theme the installation knows about, and which channels run each of them.
+- [createAdminAppearanceThemeActivate](/api/graphql-api/admin/appearance/themes/activate): Points one or more channels at a theme. Each channel keeps its own theme, so activating on one leaves the others alone.
+- [adminAppearanceTheme](/api/graphql-api/admin/appearance/themes/detail): One theme by its code.
+- [adminAppearanceThemeImpact](/api/graphql-api/admin/appearance/themes/impact): What activating a theme on the given channels would leave behind. Reports only; nothing is written.
+- [adminAppearanceThemes](/api/graphql-api/admin/appearance/themes/list): Every theme the installation knows about, active ones first. Returns a plain list — the gallery is small and not paginated.
+
 ## GraphQL API › Admin › Catalog
 
 - [List Products](/api/graphql-api/admin/catalog/products): The canonical admin product listing — a cursor-paginated query mirroring the Catalog → Products datagrid, with every scalar column the listing can resolve.
@@ -83,7 +112,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 - [Attribute Families](/api/graphql-api/admin/catalog/families): An attribute family is the **template of fields a product carries**. Every product belongs to exactly one family, and the family decides which attributes (and…
 - [Attribute Family — Create (GraphQL)](/api/graphql-api/admin/catalog/families/families-create): Create an attribute family with optional nested groups and per-group custom attributes.
-- [Attribute Family — Delete (GraphQL)](/api/graphql-api/admin/catalog/families/families-delete): Delete a family. Refused if it is the last family in the store or any product still uses it.
+- [Attribute Family — Delete (GraphQL)](/api/graphql-api/admin/catalog/families/families-delete): Delete a family. Refused if it is the default family or any product still uses it.
 - [Catalog Attribute Family — Detail (GraphQL)](/api/graphql-api/admin/catalog/families/families-detail): Fetch a single attribute family by IRI including all attribute groups and — within each group — all associated attributes with pivot position. The…
 - [Catalog Attribute Families — Datagrid Listing (GraphQL)](/api/graphql-api/admin/catalog/families/families-listing): Cursor-paginated query returning the flat attribute family list — the GraphQL equivalent of the admin Catalog → Attribute Families datagrid. Supports filtering…
 - [Attribute Family — Update (GraphQL)](/api/graphql-api/admin/catalog/families/families-update): Update a family, optionally restructuring its attribute groups.
@@ -100,6 +129,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Catalog Product — Delete](/api/graphql-api/admin/catalog/products/delete): GraphQL counterpart of DELETE /api/admin/catalog/products/{id}. For configurable products, variants cascade.
 - [Product Images — Delete](/api/graphql-api/admin/catalog/products/images-delete): Removes the DB row and the file on storage.
 - [Product Images — Reorder](/api/graphql-api/admin/catalog/products/images-reorder): Update positions of one or more existing images for a product. Each image ID must belong to the product.
+- [Product Images — Update](/api/graphql-api/admin/catalog/products/images-update): Edit the alt text and the position of an already-uploaded image.
 - [Product Images — Upload](/api/graphql-api/admin/catalog/products/images-upload): GraphQL upload is NOT supported — binary file parts are not transportable over JSON GraphQL. Use the REST endpoint.
 - [Product Inventories — List](/api/graphql-api/admin/catalog/products/inventories-list): Cursor connection of per-source inventory rows for a product.
 - [Product Inventories — Bulk Update (GraphQL)](/api/graphql-api/admin/catalog/products/inventories-update): Parent-scoped mutation. Pass a source id with a positive qty to set it, qty 0 to zero it out; sources not in the payload are left untouched. The mutation…
@@ -309,7 +339,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Create Sitemap](/api/graphql-api/admin/marketing/search-seo/sitemaps-create): Create a sitemap definition. Creating the row does not build the XML files — call generate afterwards.
 - [Delete Sitemap](/api/graphql-api/admin/marketing/search-seo/sitemaps-delete): Delete a sitemap by id. A successful delete returns no errors; the row and its generated XML files are removed.
 - [Sitemap Detail](/api/graphql-api/admin/marketing/search-seo/sitemaps-detail): Full payload for a single sitemap, including the generated index file and per-batch sitemap paths.
-- [Generate Sitemap](/api/graphql-api/admin/marketing/search-seo/sitemaps-generate): Build the actual XML files for a sitemap. Walks public categories, products, and pages and records the written paths.
+- [Generate Sitemap](/api/graphql-api/admin/marketing/search-seo/sitemaps-generate): Build the actual XML files for a sitemap, once per channel it covers, and record the written paths.
 - [List Sitemaps](/api/graphql-api/admin/marketing/search-seo/sitemaps-list): Cursor-paginated list of every sitemap definition.
 - [Update Sitemap](/api/graphql-api/admin/marketing/search-seo/sitemaps-update): Update a sitemap's file name. Update is a partial merge — send only the fields you change. It does not regenerate the XML.
 - [Create URL Rewrite](/api/graphql-api/admin/marketing/search-seo/url-rewrites-create): Create a 301 redirect from an old path to a target path for a CMS page.
@@ -329,7 +359,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 ## GraphQL API › Admin › Marketing › Search Seo › Sitemaps
 
-- [Sitemaps](/api/graphql-api/admin/marketing/search-seo/sitemaps): A **sitemap** is an XML file that lists your store's public URLs so search engines can crawl them efficiently. It mirrors the admin **Marketing → Search & SEO…
+- [Sitemaps](/api/graphql-api/admin/marketing/search-seo/sitemaps): A **sitemap** is an XML file that lists your store's public URLs so search engines can crawl them efficiently. Each definition records where the index file…
 
 ## GraphQL API › Admin › Marketing › Search Seo › Url Rewrites
 
@@ -614,17 +644,6 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [List Tax Rates](/api/graphql-api/admin/settings/tax-rates/list): Narrow by identifier, country and state and sort by tax rate ascending. Filter args, sorting and pagination all combine in one query. Supplying multiple…
 - [Update Tax Rate](/api/graphql-api/admin/settings/tax-rates/update): Updates an existing tax rate. The update is partial — send only the fields you want to change; omitted fields keep their current value. `identifier` stays…
 
-## GraphQL API › Admin › Settings › Themes
-
-- [Themes](/api/graphql-api/admin/settings/themes): The Themes menu controls the **theme customizations** that drive your storefront's content blocks per sales channel. It mirrors the admin **Settings → Themes**…
-- [Create Theme Customization](/api/graphql-api/admin/settings/themes/create): Create a theme customization block with its step-1 scalar fields. Per-locale content is added afterwards via the update mutation.
-- [Delete Theme Customization](/api/graphql-api/admin/settings/themes/delete): Delete a theme customization block. Its associated storage directory is wiped along with the row. The mutation returns a snapshot of the deleted block.
-- [Theme Customization Detail](/api/graphql-api/admin/settings/themes/detail): Fetch a single theme customization block, including its per-locale content under the translations connection.
-- [List Theme Customizations](/api/graphql-api/admin/settings/themes/list): List theme customization blocks for the store, newest first. Each row carries its scalar fields; per-locale content is detail-only.
-- [Mass Delete Theme Customizations](/api/graphql-api/admin/settings/themes/mass-delete): Delete several theme customization blocks at once by their ids. Non-existent ids are skipped.
-- [Mass Update Theme Status](/api/graphql-api/admin/settings/themes/mass-update-status): Bulk-set the active/inactive status on several theme customization blocks at once.
-- [Update Theme Customization](/api/graphql-api/admin/settings/themes/update): Set the per-locale content for one locale, and/or edit the scalar fields, of a theme customization block.
-
 ## GraphQL API › Admin › Settings › Users
 
 - [Users](/api/graphql-api/admin/settings/users): The Users menu manages **admin users** — the back-office accounts that sign in to the admin panel. It mirrors the admin **Settings → Users** screen. Each admin…
@@ -696,6 +715,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 ## GraphQL API › Shop › Eu Withdrawal › Queries
 
+- [EU Withdrawal Status](/api/graphql-api/shop/eu-withdrawal/queries/eu-withdrawal-status): Whether customers can file an EU withdrawal on the current channel.
 - [List EU Withdrawals](/api/graphql-api/shop/eu-withdrawal/queries/list-eu-withdrawals): Retrieve a paginated list of the authenticated customer's own EU right-of-withdrawal declarations, newest first.
 - [View EU Withdrawal](/api/graphql-api/shop/eu-withdrawal/queries/view-eu-withdrawal): Retrieve a single EU right-of-withdrawal declaration owned by the authenticated customer.
 
@@ -711,6 +731,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 ## GraphQL API › Shop › Gdpr Requests › Queries
 
+- [GDPR Status](/api/graphql-api/shop/gdpr-requests/queries/gdpr-status): Whether customers can raise GDPR data requests on the current channel.
 - [List GDPR Requests](/api/graphql-api/shop/gdpr-requests/queries/list-gdpr-requests): Retrieve a paginated list of the authenticated customer's own GDPR data requests, newest first.
 - [View GDPR Request](/api/graphql-api/shop/gdpr-requests/queries/view-gdpr-request): Retrieve a single GDPR data request owned by the authenticated customer.
 
@@ -821,8 +842,6 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Get Wishlist Item](/api/graphql-api/shop/queries/get-wishlist): Retrieve a specific wishlist item by its IRI.
 - [Get Wishlists](/api/graphql-api/shop/queries/get-wishlists): Retrieve paginated wishlist items for the authenticated customer using cursor-based pagination.
 - [Search Products](/api/graphql-api/shop/queries/search-products): Search products by query term with sorting and filtering options.
-- [Get Theme Customisation](/api/graphql-api/shop/queries/single-theme-customisation): Retrieve basic information for a single theme customisation by its ID.
-- [Theme Customizations](/api/graphql-api/shop/queries/theme-customisations): Retrieve theme customizations with basic fields and pagination.
 - [Tree Categories](/api/graphql-api/shop/queries/tree-categories): Retrieve root and child categories with their basic hierarchical structure.
 
 ## GraphQL API › Shop › Returns
@@ -839,15 +858,23 @@ This API has two separate surfaces. Pick one and do not mix them:
 
 ## GraphQL API › Shop › Returns › Queries
 
+- [List Return Custom Fields](/api/graphql-api/shop/returns/queries/list-return-custom-fields): List the active custom fields the storefront return form asks the shopper to fill in.
 - [List Return Messages](/api/graphql-api/shop/returns/queries/list-return-messages): List the conversation messages of a return (RMA) request owned by the authenticated customer, newest first.
 - [List Return Reasons](/api/graphql-api/shop/returns/queries/list-return-reasons): List the active reasons a customer can pick when raising a return, filtered by resolution type.
 - [List Returnable Items](/api/graphql-api/shop/returns/queries/list-returnable-items): List the return-eligible items of one of the authenticated customer's orders, with the quantity caps the store enforces.
+- [List Returnable Orders](/api/graphql-api/shop/returns/queries/list-returnable-orders): The customer's orders a return can still be raised against — the list the New Request flow opens with.
 - [List Returns](/api/graphql-api/shop/returns/queries/list-returns): Retrieve a paginated list of the authenticated customer's own return (RMA) requests, newest first.
 - [View Return](/api/graphql-api/shop/returns/queries/view-return): Retrieve a single return (RMA) request owned by the authenticated customer, including its item, images and action flags.
 
-## GraphQL API › Shop › Theme Customisations
+## GraphQL API › Shop › Sections
 
-- [Theme Customisations](/api/graphql-api/shop/theme-customisations): The Theme Customisations menu exposes the configurable storefront content blocks the store owner has set up — image carousels, static content snippets, product…
+- [Sections](/api/graphql-api/shop/sections): Sections are the blocks a storefront page is built from — carousels, static content, the footer links. A merchandiser arranges them per channel, and the…
+- [section](/api/graphql-api/shop/sections/detail): One published section of the current channel's active theme.
+- [sections](/api/graphql-api/shop/sections/list): The published sections of the current channel's active theme, in render order, as a cursor-paginated connection.
+
+## GraphQL API › Shop › Theme
+
+- [theme](/api/graphql-api/shop/theme): The theme the current channel's storefront is drawn with, and the section types it can hold.
 
 ## GraphQL API › Shop › Wishlist
 
@@ -878,6 +905,36 @@ This API has two separate surfaces. Pick one and do not mix them:
 ## REST API › Admin
 
 - [Admin Authentication](/api/rest-api/admin/authentication): Every Admin REST call carries the admin Bearer token. This example reads the authenticated admin's own profile to confirm the token works.
+
+## REST API › Admin › Appearance
+
+- [Appearance](/api/rest-api/admin/appearance): Appearance is where a store chooses how the storefront looks. It holds two things: the themes the installation has, and the sections each channel draws inside…
+
+## REST API › Admin › Appearance › Sections
+
+- [Sections](/api/rest-api/admin/appearance/sections): A section is one block of a storefront page. Each belongs to one theme and one channel, carries content per locale, and is drawn in the order the channel gives…
+- [Create Section](/api/rest-api/admin/appearance/sections/create): Adds a section to a theme and channel. The section is created **switched off with a staged on-state**, so it is drawn in the editor and its preview but not on…
+- [Delete Section](/api/rest-api/admin/appearance/sections/delete): Removes a section and its content for every locale. Media the section uploaded is cleaned up with it.
+- [Get Section](/api/rest-api/admin/appearance/sections/detail): One section with every locale's content.
+- [Discard](/api/rest-api/admin/appearance/sections/discard): Throws away every staged edit of a theme and channel. The published content, statuses and order are left exactly as they are, so the storefront does not change.
+- [Stage Edits](/api/rest-api/admin/appearance/sections/draft): Holds a section's content as an unpublished draft for one locale. The storefront keeps drawing the published content until…
+- [Copy Section](/api/rest-api/admin/appearance/sections/duplicate): Copies a section, including its content in every locale, into the same theme and channel.
+- [Section Fields](/api/rest-api/admin/appearance/sections/fields): The field set a section's type is built from, together with the values it currently holds. This is what makes a client-side editor possible without knowing the…
+- [List Sections](/api/rest-api/admin/appearance/sections/list): The sections a channel holds for a theme, in the order they are drawn, with `footer_links` last. Returns a plain array — the set is one channel's page layout,…
+- [Upload Media](/api/rest-api/admin/appearance/sections/media): Stores one image or video against a section and returns the path to record in its options. This endpoint is REST only — a binary upload cannot be carried over…
+- [Preview](/api/rest-api/admin/appearance/sections/preview): The sections a channel would draw if its staged edits were published: draft content replaces published content, staged status and order are applied, sections…
+- [Publish](/api/rest-api/admin/appearance/sections/publish): Promotes every staged edit of a theme and channel — content in all locales, on/off states and order — to what the storefront draws. Sections holding nothing…
+- [Stage Order](/api/rest-api/admin/appearance/sections/reorder): Stages the order sections are drawn in. `footer_links` is moved back to the end of whatever order is sent, and the response returns the order that was actually…
+- [Stage Status](/api/rest-api/admin/appearance/sections/status): Stages a section on or off. Like every other edit, it reaches the storefront only when the theme is published.
+- [Update Section](/api/rest-api/admin/appearance/sections/update): Writes a section's **published** values — what the storefront draws immediately. To hold a change back until publishing, use [Stage…
+
+## REST API › Admin › Appearance › Themes
+
+- [Themes](/api/rest-api/admin/appearance/themes): The theme gallery: every theme the installation knows about, and which channels run each of them.
+- [Activate Theme](/api/rest-api/admin/appearance/themes/activate): Points one or more channels at a theme. Each channel keeps its own theme, so activating on one channel leaves the others alone.
+- [Get Theme](/api/rest-api/admin/appearance/themes/detail): One theme by its code. Same fields as the listing.
+- [Theme Impact](/api/rest-api/admin/appearance/themes/impact): What activating a theme on the given channels would leave behind, so the change can be spelled out before anything is written. Reports only; nothing is…
+- [List Themes](/api/rest-api/admin/appearance/themes/list): Every theme the installation knows about, active ones first. Not paginated — the gallery is small and returned whole.
 
 ## REST API › Admin › Catalog
 
@@ -930,6 +987,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Export Products](/api/rest-api/admin/catalog/products/export): Download the products datagrid as a CSV file — the same data the admin Catalog → Products "Export" button produces. Honours the same filters as the listing and…
 - [Product Images — Delete](/api/rest-api/admin/catalog/products/images-delete): Deletes the DB row and removes the file from public storage.
 - [Product Images — Reorder](/api/rest-api/admin/catalog/products/images-reorder): Updates the position of one or more existing images for a product. Each image ID must belong to the product or the request is rejected.
+- [Product Images — Update](/api/rest-api/admin/catalog/products/images-update): Edit the alt text and the position of an already-uploaded image.
 - [Product Images — Upload](/api/rest-api/admin/catalog/products/images-upload): Multipart upload of a single product image. Allowed mime types — bmp, jpeg, jpg, png, webp.
 - [Product Inventories — List](/api/rest-api/admin/catalog/products/inventories-list): Returns one row per inventory_source that has a product_inventories entry for the product. The envelope `meta.totalQty` is the sum across all sources.
 - [Product Inventories — Bulk Update](/api/rest-api/admin/catalog/products/inventories-update): Mirrors Bagisto monolith `ProductController::updateInventories`. Sources passed with qty=0 are kept but zeroed-out; sources NOT in the payload are left…
@@ -1406,16 +1464,6 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [List Tax Rates](/api/rest-api/admin/settings/tax-rates/list): Returns the store-wide list of tax rates in the standard `{ data, meta }` envelope. Each row is one tax rate — a rule that defines the tax percentage applied…
 - [Update Tax Rate](/api/rest-api/admin/settings/tax-rates/update): Partial. `identifier` uniqueness excludes self. Permission: `settings.taxes.tax_rates.edit`.
 
-## REST API › Admin › Settings › Themes
-
-- [Create Theme Customization (Step 1)](/api/rest-api/admin/settings/themes/create): Step-1: name, type, sort_order, channel_id, theme_code. Per-locale `options` are configured via PUT.
-- [Delete Theme Customization](/api/rest-api/admin/settings/themes/delete): Permission: `settings.themes.delete`.
-- [Theme Customization Detail](/api/rest-api/admin/settings/themes/detail)
-- [List Theme Customizations](/api/rest-api/admin/settings/themes/list): List the theme customization blocks configured for the store. Returns the standard `{ data, meta }` admin envelope. The per-locale `options` content is…
-- [Mass Delete Theme Customizations](/api/rest-api/admin/settings/themes/mass-delete): Empty indices → 422.
-- [Mass Update Theme Status](/api/rest-api/admin/settings/themes/mass-update-status): Body: `{ indices: int[], value: 0|1 }`.
-- [Update Theme Customization](/api/rest-api/admin/settings/themes/update): Pass `locale` + `options` to write per-locale options. Permission: `settings.themes.edit`.
-
 ## REST API › Admin › Settings › Users
 
 - [Create Admin User](/api/rest-api/admin/settings/users/create): Required: `name`, `email` (unique), `password` (+ `password_confirmation`), `role_id`. Optional: `status` (`0`/`1`).
@@ -1534,6 +1582,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [EU Right of Withdrawal](/api/rest-api/shop/eu-withdrawal): The EU right-of-withdrawal endpoints let a shopper formally declare that they are exercising their statutory right to withdraw from a purchase (the EU…
 - [File an EU Withdrawal](/api/rest-api/shop/eu-withdrawal/create-eu-withdrawal): File an EU right-of-withdrawal declaration against one of the authenticated customer's own orders.
 - [File a Guest EU Withdrawal](/api/rest-api/shop/eu-withdrawal/create-guest-eu-withdrawal): File an EU right-of-withdrawal declaration for a guest order, proving ownership with the order increment id and email.
+- [EU Withdrawal Status](/api/rest-api/shop/eu-withdrawal/eu-withdrawal-status): Whether customers can file an EU withdrawal on the current channel.
 - [List EU Withdrawals](/api/rest-api/shop/eu-withdrawal/list-eu-withdrawals): Retrieve a paginated list of the authenticated customer's own EU right-of-withdrawal declarations, newest first.
 - [View EU Withdrawal](/api/rest-api/shop/eu-withdrawal/view-eu-withdrawal): Retrieve a single EU right-of-withdrawal declaration owned by the authenticated customer.
 
@@ -1542,6 +1591,7 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [GDPR Data Requests](/api/rest-api/shop/gdpr-requests): GDPR data requests let a logged-in customer exercise their data-protection rights — asking the store to **delete** their account data or to **update** the…
 - [Raise a GDPR Request](/api/rest-api/shop/gdpr-requests/create-gdpr-request): Raise a new GDPR data request (delete or update) for the authenticated customer.
 - [Delete a GDPR Request](/api/rest-api/shop/gdpr-requests/delete-gdpr-request): Remove a GDPR data request record owned by the authenticated customer.
+- [GDPR Status](/api/rest-api/shop/gdpr-requests/gdpr-status): Whether customers can raise GDPR data requests on the current channel.
 - [List GDPR Requests](/api/rest-api/shop/gdpr-requests/list-gdpr-requests): Retrieve a paginated list of the authenticated customer's own GDPR data requests, newest first.
 - [Revoke a GDPR Request](/api/rest-api/shop/gdpr-requests/revoke-gdpr-request): Withdraw a pending or processing GDPR data request owned by the authenticated customer.
 - [View GDPR Request](/api/rest-api/shop/gdpr-requests/view-gdpr-request): Retrieve a single GDPR data request owned by the authenticated customer.
@@ -1582,18 +1632,25 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Cancel a Return](/api/rest-api/shop/returns/cancel-return): Cancel the authenticated customer's own return (RMA) request.
 - [Close a Return](/api/rest-api/shop/returns/close-return): Mark the authenticated customer's own return (RMA) request as solved.
 - [Raise a Return](/api/rest-api/shop/returns/create-return): Raise a new return (RMA) request for one item of one of the authenticated customer's orders.
+- [List Return Custom Fields](/api/rest-api/shop/returns/list-return-custom-fields): List the active custom fields the storefront return form asks the shopper to fill in.
 - [List Return Messages](/api/rest-api/shop/returns/list-return-messages): List the conversation messages of a return (RMA) request owned by the authenticated customer, newest first.
 - [List Return Reasons](/api/rest-api/shop/returns/list-return-reasons): List the active reasons a customer can pick when raising a return, filtered by resolution type.
 - [List Returnable Items](/api/rest-api/shop/returns/list-returnable-items): List the return-eligible items of one of the authenticated customer's orders, with the quantity caps the store enforces.
+- [List Returnable Orders](/api/rest-api/shop/returns/list-returnable-orders): The customer's orders a return can still be raised against — the list the New Request flow opens with.
 - [List Returns](/api/rest-api/shop/returns/list-returns): Retrieve the authenticated customer's own return (RMA) requests, newest first.
 - [Reopen a Return](/api/rest-api/shop/returns/reopen-return): Reopen a canceled or declined return (RMA) request back to pending.
 - [Send a Return Message](/api/rest-api/shop/returns/send-return-message): Add a customer message to the conversation thread of a return (RMA) request.
 - [View Return](/api/rest-api/shop/returns/view-return): Retrieve a single return (RMA) request owned by the authenticated customer, including its item, images and action flags.
 
-## REST API › Shop › Theme Customizations
+## REST API › Shop › Sections
 
-- [Theme Customizations](/api/rest-api/shop/theme-customizations): The Theme Customizations menu returns the content blocks an admin has configured for the storefront — image carousels, static-content sections,…
-- [Theme Customizations](/api/rest-api/shop/theme-customizations/get-theme-customizations): Retrieve a paginated list of every theme customization (carousels, footer links, static content blocks, …).
+- [Sections](/api/rest-api/shop/sections): Sections are the blocks a storefront page is built from — carousels, static content blocks, the footer links. A store's merchandiser arranges them per channel,…
+- [Get Section](/api/rest-api/shop/sections/detail): One published section of the current channel's active theme.
+- [List Sections](/api/rest-api/shop/sections/list): The published sections of the current channel's active theme, in the order they are drawn.
+
+## REST API › Shop › Theme
+
+- [Theme](/api/rest-api/shop/theme): The theme the current channel's storefront is drawn with, and the section types it can hold.
 
 ## REST API › Shop › Wishlist
 
@@ -1638,5 +1695,5 @@ This API has two separate surfaces. Pick one and do not mix them:
 - [Customer Account (Shop)](/api/workflows/shop/customer-account): Everything behind a customer login: profile, addresses, order history and invoices, downloadable products, reviews, wishlist, and compare. Every call here…
 - [EU Withdrawal (Shop)](/api/workflows/shop/eu-withdrawal): The EU right-of-withdrawal flow — a shopper files a withdrawal against an order, then tracks it. Works for a logged-in customer or a guest (a separate guest…
 - [GDPR Requests (Shop)](/api/workflows/shop/gdpr): A customer raises a data request (delete or update their data), lists and views their own requests, revokes a pending one, or deletes the record. The whole…
-- [Returns / RMA (Shop)](/api/workflows/shop/returns-rma): A customer files a return against a delivered order, then tracks and messages on it. The flow: find the returnable items on an order, pick a reason, create the…
+- [Returns / RMA (Shop)](/api/workflows/shop/returns-rma): A customer files a return against a delivered order, then tracks and messages on it. The flow: find the returnable items on an order, pick a reason, collect…
 

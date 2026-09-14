@@ -13,10 +13,22 @@ examples:
     response: |
       {
         "sitemapId": 1,
-        "indexFile": "/sitemap.xml",
-        "generatedSitemaps": [
-          "/sitemap-products-1.xml"
+        "generatedFiles": [
+          {
+            "channelId": 1,
+            "channelCode": "default",
+            "hostname": "https://example.com",
+            "index": "sitemaps/default/sitemap-1-1.xml",
+            "sitemaps": [
+              "sitemaps/default/sitemap-1-1-1.xml"
+            ]
+          }
         ],
+        "urls": [
+          "https://example.com/storage/sitemaps/default/sitemap-1-1.xml"
+        ],
+        "indexFile": null,
+        "generatedSitemaps": [],
         "generatedAt": "2026-06-23T13:00:00+05:30",
         "message": "Sitemap generated successfully."
       }
@@ -41,19 +53,25 @@ New here? Read the [Sitemaps overview](/api/rest-api/admin/marketing/search-seo/
 - Requires an admin Bearer token and the `marketing.search_seo.sitemaps.edit`
   permission.
 - Send an **empty body** — the sitemap id comes from the URL.
-- Walks every public category, product, and page, writes the index file plus the
-  per-batch XML files, and records their paths and the generate timestamp on the
-  sitemap row.
-- The response carries the generated file paths once the build finishes.
+- Runs once per channel the sitemap covers: for each, it walks that channel's root
+  category subtree and the products and pages assigned to it, then writes an index
+  file plus the per-batch XML files under `sitemaps/{channel}/`, using the channel's
+  own hostname for the URLs inside them.
+- The response carries the generated file paths once the build finishes, grouped by
+  channel.
+- A sitemap that covers no channel has nothing to generate and is refused with a
+  `422` — assign at least one channel first.
 - If sitemap generation is disabled in the store configuration, the request still
-  succeeds but produces no files (`indexFile` `null`, `generatedSitemaps` empty).
+  succeeds but produces no files (`generatedFiles` empty).
 
 ## Response fields
 
 | Field | Type | Notes |
 |-------|------|-------|
 | `sitemapId` | int | Id of the sitemap that was generated |
-| `indexFile` | string | Path of the generated index file |
-| `generatedSitemaps` | string[] | Paths of the per-batch XML files |
+| `generatedFiles` | object[] | What the run wrote, one entry per channel: `channelId`, `channelCode`, `hostname`, `index`, `sitemaps[]` |
+| `urls` | string[] | Public index URL per channel — the link to submit to a search engine |
+| `indexFile` | string | Index path of a sitemap generated before generation became channel-aware. `null` for anything generated since |
+| `generatedSitemaps` | string[] | Child paths of a sitemap generated before generation became channel-aware. Empty for anything generated since |
 | `generatedAt` | string | Timestamp of this generate run |
 | `message` | string | Success message |

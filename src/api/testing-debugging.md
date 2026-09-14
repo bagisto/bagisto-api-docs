@@ -67,7 +67,9 @@ Use `token` from that response, never `apiToken` — the second is a legacy fiel
 
 ## Postman and Insomnia
 
-Rather than building requests by hand, import the OpenAPI spec — you get every endpoint, its parameters, and its body schema in one step:
+The quickest start is the ready-made Postman collections, published to the [Bagisto workspace](https://www.postman.com/bagisto-apis/bagistoapi) and shipped with the API package under `collections/` — one for the storefront, one for the admin, each covering REST and GraphQL, plus an environment holding your URL and keys. Import a collection and its environment, fill in the values, and every request is ready to send.
+
+To build from the schema instead, import the OpenAPI spec — you get every endpoint, its parameters, and its body schema in one step:
 
 1. Fetch `https://your-domain.com/api/shop/docs` (or `/api/admin/docs`), or generate the file with `bagisto-api-platform:export-schema`.
 2. Import it — Postman: **Import → File/Link**; Insomnia: **Import From → URL**.

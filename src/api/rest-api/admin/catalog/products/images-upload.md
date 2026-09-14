@@ -9,18 +9,21 @@ examples:
       curl -X POST "https://your-domain.com/api/admin/catalog/products/12/images" \
         -H "Authorization: Bearer <token>" \
         -F "image=@/path/to/photo.webp" \
-        -F "position=1"
+        -F "position=1" \
+        -F "alt_text=Blue running shoe, side view"
     variables: |
       multipart/form-data:
         image: <binary file>
         position: 1
+        alt_text: Blue running shoe, side view
     response: |
       {
         "id": 47,
         "productId": 12,
         "path": "product/12/abc123.webp",
         "position": 1,
-        "url": "/storage/product/12/abc123.webp"
+        "url": "/storage/product/12/abc123.webp",
+        "altText": "Blue running shoe, side view"
       }
     commonErrors:
       - error: Validation (422)
@@ -53,6 +56,7 @@ Image upload is REST-only. A binary file part cannot be carried in a JSON GraphQ
 |-------|------|----------|-------|
 | `image` | file | yes | One of bmp, jpeg, jpg, png, webp. |
 | `position` | integer | no | Sort position; appended to the end if omitted. |
+| `alt_text` | string | no | Description of the image, stored for every locale the request covers. Editable afterwards through [update](/api/rest-api/admin/catalog/products/images-update). |
 
 ## Response
 
@@ -65,6 +69,7 @@ Image upload is REST-only. A binary file part cannot be carried in a JSON GraphQ
 | `path` | string | Storage-relative file path. |
 | `position` | integer | Sort position. |
 | `url` | string | Public URL. |
+| `altText` | string | Alt text stored for the current locale, or `null`. |
 
 ## Errors
 

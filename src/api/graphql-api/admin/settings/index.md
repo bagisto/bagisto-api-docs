@@ -17,7 +17,6 @@ The Settings section is where you configure the store itself — the languages a
 | [Channels](/api/graphql-api/admin/settings/channels/) | The storefronts — each with its own hostname, theme, default + allowed locales, base + allowed currencies, inventory sources, root category, and SEO / maintenance settings. |
 | [Admin Users](/api/graphql-api/admin/settings/users/) | The back-office accounts that sign into the admin panel, each assigned a Role that grants their permissions. |
 | [Roles](/api/graphql-api/admin/settings/roles/) | Named permission sets assigned to admin users — they decide what each admin can see and do. |
-| [Themes](/api/graphql-api/admin/settings/themes/) | Per-channel storefront content blocks — carousels, static content, footer links, service blocks — and their per-locale content. (Not installable themes.) |
 | [Tax Categories](/api/graphql-api/admin/settings/tax-categories/) | Named groups of tax rates that get assigned to products — the bridge between a product and the rates that apply to it. |
 | [Tax Rates](/api/graphql-api/admin/settings/tax-rates/) | The individual rate rules — a percentage for a country / state and a zip or zip range — that tax categories are built from. |
 | [Data Transfer Imports](/api/graphql-api/admin/settings/data-transfer-imports/overview) | Bulk-import products, customers, tax rates and more from CSV / XLSX, with a validate → start → link → index pipeline you drive step by step. |

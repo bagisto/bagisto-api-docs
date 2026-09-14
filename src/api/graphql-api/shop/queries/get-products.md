@@ -215,6 +215,8 @@ examples:
                   node {
                     id
                     publicPath
+                    altText
+                    fileName
                     position
                   }
                 }
@@ -271,6 +273,8 @@ examples:
                         "node": {
                           "id": "/api/admin/images/967",
                           "publicPath": "https://api-demo.bagisto.com/storage/product/1/zKcWZTLDjcawJmaNg8g1cpARqwVONgEKEflabstT.webp",
+                          "altText": "Blue running shoe, side view",
+                          "fileName": "product-image",
                           "position": "1"
                         }
                       }
@@ -340,6 +344,8 @@ examples:
                         "node": {
                           "id": "/api/admin/images/969",
                           "publicPath": "https://api-demo.bagisto.com/storage/product/2/XmdfIafCjuYEhHiBkHvzmOuDT0mpGHDTi9QhnUoY.webp",
+                          "altText": "Blue running shoe, side view",
+                          "fileName": "product-image",
                           "position": "1"
                         }
                       }
@@ -391,6 +397,8 @@ examples:
                         "node": {
                           "id": "/api/admin/images/965",
                           "publicPath": "https://api-demo.bagisto.com/storage/product/92/JUvPvPCFeYnjPdVOr1HThLzHptZ7BZLp2RQPnSG5.webp",
+                          "altText": "Blue running shoe, side view",
+                          "fileName": "product-image",
                           "position": "1"
                         }
                       }
@@ -442,6 +450,8 @@ examples:
                         "node": {
                           "id": "/api/admin/images/964",
                           "publicPath": "https://api-demo.bagisto.com/storage/product/91/E9jCNFXrqr2PYYLKIXUbjFRBURpkYms3MWKJRIba.webp",
+                          "altText": "Blue running shoe, side view",
+                          "fileName": "product-image",
                           "position": "1"
                         }
                       }
@@ -537,6 +547,8 @@ examples:
                   node {
                     id
                     publicPath
+                    altText
+                    fileName
                     position
                   }
                 }
@@ -644,6 +656,8 @@ examples:
                         "node": {
                           "id": "/api/admin/images/50",
                           "publicPath": "https://api-demo.bagisto.com/storage/product/123/zoe-tank.webp",
+                          "altText": "Blue running shoe, side view",
+                          "fileName": "product-image",
                           "position": "1"
                         }
                       }
@@ -722,6 +736,8 @@ examples:
                         "node": {
                           "id": "/api/admin/images/950",
                           "publicPath": "https://api-demo.bagisto.com/storage/product/2495/FFHxE9HE2Ezt9aqvr6s3fPPCc1nrjwMNna1o1wTQ.webp",
+                          "altText": "Blue running shoe, side view",
+                          "fileName": "product-image",
                           "position": "1"
                         }
                       }
@@ -796,6 +812,8 @@ examples:
                   node {
                     id
                     publicPath
+                    altText
+                    fileName
                     position
                   }
                 }
@@ -857,6 +875,8 @@ examples:
                         "node": {
                           "id": "/api/admin/images/850",
                           "publicPath": "https://api-demo.bagisto.com/storage/product/2507/1jO3Pb5UA89ZaVsp1cnlICSFgZKlwy6lPlDJynGu.webp",
+                          "altText": "Blue running shoe, side view",
+                          "fileName": "product-image",
                           "position": "1"
                         }
                       }
@@ -900,6 +920,8 @@ examples:
                         "node": {
                           "id": "/api/admin/images/846",
                           "publicPath": "https://api-demo.bagisto.com/storage/product/2508/qXYifNamNZcymBWoGmuh3cauzyujPl23mMH1XYPt.webp",
+                          "altText": "Blue running shoe, side view",
+                          "fileName": "product-image",
                           "position": "1"
                         }
                       }
@@ -943,6 +965,8 @@ examples:
                         "node": {
                           "id": "/api/admin/images/847",
                           "publicPath": "https://api-demo.bagisto.com/storage/product/2509/JaLDOwXAOLJCecJs7hlPwEiDr2G42WlHIjJxFdxF.webp",
+                          "altText": "Blue running shoe, side view",
+                          "fileName": "product-image",
                           "position": "1"
                         }
                       }
@@ -986,6 +1010,8 @@ examples:
                         "node": {
                           "id": "/api/admin/images/848",
                           "publicPath": "https://api-demo.bagisto.com/storage/product/2510/eDIAyoJLDAshEe3AOwhi2sgoFH9sAjpMvoemDVpo.webp",
+                          "altText": "Blue running shoe, side view",
+                          "fileName": "product-image",
                           "position": "1"
                         }
                       }
@@ -1029,6 +1055,8 @@ examples:
                         "node": {
                           "id": "/api/admin/images/849",
                           "publicPath": "https://api-demo.bagisto.com/storage/product/2511/lw253CbVba9nRZVUGy9atW9t85ADE2UwldssE8t6.webp",
+                          "altText": "Blue running shoe, side view",
+                          "fileName": "product-image",
                           "position": "1"
                         }
                       }
@@ -1069,6 +1097,8 @@ examples:
                   node {
                     id
                     publicPath
+                    altText
+                    fileName
                     position
                   }
                 }
@@ -1123,6 +1153,8 @@ examples:
                         "node": {
                           "id": "/api/admin/images/842",
                           "publicPath": "https://api-demo.bagisto.com/storage/product/2505/sCwS1QRNlJHLPjw5UzxYSR21oqYbMvo4UNRYklME.webp",
+                          "altText": "Blue running shoe, side view",
+                          "fileName": "product-image",
                           "position": "1"
                         }
                       }
@@ -1189,6 +1221,8 @@ examples:
                           node {
                             id
                             publicPath
+                            altText
+                            fileName
                           }
                         }
                       }
@@ -1201,6 +1235,8 @@ examples:
                   node {
                     id
                     publicPath
+                    altText
+                    fileName
                     position
                   }
                 }
@@ -1318,6 +1354,8 @@ examples:
                         "node": {
                           "id": "/api/admin/images/855",
                           "publicPath": "https://api-demo.bagisto.com/storage/product/2516/5Kgto6KVm6FLMaaDEY6pwCcVoTIhX03D3OGDzwbf.webp",
+                          "altText": "Blue running shoe, side view",
+                          "fileName": "product-image",
                           "position": "1"
                         }
                       }
@@ -1387,6 +1425,8 @@ examples:
                   node {
                     id
                     publicPath
+                    altText
+                    fileName
                     position
                   }
                 }
@@ -1474,6 +1514,8 @@ examples:
                         "node": {
                           "id": "/api/admin/images/843",
                           "publicPath": "https://api-demo.bagisto.com/storage/product/2506/XY0sCaNbWfeXDntNFbYnlL6N5uOJ9tfyR7AtntSf.webp",
+                          "altText": "Blue running shoe, side view",
+                          "fileName": "product-image",
                           "position": "1"
                         }
                       }
@@ -1552,6 +1594,8 @@ examples:
                                 node {
                                   id
                                   publicPath
+                                  altText
+                                  fileName
                                 }
                               }
                             }
@@ -1567,6 +1611,8 @@ examples:
                   node {
                     id
                     publicPath
+                    altText
+                    fileName
                     position
                   }
                 }
@@ -1689,6 +1735,8 @@ examples:
                         "node": {
                           "id": "/api/admin/images/856",
                           "publicPath": "https://api-demo.bagisto.com/storage/product/2517/lW2A3FH3oKBJnnukyUyKUArdrr8dwTJxxDKthSgq.webp",
+                          "altText": "Blue running shoe, side view",
+                          "fileName": "product-image",
                           "position": "1"
                         }
                       }

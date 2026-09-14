@@ -14,7 +14,10 @@ examples:
             _id
             fileName
             path
+            channels
+            urls
             generatedAt
+            generatedFiles
             indexFile
             generatedSitemaps
             createdAt
@@ -26,7 +29,8 @@ examples:
       {
         "input": {
           "fileName": "sitemap.xml",
-          "path": "/"
+          "path": "/",
+          "channels": [1]
         }
       }
     response: |
@@ -38,7 +42,12 @@ examples:
               "_id": 1,
               "fileName": "sitemap.xml",
               "path": "/",
+              "channels": [1],
+              "urls": [
+                "https://example.com/storage/sitemaps/default/sitemap-1-1.xml"
+              ],
               "generatedAt": null,
+              "generatedFiles": [],
               "indexFile": null,
               "generatedSitemaps": [],
               "createdAt": "2026-06-20T10:00:00+05:30",
@@ -60,8 +69,14 @@ New here? Read the [Sitemaps overview](/api/graphql-api/admin/marketing/search-s
 
 Saving the row only stores the definition. To write the actual XML files, call
 the [generate](/api/graphql-api/admin/marketing/search-seo/sitemaps-generate)
-mutation explicitly — `generatedAt`, `indexFile`, and `generatedSitemaps` stay
-empty until then.
+mutation explicitly — `generatedAt` and `generatedFiles` stay empty until then.
+
+### One sitemap, one set of files per channel
+
+A sitemap covers the channels listed in `channels`, and generation writes an index
+plus its child files for each of them, using that channel's own hostname. `urls`
+returns the public index URL per channel, which is the link to submit to a search
+engine.
 
 ## Operation
 
@@ -81,3 +96,4 @@ empty until then.
 |-------|------|----------|-------|
 | `fileName` | String | Yes | Index file name — letters, digits, `-`, `_`, `.`; must end with `.xml` |
 | `path` | String | Yes | Directory the index file lives in — must start and end with `/`, no `//` |
+| `channels` | [Int] | Yes | Channel ids the sitemap covers. At least one — generation walks the channels, so a sitemap covering none produces no files |

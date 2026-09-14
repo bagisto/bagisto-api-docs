@@ -65,6 +65,14 @@ Same fields as [Create](/api/rest-api/admin/catalog/attributes/attributes-create
 - **`options` is a full-set replacement.** Entries with an `id` are updated, entries without `id` are inserted, and any existing option ids omitted from the payload are deleted.
 - System attributes (`is_user_defined = 0`) silently ignore immutable fields by convention — only mutable fields (e.g. `admin_name`, translations) are applied.
 - `translations` merges per-locale — only the supplied locales are updated; others are untouched.
+- Setting `validation` to `regex` requires a `regex` pattern, checked the same way as on create.
+
+
+## Validation and the regex pattern
+
+`validation` names the rule a value must satisfy — `numeric`, `email`, `decimal`, `url` or `regex`. Choosing `regex` makes `regex` required, and the pattern is checked before it is stored.
+
+A pattern must be delimited with `/`, may carry only the `i`, `m`, `s` and `u` modifiers, and must compile. That is narrower than PHP alone accepts because the same pattern is also written into the storefront's own form rules, where a `#` delimiter or a PCRE-only modifier would break the form for every product using the attribute. A pattern that does not qualify is refused rather than stored.
 
 ## Response
 

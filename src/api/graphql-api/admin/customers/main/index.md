@@ -18,7 +18,7 @@ A row exists for every registered customer — whether they signed up on the sto
 
 | Field | Meaning |
 |-------|---------|
-| `firstName` / `lastName` / `email` / `phone` | Identity and contact details. `email` is unique across the store. |
+| `firstName` / `lastName` / `email` / `phone` | Identity and contact details. `email` is unique within the customer's channel, so the same address may hold a separate account on each channel a store runs. |
 | `gender` / `dateOfBirth` | Optional profile details. |
 | `status` | Whether the account is enabled. A suspended customer cannot sign in. |
 | `group` | The customer's group, returned as a nested object `{ id, code, name }` on both the listing and the detail query (`null` if the customer has no group). |
@@ -32,7 +32,7 @@ The activity aggregates (`totalOrders`, `totalAddresses`, `totalAmountSpent`) ar
 ## What create / update / delete do
 
 - **Create** adds a customer. Set `sendPassword` (default on) to auto-generate a password and email the credentials to the customer; turn it off to supply a `password` yourself. A Customer Group is required.
-- **Update** edits a customer; it is partial, so send only the fields you change alongside the `id`. Email stays unique (excluding the customer themselves); supplying a `password` re-hashes it.
+- **Update** edits a customer; it is partial, so send only the fields you change alongside the `id`. Email stays unique within the customer's channel (excluding the customer themselves); supplying a `password` re-hashes it.
 - **Delete** removes a customer — blocked when they have pending or processing orders (settle or cancel those first).
 
 ## Bulk actions
